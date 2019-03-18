@@ -1,0 +1,18 @@
+{
+  "name": "josh-mongo",
+  "version": "0.0.1",
+  "description": "MongoDB Provider for JOSH",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eslachance/josh.git"
+  },
+  "author": "Evelyne Lachance",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/eslachance/josh/issues"
+  },
+  "homepage": "https://github.com/eslachance/josh#readme",
+  "dependencies": {
+    "mongodb": "^3.1.13"
+  }
+}

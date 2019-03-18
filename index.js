@@ -4,7 +4,7 @@ const _ = require('lodash');
 const Err = require('./error.js');
 
 // Package.json
-const pkgdata = require('../package.json');
+const pkgdata = require('./package.json');
 
 // Symbols are used to create "private" methods.
 // https://medium.com/front-end-hacking/private-methods-in-es6-and-writing-your-own-db-b2e30866521f
@@ -30,12 +30,13 @@ class Josh extends Map {
     if (!options.provider || !options.name) {
       throw new Err("If you provide a name but no provider, I'm a bit confused as to what you're expecting to happen...", 'JoshOptionsError');
     }
-    if (!options.provider.constructor.name !== 'JoshProvider') {
-      throw new Err("Sorry boss, that doesn't seem to be a valid Provider in your options, there.", 'JoshOptionsError');
+    if (options.provider.constructor.name != 'JoshProvider') {
+      throw new Err(`Sorry boss, that doesn't seem to be a valid Provider in your options, there. This was just a ${options.provider.constructor.name}!`, 'JoshOptionsError');
     }
 
-    this[_defineSetting]('db', 'JoshProvider', false, options.provider);
+    this[_defineSetting]('provider', 'JoshProvider', false, options.provider);
     this[_defineSetting]('persistent', 'Boolean', false, true);
+    this[_defineSetting]('defer', 'Promise', false, this.provider.init(this));
     // Initialize this property, to prepare for a possible destroy() call.
     // This is completely ignored in all situations except destroying Josh.
     this[_defineSetting]('isDestroyed', 'Boolean', true, false);
