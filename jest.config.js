@@ -4,5 +4,9 @@
 module.exports = {
   clearMocks: true,
   coverageDirectory: 'coverage',
-  testEnvironment: 'node'
+  testEnvironment: 'node',
+  testMatch: [
+    '**/test/**/*.js?(x)',
+    '**/?(*.)+(spec|test).js?(x)'
+  ]
 };

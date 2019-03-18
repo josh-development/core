@@ -9,11 +9,17 @@ const pkgdata = require('./package.json');
 // Symbols are used to create "private" methods.
 // https://medium.com/front-end-hacking/private-methods-in-es6-and-writing-your-own-db-b2e30866521f
 const _defineSetting = Symbol('_defineSetting');
+const _init = Symbol('init');
 
 class Josh extends Map {
 
   constructor(options = {}) {
     super();
+    const {
+      provider: Provider,
+      name
+    } = options;
+    console.log(options);
 
     let cloneLevel;
     if (options.cloneLevel) {
@@ -27,7 +33,7 @@ class Josh extends Map {
     this[_defineSetting]('cloneLevel', 'String', true, cloneLevel);
     this[_defineSetting]('version', 'String', false, pkgdata.version);
 
-    if (!options.provider || !options.name) {
+    if (!Provider || !name) {
       throw new Err("If you provide a name but no provider, I'm a bit confused as to what you're expecting to happen...", 'JoshOptionsError');
     }
     if (options.provider.constructor.name != 'JoshProvider') {
@@ -35,6 +41,7 @@ class Josh extends Map {
     }
 
     this[_defineSetting]('provider', 'JoshProvider', false, options.provider);
+    this[_defineSetting]('name', 'String', false, name);
     this[_defineSetting]('persistent', 'Boolean', false, true);
     this[_defineSetting]('defer', 'Promise', false, this.provider.init(this));
     // Initialize this property, to prepare for a possible destroy() call.
@@ -56,6 +63,11 @@ class Josh extends Map {
       enumerable: false,
       configurable: false
     });
+  }
+
+  [_init]() {
+    this.ready();
+    return this.defer;
   }
 
 }
