@@ -1,23 +1,25 @@
-const { MongoClient } = require('mongodb');
-
+const {
+  MongoClient
+} = require('mongodb');
 class JoshProvider {
 
   constructor(options) {
-    this.defer = new Promise((resolve) => {
+    this.defer = new Promise(resolve => {
       this.ready = resolve;
     });
-
     if (!options.name) throw new Error('Must provide options.name');
     this.name = options.name;
-
     this.validateName();
-
-    this.auth = options.user && options.password ? `${options.user}:${options.password}@` : '';
+    this.auth =
+      options.user && options.password ?
+        `${options.user}:${options.password}@` :
+        '';
     this.dbName = options.dbName || 'test';
     this.port = options.port || 27017;
     this.host = options.host || 'localhost';
-
-    this.url = options.url || `mongodb://${this.auth}${this.host}:${this.port}/${this.dbName}`;
+    this.url =
+      options.url ||
+      `mongodb://${this.auth}${this.host}:${this.port}/${this.dbName}`;
   }
 
   /**
@@ -31,58 +33,84 @@ class JoshProvider {
     this.client = await MongoClient.connect(this.url);
     this.db = this.client.db(this.dbName).collection(this.name);
     console.log(this.db);
-    if (this.fetchAll) {
-      await this.fetchEverything();
-      this.ready();
-    } else {
-      this.ready();
-    }
+    this.ready();
     return this.defer;
   }
 
+  get settings() {
+    return {
+      name: this.dbName
+    };
+  }
+
   /**
-   * Shuts down the underlying persistent josh database.
+   * Shuts down the underlying database.
    */
   close() {
     this.client.close();
   }
 
-  fetch(key) {
-    return this.db.get(key);
-  }
-
-  async fetchEverything() {
-    const rows = await this.db.find({}).toArray();
-    for (const row of rows) {
-      this.josh.set(row._id, row.value);
-    }
-  }
-
   /**
    * Set a value to the josh.
    * @param {(string|number)} key Required. The key of the element to add to the josh object.
-   * If the josh is persistent this value MUST be a string or number.
    * @param {*} val Required. The value of the element to add to the josh object.
-   * If the josh is persistent this value MUST be stringifiable as JSON.
+   * This value MUST be stringifiable as JSON.
    */
   set(key, val) {
     if (!key || !['String', 'Number'].includes(key.constructor.name)) {
       throw new Error('Keys should be strings or numbers.');
     }
-    this.db.update({ _id: key }, { _id: key, value: val }, { upsert: true });
+    this.db.update({
+      _id: key
+    }, {
+      _id: key,
+      value: val
+    }, {
+      upsert: true
+    });
   }
 
-  /**
-   * Delete an entry from the josh.
-   * @param {(string|number)} key Required. The key of the element to delete from the josh object.
-   * @param {boolean} bulk Internal property used by the purge method.
-   */
+  get(key) {
+    return this.db.get(key);
+  }
+
+  keyArray() {
+    return this.db.activities.aggregate([{
+      $project: {
+        arrayofkeyvalue: {
+          $objectToArray: '$$ROOT'
+        }
+      }
+    },
+    {
+      $unwind: '$arrayofkeyvalue'
+    }, {
+      $group: {
+        _id: null,
+        allkeys: {
+          $addToSet: '$arrayofkeyvalue.k'
+        }
+      }
+    }
+    ]);
+  }
+
   delete(key) {
-    this.db.remove({ _id: key }, { single: true });
+    return this.db.remove({
+      _id: key
+    }, {
+      single: true
+    });
+  }
+
+  deleteAll() {
+    return this.db.deleteMany({});
   }
 
   hasAsync(key) {
-    return this.db.find({ _id: key }).limit(1);
+    return this.db.find({
+      _id: key
+    }).limit(1);
   }
 
   /**
@@ -100,14 +128,6 @@ class JoshProvider {
   validateName() {
     // Do not delete this internal method.
     this.name = this.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-  }
-
-  /**
-   * Internal method used by josh to retrieve provider's correct version.
-   * @return {string} Current version number.
-   */
-  getVersion() {
-    return require('./package.json').version;
   }
 
 }

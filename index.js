@@ -10,11 +10,11 @@ const pkgdata = require('./package.json');
 // https://medium.com/front-end-hacking/private-methods-in-es6-and-writing-your-own-db-b2e30866521f
 const _defineSetting = Symbol('_defineSetting');
 const _init = Symbol('init');
+const _readyCheck = Symbol('readyCheck');
 
-class Josh extends Map {
+class Josh {
 
   constructor(options = {}) {
-    super();
     const {
       provider: Provider,
       name
@@ -63,6 +63,29 @@ class Josh extends Map {
       enumerable: false,
       configurable: false
     });
+  }
+
+  /*
+   * Internal Method. Verifies that the database is ready, assuming persistence is used.
+   */
+  [_readyCheck]() {
+    if (!this.isReady) throw new Err('Database is not ready. Refer to the documentation to use josh.defer', 'JoshReadyError');
+    if (this.isDestroyed) throw new Err('This Josh has been destroyed and can no longer be used without being re-initialized.', 'JoshDestroyedError');
+  }
+
+  async set(key, value) {
+    this[_readyCheck]();
+    key = this.provider.keyCheck(key);
+    return key;
+  }
+
+  async get(key) {
+    this[_readyCheck]();
+    key = this.provider.keyCheck(key);
+  }
+
+  async setIn(key, path, value) {
+    return true;
   }
 
   [_init]() {
