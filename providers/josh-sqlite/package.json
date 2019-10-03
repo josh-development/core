@@ -1,5 +1,5 @@
 {
-  "name": "sqlite",
+  "name": "josh-sqlite",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "better-sqlite3": "^5.4.0"
+    "lodash": "^4.17.15",
+    "sqlite": "^3.0.3"
   }
 }

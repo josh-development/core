@@ -1,16 +1,13 @@
 const _ = require('lodash');
 
+const mongo = require("./providers/josh-mongo");
+const sqlite = require("./providers/josh-sqlite");
+
 // Custom error codes with stack support.
 const Err = require('./error.js');
 
 // Package.json
 const pkgdata = require('./package.json');
-
-// Symbols are used to create "private" methods.
-// https://medium.com/front-end-hacking/private-methods-in-es6-and-writing-your-own-db-b2e30866521f
-const _defineSetting = Symbol('_defineSetting');
-const _init = Symbol('init');
-const _readyCheck = Symbol('readyCheck');
 
 class Josh {
 
@@ -19,80 +16,75 @@ class Josh {
       provider: Provider,
       name
     } = options;
-    console.log(options);
-
-    let cloneLevel;
-    if (options.cloneLevel) {
-      const accepted = ['none', 'shallow', 'deep'];
-      if (!accepted.includes(options.cloneLevel)) throw new Err('Unknown Clone Level. Options are none, shallow, deep. Default is deep.', 'JoshOptionsError');
-      cloneLevel = options.cloneLevel; // eslint-disable-line prefer-destructuring
-    } else {
-      cloneLevel = 'deep';
-    }
-
-    this[_defineSetting]('cloneLevel', 'String', true, cloneLevel);
-    this[_defineSetting]('version', 'String', false, pkgdata.version);
+    
+    this.version = pkgdata.version;
 
     if (!Provider || !name) {
-      throw new Err("If you provide a name but no provider, I'm a bit confused as to what you're expecting to happen...", 'JoshOptionsError');
+      throw new Err("Josh requires both a Name and Provider input ", 'JoshOptionsError');
     }
-    if (options.provider.constructor.name != 'JoshProvider') {
-      throw new Err(`Sorry boss, that doesn't seem to be a valid Provider in your options, there. This was just a ${options.provider.constructor.name}!`, 'JoshOptionsError');
+    const intializedProvider = new Provider({ name, ...options.options });
+    if (intializedProvider.constructor.name != 'JoshProvider') {
+      throw new Err(`Sorry boss, that doesn't seem to be a valid Provider in your options, there. This was just a ${intializedProvider.constructor.name}!`, 'JoshOptionsError');
     }
-
-    this[_defineSetting]('provider', 'JoshProvider', false, options.provider);
-    this[_defineSetting]('name', 'String', false, name);
-    this[_defineSetting]('persistent', 'Boolean', false, true);
-    this[_defineSetting]('defer', 'Promise', false, this.provider.init(this));
+    
+    this.defer = new Promise(resolve => {
+      this.ready = resolve;
+    });
+    
+    this.provider = intializedProvider;
+    this.name = name;
+    
+    this.provider.init().then(() => {
+      this.ready();
+      this.isReady = true;
+    });
     // Initialize this property, to prepare for a possible destroy() call.
     // This is completely ignored in all situations except destroying Josh.
-    this[_defineSetting]('isDestroyed', 'Boolean', true, false);
-  }
-
-  /*
-   * Internal Method. Defines a property with either user-provided value, or the default value.
-   */
-  [_defineSetting](name, type, writable, defaultValue, value) {
-    if (_.isNil(value)) value = defaultValue;
-    if (value.constructor.name !== type) {
-      throw new Err(`Wrong value type provided for options.${name}:  Provided "${defaultValue.constructor.name}", expecting "${type}", in Josh "${this.name}".`);
-    }
-    Object.defineProperty(this, name, {
-      value: !_.isNil(value) ? value : defaultValue,
-      writable,
-      enumerable: false,
-      configurable: false
-    });
+    this.isDestroyed = false;
   }
 
   /*
    * Internal Method. Verifies that the database is ready, assuming persistence is used.
    */
-  [_readyCheck]() {
+  readyCheck () {
     if (!this.isReady) throw new Err('Database is not ready. Refer to the documentation to use josh.defer', 'JoshReadyError');
     if (this.isDestroyed) throw new Err('This Josh has been destroyed and can no longer be used without being re-initialized.', 'JoshDestroyedError');
   }
 
   async set(key, value) {
-    this[_readyCheck]();
-    key = this.provider.keyCheck(key);
-    return key;
+    this.readyCheck();
+    this.provider.keyCheck(key);
+    await this.provider.set(key, value);
+    return this;
   }
 
   async get(key) {
-    this[_readyCheck]();
-    key = this.provider.keyCheck(key);
+    this.readyCheck();
+    return this.provider.get(key);
   }
 
   async setIn(key, path, value) {
+    this.readyCheck();
     return true;
   }
-
-  [_init]() {
-    this.ready();
-    return this.defer;
+  
+  get keys() {
+    this.readyCheck();
+    return this.provider.keys();
+  }
+  
+  async delete(key = null) {
+    if(key == "::all::") {
+      this.provider.clear();
+    } else {
+      this.provider.delete(key);
+    }
   }
 
 }
 
 module.exports = Josh;
+module.exports.providers = {
+  mongo,
+  sqlite,
+};

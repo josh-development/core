@@ -1,12 +1,13 @@
 const {
   MongoClient
 } = require('mongodb');
+
+const _ = require('lodash');
+
 class JoshProvider {
 
   constructor(options) {
-    this.defer = new Promise(resolve => {
-      this.ready = resolve;
-    });
+
     if (!options.name) throw new Error('Must provide options.name');
     this.name = options.name;
     this.validateName();
@@ -27,14 +28,13 @@ class JoshProvider {
    * @param {Map} josh In order to set data to the josh, one must be provided.
    * @returns {Promise} Returns the defer promise to await the ready state.
    */
-  async init(josh) {
+  async init() {
     console.log('Initializing MongoDB');
-    this.josh = josh;
-    this.client = await MongoClient.connect(this.url);
+    this.client = await MongoClient.connect(this.url, { useNewUrlParser: true ,  useUnifiedTopology: true });
+    console.log(this.client);
     this.db = this.client.db(this.dbName).collection(this.name);
     console.log(this.db);
-    this.ready();
-    return this.defer;
+    return true;
   }
 
   get settings() {
@@ -71,28 +71,19 @@ class JoshProvider {
   }
 
   get(key) {
-    return this.db.get(key);
+    console.log(`Retrieving ${key}'s data`);
+    return this.db.findOne({
+      _id: key
+    });
   }
 
   keyArray() {
-    return this.db.activities.aggregate([{
-      $project: {
-        arrayofkeyvalue: {
-          $objectToArray: '$$ROOT'
-        }
-      }
-    },
-    {
-      $unwind: '$arrayofkeyvalue'
-    }, {
-      $group: {
-        _id: null,
-        allkeys: {
-          $addToSet: '$arrayofkeyvalue.k'
-        }
-      }
-    }
-    ]);
+    return new Promise( (resolve, reject) => {
+      this.db.find({}).toArray((err, docs) => {
+        if(err) reject(err);
+        resolve(docs);
+      });
+    });
   }
 
   delete(key) {
@@ -128,6 +119,10 @@ class JoshProvider {
   validateName() {
     // Do not delete this internal method.
     this.name = this.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+  }
+  
+  keyCheck(key) {
+    return !_.isNil(key) && key[0] !== '$';
   }
 
 }
