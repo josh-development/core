@@ -12,7 +12,7 @@ class Josh {
   constructor(options = {}) {
     const {
       provider,
-      name
+      name,
     } = options;
 
     this.version = pkgdata.version;
@@ -127,5 +127,5 @@ class Josh {
 module.exports = Josh;
 module.exports.providers = {
   mongo,
-  sqlite
+  sqlite,
 };
