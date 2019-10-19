@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
-const mongo = require('./providers/josh-mongo');
-const sqlite = require('./providers/josh-sqlite');
+const mongo = './providers/josh-mongo';
+const sqlite = './providers/josh-sqlite';
 
 // Custom error codes with stack support.
 const Err = require('./error.js');
@@ -13,11 +13,13 @@ class Josh {
 
   constructor(options = {}) {
     const {
-      provider: Provider,
+      provider,
       name
     } = options;
 
     this.version = pkgdata.version;
+
+    const Provider = require(provider);
 
     if (!Provider || !name) {
       throw new Err('Josh requires both a Name and Provider input ', 'JoshOptionsError');
@@ -73,10 +75,26 @@ class Josh {
     return this.provider.keys();
   }
 
+  get values() {
+    this.readyCheck();
+    return this.provider.values();
+  }
+
+  get size() {
+    this.readyCheck();
+    return this.provider.count();
+  }
+
+  async has(key) {
+    this.readyCheck();
+    return await this.provider.has(key);
+  }
+
   async ensure(key, defaultValue) {
     this.readyCheck();
-    if (!this.has(key)) {
-      this.set(key, defaultValue);
+    const hasKey = await this.has(key);
+    if (!hasKey) {
+      await this.set(key, defaultValue);
       return defaultValue;
     } else {
       return this.get(key);
@@ -84,11 +102,26 @@ class Josh {
   }
 
   async delete(key = null) {
+    this.readyCheck();
     if (key == '::all::') {
       this.provider.clear();
     } else {
       this.provider.delete(key);
     }
+  }
+
+  // ARRAY METHODS YAY
+
+  async push(key, value, allowDupes = true) {
+    this.readyCheck();
+    await this.provider.push(key, value, allowDupes);
+    return this;
+  }
+
+  async remove(key, value) {
+    this.readyCheck();
+    await this.provider.remove(key, value);
+    return this;
   }
 
 }

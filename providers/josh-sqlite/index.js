@@ -1,11 +1,27 @@
 const sqlite = require('sqlite');
 
 // Lodash should probably be a core lib but hey, it's useful!
-const _ = require('lodash');
+const {
+  get: _get,
+  set: _set,
+  has: _has,
+  delete: _delete,
+  isNil,
+  isFunction,
+  isArray,
+  isObject,
+  toPath,
+  merge,
+  clone,
+  cloneDeep,
+} = require('lodash');
 
 // Native imports
 const { resolve, sep } = require('path');
 const fs = require('fs');
+
+// Custom error codes with stack support.
+const Err = require('../../error.js');
 
 module.exports = class JoshProvider {
 
@@ -54,15 +70,21 @@ module.exports = class JoshProvider {
    * @return {Enmap|*} The Enmap, including the new fetched values, or the value in case the function argument is a single key.
    */
   get(keyOrKeys) {
-    if (_.isArray(keyOrKeys)) {
+    if (isArray(keyOrKeys)) {
       return this.db.prepare(`SELECT * FROM ${this.name} WHERE key IN (${'?, '.repeat(keyOrKeys.length).slice(0, -2)})`)
         .then(stmt => stmt.all(keyOrKeys))
         .then(res => res.map(row => [row.key, JSON.parse(row.value)]));
     } else {
       return this.db.prepare(`SELECT * FROM ${this.name} WHERE key = ?;`)
         .then(stmt => stmt.get(keyOrKeys))
-        .then(res => this.parseData(res.value));
+        .then(res => res ? this.parseData(res.value) : null);
     }
+  }
+
+  async has(key) {
+    const data = await (await this.db.prepare(`SELECT count(*) FROM '${this.name}' WHERE key = ?;`)).get(key);
+    console.log(`${data['count(*)']} for ${key}`);
+    return data['count(*)'] === 1;
   }
 
   /**
@@ -107,8 +129,38 @@ module.exports = class JoshProvider {
     return rows.map(row => row.key);
   }
 
+  async values() {
+    const rows = await (await this.db.prepare(`SELECT value FROM '${this.name}';`)).all();
+    return rows.map(row => this.parseData(row.value));
+  }
+
   async clear() {
     this.db.exec(`DELETE FROM ${this.name}`);
+  }
+
+  // ARRAY METHODS
+  async push(key, value, allowDupes) {
+    await this.check(key, 'Array');
+    const data = await this.get(key);
+    if (!allowDupes && data.indexOf(value) > -1) return;
+    data.push(value);
+    this.set(key, data);
+  }
+
+  async remove(key, value) {
+    await this.check(key, ['Array', 'Object']);
+    const data = await this.get(key);
+    console.log(data);
+    if (isArray(data)) {
+      const index = data.indexOf(value);
+      if (index > -1) {
+        data.splice(index, 1);
+      }
+    } else if (isObject(data)) {
+      delete data[value];
+    }
+    console.log(data);
+    this.set(key, data);
   }
 
   /**
@@ -119,7 +171,7 @@ module.exports = class JoshProvider {
   }
 
   keyCheck(key) {
-    if (_.isNil(key) || !['String', 'Number'].includes(key.constructor.name)) {
+    if (isNil(key) || !['String', 'Number'].includes(key.constructor.name)) {
       throw new Error('josh-sqlite require keys to be strings or numbers.');
     }
   }
@@ -136,5 +188,32 @@ module.exports = class JoshProvider {
   parseData(data) {
     return JSON.parse(data);
   }
+
+  /*
+   * INTERNAL method to verify the type of a key or property
+   * Will THROW AN ERROR on wrong type, to simplify code.
+   * @param {string|number} key Required. The key of the element to check
+   * @param {string} type Required. The javascript constructor to check
+   * @param {string} path Optional. The dotProp path to the property in JOSH.
+   */
+  async check(key, type, path = null) {
+    if (!await this.has(key)) throw new Err(`The key "${key}" does not exist in JOSH "${this.name}"`, 'JoshPathError');
+    if (!type) return;
+    if (!isArray(type)) type = [type];
+    if (!isNil(path)) {
+      await this.check(key, 'Object');
+      const data = await this.get(key);
+      if (isNil(_get(data, path))) {
+        throw new Err(`The property "${path}" in key "${key}" does not exist. Please set() it or ensure() it."`, 'JoshPathError');
+      }
+      if (!type.includes(_get(data, path).constructor.name)) {
+        throw new Err(`The property "${path}" in key "${key}" is not of type "${type.join('" or "')}" in JOSH "${this.name}" 
+(key was of type "${_get(data, path).constructor.name}")`, 'JoshTypeError');
+      }
+    } else if (!type.includes((await this.get(key)).constructor.name)) {
+      throw new Err(`The key "${key}" is not of type "${type.join('" or "')}" in JOSH "${this.name}" (key was of type "${this.get(key).constructor.name}")`, 'JoshTypeError');
+    }
+  }
+
 
 };

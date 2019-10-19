@@ -29,5 +29,8 @@
     "eslint-plugin-standard": "^4.0.0",
     "jest": "^24.1.0",
     "mongo-mock": "^3.7.1"
+  },
+  "peerDependencies": {
+    "sqlite": "^3.0.3"
   }
 }
