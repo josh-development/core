@@ -3,17 +3,17 @@ const sqlite = require('sqlite');
 // Lodash should probably be a core lib but hey, it's useful!
 const {
   get: _get,
-  set: _set,
-  has: _has,
-  delete: _delete,
+  // set: _set,
+  // has: _has,
+  // delete: _delete,
   isNil,
-  isFunction,
+  // isFunction,
   isArray,
   isObject,
-  toPath,
-  merge,
-  clone,
-  cloneDeep,
+  // toPath,
+  // merge,
+  // clone,
+  // cloneDeep,
 } = require('lodash');
 
 // Native imports

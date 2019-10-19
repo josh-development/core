@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 const mongo = './providers/josh-mongo';
 const sqlite = './providers/josh-sqlite';
 
