@@ -17,7 +17,8 @@
   },
   "homepage": "https://github.com/eslachance/josh#readme",
   "dependencies": {
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.15",
+    "sqlite": "^3.0.3"
   },
   "devDependencies": {
     "eslint": "^5.14.1",

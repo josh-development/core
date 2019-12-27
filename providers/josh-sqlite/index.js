@@ -120,6 +120,16 @@ module.exports = class JoshProvider {
     return data['count(*)'];
   }
 
+  async random(count = 1) {
+    const data = await (await this.db.prepare(`SELECT * FROM '${this.name}' WHERE rowid IN(SELECT rowid FROM '${this.name}' ORDER BY RANDOM() LIMIT ${count});`)).all();
+    return count > 1 ? data : data[0];
+  }
+
+  async randomKey(count = 1) {
+    const data = await (await this.db.prepare(`SELECT key FROM '${this.name}' WHERE rowid IN(SELECT rowid FROM '${this.name}' ORDER BY RANDOM() LIMIT ${count});`)).all();
+    return count > 1 ? data.map(row => row.key) : data[0].key;
+  }
+
   /**
    * Retrieves all the indexes (keys) in the database for this enmap, even if they aren't fetched.
    * @return {array<string>} Array of all indexes (keys) in the enmap, cached or not.

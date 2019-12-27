@@ -1,6 +1,10 @@
 const mongo = './providers/josh-mongo';
 const sqlite = './providers/josh-sqlite';
 
+const {
+  merge,
+} = require('lodash');
+
 // Custom error codes with stack support.
 const Err = require('./error.js');
 
@@ -63,6 +67,16 @@ class Josh {
     return this.provider.get(key);
   }
 
+  async update(key, input) {
+    const previousValue = await this.get(key);
+    let mergeValue = input;
+    if (typeof input === 'function') {
+      mergeValue = input(previousValue);
+    }
+    this.set(key, merge(previousValue, mergeValue));
+    return this;
+  }
+
   /* async setIn(key, path, value) {
     this.readyCheck();
     return true;
@@ -97,6 +111,16 @@ class Josh {
     } else {
       return this.get(key);
     }
+  }
+
+  async random(count) {
+    this.readyCheck();
+    return this.provider.random(count);
+  }
+
+  async randomKey(count) {
+    this.readyCheck();
+    return this.provider.randomKey(count);
   }
 
   async delete(key = null) {
