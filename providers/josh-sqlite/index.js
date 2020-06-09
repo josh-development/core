@@ -66,19 +66,25 @@ module.exports = class JoshProvider {
 
   /**
    * Force fetch one or more key values from the database. If the database has changed, that new value is used.
-   * @param {string|number|Array<string|number>} keyOrKeys A single key or array of keys to force fetch from the database.
+   * @param {string|number} key A single key or array of keys to force fetch from the database.
+   * @param {string} path The path to a value within an object or array value.
    * @return {Enmap|*} The Enmap, including the new fetched values, or the value in case the function argument is a single key.
    */
-  get(keyOrKeys) {
-    if (isArray(keyOrKeys)) {
-      return this.db.prepare(`SELECT * FROM ${this.name} WHERE key IN (${'?, '.repeat(keyOrKeys.length).slice(0, -2)})`)
-        .then(stmt => stmt.all(keyOrKeys))
-        .then(res => res.map(row => [row.key, JSON.parse(row.value)]));
-    } else {
-      return this.db.prepare(`SELECT * FROM ${this.name} WHERE key = ?;`)
-        .then(stmt => stmt.get(keyOrKeys))
-        .then(res => res ? this.parseData(res.value) : null);
-    }
+  get(key, path) {
+    return this.db.prepare(`SELECT * FROM ${this.name} WHERE key = ?;`)
+      .then(stmt => stmt.get(key))
+      .then(res => {
+        const data = res && this.parseData(res.value);
+        if (!data) return null;
+        if (path) return _get(data, path);
+        return data;
+      });
+  }
+
+  getMany(keys) {
+    return this.db.prepare(`SELECT * FROM ${this.name} WHERE key IN (${'?, '.repeat(keys.length).slice(0, -2)})`)
+      .then(stmt => stmt.all(keys))
+      .then(res => res.map(row => [row.key, JSON.parse(row.value)]));
   }
 
   async has(key) {
@@ -160,7 +166,6 @@ module.exports = class JoshProvider {
   async remove(key, value) {
     await this.check(key, ['Array', 'Object']);
     const data = await this.get(key);
-    console.log(data);
     if (isArray(data)) {
       const index = data.indexOf(value);
       if (index > -1) {
@@ -169,8 +174,17 @@ module.exports = class JoshProvider {
     } else if (isObject(data)) {
       delete data[value];
     }
-    console.log(data);
     this.set(key, data);
+  }
+
+  async inc(key) {
+    await this.check(key, ['Number']);
+    this.set(key, await this.get(key) + 1);
+  }
+
+  async dec(key) {
+    await this.check(key, ['Number']);
+    this.set(key, await this.get(key) - 1);
   }
 
   /**
@@ -196,7 +210,12 @@ module.exports = class JoshProvider {
   }
 
   parseData(data) {
-    return JSON.parse(data);
+    try {
+      return JSON.parse(data);
+    } catch (err) {
+      console.log('Error parsing data : ', err);
+      return null;
+    }
   }
 
   /*

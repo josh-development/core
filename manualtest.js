@@ -5,10 +5,12 @@ const Josh = require('./');
 const JoshSQlite = Josh.providers.sqlite;
 
 const clean = async (text) => {
-  if (text && text.constructor.name == 'Promise')
+  if (text && text.constructor.name == 'Promise') {
     text = await text;
-  if (typeof evaled !== 'string')
+  }
+  if (typeof evaled !== 'string') {
     text = require('util').inspect(text, { depth: 1 });
+  }
   return text;
 };
 
@@ -23,21 +25,22 @@ const evalCode = async (code) => {
 
 const rl = readline.createInterface({
   input: process.stdin,
-  output: process.stdout
+  output: process.stdout,
 });
 
 const db = new Josh({
   name: 'testing',
-  provider: JoshSQlite
+  provider: JoshSQlite,
 });
 
 rl.on('line', async (input) => {
+  await db.defer();
   console.log(`PROCESSING INPUT: ${input}`);
   const result = await evalCode(input);
   console.log(result);
 });
 
-/* 
+/*
 OBSERVERS
 // OLD
 const value = db.get("myKey");
@@ -45,6 +48,6 @@ value.thing = "blah";
 db.set('myKey', value);
 
 // NEW
-const value = db.get('myKey');
+const value = db.getObservable('myKey');
 value.thing = "blah";
 */
