@@ -44,7 +44,7 @@ const db = new Josh({
   provider: JoshSQlite,
 });
 
-db.defer.then( () => {
-  console.log(`Connected, there are ${db.count} rows in the database.`);
+db.defer.then( async () => {
+  console.log(`Connected, there are ${await db.size} rows in the database.`);
 });
 ```
