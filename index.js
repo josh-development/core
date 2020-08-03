@@ -1,5 +1,7 @@
 const mongo = './providers/josh-mongo';
 const sqlite = './providers/josh-sqlite';
+// const postgre = './providers/josh-postgre';
+// const http = './providers/josh-http';
 
 const {
   merge,
@@ -21,7 +23,9 @@ class Josh {
 
     // Just grab the version from package.json
     this.version = pkgdata.version;
-
+    if (["@josh-providers/mongo", "@josh-providers/postgre", "@josh-providers/http"].includes(provider)) {
+      throw new Err(`The provider "${provider}" currently is not implemented in Josh yet, but will be implemented during release.`, 'ProviderNotImplemented')
+    }
     // Require the provider given by the user
     const Provider = require(provider);
 
@@ -31,7 +35,10 @@ class Josh {
     }
 
     // Verify if the provider given is an object, and is a valid provider for Josh...
-    const intializedProvider = new Provider({ name, ...options.options });
+    const intializedProvider = new Provider({
+      name,
+      ...options.options
+    });
     if (intializedProvider.constructor.name != 'JoshProvider') {
       throw new Err(`Sorry boss, that doesn't seem to be a valid Provider in your options, there. This was just a ${intializedProvider.constructor.name}!`, 'JoshOptionsError');
     }
@@ -196,4 +203,6 @@ module.exports = Josh;
 module.exports.providers = {
   mongo,
   sqlite,
+// http,
+// postgre,
 };
