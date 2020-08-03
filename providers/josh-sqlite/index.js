@@ -236,6 +236,7 @@ module.exports = class JoshProvider {
    * @param {string} type Required. The javascript constructor to check
    * @param {string} path Optional. The dotProp path to the property in JOSH.
    */
+  // Herefore I indicate that I do understand part of this would be easily resolved with TypeScript but I don't do TS... yet.
   async check(key, type, path = null) {
     if (!await this.has(key)) throw new Err(`The key "${key}" does not exist in JOSH "${this.name}"`, 'JoshPathError');
     if (!type) return;

@@ -1,5 +1,5 @@
 {
-  "name": "josh-sqlite",
+  "name": "@josh-providers/sqlite",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,8 +7,16 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eslachance/josh.git"
+  },
+  "author": "Evelyne Lachance <eslachance@gmail.com> (https://evie.codes/)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/eslachance/josh/issues"
+  },
+  "homepage": "https://josh.evie.dev/",
   "dependencies": {
     "lodash": "^4.17.15",
     "better-sqlite3": "^7.1.0"
