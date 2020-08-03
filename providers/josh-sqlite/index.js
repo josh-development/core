@@ -21,7 +21,7 @@ const { resolve, sep } = require('path');
 const fs = require('fs');
 
 // Custom error codes with stack support.
-const Err = require('../../error.js');
+const Err = require('./error.js');
 
 module.exports = class JoshProvider {
 
