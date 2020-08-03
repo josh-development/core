@@ -34,20 +34,8 @@ const db = new Josh({
 });
 
 rl.on('line', async (input) => {
-  await db.defer();
+  await db.defer;
   console.log(`PROCESSING INPUT: ${input}`);
   const result = await evalCode(input);
   console.log(result);
 });
-
-/*
-OBSERVERS
-// OLD
-const value = db.get("myKey");
-value.thing = "blah";
-db.set('myKey', value);
-
-// NEW
-const value = db.getObservable('myKey');
-value.thing = "blah";
-*/

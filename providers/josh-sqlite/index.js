@@ -1,16 +1,16 @@
-const sqlite = require('sqlite');
+const Database = require('better-sqlite3');
 
 // Lodash should probably be a core lib but hey, it's useful!
 const {
   get: _get,
-  // set: _set,
+  set: _set,
   // has: _has,
   // delete: _delete,
   isNil,
   // isFunction,
   isArray,
   isObject,
-  // toPath,
+  toPath,
   // merge,
   // clone,
   // cloneDeep,
@@ -28,12 +28,6 @@ module.exports = class JoshProvider {
   constructor(options) {
     if (!options.name) throw new Error('Must provide options.name');
 
-    // C'mon eslint, you should understand scopes.
-    // eslint-disable-next-line
-    this.defer = new Promise((resolve) => {
-      this.ready = resolve;
-    });
-
     this.dataDir = resolve(process.cwd(), options.dataDir || 'data');
 
     if (!options.dataDir) {
@@ -44,41 +38,35 @@ module.exports = class JoshProvider {
 
     this.name = options.name;
     this.validateName();
-    this.dbName = options.dbName || 'defaultenmap';
+    this.db = new Database(`${this.dataDir}${sep}josh.sqlite`);
   }
 
   /**
-   * Internal method called on persistent Enmaps to load data from the underlying database.
-   * @param {Map} enmap In order to set data to the Enmap, one must be provided.
+   * Internal method called on persistent Josh to load data from the underlying database.
+   * @param {Map} Josh In order to set data to the Josh, one must be provided.
    * @returns {Promise} Returns the defer promise to await the ready state.
    */
   async init() {
-    this.db = await sqlite.open(`${this.dataDir}${sep}josh.sqlite`);
-    const table = await this.db.get(`SELECT count(*) FROM sqlite_master WHERE type='table' AND name = '${this.name}';`);
+    const table = this.db.prepare("SELECT count(*) FROM sqlite_master WHERE type='table' AND name = ?;").get(this.name);
     if (!table['count(*)']) {
-      await this.db.run(`CREATE TABLE ${this.name} (key text PRIMARY KEY, value text)`);
-      await this.db.run('PRAGMA synchronous = 1;');
-      await this.db.run('PRAGMA journal_mode = wal;');
+      this.db.prepare(`CREATE TABLE ${this.name} (key text PRIMARY KEY, value text)`).run();
+      this.db.pragma('synchronous = 1');
+      if (this.wal) this.db.pragma('journal_mode = wal');
     }
-    this.ready();
-    return this.defer;
   }
 
   /**
    * Force fetch one or more key values from the database. If the database has changed, that new value is used.
    * @param {string|number} key A single key or array of keys to force fetch from the database.
    * @param {string} path The path to a value within an object or array value.
-   * @return {Enmap|*} The Enmap, including the new fetched values, or the value in case the function argument is a single key.
+   * @return {Josh|*} The Josh, including the new fetched values, or the value in case the function argument is a single key.
    */
   get(key, path) {
-    return this.db.prepare(`SELECT * FROM ${this.name} WHERE key = ?;`)
-      .then(stmt => stmt.get(key))
-      .then(res => {
-        const data = res && this.parseData(res.value);
-        if (!data) return null;
-        if (path) return _get(data, path);
-        return data;
-      });
+    const row = this.db.prepare(`SELECT * FROM ${this.name} WHERE key = ?;`).get(key);
+    const data = isNil(row) ? null : this.parseData(row.value);
+    if (!data) return null;
+    if (path) return _get(data, path);
+    return data;
   }
 
   getMany(keys) {
@@ -94,31 +82,54 @@ module.exports = class JoshProvider {
   }
 
   /**
-   * Set a value to the Enmap.
-   * @param {(string|number)} key Required. The key of the element to add to the EnMap object.
-   * If the EnMap is persistent this value MUST be a string or number.
-   * @param {*} val Required. The value of the element to add to the EnMap object.
-   * If the EnMap is persistent this value MUST be stringifiable as JSON.
+   * Set a value to the Josh.
+   * @param {(string|number)} key Required. The key of the element to add to the Josh object.
+   * If the Josh is persistent this value MUST be a string or number.
+   * @param {*} val Required. The value of the element to add to the Josh object.
+   * If the Josh is persistent this value MUST be stringifiable as JSON.
    */
-  async set(key, val) {
+  async set(key, path, val) {
     if (!key || !['String', 'Number'].includes(key.constructor.name)) {
       throw new Error('SQLite require keys to be strings or numbers.');
     }
-    await this.db.run(`INSERT OR REPLACE INTO ${this.name} (key, value) VALUES (?, ?);`, [key.toString(), JSON.stringify(val)]);
+    key = key.toString();
+    let data = this.get(key);
+    if (!isNil(path)) {
+      if (isNil(data)) data = {};
+      _set(data, path, val);
+    } else {
+      data = val;
+    }
+    this.db.prepare(`INSERT OR REPLACE INTO ${this.name} (key, value) VALUES (?, ?);`).run(key, JSON.stringify(data));
     return this;
   }
 
   /**
-   * Delete an entry from the Enmap.
-   * @param {(string|number)} key Required. The key of the element to delete from the EnMap object.
+   * Delete an entry from the Josh.
+   * @param {(string|number)} key Required. The key of the element to delete from the Josh object.
    * @param {boolean} bulk Internal property used by the purge method.
    */
-  async delete(key) {
-    await this.db.run(`DELETE FROM ${this.name} WHERE key = ?`, [key]);
+
+  async delete(key, path) {
+    if (!isNil(path)) {
+      const data = this.get(key);
+      path = toPath(path);
+      const last = path.pop();
+      const propValue = path.length ? _get(data, path) : data;
+      if (isArray(propValue)) {
+        propValue.splice(last, 1);
+      } else {
+        delete propValue[last];
+      }
+      console.log(key, path.join('.'), propValue);
+      this.set(key, path.length ? path.join('.') : null, propValue);
+    } else {
+      await this.db.prepare(`DELETE FROM ${this.name} WHERE key = ?`).run(key);
+    }
   }
 
   /**
-   * Retrieves the number of rows in the database for this enmap, even if they aren't fetched.
+   * Retrieves the number of rows in the database for this Josh, even if they aren't fetched.
    * @return {integer} The number of rows in the database.
    */
   async count() {
@@ -137,8 +148,8 @@ module.exports = class JoshProvider {
   }
 
   /**
-   * Retrieves all the indexes (keys) in the database for this enmap, even if they aren't fetched.
-   * @return {array<string>} Array of all indexes (keys) in the enmap, cached or not.
+   * Retrieves all the indexes (keys) in the database for this Josh, even if they aren't fetched.
+   * @return {array<string>} Array of all indexes (keys) in the Josh, cached or not.
    */
   async keys() {
     const rows = await (await this.db.prepare(`SELECT key FROM '${this.name}';`)).all();
@@ -188,7 +199,7 @@ module.exports = class JoshProvider {
   }
 
   /**
-   * Shuts down the underlying persistent enmap database.
+   * Shuts down the underlying persistent Josh database.
    */
   close() {
     this.db.close();
@@ -201,7 +212,7 @@ module.exports = class JoshProvider {
   }
 
   /**
-   * Internal method used to validate persistent enmap names (valid Windows filenames)
+   * Internal method used to validate persistent Josh names (valid Windows filenames)
    * @private
    */
   validateName() {

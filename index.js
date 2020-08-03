@@ -45,6 +45,8 @@ class Josh {
     this.provider = intializedProvider;
     this.name = name;
 
+    this.all = Symbol('_all');
+
     this.serializers = new Map();
     this.deserializers = new Map();
 
@@ -152,12 +154,13 @@ class Josh {
     return this.provider.randomKey(count);
   }
 
-  async delete(key = null) {
+  async delete(keyOrPath = null) {
     this.readyCheck();
-    if (key == '::all::') {
+    if (keyOrPath == this.all) {
       this.provider.clear();
     } else {
-      this.provider.delete(key);
+      const [key, path] = keyOrPath.split('.');
+      this.provider.delete(key, path);
     }
   }
 
