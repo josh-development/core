@@ -1,6 +1,3 @@
-const mongo = './providers/josh-mongo';
-const sqlite = './providers/josh-sqlite';
-
 const {
   merge,
 } = require('lodash');
@@ -86,8 +83,8 @@ class Josh {
     this.readyCheck();
     const [key, path] = keyOrPath.split('.');
     this.provider.keyCheck(key);
-    if (this.serializers.has(keyOrPath)) {
-      value = this.serialisers.get(keyOrPath)(value);
+    if (this.serializers.has(key)) {
+      value = this.serialisers.get(key)(value);
     }
     await this.provider.set(key, path, value);
     return this;
@@ -96,10 +93,16 @@ class Josh {
   async get(keyOrPath) {
     this.readyCheck();
     const [key, path] = keyOrPath.split('.');
-    let value = this.provider.get(key, path);
-    if (this.deserializers.has(keyOrPath)) {
-      value = this.deserializers.get(keyOrPath)(value);
+    if (keyOrPath == this.all) {
+      const allValues = await this.provider.getAll();
+      // TODO : Add serializer support
+      return allValues;
     }
+    let value = await this.provider.get(key, path);
+    // TODO : Add serializer support
+    // if (this.deserializers.has(key)) {
+    //   value = this.deserializers.get(key)(value);
+    // }
     return value;
   }
 
@@ -193,7 +196,3 @@ class Josh {
 }
 
 module.exports = Josh;
-module.exports.providers = {
-  mongo,
-  sqlite,
-};
