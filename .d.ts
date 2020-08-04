@@ -1,30 +1,6 @@
-export = {
-    Josh,
-    providers,
-}
-declare enum providers {
-    /**
-     * @todo Implement a mongoDB provider.
-     * @summary The mongoDB provider, currently not implemented in versions 0.0.5 and below.
-     */
-    mongo = "@josh-providers/mongo",
-        /**
-         * @summary The sqlite provider, currently the only provider.
-         */
-        sqlite = "@josh-providers/sqlite",
-        /**
-         * @todo Implement a postgre provider.
-         * @summary The mongoDB provider, currently not implemented in versions 0.0.5 and below.
-         */
-        postgre = "@josh-providers/postgre",
-        /**
-         * @todo Implement a http provider.
-         * @summary The mongoDB provider, currently not implemented in versions 0.0.5 and below.
-         */
-        http = "@josh-providers/http",
-}
+export = Josh;
 declare interface joshOptions {
-    provider: string | providers;
+    provider: string;
     name: string;
 }
 declare class Josh {
@@ -35,7 +11,8 @@ declare class Josh {
      * @example
      */
     constructor(options: {
-        provider: string | providers;name: string
+        provider: string,
+        name: string,
     });
 
     dec(...args: any[]): void;

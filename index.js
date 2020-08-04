@@ -11,9 +11,6 @@ const {
 // Custom error codes with stack support.
 const Err = require('./error.js');
 
-// eslint-disable-next-line no-unused-vars
-const { providers, josh } = require('./');
-
 // Package.json
 const pkgdata = require('./package.json');
 
@@ -23,12 +20,12 @@ class Josh {
    * Initalize a new Josh.
    * @constructor
    * @param {Object} options The options to initialize Josh with.
-   * @param {string | providers} options.provider The provider to use with Josh, either use a custom or an official provider.
+   * @param {string} options.provider The provider to use with Josh, either use a custom or an official provider.
    * @param {string} options.name The name of the Josh.
    * @example
    * const Users = new Josh({
    *    name: "Users",
-   *    provider: Josh.providers.sqlite
+   *    provider: "@josh-providers/sqlite"
    * });
    * Users.defer.then(() => {
    *    users.set("CyaCal", "AnAmazingPerson"); // Set "CyaCal" to "AnAmazingPerson"
