@@ -85,6 +85,7 @@ module.exports = class JoshProvider {
    * Set a value to the Josh.
    * @param {(string|number)} key Required. The key of the element to add to the Josh object.
    * If the Josh is persistent this value MUST be a string or number.
+   * @param {any} path ?
    * @param {*} val Required. The value of the element to add to the Josh object.
    * If the Josh is persistent this value MUST be stringifiable as JSON.
    */

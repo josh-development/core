@@ -1,5 +1,5 @@
 const {
-  MongoClient
+  MongoClient,
 } = require('mongodb');
 
 const _ = require('lodash');
@@ -7,7 +7,6 @@ const _ = require('lodash');
 class JoshProvider {
 
   constructor(options) {
-
     if (!options.name) throw new Error('Must provide options.name');
     this.name = options.name;
     this.validateName();
@@ -30,7 +29,7 @@ class JoshProvider {
    */
   async init() {
     console.log('Initializing MongoDB');
-    this.client = await MongoClient.connect(this.url, { useNewUrlParser: true ,  useUnifiedTopology: true });
+    this.client = await MongoClient.connect(this.url, { useNewUrlParser: true, useUnifiedTopology: true });
     console.log(this.client);
     this.db = this.client.db(this.dbName).collection(this.name);
     console.log(this.db);
@@ -39,7 +38,7 @@ class JoshProvider {
 
   get settings() {
     return {
-      name: this.dbName
+      name: this.dbName,
     };
   }
 
@@ -61,26 +60,26 @@ class JoshProvider {
       throw new Error('Keys should be strings or numbers.');
     }
     this.db.update({
-      _id: key
+      _id: key,
     }, {
       _id: key,
-      value: val
+      value: val,
     }, {
-      upsert: true
+      upsert: true,
     });
   }
 
   get(key) {
     console.log(`Retrieving ${key}'s data`);
     return this.db.findOne({
-      _id: key
+      _id: key,
     });
   }
 
   keyArray() {
-    return new Promise( (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.db.find({}).toArray((err, docs) => {
-        if(err) reject(err);
+        if (err) reject(err);
         resolve(docs);
       });
     });
@@ -88,9 +87,9 @@ class JoshProvider {
 
   delete(key) {
     return this.db.remove({
-      _id: key
+      _id: key,
     }, {
-      single: true
+      single: true,
     });
   }
 
@@ -100,7 +99,7 @@ class JoshProvider {
 
   hasAsync(key) {
     return this.db.find({
-      _id: key
+      _id: key,
     }).limit(1);
   }
 
@@ -120,7 +119,7 @@ class JoshProvider {
     // Do not delete this internal method.
     this.name = this.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
   }
-  
+
   keyCheck(key) {
     return !_.isNil(key) && key[0] !== '$';
   }

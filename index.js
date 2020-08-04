@@ -12,7 +12,7 @@ const {
 const Err = require('./error.js');
 
 // eslint-disable-next-line no-unused-vars
-const { providers, joshOptions } = require('./');
+const { providers, josh } = require('./');
 
 // Package.json
 const pkgdata = require('./package.json');
@@ -21,11 +21,19 @@ class Josh {
 
   /**
    * Initalize a new Josh.
-   * @param {joshOptions} options The options to initialize Josh with.
-   * @param {string | providers} options.provider The provider to use with Josh.
-   * @param {string} options.name The name of the Josh.
    * @constructor
+   * @param {Object} options The options to initialize Josh with.
+   * @param {string | providers} options.provider The provider to use with Josh, either use a custom or an official provider.
+   * @param {string} options.name The name of the Josh.
    * @example
+   * const Users = new Josh({
+   *    name: "Users",
+   *    provider: Josh.providers.sqlite
+   * });
+   * Users.defer.then(() => {
+   *    users.set("CyaCal", "AnAmazingPerson"); // Set "CyaCal" to "AnAmazingPerson"
+   *    users.get("CyaCal"); // Returns "AnAmazingPerson"
+   * })
    */
   constructor(options = {}) {
     const {
@@ -93,8 +101,8 @@ class Josh {
     this.isDestroyed = false;
   }
 
-  /*
-   * Internal Method. Verifies that the database is ready, assuming persistence is used.
+  /**
+   * @summary Internal Method. Verifies that the database is ready, assuming persistence is used.
    */
   readyCheck() {
     if (!this.isReady) throw new Err('Database is not ready. Refer to the documentation to use josh.defer', 'JoshReadyError');
@@ -111,7 +119,18 @@ class Josh {
     await this.provider.set(key, path, value);
     return this;
   }
-
+  /**
+     * @param {string} keyOrPath The key or path to get. Returns undefined if the key does not exist.
+     * @see "Enmap Basics" - https://enmap.evie.dev/api#enmap-get-key-path
+     * @returns {any} Value
+     * @example
+     * // Wait until database is loaded then query.
+     * db.defer.then( () => {
+     *      db.set("FavouriteFruit", "Apple");
+     *      db.get("FavouriteFruit") // Returns "Apple"
+     *      db.get("WorstFruit") // Returns undefined because it doesn't exist.
+     * })
+     */
   async get(keyOrPath) {
     this.readyCheck();
     const [key, path] = keyOrPath.split('.');
@@ -121,7 +140,19 @@ class Josh {
     }
     return value;
   }
-
+  /**
+     * @param {string} key The name of the key/path to merge.
+     * @param {Object} input The object to merge.
+     * @see "Josh Basics" - TODO: ADD URL TO UPDATE API METHOD
+     * @example
+     * // Wait until database is loaded then query.
+     * db.defer.then( () => {
+     *      db.set("FavouriteFruit", {fruit: "Apple"}); // Set "FavouriteFruit" to "Apple"
+     *      db.get("FavouriteFruit") // Returns {fruit: "Apple"}
+     *      db.update("FavouriteFruit", {mouldy: true}) // Update "FavouriteFruit" to {fruit: "Apple", mouldy: true}
+     *      db.get("FavouriteFruit") // Returns {fruit: "Apple", mouldy: true}
+     * })
+     */
   async update(key, input) {
     const previousValue = await this.get(key);
     let mergeValue = input;
@@ -131,17 +162,26 @@ class Josh {
     this.set(key, merge(previousValue, mergeValue));
     return this;
   }
-
+  /**
+   * @summary Get all the keys as an array.
+   * @returns {Array<string>}
+   */
   get keys() {
     this.readyCheck();
     return this.provider.keys();
   }
-
+  /**
+   * @summary Get all the values as an array.
+   * @returns {Array<any>}
+   */
   get values() {
     this.readyCheck();
     return this.provider.values();
   }
-
+  /**
+   * @summary Get the size of the Josh
+   * @returns {number}
+   */
   get size() {
     this.readyCheck();
     return this.provider.count();
@@ -162,17 +202,35 @@ class Josh {
       return this.get(key);
     }
   }
-
-  async random(count) {
+  /**
+   * @param {number} count The amount of random values you want.
+   * @default count = 1
+   * @returns {Array<any>}
+   */
+  async random(count = 1) {
     this.readyCheck();
     return this.provider.random(count);
   }
-
-  async randomKey(count) {
+  /**
+   * @param {number} count The amount of random keys you want.
+   * @default count = 1
+   * @returns {Array<string>}
+   */
+  async randomKey(count = 1) {
     this.readyCheck();
     return this.provider.randomKey(count);
   }
-
+  /**
+    * @param {string} keyOrPath The key/path to delete.
+    * @see "Enmap Basics" - https://enmap.evie.dev/api#enmap-delete-key-path-enmap
+    * @example
+    * // Wait until database is loaded then query.
+    * db.defer.then( () => {
+    *      db.set("FavouriteFruit", "Apple");
+    *      db.delete("FavouriteFruit"); // Deletes "FavouriteFruit" from the database
+    *      db.delete(db.all) // Deletes the entire database.
+    * })
+    */
   async delete(keyOrPath = null) {
     this.readyCheck();
     if (keyOrPath == this.all) {

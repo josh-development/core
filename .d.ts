@@ -1,44 +1,47 @@
-export = josh;
-export = providers;
-export = joshOptions;
-
+export = {
+    Josh,
+    providers,
+}
 declare enum providers {
     /**
      * @todo Implement a mongoDB provider.
      * @summary The mongoDB provider, currently not implemented in versions 0.0.5 and below.
      */
     mongo = "@josh-providers/mongo",
-    /**
-     * @summary The sqlite provider, currently the only provider.
-     */
-    sqlite = "@josh-providers/sqlite",
-    /**
-     * @todo Implement a postgre provider.
-     * @summary The mongoDB provider, currently not implemented in versions 0.0.5 and below.
-     */
-    postgre = "@josh-providers/postgre",
-    /**
-     * @todo Implement a http provider.
-     * @summary The mongoDB provider, currently not implemented in versions 0.0.5 and below.
-     */
-    http = "@josh-providers/http",
+        /**
+         * @summary The sqlite provider, currently the only provider.
+         */
+        sqlite = "@josh-providers/sqlite",
+        /**
+         * @todo Implement a postgre provider.
+         * @summary The mongoDB provider, currently not implemented in versions 0.0.5 and below.
+         */
+        postgre = "@josh-providers/postgre",
+        /**
+         * @todo Implement a http provider.
+         * @summary The mongoDB provider, currently not implemented in versions 0.0.5 and below.
+         */
+        http = "@josh-providers/http",
 }
 declare interface joshOptions {
     provider: string | providers;
     name: string;
 }
-declare class josh {
+declare class Josh {
     /**
      * Initalize a new Josh.
-     * @param {joshOptions} options The options to initialize Josh with.
+     * @param options.provider The provider to use with Josh.
+     * @param options.name The name of the Josh.
      * @example
      */
-    constructor(options: joshOptions);
+    constructor(options: {
+        provider: string | providers;name: string
+    });
 
     dec(...args: any[]): void;
     /**
      * 
-     * @param key The key to delete.
+     * @param keyOrPath The key/path to delete.
      * @see "Enmap Basics" - https://enmap.evie.dev/api#enmap-delete-key-path-enmap
      * @example 
      * // Wait until database is loaded then query.
@@ -48,13 +51,13 @@ declare class josh {
      *      db.delete(db.all) // Deletes the entire database.
      * })
      */
-    delete(key: string): void;
+    delete(keyOrPath: string): void;
 
     ensure(...args: any[]): void;
 
     /**
      * 
-     * @param key The key to get. Returns undefined if the key does not exist.
+     * @param keyOrPath The key/path to get. Returns undefined if the key does not exist.
      * @see "Enmap Basics" - https://enmap.evie.dev/api#enmap-get-key-path
      * @returns {any} Value
      * @example 
@@ -65,10 +68,10 @@ declare class josh {
      *      db.get("WorstFruit") // Returns undefined because it doesn't exist.
      * })
      */
-    get(key: string): any;
+    get(keyOrPath: string): any;
     /**
      * 
-     * @param key The key to check. Returns false if the key does not exist and true if it does.
+     * @param keyOrPath The key to check. Returns false if the key does not exist and true if it does.
      * @see "Enmap Basics" - https://enmap.evie.dev/api#enmap-has-key-path-boolean
      * @returns {Boolean} True/False
      * @example 
@@ -79,22 +82,30 @@ declare class josh {
      *      db.get("WorstFruit") // Returns false because it doesn't exist
      * })
      */
-    has(key: string): void;
+    has(keyOrPath: string): void;
 
     inc(...args: any[]): void;
 
     push(...args: any[]): void;
-
-    random(...args: any[]): void;
-
+    /**
+     * @param {number} count The amount of random values you want.
+     * @default count = 1
+     * @returns {Array<any>} An array of values.
+     */
+    random(count ? : number = 1): void;
+    /**
+     * @param {number} count The amount of random keys you want.
+     * @default count = 1
+     * @returns {Array<string>} An array of keys.
+     */
     randomKey(...args: any[]): void;
 
     readyCheck(...args: any[]): void;
 
-    remove(key: string): void;
+    remove(keyOrPath: string): void;
     /**
      * 
-     * @param key The name of the key.
+     * @param keyOrPath The name of the key/path.
      * @param value The value to set.
      * @see "Enmap Basics" - https://enmap.evie.dev/api#enmap-set-key-val-path-enmap
      * @example 
@@ -106,11 +117,11 @@ declare class josh {
      *      db.get("FavouriteFruit") // Get "FavouriteFruit," returns "Apple"
      * })
      */
-    set(key: string, value: any): void;
+    set(keyOrPath: string, value: any): void;
     /**
      * 
-     * @param key The name of the key to merge.
-     * @param value The object to merge.
+     * @param {string} key The name of the key/path to merge.
+     * @param {object} input The object to merge.
      * @see "Josh Basics" - TODO: ADD URL TO UPDATE API METHOD
      * @example 
      * // Wait until database is loaded then query.
@@ -121,7 +132,7 @@ declare class josh {
      *      db.get("FavouriteFruit") // Returns {fruit: "Apple", mouldy: true}
      * })
      */
-    update(key: string, value: any): void;
+    update(key: string, input: object): void;
 
     static providers: {
         mongo: providers.mongo;
@@ -130,5 +141,3 @@ declare class josh {
         postgre: providers.postgre;
     };
 }
-
-
