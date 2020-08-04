@@ -3,8 +3,10 @@
   "version": "0.0.5",
   "description": "Javascript Object Storage Helper",
   "main": "index.js",
+  "types": ".d.ts",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "manual-test": "node manualtest.js"
   },
   "repository": {
     "type": "git",
