@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`MongoDB Initialization should initialize with credentials 1`] = `Josh {}`;
