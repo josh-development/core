@@ -113,9 +113,9 @@ declare class Josh {
     update(key: string, input: object): void;
 
     static providers: {
-        mongo: providers.mongo;
-        sqlite: providers.sqlite;
-        http: providers.http;
-        postgre: providers.postgre;
+        mongo: "@josh-providers/mongo";
+        sqlite: "@josh-providers/sqlite";
+        http: "@josh-providers/http";
+        postgre: "@josh-providers/postgre";
     };
 }
