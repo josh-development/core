@@ -69,13 +69,13 @@ declare class Josh {
      * @default count = 1
      * @returns {Array<any>} An array of values.
      */
-    random(count ? : number = 1): void;
+    random(count: number = 1): void;
     /**
      * @param {number} count The amount of random keys you want.
      * @default count = 1
      * @returns {Array<string>} An array of keys.
      */
-    randomKey(...args: any[]): void;
+    randomKey(count: number = 1): void;
 
     readyCheck(...args: any[]): void;
 
