@@ -4,6 +4,7 @@ declare interface joshOptions {
     name: string;
 }
 declare class Josh {
+    defer: Promise<any>;
     /**
      * Initalize a new Josh.
      * @param options.provider The provider to use with Josh.

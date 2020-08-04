@@ -1,4 +1,4 @@
-/// <reference path=".d.ts"/>
+/// <reference path="index.d.ts"/>
 
 const mongo = './providers/josh-mongo';
 const sqlite = './providers/josh-sqlite';
@@ -265,7 +265,6 @@ class Josh {
   }
 
 }
-
 module.exports = Josh;
 module.exports.providers = {
   mongo,
