@@ -1,6 +1,6 @@
 {
   "name": "josh",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "Javascript Object Storage Helper",
   "main": "index.js",
   "types": ".d.ts",
@@ -19,17 +19,17 @@
   },
   "homepage": "https://github.com/eslachance/josh#readme",
   "dependencies": {
-    "lodash": "^4.17.15"
+    "lodash": "^4.17.19"
   },
   "devDependencies": {
-    "eslint": "^5.14.1",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "jest": "^24.1.0",
-    "mongo-mock": "^3.7.1"
+    "eslint": "6.8.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "jest": "^26.2.2",
+    "mongo-mock": "^4.0.0"
   }
 }
