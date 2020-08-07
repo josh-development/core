@@ -1,3 +1,5 @@
+# JOSH - Javascript Object Storage Helper
+
 <div align="center">
   <p>
     <a href="https://discord.gg/N7ZKH3P"><img src="https://discordapp.com/api/guilds/298508738623438848/embed.png" alt="Discord server" /></a>
