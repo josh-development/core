@@ -3,18 +3,18 @@
 ## Josh
 **Kind**: global class  
 
-* [Josh](#josh)
+* [Josh](#Josh)
     * [new Josh([options])](#new-josh-options)
     * [.keys](#josh-keys-promise-less-than-array-string-greater-than) ⇒ <code>Promise.&lt;Array.String&gt;</code>
     * [.values](#josh-values-promise-less-than-array-greater-than) ⇒ <code>Promise.&lt;Array&gt;</code>
     * [.size](#josh-size-promise-less-than-integer-greater-than) ⇒ <code>Promise.&lt;integer&gt;</code>
-    * [.set(keyOrPath, value)](#josh-set-keyorpath-value-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
     * [.get(keyOrPath)](#josh-get-keyorpath-promise-less-than-greater-than) ⇒ <code>Promise.&lt;\*&gt;</code>
-    * [.update(keyOrPath, input)](#josh-update-keyorpath-input-promise-less-than-object-greater-than) ⇒ <code>Promise.&lt;Object&gt;</code>
-    * [.has(keyOrPath)](#josh-has-keyorpath-promise-less-than-boolean-greater-than) ⇒ <code>Promise.&lt;boolean&gt;</code>
-    * [.ensure(keyOrPath, defaultValue)](#josh-ensure-keyorpath-defaultvalue-promise-less-than-greater-than) ⇒ <code>Promise.&lt;\*&gt;</code>
     * [.random(count)](#josh-random-count-promise-less-than-array-less-than-array-greater-than-greater-than) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
     * [.randomKey(count)](#josh-randomkey-count-promise-less-than-array-less-than-string-greater-than-greater-than) ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code>
+    * [.has(keyOrPath)](#josh-has-keyorpath-promise-less-than-boolean-greater-than) ⇒ <code>Promise.&lt;boolean&gt;</code>
+    * [.set(keyOrPath, value)](#josh-set-keyorpath-value-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
+    * [.update(keyOrPath, input)](#josh-update-keyorpath-input-promise-less-than-object-greater-than) ⇒ <code>Promise.&lt;Object&gt;</code>
+    * [.ensure(keyOrPath, defaultValue)](#josh-ensure-keyorpath-defaultvalue-promise-less-than-greater-than) ⇒ <code>Promise.&lt;\*&gt;</code>
     * [.delete(keyOrPath)](#josh-delete-keyorpath-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
     * [.push(keyOrPath, value, allowDupes)](#josh-push-keyorpath-value-allowdupes-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
     * [.remove(keyOrPath, value)](#josh-remove-keyorpath-value-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
@@ -68,20 +68,6 @@ Get the amount of rows inside the database.
 
 **Kind**: instance property of [<code>Josh</code>](#josh)  
 **Returns**: <code>Promise.&lt;integer&gt;</code> - An integer equal to the amount of stored key/value pairs.  
-<a name="Josh+set"></a>
-
-### josh.set(keyOrPath, value) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#josh)
-Store a value in the database. If a simple key is provided, creates or overwrites the entire value with the new one provide.
-If a path is provided, and the stored value is an object, only the value at the path will be overwritten.
-
-**Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| keyOrPath | <code>string</code> | Either a key, or a full path, where you want to store the value. For more information on how path works, see https://josh.evie.dev/path |
-| value | <code>\*</code> | The value to store for the key, or in the path, specified. All values MUST be "simple" javascript values: Numbers, Booleans, Strings, Arrays, Objects. If you want to store a "complex" thing such as an instance of a class, please use a Serializer to convert it to a storable value. |
-
 <a name="Josh+get"></a>
 
 ### josh.get(keyOrPath) ⇒ <code>Promise.&lt;\*&gt;</code>
@@ -94,6 +80,61 @@ If a path is provided, will only return the value at that path, if it exists.
 | Param | Type | Description |
 | --- | --- | --- |
 | keyOrPath | <code>string</code> | Either a key, or full path, of the value you want to get. For more information on how path works, see https://josh.evie.dev/path |
+
+<a name="Josh+random"></a>
+
+### josh.random(count) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
+Returns one or more random values from the database.
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code> - An array of key/value pairs each in their own array.
+The array of values should never contain duplicates. If the requested count is higher than the number
+of rows in the database, only the available number of rows will be returned, in randomized order.
+Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c', 3]]  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| count | <code>integer</code> | Defaults to 1. The number of random key/value pairs to get. |
+
+<a name="Josh+randomKey"></a>
+
+### josh.randomKey(count) ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code>
+Returns one or more random keys from the database.
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: <code>Promise.&lt;Array.&lt;string&gt;&gt;</code> - An array of string keys in a randomized order.
+The array of keys should never contain duplicates. If the requested count is higher than the number
+of rows in the database, only the available number of rows will be returned.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| count | <code>integer</code> | Defaults to 1. The number of random key/value pairs to get. |
+
+<a name="Josh+has"></a>
+
+### josh.has(keyOrPath) ⇒ <code>Promise.&lt;boolean&gt;</code>
+Verifies whether a key, or a specific property of an object, exists at all.
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: <code>Promise.&lt;boolean&gt;</code> - Whether the key, or property specified in the path, exists.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| keyOrPath | <code>string</code> | Either a key, or full path, of the value you want to get. For more information on how path works, see https://josh.evie.dev/path |
+
+<a name="Josh+set"></a>
+
+### josh.set(keyOrPath, value) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
+Store a value in the database. If a simple key is provided, creates or overwrites the entire value with the new one provide.
+If a path is provided, and the stored value is an object, only the value at the path will be overwritten.
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#Josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| keyOrPath | <code>string</code> | Either a key, or a full path, where you want to store the value. For more information on how path works, see https://josh.evie.dev/path |
+| value | <code>\*</code> | The value to store for the key, or in the path, specified. All values MUST be "simple" javascript values: Numbers, Booleans, Strings, Arrays, Objects. If you want to store a "complex" thing such as an instance of a class, please use a Serializer to convert it to a storable value. |
 
 <a name="Josh+update"></a>
 
@@ -129,18 +170,6 @@ josh.merge('thing', (previousValue) => {
 });
 // value is now {a: 'one', b: 'two', c: 3, d: 4, e: 5}
 ```
-<a name="Josh+has"></a>
-
-### josh.has(keyOrPath) ⇒ <code>Promise.&lt;boolean&gt;</code>
-Verifies whether a key, or a specific property of an object, exists at all.
-
-**Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: <code>Promise.&lt;boolean&gt;</code> - Whether the key, or property specified in the path, exists.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| keyOrPath | <code>string</code> | Either a key, or full path, of the value you want to get. For more information on how path works, see https://josh.evie.dev/path |
-
 <a name="Josh+ensure"></a>
 
 ### josh.ensure(keyOrPath, defaultValue) ⇒ <code>Promise.&lt;\*&gt;</code>
@@ -166,54 +195,25 @@ josh.get("mykey", "here") // returns "as an example";
 const settings = mySettings.ensure("1234567890", defaultSettings);
 console.log(settings) // josh's value for "1234567890" if it exists, otherwise the defaultSettings value.
 ```
-<a name="Josh+random"></a>
-
-### josh.random(count) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
-Returns one or more random values from the database.
-
-**Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code> - An array of key/value pairs each in their own array.
-The array of values should never contain duplicates. If the requested count is higher than the number
-of rows in the database, only the available number of rows will be returned, in randomized order.
-Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c', 3]]  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| count | <code>integer</code> | Defaults to 1. The number of random key/value pairs to get. |
-
-<a name="Josh+randomKey"></a>
-
-### josh.randomKey(count) ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code>
-Returns one or more random keys from the database.
-
-**Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: <code>Promise.&lt;Array.&lt;string&gt;&gt;</code> - An array of string keys in a randomized order.
-The array of keys should never contain duplicates. If the requested count is higher than the number
-of rows in the database, only the available number of rows will be returned.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| count | <code>integer</code> | Defaults to 1. The number of random key/value pairs to get. |
-
 <a name="Josh+delete"></a>
 
-### josh.delete(keyOrPath) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#josh)
+### josh.delete(keyOrPath) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
 Remove a key/value pair, or the property and value at a specific path, or clear the database.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
+**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#Josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
 
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| keyOrPath | <code>string</code> | <code>null</code> | Either a key, or full path, of the value you want to delete. If providing a path, only the value located at the path is deleted. Alternatively: josh.delete(josh.all) will clear the database of all data. |
+| Param | Type | Description |
+| --- | --- | --- |
+| keyOrPath | <code>string</code> | Either a key, or full path, of the value you want to delete. If providing a path, only the value located at the path is deleted. Alternatively: josh.delete(josh.all) will clear the database of all data. |
 
 <a name="Josh+push"></a>
 
-### josh.push(keyOrPath, value, allowDupes) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#josh)
+### josh.push(keyOrPath, value, allowDupes) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
 Add a new value to an array.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
+**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#Josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -223,11 +223,11 @@ Add a new value to an array.
 
 <a name="Josh+remove"></a>
 
-### josh.remove(keyOrPath, value) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#josh)
+### josh.remove(keyOrPath, value) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
 Remove a value from an array, by value (simple values like strings and numbers) or function (complex values like arrays or objects).
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
+**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#Josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -245,11 +245,11 @@ josh.remove('objectarray', (value) => value.e === 5); // value is now [{ a: 1, b
 ```
 <a name="Josh+inc"></a>
 
-### josh.inc(keyOrPath) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#josh)
+### josh.inc(keyOrPath) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
 Increments (adds 1 to the number) the stored value.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
+**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#Josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -257,11 +257,11 @@ Increments (adds 1 to the number) the stored value.
 
 <a name="Josh+dec"></a>
 
-### josh.dec(keyOrPath) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#josh)
+### josh.dec(keyOrPath) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
 Decrements (remove 1 from the number) the stored value.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
+**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#Josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
 
 | Param | Type | Description |
 | --- | --- | --- |

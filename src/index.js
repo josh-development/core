@@ -1,5 +1,7 @@
 const {
   merge,
+  isArray,
+  get: _get,
 } = require('lodash');
 
 // Custom error codes with stack support.
@@ -95,6 +97,105 @@ class Josh {
   }
 
   /**
+   * Retrieves (fetches) a value from the database. If a simple key is provided, returns the value.
+   * If a path is provided, will only return the value at that path, if it exists.
+   * @param {string} keyOrPath Either a key, or full path, of the value you want to get.
+   * For more information on how path works, see https://josh.evie.dev/path
+   * @return {Promise<*>} Returns the value for the key or the value found at the specified path.
+   */
+  async get(keyOrPath) {
+    await this.readyCheck();
+    const [key, ...path] = keyOrPath.split('.');
+    const hasKey = await this.has(keyOrPath);
+    let value;
+    if (!hasKey) {
+      if (this.autoEnsure) value = this.autoEnsure;
+      else return null;
+    } else {
+      value = this.provider.get(key);
+    }
+    value = this.deserializer ? this.deserializers(value) : value;
+    return path.length ? _get(value, path) : value;
+  }
+
+  async getMany(keysOrPaths) {
+    await this.readyCheck();
+    if (keysOrPaths === this.all) {
+      const allValues = await this.provider.getAll();
+      return this.deserializer ? allValues.map(this.deserializer) : allValues;
+    }
+    if (!isArray(keysOrPaths)) {
+      throw new Err('This function requires an array of keys or values', 'JoshArgumentError');
+    }
+    const rows = this.provider.getMany(keysOrPaths(str => str.split('.')[0]));
+    return rows.map((row, index) => {
+      const [, ...path] = keysOrPaths[index].split('.');
+      const value = this.serializer ? this.serializer(row.value) : row.value;
+      return path.length ? _get(value, path) : value;
+    });
+  }
+  /**
+   * Returns one or more random values from the database.
+   * @param {integer} count Defaults to 1. The number of random key/value pairs to get.
+   * @return {Promise<Array.<Array>>} An array of key/value pairs each in their own array.
+   * The array of values should never contain duplicates. If the requested count is higher than the number
+   * of rows in the database, only the available number of rows will be returned, in randomized order.
+   * Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c', 3]]
+   */
+  async random(count) {
+    await this.readyCheck();
+    return this.provider.random(count);
+  }
+
+  /**
+  * Returns one or more random keys from the database.
+  * @param {integer} count Defaults to 1. The number of random key/value pairs to get.
+  * @return {Promise<Array.<string>>} An array of string keys in a randomized order.
+  * The array of keys should never contain duplicates. If the requested count is higher than the number
+  * of rows in the database, only the available number of rows will be returned.
+  */
+  async randomKey(count) {
+    await this.readyCheck();
+    return this.provider.randomKey(count);
+  }
+
+  /**
+   * Verifies whether a key, or a specific property of an object, exists at all.
+   * @param {string} keyOrPath Either a key, or full path, of the value you want to get.
+   * For more information on how path works, see https://josh.evie.dev/path
+   * @return {Promise<boolean>} Whether the key, or property specified in the path, exists.
+   */
+  async has(keyOrPath) {
+    await this.readyCheck();
+    const [key, ...path] = keyOrPath.split('.');
+    return await this.provider.has(key, path);
+  }
+
+  /**
+   * Get all the keys in the database.
+   * @return {Promise<Array.String>} An array of all the keys as string values.
+   */
+  get keys() {
+    return this.readyCheck().then(() => this.provider.keys());
+  }
+
+  /**
+  * Get all the values in the database.
+  * @return {Promise<Array>} An array of all the values stored in the database.
+  */
+  get values() {
+    return this.readyCheck().then(() => this.provider.values());
+  }
+
+  /**
+   * Get the amount of rows inside the database.
+   * @return {Promise<integer>} An integer equal to the amount of stored key/value pairs.
+   */
+  get size() {
+    return this.readyCheck().then(() => this.provider.count());
+  }
+
+  /**
    * Store a value in the database. If a simple key is provided, creates or overwrites the entire value with the new one provide.
    * If a path is provided, and the stored value is an object, only the value at the path will be overwritten.
    * @param {string} keyOrPath Either a key, or a full path, where you want to store the value.
@@ -110,25 +211,6 @@ class Josh {
     this.provider.keyCheck(key);
     await this.provider.set(key, path, this.serializer ? this.serializer(value) : value);
     return this;
-  }
-
-  /**
-   * Retrieves (fetches) a value from the database. If a simple key is provided, returns the value.
-   * If a path is provided, will only return the value at that path, if it exists.
-   * @param {string} keyOrPath Either a key, or full path, of the value you want to get.
-   * For more information on how path works, see https://josh.evie.dev/path
-   * @return {Promise<*>} Returns the value for the key or the value found at the specified path.
-   */
-  async get(keyOrPath) {
-    await this.readyCheck();
-    if (keyOrPath == this.all) {
-      const allValues = await this.provider.getAll();
-      return this.deserializer ? allValues.map(this.deserializer) : allValues;
-    }
-    const [key, ...path] = keyOrPath.split('.');
-    const hasKey = await this.has(keyOrPath);
-    const value = !hasKey && this.autoEnsure !== this.off ? await this.ensure(keyOrPath) : await this.provider.get(key, path);
-    return this.deserializer ? this.deserializers(value) : value;
   }
 
   /**
@@ -163,44 +245,8 @@ class Josh {
     if (typeof input === 'function') {
       mergeValue = input(previousValue);
     }
-    this.set(keyOrPath, merge(previousValue, mergeValue));
+    await this.set(keyOrPath, merge(previousValue, mergeValue));
     return this;
-  }
-
-  /**
-   * Get all the keys in the database.
-   * @return {Promise<Array.String>} An array of all the keys as string values.
-   */
-  get keys() {
-    return this.readyCheck().then(() => this.provider.keys());
-  }
-
-  /**
-  * Get all the values in the database.
-  * @return {Promise<Array>} An array of all the values stored in the database.
-  */
-  get values() {
-    return this.readyCheck().then(() => this.provider.values());
-  }
-
-  /**
-   * Get the amount of rows inside the database.
-   * @return {Promise<integer>} An integer equal to the amount of stored key/value pairs.
-   */
-  get size() {
-    return this.readyCheck().then(() => this.provider.count());
-  }
-
-  /**
-   * Verifies whether a key, or a specific property of an object, exists at all.
-   * @param {string} keyOrPath Either a key, or full path, of the value you want to get.
-   * For more information on how path works, see https://josh.evie.dev/path
-   * @return {Promise<boolean>} Whether the key, or property specified in the path, exists.
-   */
-  async has(keyOrPath) {
-    await this.readyCheck();
-    const [key, ...path] = keyOrPath.split('.');
-    return await this.provider.has(key, path);
   }
 
   /**
@@ -231,40 +277,15 @@ class Josh {
   }
 
   /**
-   * Returns one or more random values from the database.
-   * @param {integer} count Defaults to 1. The number of random key/value pairs to get.
-   * @return {Promise<Array.<Array>>} An array of key/value pairs each in their own array.
-   * The array of values should never contain duplicates. If the requested count is higher than the number
-   * of rows in the database, only the available number of rows will be returned, in randomized order.
-   * Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c', 3]]
-   */
-  async random(count) {
-    await this.readyCheck();
-    return this.provider.random(count);
-  }
-
-  /**
-  * Returns one or more random keys from the database.
-  * @param {integer} count Defaults to 1. The number of random key/value pairs to get.
-  * @return {Promise<Array.<string>>} An array of string keys in a randomized order.
-  * The array of keys should never contain duplicates. If the requested count is higher than the number
-  * of rows in the database, only the available number of rows will be returned.
-  */
-  async randomKey(count) {
-    await this.readyCheck();
-    return this.provider.randomKey(count);
-  }
-
-  /**
    * Remove a key/value pair, or the property and value at a specific path, or clear the database.
    * @param {string} keyOrPath Either a key, or full path, of the value you want to delete.
    * If providing a path, only the value located at the path is deleted.
    * Alternatively: josh.delete(josh.all) will clear the database of all data.
    * @return {Promise<Josh>} This database wrapper, useful if you want to chain more instructions for Josh.
    */
-  async delete(keyOrPath = null) {
+  async delete(keyOrPath) {
     await this.readyCheck();
-    if (keyOrPath == this.all) {
+    if (keyOrPath === this.all) {
       await this.provider.clear();
     } else {
       const [key, ...path] = keyOrPath.split('.');
