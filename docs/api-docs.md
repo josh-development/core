@@ -9,6 +9,7 @@
     * [.values](#josh-values-promise-less-than-array-greater-than) ⇒ <code>Promise.&lt;Array&gt;</code>
     * [.size](#josh-size-promise-less-than-integer-greater-than) ⇒ <code>Promise.&lt;integer&gt;</code>
     * [.get(keyOrPath)](#josh-get-keyorpath-promise-less-than-greater-than) ⇒ <code>Promise.&lt;\*&gt;</code>
+    * [.getMany(keysOrPaths)](#josh-getmany-keysorpaths-promise-less-than-array-less-than-array-greater-than-greater-than) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
     * [.random(count)](#josh-random-count-promise-less-than-array-less-than-array-greater-than-greater-than) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
     * [.randomKey(count)](#josh-randomkey-count-promise-less-than-array-less-than-string-greater-than-greater-than) ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code>
     * [.has(keyOrPath)](#josh-has-keyorpath-promise-less-than-boolean-greater-than) ⇒ <code>Promise.&lt;boolean&gt;</code>
@@ -80,6 +81,21 @@ If a path is provided, will only return the value at that path, if it exists.
 | Param | Type | Description |
 | --- | --- | --- |
 | keyOrPath | <code>string</code> | Either a key, or full path, of the value you want to get. For more information on how path works, see https://josh.evie.dev/path |
+
+<a name="Josh+getMany"></a>
+
+### josh.getMany(keysOrPaths) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
+Retrieve many values from the database.
+If you provide `josh.all` as a value (josh being your variable for the database), the entire data set is returned.
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code> - An array of key/value pairs each in their own arrays.
+Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c', 3]]
+If paths are provided, the "key" is the full path.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| keysOrPaths | <code>\*</code> | An array of keys or paths to return, or `db.all` to retrieve them all. |
 
 <a name="Josh+random"></a>
 

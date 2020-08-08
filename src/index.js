@@ -118,6 +118,14 @@ class Josh {
     return path.length ? _get(value, path) : value;
   }
 
+  /**
+   * Retrieve many values from the database.
+   * If you provide `josh.all` as a value (josh being your variable for the database), the entire data set is returned.
+   * @param {*} keysOrPaths An array of keys or paths to return, or `db.all` to retrieve them all.
+   * @return {Promise<Array.<Array>>} An array of key/value pairs each in their own arrays.
+   * Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c', 3]]
+   * If paths are provided, the "key" is the full path.
+   */
   async getMany(keysOrPaths) {
     await this.readyCheck();
     if (keysOrPaths === this.all) {
@@ -131,9 +139,10 @@ class Josh {
     return rows.map((row, index) => {
       const [, ...path] = keysOrPaths[index].split('.');
       const value = this.serializer ? this.serializer(row.value) : row.value;
-      return path.length ? _get(value, path) : value;
+      return path.length ? [keysOrPaths[index], _get(value, path)] : [keysOrPaths[index], value];
     });
   }
+
   /**
    * Returns one or more random values from the database.
    * @param {integer} count Defaults to 1. The number of random key/value pairs to get.
