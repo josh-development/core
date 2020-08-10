@@ -5,11 +5,11 @@ declare enum JoshProviders {
 declare module "josh" {
   export interface JoshOptions<T = unknown> {
     name: string;
-    provider: JoshProviders[keyof JoshProviders];
-    ensureProps: boolean;
-    autoEnsure: T;
-    serializer: (data: T) => Promise<T>;
-    deserializer: (data: T) => Promise<T>;
+    provider: "@josh-providers/sqlite";
+    ensureProps?: boolean;
+    autoEnsure?: T;
+    serializer?: (data: T) => Promise<T>;
+    deserializer?: (data: T) => Promise<T>;
   }
 
   export default class Josh<T> {
