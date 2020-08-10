@@ -1,7 +1,3 @@
-declare enum JoshProviders {
-  sqlite = "@josh-providers/sqlite",
-}
-
 declare module "josh" {
   export interface JoshOptions<T = unknown> {
     name: string;
