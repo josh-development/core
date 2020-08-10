@@ -1,6 +1,7 @@
 const {
   merge,
   isArray,
+  isFunction,
   get: _get,
 } = require('lodash');
 
@@ -249,6 +250,7 @@ class Josh {
    * // value is now {a: 'one', b: 'two', c: 3, d: 4, e: 5}
    */
   async update(keyOrPath, input) {
+    await this.readyCheck();
     const previousValue = await this.get(keyOrPath);
     let mergeValue = input;
     if (typeof input === 'function') {
@@ -361,6 +363,67 @@ class Josh {
     const [key, ...path] = keyOrPath.split('.');
     await this.provider.dec(key, path);
     return this;
+  }
+
+  /**
+   * Finds a value within the database, either through an exact value match, or a function.
+   * Useful for Objects and Array values, will not work on "simple" values like strings.
+   * Returns the first found match - if you need more than one result, use filter() instead.
+   * Either a function OR a value **must** be provided.
+   * @param {Function|string} valueOrFn Mandatory. Either a function, or simple value.
+   * If using a function: it will run on either the stored value, OR the value at the path given if it's provided.
+   * - The function receives the value (or value at the path) as well the the key currently being checked.
+   * - The function must return a boolean or truthy/falsey value! Oh and the function can be async, too ;)
+   * If using a value:
+   * - A path is mandatory when checking by value.
+   * - The value must be simple: string, boolean, integer. It cannot be an object or array.
+   * @param {string} path Optional on functions, Mandatory on values. If provided, the function or value acts on what's at that path.
+   * @return {Promise<Array>} Returns an array composed of the full value (NOT the one at the path!), and the key.
+   * @example
+   * // Assuming:
+   * josh.set("john.shmidt", {
+   *   fullName: "John Jacob Jingleheimer Schmidt",
+   *   id: 12345,
+   *   user: {
+   *     username: "john.shmidt",
+   *     firstName: "john",
+   *     lastName: "shmidt",
+   *     password: "somerandombcryptstringthingy",
+   *     lastAccess: -22063545000,
+   *     isActive: false,
+   *     avatar: null,
+   *   }
+   * });
+   *
+   * // Regular string find:
+   * josh.find("john", "user.firstName")
+   *
+   * // Simple function find:
+   * josh.find(value => value.user.firstName === "john");
+   *
+   * // Function find with a path:
+   * josh.find(value => value === "john", "user.firstName");
+   *
+   * // The return of all the above if the same:
+   * ["john.shmidt", {
+   *   fullName: "John Jacob Jingleheimer Schmidt",
+   *   id: 12345,
+   *   user: {
+   *     username: "john.shmidt",
+   *     firstName: "john",
+   *     lastName: "shmidt",
+   *     password: "somerandombcryptstringthingy",
+   *     lastAccess: -22063545000,
+   *     isActive: false,
+   *     avatar: null,
+   *   }
+   * }]
+   */
+  async find(valueOrFn, path) {
+    await this.readyCheck();
+    return isFunction(valueOrFn) ?
+      this.provider.findByFunction(valueOrFn, path) :
+      this.provider.findByValue(valueOrFn, path);
   }
 
 }
