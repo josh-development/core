@@ -56,5 +56,10 @@ declare module "josh" {
     public inc(keyOrPath: string): Promise<Josh<T>>;
 
     public dec(keyOrPath: string): Promise<Josh<T>>;
+
+    public find(
+      valueOrFn: string | ((value: T) => boolean),
+      path?: string
+    ): Promise<[string, T]>;
   }
 }
