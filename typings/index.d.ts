@@ -8,7 +8,7 @@ declare module "josh" {
     deserializer?: (data: T) => Promise<T>;
   }
 
-  export default class Josh<T> {
+  export default class Josh<T = unknown> {
     public constructor(options: JoshOptions<T>);
 
     public get keys(): Promise<string[]>;
