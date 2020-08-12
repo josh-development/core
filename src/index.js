@@ -426,6 +426,29 @@ class Josh {
       this.provider.findByValue(valueOrFn, path);
   }
 
+  /**
+   * Filters for values within the database, either through an exact value match, or a function.
+   * Useful for Objects and Array values, will not work on "simple" values like strings.
+   * Returns all matches found - if you need a single value, use find() instead.
+   * Either a function OR a value **must** be provided.
+   * @param {Function|string} valueOrFn Mandatory. Either a function, or simple value.
+   * If using a function: it will run on either the stored value, OR the value at the path given if it's provided.
+   * - The function receives the value (or value at the path) as well the the key currently being checked.
+   * - The function must return a boolean or truthy/falsey value! Oh and the function can be async, too ;)
+   * If using a value:
+   * - A path is mandatory when checking by value.
+   * - The value must be simple: string, boolean, integer. It cannot be an object or array.
+   * @param {string} path Optional on functions, Mandatory on values. If provided, the function or value acts on what's at that path.
+   * @return {Promise<Array>} Returns an array composed of the full value (NOT the one at the path!), and the key.
+   *
+   */
+  async filter(valueOrFn, path) {
+    await this.readyCheck();
+    return isFunction(valueOrFn) ?
+      this.provider.filterByFunction(valueOrFn, path) :
+      this.provider.filterByValue(valueOrFn, path);
+  }
+
 }
 
 module.exports = Josh;

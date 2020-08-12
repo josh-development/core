@@ -21,6 +21,8 @@
     * [.remove(keyOrPath, value)](#josh-remove-keyorpath-value-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
     * [.inc(keyOrPath)](#josh-inc-keyorpath-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
     * [.dec(keyOrPath)](#josh-dec-keyorpath-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
+    * [.find(valueOrFn, path)](#josh-find-valueorfn-path-promise-less-than-array-greater-than) ⇒ <code>Promise.&lt;Array&gt;</code>
+    * [.filter(valueOrFn, path)](#josh-filter-valueorfn-path-promise-less-than-array-greater-than) ⇒ <code>Promise.&lt;Array&gt;</code>
 
 <a name="new_Josh_new"></a>
 
@@ -282,4 +284,77 @@ Decrements (remove 1 from the number) the stored value.
 | Param | Type | Description |
 | --- | --- | --- |
 | keyOrPath | <code>\*</code> | Either a key, or full path, to the value you want to decrement. The value must be a number. |
+
+<a name="Josh+find"></a>
+
+### josh.find(valueOrFn, path) ⇒ <code>Promise.&lt;Array&gt;</code>
+Finds a value within the database, either through an exact value match, or a function.
+Useful for Objects and Array values, will not work on "simple" values like strings.
+Returns the first found match - if you need more than one result, use filter() instead.
+Either a function OR a value **must** be provided.
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: <code>Promise.&lt;Array&gt;</code> - Returns an array composed of the full value (NOT the one at the path!), and the key.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| valueOrFn | <code>function</code> \| <code>string</code> | Mandatory. Either a function, or simple value. If using a function: it will run on either the stored value, OR the value at the path given if it's provided. - The function receives the value (or value at the path) as well the the key currently being checked. - The function must return a boolean or truthy/falsey value! Oh and the function can be async, too ;) If using a value: - A path is mandatory when checking by value. - The value must be simple: string, boolean, integer. It cannot be an object or array. |
+| path | <code>string</code> | Optional on functions, Mandatory on values. If provided, the function or value acts on what's at that path. |
+
+**Example**  
+```js
+// Assuming:
+josh.set("john.shmidt", {
+  fullName: "John Jacob Jingleheimer Schmidt",
+  id: 12345,
+  user: {
+    username: "john.shmidt",
+    firstName: "john",
+    lastName: "shmidt",
+    password: "somerandombcryptstringthingy",
+    lastAccess: -22063545000,
+    isActive: false,
+    avatar: null,
+  }
+});
+
+// Regular string find:
+josh.find("john", "user.firstName")
+
+// Simple function find:
+josh.find(value => value.user.firstName === "john");
+
+// Function find with a path:
+josh.find(value => value === "john", "user.firstName");
+
+// The return of all the above if the same:
+["john.shmidt", {
+  fullName: "John Jacob Jingleheimer Schmidt",
+  id: 12345,
+  user: {
+    username: "john.shmidt",
+    firstName: "john",
+    lastName: "shmidt",
+    password: "somerandombcryptstringthingy",
+    lastAccess: -22063545000,
+    isActive: false,
+    avatar: null,
+  }
+}]
+```
+<a name="Josh+filter"></a>
+
+### josh.filter(valueOrFn, path) ⇒ <code>Promise.&lt;Array&gt;</code>
+Filters for values within the database, either through an exact value match, or a function.
+Useful for Objects and Array values, will not work on "simple" values like strings.
+Returns all matches found - if you need a single value, use find() instead.
+Either a function OR a value **must** be provided.
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: <code>Promise.&lt;Array&gt;</code> - Returns an array composed of the full value (NOT the one at the path!), and the key.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| valueOrFn | <code>function</code> \| <code>string</code> | Mandatory. Either a function, or simple value. If using a function: it will run on either the stored value, OR the value at the path given if it's provided. - The function receives the value (or value at the path) as well the the key currently being checked. - The function must return a boolean or truthy/falsey value! Oh and the function can be async, too ;) If using a value: - A path is mandatory when checking by value. - The value must be simple: string, boolean, integer. It cannot be an object or array. |
+| path | <code>string</code> | Optional on functions, Mandatory on values. If provided, the function or value acts on what's at that path. |
 
