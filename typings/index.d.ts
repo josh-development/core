@@ -57,5 +57,10 @@ declare module "josh" {
       valueOrFn: string | ((value: T) => boolean),
       path?: string
     ): Promise<[string, T]>;
+
+    public filter(
+      valueOrFn: string | ((value: T) => boolean),
+      path?: string
+    ): Promise<[string, T][]>;
   }
 }
