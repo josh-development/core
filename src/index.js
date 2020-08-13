@@ -122,7 +122,7 @@ class Josh {
   /**
    * Retrieve many values from the database.
    * If you provide `josh.all` as a value (josh being your variable for the database), the entire data set is returned.
-   * @param {[]|symbol} keysOrPaths An array of keys or paths to return, or `db.all` to retrieve them all.
+   * @param {string[]|symbol} keysOrPaths An array of keys or paths to return, or `db.all` to retrieve them all.
    * @return {Promise<Array.<Array>>} An array of key/value pairs each in their own arrays.
    * Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c', 3]]
    * If paths are provided, the "key" is the full path.
@@ -136,10 +136,12 @@ class Josh {
     if (!isArray(keysOrPaths)) {
       throw new Err('This function requires an array of keys or values', 'JoshArgumentError');
     }
-    const rows = this.provider.getMany(keysOrPaths(str => str.split('.')[0]));
-    return rows.map((row, index) => {
+    const data = await this.provider.getMany(keysOrPaths.map(str => str.split('.')[0]));
+    return data.map((value, index) => {
       const [, ...path] = keysOrPaths[index].split('.');
-      const value = this.serializer ? this.serializer(row.value) : row.value;
+      if (this.deserializer) {
+        value = this.deserializer(value);
+      }
       return path.length ? [keysOrPaths[index], _get(value, path)] : [keysOrPaths[index], value];
     });
   }
@@ -289,7 +291,7 @@ class Josh {
 
   /**
    * Remove a key/value pair, or the property and value at a specific path, or clear the database.
-   * @param {string} keyOrPath Either a key, or full path, of the value you want to delete.
+   * @param {string|symbol} keyOrPath Either a key, or full path, of the value you want to delete.
    * If providing a path, only the value located at the path is deleted.
    * Alternatively: josh.delete(josh.all) will clear the database of all data.
    * @return {Promise<Josh>} This database wrapper, useful if you want to chain more instructions for Josh.
