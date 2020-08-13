@@ -11,7 +11,7 @@ declare module "josh" {
   export default class Josh<T = unknown> {
     public constructor(options: JoshOptions<T>);
 
-    public all: Symbol;
+    public all: symbol;
 
     public get keys(): Promise<string[]>;
 
@@ -21,7 +21,7 @@ declare module "josh" {
 
     public get(keyOrPath: string): Promise<T>;
 
-    public getMany(keysOrPaths: string[]): Promise<T[][]>;
+    public getMany(keysOrPaths: string[] | symbol): Promise<T[][]>;
 
     public random(count: number): Promise<T[][]>;
 
@@ -38,7 +38,7 @@ declare module "josh" {
 
     public ensure(keyOrPath: string, defaultValue: T): Promise<T>;
 
-    public delete(keyOrPath: string): Promise<Josh<T>>;
+    public delete(keyOrPath: string | symbol): Promise<Josh<T>>;
 
     public push(
       keyOrPath: string,
