@@ -59,7 +59,7 @@ class Josh {
 
     // Verify if the provider given is an object, and is a valid provider for Josh...
     const intializedProvider = new Provider({ name, ...providerOptions });
-    if (intializedProvider.constructor.name != 'JoshProvider') {
+    if (intializedProvider.constructor.name !== 'JoshProvider') {
       throw new Err(`The given Provider does not seem valid. I expected JoshProvider, but this was a ${intializedProvider.constructor.name}!`, 'JoshOptionsError');
     }
 
@@ -115,14 +115,14 @@ class Josh {
     } else {
       value = this.provider.get(key);
     }
-    value = this.deserializer ? this.deserializers(value) : value;
+    value = this.deserializer ? this.deserializer(value) : value;
     return path.length ? _get(value, path) : value;
   }
 
   /**
    * Retrieve many values from the database.
    * If you provide `josh.all` as a value (josh being your variable for the database), the entire data set is returned.
-   * @param {*} keysOrPaths An array of keys or paths to return, or `db.all` to retrieve them all.
+   * @param {[]|symbol} keysOrPaths An array of keys or paths to return, or `db.all` to retrieve them all.
    * @return {Promise<Array.<Array>>} An array of key/value pairs each in their own arrays.
    * Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c', 3]]
    * If paths are provided, the "key" is the full path.
@@ -146,7 +146,7 @@ class Josh {
 
   /**
    * Returns one or more random values from the database.
-   * @param {integer} count Defaults to 1. The number of random key/value pairs to get.
+   * @param {number} count Defaults to 1. The number of random key/value pairs to get.
    * @return {Promise<Array.<Array>>} An array of key/value pairs each in their own array.
    * The array of values should never contain duplicates. If the requested count is higher than the number
    * of rows in the database, only the available number of rows will be returned, in randomized order.
@@ -159,7 +159,7 @@ class Josh {
 
   /**
   * Returns one or more random keys from the database.
-  * @param {integer} count Defaults to 1. The number of random key/value pairs to get.
+  * @param {number} count Defaults to 1. The number of random key/value pairs to get.
   * @return {Promise<Array.<string>>} An array of string keys in a randomized order.
   * The array of keys should never contain duplicates. If the requested count is higher than the number
   * of rows in the database, only the available number of rows will be returned.
@@ -199,7 +199,7 @@ class Josh {
 
   /**
    * Get the amount of rows inside the database.
-   * @return {Promise<integer>} An integer equal to the amount of stored key/value pairs.
+   * @return {Promise<number>} An integer equal to the amount of stored key/value pairs.
    */
   get size() {
     return this.readyCheck().then(() => this.provider.count());
