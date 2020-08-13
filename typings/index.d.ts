@@ -11,6 +11,8 @@ declare module "josh" {
   export default class Josh<T = unknown> {
     public constructor(options: JoshOptions<T>);
 
+    public all: Symbol;
+
     public get keys(): Promise<string[]>;
 
     public get values(): Promise<T[]>;
@@ -46,7 +48,7 @@ declare module "josh" {
 
     public remove(
       keyOrPath: string,
-      value: T | ((value: T) => Promise<boolean>)
+      value: T | ((value: T) => boolean)
     ): Promise<Josh<T>>;
 
     public inc(keyOrPath: string): Promise<Josh<T>>;
@@ -54,12 +56,12 @@ declare module "josh" {
     public dec(keyOrPath: string): Promise<Josh<T>>;
 
     public find(
-      valueOrFn: string | ((value: T) => Promise<boolean>),
+      valueOrFn: string | ((value: T) => boolean),
       path?: string
     ): Promise<[string, T]>;
 
     public filter(
-      valueOrFn: string | ((value: T) => Promise<boolean>),
+      valueOrFn: string | ((value: T) => boolean),
       path?: string
     ): Promise<[string, T][]>;
   }
