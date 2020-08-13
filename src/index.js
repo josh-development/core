@@ -113,7 +113,7 @@ class Josh {
       if (this.autoEnsure) value = this.autoEnsure;
       else return null;
     } else {
-      value = this.provider.get(key);
+      value = await this.provider.get(key);
     }
     value = this.deserializer ? this.deserializer(value) : value;
     return path.length ? _get(value, path) : value;
@@ -156,7 +156,7 @@ class Josh {
    */
   async random(count) {
     await this.readyCheck();
-    return this.provider.random(count);
+    return await this.provider.random(count);
   }
 
   /**
@@ -168,7 +168,7 @@ class Josh {
   */
   async randomKey(count) {
     await this.readyCheck();
-    return this.provider.randomKey(count);
+    return await this.provider.randomKey(count);
   }
 
   /**
@@ -285,7 +285,7 @@ class Josh {
       await this.set(keyOrPath, defaultValue);
       return defaultValue;
     } else {
-      return this.get(keyOrPath);
+      return await this.get(keyOrPath);
     }
   }
 
