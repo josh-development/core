@@ -59,7 +59,7 @@ class Josh {
 
     // Verify if the provider given is an object, and is a valid provider for Josh...
     const intializedProvider = new Provider({ name, ...providerOptions });
-    if (intializedProvider.constructor.name != 'JoshProvider') {
+    if (intializedProvider.constructor.name !== 'JoshProvider') {
       throw new Err(`The given Provider does not seem valid. I expected JoshProvider, but this was a ${intializedProvider.constructor.name}!`, 'JoshOptionsError');
     }
 
@@ -113,16 +113,16 @@ class Josh {
       if (this.autoEnsure) value = this.autoEnsure;
       else return null;
     } else {
-      value = this.provider.get(key);
+      value = await this.provider.get(key);
     }
-    value = this.deserializer ? this.deserializers(value) : value;
+    value = this.deserializer ? this.deserializer(value) : value;
     return path.length ? _get(value, path) : value;
   }
 
   /**
    * Retrieve many values from the database.
    * If you provide `josh.all` as a value (josh being your variable for the database), the entire data set is returned.
-   * @param {*} keysOrPaths An array of keys or paths to return, or `db.all` to retrieve them all.
+   * @param {string[]|symbol} keysOrPaths An array of keys or paths to return, or `db.all` to retrieve them all.
    * @return {Promise<Array.<Array>>} An array of key/value pairs each in their own arrays.
    * Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c', 3]]
    * If paths are provided, the "key" is the full path.
@@ -136,17 +136,19 @@ class Josh {
     if (!isArray(keysOrPaths)) {
       throw new Err('This function requires an array of keys or values', 'JoshArgumentError');
     }
-    const rows = this.provider.getMany(keysOrPaths(str => str.split('.')[0]));
-    return rows.map((row, index) => {
+    const data = await this.provider.getMany(keysOrPaths.map(str => str.split('.')[0]));
+    return data.map((value, index) => {
       const [, ...path] = keysOrPaths[index].split('.');
-      const value = this.serializer ? this.serializer(row.value) : row.value;
+      if (this.deserializer) {
+        value = this.deserializer(value);
+      }
       return path.length ? [keysOrPaths[index], _get(value, path)] : [keysOrPaths[index], value];
     });
   }
 
   /**
    * Returns one or more random values from the database.
-   * @param {integer} count Defaults to 1. The number of random key/value pairs to get.
+   * @param {number} count Defaults to 1. The number of random key/value pairs to get.
    * @return {Promise<Array.<Array>>} An array of key/value pairs each in their own array.
    * The array of values should never contain duplicates. If the requested count is higher than the number
    * of rows in the database, only the available number of rows will be returned, in randomized order.
@@ -154,19 +156,19 @@ class Josh {
    */
   async random(count) {
     await this.readyCheck();
-    return this.provider.random(count);
+    return await this.provider.random(count);
   }
 
   /**
   * Returns one or more random keys from the database.
-  * @param {integer} count Defaults to 1. The number of random key/value pairs to get.
+  * @param {number} count Defaults to 1. The number of random key/value pairs to get.
   * @return {Promise<Array.<string>>} An array of string keys in a randomized order.
   * The array of keys should never contain duplicates. If the requested count is higher than the number
   * of rows in the database, only the available number of rows will be returned.
   */
   async randomKey(count) {
     await this.readyCheck();
-    return this.provider.randomKey(count);
+    return await this.provider.randomKey(count);
   }
 
   /**
@@ -199,7 +201,7 @@ class Josh {
 
   /**
    * Get the amount of rows inside the database.
-   * @return {Promise<integer>} An integer equal to the amount of stored key/value pairs.
+   * @return {Promise<number>} An integer equal to the amount of stored key/value pairs.
    */
   get size() {
     return this.readyCheck().then(() => this.provider.count());
@@ -283,13 +285,13 @@ class Josh {
       await this.set(keyOrPath, defaultValue);
       return defaultValue;
     } else {
-      return this.get(keyOrPath);
+      return await this.get(keyOrPath);
     }
   }
 
   /**
    * Remove a key/value pair, or the property and value at a specific path, or clear the database.
-   * @param {string} keyOrPath Either a key, or full path, of the value you want to delete.
+   * @param {string|symbol} keyOrPath Either a key, or full path, of the value you want to delete.
    * If providing a path, only the value located at the path is deleted.
    * Alternatively: josh.delete(josh.all) will clear the database of all data.
    * @return {Promise<Josh>} This database wrapper, useful if you want to chain more instructions for Josh.
