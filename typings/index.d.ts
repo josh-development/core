@@ -31,6 +31,8 @@ declare module "josh" {
 
     public set(keyOrPath: string, value: any): Promise<Josh<T>>;
 
+    public setMany(sets: [string, any][]): Promise<Josh<T>>;
+
     public update(
       keyOrPath: string,
       input: T | ((previousValue: T) => T)
@@ -48,7 +50,7 @@ declare module "josh" {
 
     public remove(
       keyOrPath: string,
-      value: T | ((value: T) => Promise<boolean> | boolean)
+      value: T | ((value: T) => boolean)
     ): Promise<Josh<T>>;
 
     public inc(keyOrPath: string): Promise<Josh<T>>;
@@ -56,14 +58,21 @@ declare module "josh" {
     public dec(keyOrPath: string): Promise<Josh<T>>;
 
     public find(
-      valueOrFn: string | ((value: T) => Promise<boolean> | boolean),
-
+      valueOrFn: string | ((value: T) => Promise<boolean>),
       path?: string
     ): Promise<[string, T]>;
 
     public filter(
-      valueOrFn: string | ((value: T) => Promise<boolean> | boolean),
+      valueOrFn: string | ((value: T) => Promise<boolean>),
       path?: string
     ): Promise<[string, T][]>;
+
+    public get autoId(): Promise<string>;
+
+    public import(
+      data: string,
+      overwrite?: boolean,
+      clear?: boolean
+    ): Promise<Josh<T>>;
   }
 }
