@@ -441,7 +441,7 @@ class Josh {
    * - A path is mandatory when checking by value.
    * - The value must be simple: string, boolean, integer. It cannot be an object or array.
    * @param {string} path Optional on functions, Mandatory on values. If provided, the function or value acts on what's at that path.
-   * @return {Promise<Array>} Returns an array composed of the full value (NOT the one at the path!), and the key.
+   * @return {Promise<Array.<Array>>} Returns an array of key/value pair(s) that successfully passes the provided function.
    *
    */
   async filter(valueOrFn, path) {
