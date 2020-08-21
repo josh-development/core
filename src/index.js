@@ -3,6 +3,7 @@ const {
   isArray,
   isFunction,
   get: _get,
+  isNil,
 } = require('lodash');
 
 // Custom error codes with stack support.
@@ -32,25 +33,23 @@ class Josh {
    * This function may return a value, or a promise that resolves to that value (in other words, can be an async function).
    * @example
    * const Josh = require("josh");
+   * const provider = require("@josh-providers/sqlite");
    *
    * // sqlite-based database, with default options
    * const sqliteDB = new Josh({
    *   name: 'mydatabase',
-   *   provider: '@josh-providers/sqlite',
+   *   provider,
    * });
    */
   constructor(options = {}) {
     const {
-      provider,
+      provider: Provider,
       name,
       providerOptions,
     } = options;
 
     // Just grab the version from package.json
     this.version = pkgdata.version;
-
-    // Require the provider given by the user
-    const Provider = require(provider);
 
     // Fail miserably and weep if no provider, or no name, was given during initialization
     if (!Provider || !name) {
@@ -179,8 +178,14 @@ class Josh {
    */
   async has(keyOrPath) {
     await this.readyCheck();
-    const [key, ...path] = keyOrPath.split('.');
-    return await this.provider.has(key, path);
+    try {
+      const [key, ...path] = keyOrPath.split('.');
+      return this.provider.has(key, path);
+    } catch(err) {
+      console.log(keyOrPath);
+      console.log(`Error on ${keyOrPath}: ${err}`);
+      return null;
+    }
   }
 
   /**
@@ -219,10 +224,27 @@ class Josh {
    */
   async set(keyOrPath, value) {
     await this.readyCheck();
+    await this.provider.keyCheck(keyOrPath);
     const [key, ...path] = keyOrPath.split('.');
-    this.provider.keyCheck(key);
     await this.provider.set(key, path, this.serializer ? this.serializer(value) : value);
     return this;
+  }
+
+  /**
+   * Store many values at once in the database. DOES NOT SUPPORT PATHS. Or autoId.
+   * @param {Array<Array>} data The data to insert. Must be an array where each element is a [key, value] array.
+   * @param {boolean} overwrite Whether to overwrite existing keys. Since this method does not support paths, existin data will be lost.
+   * @return {Promise<Josh>} This database wrapper, useful if you want to chain more instructions for Josh.
+   * @example
+   * josh.setMany([
+   *   ["thinga", "majig"],
+   *   ["foo", "bar"],
+   *   ["isCool", true]
+   * ]);
+   */
+  async setMany(data, overwrite) {
+    await this.readyCheck();
+    await this.provider.setMany(data, overwrite);
   }
 
   /**
@@ -449,6 +471,47 @@ class Josh {
     return isFunction(valueOrFn) ?
       this.provider.filterByFunction(valueOrFn, path) :
       this.provider.filterByValue(valueOrFn, path);
+  }
+
+  /**
+   * Get an automatic ID for insertion of a new record.
+   * @return {Promise<string>} A unique ID to insert data.
+   * @example
+   * const Josh = require("josh");
+   * const provider = require("@josh-providers/sqlite");
+   *
+   *
+   * const sqliteDB = new Josh({
+   *   name: 'mydatabase',
+   *   provider,
+   * });
+   * (async() => {
+   *   const newId = await sqliteDB.autoId();
+   *   console.log("Inserting new row with ID: ", newID);
+   *   sqliteDB.set(newId, "This is a new test value");
+   * })();
+   */
+  async autoId() {
+    await this.readyCheck();
+    return await this.provider.autoId();
+  }
+
+  /**
+  * Import an existing json export from josh or enmap. This data must have been exported from josh or enmap,
+  * and must be from a version that's equivalent or lower than where you're importing it.
+  * @param {string} data The data to import to Josh. Must contain all the required fields provided by export()
+  * @param {boolean} overwrite Defaults to `true`. Whether to overwrite existing key/value data with incoming imported data
+  * @param {boolean} clear Defaults to `false`. Whether to clear the enmap of all data before importing
+  * (**__WARNING__**: Any exiting data will be lost! This cannot be undone.)
+   * @return {Promise<Josh>} This database wrapper, useful if you want to chain more instructions for Josh.
+  */
+  async import(data, overwrite = true, clear = false) {
+    await this.readyCheck();
+    if (clear) await this.delete(this.all);
+    if (isNil(data)) throw new Err(`No data provided for import() in "${this.name}"`, 'JoshImportError');
+    const parsed = JSON.parse(data);
+    await this.provider.setMany(parsed.keys.map(row => [row.key, row.value]), overwrite);
+    return this;
   }
 
 }

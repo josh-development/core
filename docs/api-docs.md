@@ -7,13 +7,14 @@
     * [new Josh([options])](#new-josh-options)
     * [.keys](#josh-keys-promise-less-than-array-string-greater-than) ⇒ <code>Promise.&lt;Array.String&gt;</code>
     * [.values](#josh-values-promise-less-than-array-greater-than) ⇒ <code>Promise.&lt;Array&gt;</code>
-    * [.size](#josh-size-promise-less-than-integer-greater-than) ⇒ <code>Promise.&lt;integer&gt;</code>
+    * [.size](#josh-size-promise-less-than-number-greater-than) ⇒ <code>Promise.&lt;number&gt;</code>
     * [.get(keyOrPath)](#josh-get-keyorpath-promise-less-than-greater-than) ⇒ <code>Promise.&lt;\*&gt;</code>
     * [.getMany(keysOrPaths)](#josh-getmany-keysorpaths-promise-less-than-array-less-than-array-greater-than-greater-than) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
     * [.random(count)](#josh-random-count-promise-less-than-array-less-than-array-greater-than-greater-than) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
     * [.randomKey(count)](#josh-randomkey-count-promise-less-than-array-less-than-string-greater-than-greater-than) ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code>
     * [.has(keyOrPath)](#josh-has-keyorpath-promise-less-than-boolean-greater-than) ⇒ <code>Promise.&lt;boolean&gt;</code>
     * [.set(keyOrPath, value)](#josh-set-keyorpath-value-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
+    * [.setMany(data, overwrite)](#josh-setmany-data-overwrite-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
     * [.update(keyOrPath, input)](#josh-update-keyorpath-input-promise-less-than-object-greater-than) ⇒ <code>Promise.&lt;Object&gt;</code>
     * [.ensure(keyOrPath, defaultValue)](#josh-ensure-keyorpath-defaultvalue-promise-less-than-greater-than) ⇒ <code>Promise.&lt;\*&gt;</code>
     * [.delete(keyOrPath)](#josh-delete-keyorpath-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
@@ -23,6 +24,8 @@
     * [.dec(keyOrPath)](#josh-dec-keyorpath-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
     * [.find(valueOrFn, path)](#josh-find-valueorfn-path-promise-less-than-array-greater-than) ⇒ <code>Promise.&lt;Array&gt;</code>
     * [.filter(valueOrFn, path)](#josh-filter-valueorfn-path-promise-less-than-array-greater-than) ⇒ <code>Promise.&lt;Array&gt;</code>
+    * [.autoId()](#josh-autoid-promise-less-than-string-greater-than) ⇒ <code>Promise.&lt;string&gt;</code>
+    * [.import(data, overwrite, clear)](#josh-import-data-overwrite-clear-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
 
 <a name="new_Josh_new"></a>
 
@@ -43,11 +46,12 @@ Initializes a new Josh, with options.
 **Example**  
 ```js
 const Josh = require("josh");
+const provider = require("@josh-providers/sqlite");
 
 // sqlite-based database, with default options
 const sqliteDB = new Josh({
   name: 'mydatabase',
-  provider: '@josh-providers/sqlite',
+  provider,
 });
 ```
 <a name="Josh+keys"></a>
@@ -66,11 +70,11 @@ Get all the values in the database.
 **Returns**: <code>Promise.&lt;Array&gt;</code> - An array of all the values stored in the database.  
 <a name="Josh+size"></a>
 
-### josh.size ⇒ <code>Promise.&lt;integer&gt;</code>
+### josh.size ⇒ <code>Promise.&lt;number&gt;</code>
 Get the amount of rows inside the database.
 
 **Kind**: instance property of [<code>Josh</code>](#josh)  
-**Returns**: <code>Promise.&lt;integer&gt;</code> - An integer equal to the amount of stored key/value pairs.  
+**Returns**: <code>Promise.&lt;number&gt;</code> - An integer equal to the amount of stored key/value pairs.  
 <a name="Josh+get"></a>
 
 ### josh.get(keyOrPath) ⇒ <code>Promise.&lt;\*&gt;</code>
@@ -97,7 +101,7 @@ If paths are provided, the "key" is the full path.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| keysOrPaths | <code>\*</code> | An array of keys or paths to return, or `db.all` to retrieve them all. |
+| keysOrPaths | <code>Array.&lt;string&gt;</code> \| <code>symbol</code> | An array of keys or paths to return, or `db.all` to retrieve them all. |
 
 <a name="Josh+random"></a>
 
@@ -112,7 +116,7 @@ Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c',
 
 | Param | Type | Description |
 | --- | --- | --- |
-| count | <code>integer</code> | Defaults to 1. The number of random key/value pairs to get. |
+| count | <code>number</code> | Defaults to 1. The number of random key/value pairs to get. |
 
 <a name="Josh+randomKey"></a>
 
@@ -126,7 +130,7 @@ of rows in the database, only the available number of rows will be returned.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| count | <code>integer</code> | Defaults to 1. The number of random key/value pairs to get. |
+| count | <code>number</code> | Defaults to 1. The number of random key/value pairs to get. |
 
 <a name="Josh+has"></a>
 
@@ -154,6 +158,27 @@ If a path is provided, and the stored value is an object, only the value at the 
 | keyOrPath | <code>string</code> | Either a key, or a full path, where you want to store the value. For more information on how path works, see https://josh.evie.dev/path |
 | value | <code>\*</code> | The value to store for the key, or in the path, specified. All values MUST be "simple" javascript values: Numbers, Booleans, Strings, Arrays, Objects. If you want to store a "complex" thing such as an instance of a class, please use a Serializer to convert it to a storable value. |
 
+<a name="Josh+setMany"></a>
+
+### josh.setMany(data, overwrite) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
+Store many values at once in the database. DOES NOT SUPPORT PATHS. Or autoId.
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#Josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>Array.&lt;Array&gt;</code> | The data to insert. Must be an array where each element is a [key, value] array. |
+| overwrite | <code>boolean</code> | Whether to overwrite existing keys. Since this method does not support paths, existin data will be lost. |
+
+**Example**  
+```js
+josh.setMany([
+  ["thinga", "majig"],
+  ["foo", "bar"],
+  ["isCool", true]
+]);
+```
 <a name="Josh+update"></a>
 
 ### josh.update(keyOrPath, input) ⇒ <code>Promise.&lt;Object&gt;</code>
@@ -223,7 +248,7 @@ Remove a key/value pair, or the property and value at a specific path, or clear 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| keyOrPath | <code>string</code> | Either a key, or full path, of the value you want to delete. If providing a path, only the value located at the path is deleted. Alternatively: josh.delete(josh.all) will clear the database of all data. |
+| keyOrPath | <code>string</code> \| <code>symbol</code> | Either a key, or full path, of the value you want to delete. If providing a path, only the value located at the path is deleted. Alternatively: josh.delete(josh.all) will clear the database of all data. |
 
 <a name="Josh+push"></a>
 
@@ -357,4 +382,42 @@ Either a function OR a value **must** be provided.
 | --- | --- | --- |
 | valueOrFn | <code>function</code> \| <code>string</code> | Mandatory. Either a function, or simple value. If using a function: it will run on either the stored value, OR the value at the path given if it's provided. - The function receives the value (or value at the path) as well the the key currently being checked. - The function must return a boolean or truthy/falsey value! Oh and the function can be async, too ;) If using a value: - A path is mandatory when checking by value. - The value must be simple: string, boolean, integer. It cannot be an object or array. |
 | path | <code>string</code> | Optional on functions, Mandatory on values. If provided, the function or value acts on what's at that path. |
+
+<a name="Josh+autoId"></a>
+
+### josh.autoId() ⇒ <code>Promise.&lt;string&gt;</code>
+Get an automatic ID for insertion of a new record.
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: <code>Promise.&lt;string&gt;</code> - A unique ID to insert data.  
+**Example**  
+```js
+const Josh = require("josh");
+const provider = require("@josh-providers/sqlite");
+
+
+const sqliteDB = new Josh({
+  name: 'mydatabase',
+  provider,
+});
+(async() => {
+  const newId = await sqliteDB.autoId();
+  console.log("Inserting new row with ID: ", newID);
+  sqliteDB.set(newId, "This is a new test value");
+})();
+```
+<a name="Josh+import"></a>
+
+### josh.import(data, overwrite, clear) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
+Import an existing json export from josh or enmap. This data must have been exported from josh or enmap,
+and must be from a version that's equivalent or lower than where you're importing it.
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#Josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| data | <code>string</code> |  | The data to import to Josh. Must contain all the required fields provided by export() |
+| overwrite | <code>boolean</code> | <code>true</code> | Defaults to `true`. Whether to overwrite existing key/value data with incoming imported data |
+| clear | <code>boolean</code> | <code>false</code> | Defaults to `false`. Whether to clear the enmap of all data before importing (**__WARNING__**: Any exiting data will be lost! This cannot be undone.) |
 
