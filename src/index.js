@@ -517,6 +517,25 @@ class Josh {
     return this;
   }
 
+  /**
+   * Exports your entire database in JSON format. Useable as import data for both Josh and Enmap.
+   * ***WARNING: This currently requires loading the entire database in memory to write to JSON and might fail on large datasets (more than 1Gb)***
+   * @return {Promise<string>} A JSON string that can be saved wherever you need it.
+   * @example
+   * const fs = require("fs");
+   * josh.export().then(data => fs.writeFileSync("./export.json"), data));
+   */
+  async export() {
+    await this.readyCheck();
+    const data = this.provider.getAll();
+    return JSON.stringify({
+      name: this.name,
+      version: pkgdata.version,
+      exportDate: Date.now(),
+      keys: data.map(([key, value]) => ({ key, value }))
+    }, null, 2);
+  }
+
 }
 
 module.exports = Josh;

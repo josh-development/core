@@ -23,9 +23,10 @@
     * [.inc(keyOrPath)](#josh-inc-keyorpath-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
     * [.dec(keyOrPath)](#josh-dec-keyorpath-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
     * [.find(valueOrFn, path)](#josh-find-valueorfn-path-promise-less-than-array-greater-than) ⇒ <code>Promise.&lt;Array&gt;</code>
-    * [.filter(valueOrFn, path)](#josh-filter-valueorfn-path-promise-less-than-array-greater-than) ⇒ <code>Promise.&lt;Array&gt;</code>
+    * [.filter(valueOrFn, path)](#josh-filter-valueorfn-path-promise-less-than-array-less-than-array-greater-than-greater-than) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
     * [.autoId()](#josh-autoid-promise-less-than-string-greater-than) ⇒ <code>Promise.&lt;string&gt;</code>
     * [.import(data, overwrite, clear)](#josh-import-data-overwrite-clear-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
+    * [.export()](#josh-export-promise-less-than-string-greater-than) ⇒ <code>Promise.&lt;string&gt;</code>
 
 <a name="new_Josh_new"></a>
 
@@ -369,14 +370,14 @@ josh.find(value => value === "john", "user.firstName");
 ```
 <a name="Josh+filter"></a>
 
-### josh.filter(valueOrFn, path) ⇒ <code>Promise.&lt;Array&gt;</code>
+### josh.filter(valueOrFn, path) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
 Filters for values within the database, either through an exact value match, or a function.
 Useful for Objects and Array values, will not work on "simple" values like strings.
 Returns all matches found - if you need a single value, use find() instead.
 Either a function OR a value **must** be provided.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: <code>Promise.&lt;Array&gt;</code> - Returns an array composed of the full value (NOT the one at the path!), and the key.  
+**Returns**: <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code> - Returns an array of key/value pair(s) that successfully passes the provided function.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -421,3 +422,16 @@ and must be from a version that's equivalent or lower than where you're importin
 | overwrite | <code>boolean</code> | <code>true</code> | Defaults to `true`. Whether to overwrite existing key/value data with incoming imported data |
 | clear | <code>boolean</code> | <code>false</code> | Defaults to `false`. Whether to clear the enmap of all data before importing (**__WARNING__**: Any exiting data will be lost! This cannot be undone.) |
 
+<a name="Josh+export"></a>
+
+### josh.export() ⇒ <code>Promise.&lt;string&gt;</code>
+Exports your entire database in JSON format. Useable as import data for both Josh and Enmap.
+***WARNING: This currently requires loading the entire database in memory to write to JSON and might fail on large datasets (more than 1Gb)***
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: <code>Promise.&lt;string&gt;</code> - A JSON string that can be saved wherever you need it.  
+**Example**  
+```js
+const fs = require("fs");
+josh.export().then(data => fs.writeFileSync("./export.json"), data));
+```
