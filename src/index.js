@@ -77,6 +77,9 @@ class Josh {
     this.serializer = options.serializer;
     this.deserializer = options.deserializer;
 
+    this.autoEnsure = options.autoEnsure;
+
+
     // Connect the provider to its database.
     this.provider.init().then(() => {
       this.ready();
