@@ -1,6 +1,6 @@
 {
   "name": "josh",
-  "version": "0.0.24",
+  "version": "0.1.0",
   "description": "Javascript Object Storage Helper",
   "main": "src/index.js",
   "scripts": {
