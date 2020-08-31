@@ -126,7 +126,7 @@ class Josh {
    * @returns {Array<Josh>} An array of initialized Josh's.
    */
   static multi(names, options = {}) {
-    if (!names.length || names.length < 1) {
+    if (!isArray(names) || names.length < 1) {
       throw new Err('"names" argument must be an array of string names.', 'JoshTypeError');
     }
 
