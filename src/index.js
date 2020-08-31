@@ -109,6 +109,36 @@ class Josh {
   }
 
   /**
+   * Initialize multiple Josh's easily.
+   * @param {Array<string>} names Array of strings. Each array entry will create a separate josh with that name.
+   * @param {Object} options Options object to pass to each josh, excluding the name..
+   * @example
+   * // Using local variables.
+   * const Josh = require('josh');
+   * const provider = require('@josh-providers/sqlite');
+   * const { settings, tags, blacklist } = Josh.multi(['settings', 'tags', 'blacklist'], { provider });
+   *
+   * // Attaching to an existing object (for instance some API's client)
+   * const Josh = require("josh");
+   * const provider = require('@josh-providers/sqlite');
+   * Object.assign(client, Josh.multi(["settings", "tags", "blacklist"], { provider }));
+   *
+   * @returns {Array<Josh>} An array of initialized Josh's.
+   */
+  static multi(names, options = {}) {
+    if (!names.length || names.length < 1) {
+      throw new Err('"names" argument must be an array of string names.', 'JoshTypeError');
+    }
+
+    const returnvalue = {};
+    for (const name of names) {
+      const josh = new Josh({ name, ...options });
+      returnvalue[name] = josh;
+    }
+    return returnvalue;
+  }
+
+  /**
    * Retrieves (fetches) a value from the database. If a simple key is provided, returns the value.
    * If a path is provided, will only return the value at that path, if it exists.
    * @param {string} keyOrPath Either a key, or full path, of the value you want to get.
