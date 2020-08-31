@@ -99,6 +99,15 @@ class Josh {
     if (this.isDestroyed) throw new Err('This Josh has been destroyed and can no longer be used without being re-initialized.', 'JoshDestroyedError');
   }
 
+  /*
+  * Internal Method. Splits the key and path
+  */
+  getKeyAndPath(keyOrPath) {
+    if(!keyOrPath) throw new Err('KeyOrPath must not be null.')
+    const [key, ...path] = keyOrPath.split(".");
+    return [key, path.join(".")];
+  }
+
   /**
    * Retrieves (fetches) a value from the database. If a simple key is provided, returns the value.
    * If a path is provided, will only return the value at that path, if it exists.
@@ -108,7 +117,7 @@ class Josh {
    */
   async get(keyOrPath) {
     await this.readyCheck();
-    const [key, ...path] = keyOrPath.split('.');
+    const [key, path] = this.getKeyAndPath(keyOrPath);
     const hasKey = await this.has(keyOrPath);
     let value;
     if (!hasKey) {
@@ -182,7 +191,7 @@ class Josh {
   async has(keyOrPath) {
     await this.readyCheck();
     try {
-      const [key, ...path] = keyOrPath.split('.');
+      const [key, path] = this.getKeyAndPath(keyOrPath);
       return this.provider.has(key, path);
     } catch(err) {
       console.log(keyOrPath);
@@ -227,8 +236,8 @@ class Josh {
    */
   async set(keyOrPath, value) {
     await this.readyCheck();
-    await this.provider.keyCheck(keyOrPath);
-    const [key, ...path] = keyOrPath.split('.');
+    // await this.provider.keyCheck(keyOrPath);
+    const [key, path] = this.getKeyAndPath(keyOrPath);
     await this.provider.set(key, path, this.serializer ? this.serializer(value) : value);
     return this;
   }
@@ -326,7 +335,7 @@ class Josh {
     if (keyOrPath === this.all) {
       await this.provider.clear();
     } else {
-      const [key, ...path] = keyOrPath.split('.');
+      const [key, path] = this.getKeyAndPath(keyOrPath);
       await this.provider.delete(key, path);
     }
     return this;
@@ -342,7 +351,7 @@ class Josh {
    */
   async push(keyOrPath, value, allowDupes = true) {
     await this.readyCheck();
-    const [key, ...path] = keyOrPath.split('.');
+    const [key, path] = this.getKeyAndPath(keyOrPath);
     await this.provider.push(key, path, value, allowDupes);
     return this;
   }
@@ -363,7 +372,7 @@ class Josh {
    */
   async remove(keyOrPath, value) {
     await this.readyCheck();
-    const [key, ...path] = keyOrPath.split('.');
+    const [key, path] = this.getKeyAndPath(keyOrPath);
     await this.provider.remove(key, path, value);
     return this;
   }
@@ -375,7 +384,7 @@ class Josh {
    */
   async inc(keyOrPath) {
     await this.readyCheck();
-    const [key, ...path] = keyOrPath.split('.');
+    const [key, path] = this.getKeyAndPath(keyOrPath);
     await this.provider.inc(key, path);
     return this;
   }
@@ -387,7 +396,7 @@ class Josh {
    */
   async dec(keyOrPath) {
     await this.readyCheck();
-    const [key, ...path] = keyOrPath.split('.');
+    const [key, path] = this.getKeyAndPath(keyOrPath);
     await this.provider.dec(key, path);
     return this;
   }
@@ -397,14 +406,14 @@ class Josh {
    * Useful for Objects and Array values, will not work on "simple" values like strings.
    * Returns the first found match - if you need more than one result, use filter() instead.
    * Either a function OR a value **must** be provided.
-   * @param {Function|string} valueOrFn Mandatory. Either a function, or simple value.
+   * @param {Function|string} pathOrFn Mandatory. Either a function, or the path in which to find the value.
    * If using a function: it will run on either the stored value, OR the value at the path given if it's provided.
    * - The function receives the value (or value at the path) as well the the key currently being checked.
    * - The function must return a boolean or truthy/falsey value! Oh and the function can be async, too ;)
-   * If using a value:
-   * - A path is mandatory when checking by value.
+   * If using a path:
+   * - A "value" predicate is mandatory when checking by path.
    * - The value must be simple: string, boolean, integer. It cannot be an object or array.
-   * @param {string} path Optional on functions, Mandatory on values. If provided, the function or value acts on what's at that path.
+   * @param {string} predicate Optional on functions, Mandatory on path finds. If provided, the function or value acts on what's at that path.
    * @return {Promise<Array>} Returns an array composed of the full value (NOT the one at the path!), and the key.
    * @example
    * // Assuming:
@@ -423,7 +432,7 @@ class Josh {
    * });
    *
    * // Regular string find:
-   * josh.find("john", "user.firstName")
+   * josh.find("user.firstName", "john")
    *
    * // Simple function find:
    * josh.find(value => value.user.firstName === "john");
@@ -446,11 +455,11 @@ class Josh {
    *   }
    * }]
    */
-  async find(valueOrFn, path) {
+  async find(pathOrFn, predicate) {
     await this.readyCheck();
-    return isFunction(valueOrFn) ?
-      this.provider.findByFunction(valueOrFn, path) :
-      this.provider.findByValue(valueOrFn, path);
+    return isFunction(pathOrFn) ?
+      this.provider.findByFunction(pathOrFn, predicate) :
+      this.provider.findByValue(pathOrFn, predicate);
   }
 
   /**
@@ -458,22 +467,22 @@ class Josh {
    * Useful for Objects and Array values, will not work on "simple" values like strings.
    * Returns all matches found - if you need a single value, use find() instead.
    * Either a function OR a value **must** be provided.
-   * @param {Function|string} valueOrFn Mandatory. Either a function, or simple value.
+   * @param {Function|string} pathOrFn Mandatory. Either a function, or the path in which to find the value.
    * If using a function: it will run on either the stored value, OR the value at the path given if it's provided.
    * - The function receives the value (or value at the path) as well the the key currently being checked.
    * - The function must return a boolean or truthy/falsey value! Oh and the function can be async, too ;)
-   * If using a value:
-   * - A path is mandatory when checking by value.
+   * If using a path:
+   * - A "value" predicate is mandatory when checking by path.
    * - The value must be simple: string, boolean, integer. It cannot be an object or array.
-   * @param {string} path Optional on functions, Mandatory on values. If provided, the function or value acts on what's at that path.
+   * @param {string} predicate Optional on functions, Mandatory on path finds. If provided, the function or value acts on what's at that path.
    * @return {Promise<Array.<Array>>} Returns an array of key/value pair(s) that successfully passes the provided function.
    *
    */
-  async filter(valueOrFn, path) {
+  async filter(pathOrFn, predicate) {
     await this.readyCheck();
-    return isFunction(valueOrFn) ?
-      this.provider.filterByFunction(valueOrFn, path) :
-      this.provider.filterByValue(valueOrFn, path);
+    return isFunction(pathOrFn) ?
+      this.provider.filterByFunction(pathOrFn, predicate) :
+      this.provider.filterByValue(pathOrFn, predicate);
   }
 
   /**
@@ -515,6 +524,25 @@ class Josh {
     const parsed = JSON.parse(data);
     await this.provider.setMany(parsed.keys.map(row => [row.key, row.value]), overwrite);
     return this;
+  }
+
+  /**
+   * Exports your entire database in JSON format. Useable as import data for both Josh and Enmap.
+   * ***WARNING: This currently requires loading the entire database in memory to write to JSON and might fail on large datasets (more than 1Gb)***
+   * @return {Promise<string>} A JSON string that can be saved wherever you need it.
+   * @example
+   * const fs = require("fs");
+   * josh.export().then(data => fs.writeFileSync("./export.json"), data));
+   */
+  async export() {
+    await this.readyCheck();
+    const data = this.provider.getAll();
+    return JSON.stringify({
+      name: this.name,
+      version: pkgdata.version,
+      exportDate: Date.now(),
+      keys: data.map(([key, value]) => ({ key, value }))
+    }, null, 2);
   }
 
 }
