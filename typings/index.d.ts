@@ -58,12 +58,12 @@ declare module "josh" {
     public dec(keyOrPath: string): Promise<Josh<T>>;
 
     public find(
-      valueOrFn: string | ((value: T) => Promise<boolean> | boolean),
+      valueOrFn: string | ((value: T) => boolean),
       path?: string
     ): Promise<[string, T]>;
 
     public filter(
-      valueOrFn: string | ((value: T) => Promise<boolean> | boolean),
+      valueOrFn: string | ((value: T) => boolean),
       path?: string
     ): Promise<[string, T][]>;
 
@@ -74,5 +74,7 @@ declare module "josh" {
       overwrite?: boolean,
       clear?: boolean
     ): Promise<Josh<T>>;
+
+    public export(): Promise<string>;
   }
 }
