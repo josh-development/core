@@ -74,5 +74,7 @@ declare module "josh" {
       overwrite?: boolean,
       clear?: boolean
     ): Promise<Josh<T>>;
+
+    public export(): Promise<string>;
   }
 }
