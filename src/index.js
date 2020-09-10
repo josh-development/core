@@ -126,7 +126,7 @@ class Josh {
     } else {
       value = await this.provider.get(key);
     }
-    value = this.deserializer ? this.deserializer(value, key) : value;
+    value = this.deserializer ? this.deserializer(value, key, path) : value;
     return path.length ? _get(value, path) : value;
   }
 
@@ -142,7 +142,7 @@ class Josh {
     await this.readyCheck();
     if (keysOrPaths === this.all) {
       const allValues = await this.provider.getAll();
-      return this.deserializer ? allValues.map(value => [value[0], this.deserializer(value[1], value[0])]) : allValues;
+      return this.deserializer ? allValues.map(value => [value[0], this.deserializer(value[1], value[0], '')]) : allValues;
     }
     if (!isArray(keysOrPaths)) {
       throw new Err('This function requires an array of keys or values', 'JoshArgumentError');
@@ -151,7 +151,7 @@ class Josh {
     return data.map((value, index) => {
       const [, ...path] = keysOrPaths[index].split('.');
       if (this.deserializer) {
-        value = [value[0], this.deserializer(value[1], value[0])];
+        value = [value[0], this.deserializer(value[1], value[0], '')];
       }
       return path.length ? [keysOrPaths[index], _get(value, path)] : [keysOrPaths[index], value];
     });
@@ -238,7 +238,7 @@ class Josh {
     await this.readyCheck();
     // await this.provider.keyCheck(keyOrPath);
     const [key, path] = this.getKeyAndPath(keyOrPath);
-    await this.provider.set(key, path, this.serializer ? this.serializer(value, key) : value);
+    await this.provider.set(key, path, this.serializer ? this.serializer(value, key, path) : value);
     return this;
   }
 
