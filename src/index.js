@@ -126,7 +126,7 @@ class Josh {
     } else {
       value = await this.provider.get(key);
     }
-    value = this.deserializer ? this.deserializer(value, key, path) : value;
+    value = this.deserializer ? this.deserializer(value, key, path.join('.')) : value;
     return path.length ? _get(value, path) : value;
   }
 
@@ -142,16 +142,20 @@ class Josh {
     await this.readyCheck();
     if (keysOrPaths === this.all) {
       const allValues = await this.provider.getAll();
-      return this.deserializer ? allValues.map(value => [value[0], this.deserializer(value[1], value[0], '')]) : allValues;
+      return this.deserializer ? allValues.map(value => {
+        const [key, content] = value;
+        return [key, this.deserializer(content, key, null)];
+      }) : allValues;
     }
     if (!isArray(keysOrPaths)) {
       throw new Err('This function requires an array of keys or values', 'JoshArgumentError');
     }
     const data = await this.provider.getMany(keysOrPaths.map(str => str.split('.')[0]));
     return data.map((value, index) => {
-      const [, ...path] = keysOrPaths[index].split('.');
+      const [key, ...path] = keysOrPaths[index].split('.');
       if (this.deserializer) {
-        value = [value[0], this.deserializer(value[1], value[0], '')];
+        const [, content] = value;
+        value = [key, this.deserializer(content, key, path)];
       }
       return path.length ? [keysOrPaths[index], _get(value, path)] : [keysOrPaths[index], value];
     });
