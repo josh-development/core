@@ -117,7 +117,7 @@ class Josh {
    */
   async get(keyOrPath) {
     await this.readyCheck();
-    const [key, path] = this.getKeyAndPath(keyOrPath);
+    const [key, ...path] = this.getKeyAndPath(keyOrPath);
     const hasKey = await this.has(keyOrPath);
     let value;
     if (!hasKey) {
