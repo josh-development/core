@@ -389,7 +389,7 @@ class Josh {
 
   /**
    * Decrements (remove 1 from the number) the stored value.
-   * @param {*} keyOrPath  Either a key, or full path, to the value you want to decrement. The value must be a number.
+   * @param {*} keyOrPath Either a key, or full path, to the value you want to decrement. The value must be a number.
    * @return {Promise<Josh>} This database wrapper, useful if you want to chain more instructions for Josh.
    */
   async dec(keyOrPath) {
@@ -404,6 +404,7 @@ class Josh {
    * Useful for Objects and Array values, will not work on "simple" values like strings.
    * Returns the first found match - if you need more than one result, use filter() instead.
    * Either a function OR a value **must** be provided.
+   * Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
    * @param {Function|string} pathOrFn Mandatory. Either a function, or the path in which to find the value.
    * If using a function: it will run on either the stored value, OR the value at the path given if it's provided.
    * - The function receives the value (or value at the path) as well the the key currently being checked.
@@ -465,6 +466,7 @@ class Josh {
    * Useful for Objects and Array values, will not work on "simple" values like strings.
    * Returns all matches found - if you need a single value, use find() instead.
    * Either a function OR a value **must** be provided.
+   * Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
    * @param {Function|string} pathOrFn Mandatory. Either a function, or the path in which to find the value.
    * If using a function: it will run on either the stored value, OR the value at the path given if it's provided.
    * - The function receives the value (or value at the path) as well the the key currently being checked.
@@ -481,6 +483,103 @@ class Josh {
     return isFunction(pathOrFn) ?
       this.provider.filterByFunction(pathOrFn, predicate) :
       this.provider.filterByValue(pathOrFn, predicate);
+  }
+
+  /**
+   * Maps data from each value in your data. Works similarly to Array.map(), but can use both async functions, as well as paths.
+   * Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
+   * @param {Function|string} pathOrFn Mandatory. Either a function, or the path where to get the value from.
+   * If using a path, the value at the path will be returned, or null. 
+   * If using a function, the function is run on the entire value (no path is used). The function is given the `key` and `value` as arguments,
+   * and the value returned will be accessible in the return array.
+   * @return {Array<*>} An array of values mapped from the data.
+   */
+  async map(pathOrFn) {
+    await this.readyCheck();
+    return isFunction(pathOrFn) ?
+      this.provider.mapByFunction(pathOrFn) :
+      this.provider.mapByValue(pathOrFn);
+  }
+
+  /**
+   * Performs Array.includes() on a certain value. Works similarly to
+   * [Array.includes()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes).
+   * @param {string} keyOrPath Either a key, or full path, to the array you want to check for the value. The value must be an array.
+   * @param {*} value Either the value to check in the array, or a function to determine the presence of the value.
+   * If using a value, note that this won't work if the value you're checking for is an array or object - use a function for that.
+   * If using a function, the function takes in the value and index, and must return a boolean true when the value is the one you want.
+   * @return {boolean} Whether the value is included in the array.
+   * @example
+   * josh.set('arr', ['a', 'b', 1, 2, { foo: "bar"}]);
+   * 
+   * josh.includes('arr', 'a'); // true
+   * josh.includes('arr', 1) // true
+   * josh.includes('arr', val => val.foo === 'bar'); // true
+   */
+  async includes(keyOrPath, value) {
+    await this.readyCheck();
+    const [key, path] = this.getKeyAndPath(keyOrPath);
+    return this.provider.includes(key, path, value);
+  }
+
+  /**
+   * Checks whether *at least one key* contains the expected value. The loop stops once the value is found.
+   * @param {string} pathOrFn Either a function, or the full path to the value to check against the provided value.
+   * If using a path, the value at he path will be compared to the value provided as a second argument.
+   * If using a function, the function is given the *full* value for each key, along with the key itself, for each row in the database.
+   * It should return `true` if your match is found.
+   * @param {string|number|boolean|null} value The value to be checked at each path. Cannot be an object or array (use a function for those). 
+   * Ignored if a function is provided.
+   * @return {boolean} Whether the value was found or not (if one of the rows in the database match the value at path, or the function has returned true)
+   */
+  async some(pathOrFn, value) {
+    await this.readyCheck();
+    return isFunction(pathOrFn) ?
+      this.provider.someByFunction(pathOrFn) :
+      this.provider.someByValue(pathOrFn ,value);
+  }
+
+  /**
+   * Checks whether *every single key* contains the expected value. Identical to josh.some() except all must match except just one.
+   * @param {*} pathOrFn  Either a function, or the full path to the value to check against the provided value.
+   * If using a path, the value at he path will be compared to the value provided as a second argument.
+   * If using a function, the function is given the *full* value for each key, along with the key itself, for each row in the database.
+   * It should return `true` if your match is found.
+   * @param {string|number|boolean|null} value The value to be checked at each path. Cannot be an object or array (use a function for those). 
+   * @return {boolean} Whether the value was found or not, on ever single row.
+   */
+  async every(pathOrFn, value) {
+    await this.readyCheck();
+    return isFunction(pathOrFn) ?
+      this.provider.everyByFunction(pathOrFn) :
+      this.provider.everyByValue(pathOrFn, value);
+  }
+
+  // async reduce(fn, initialvalue)
+
+   /**
+   * Executes a mathematical operation on a value and saves the result in the database.
+   * @param {string} keyOrPath Either a key, or full path, to the numerical value you want to exceute math on. Must be an Number value.
+   * @param {string} operation Which mathematical operation to execute. Supports most
+   * math ops: =, -, *, /, %, ^, and english spelling of those operations.
+   * @param {number} operand The right operand of the operation.
+   * @param {string} path Optional. The property path to execute the operation on, if the value is an object or array.
+   * @return {Promise<Josh>} This database wrapper, useful if you want to chain more instructions for Josh.
+   * @example
+   * // Assuming
+   * josh.set("number", 42);
+   * josh.set("numberInObject", {sub: { anInt: 5 }});
+   *
+   * josh.math("number", "/", 2); // 21
+   * josh.math("number", "add", 5); // 26
+   * josh.math("number", "modulo", 3); // 2
+   * josh.math("numberInObject.sub.anInt", "+", 10); // 15
+   *
+   */
+  async math(keyOrPath, operation, operand) {
+    await this.readyCheck();
+    const [key, path] = this.getKeyAndPath(keyOrPath);
+    return this.provider.math(key, path, operation, operand);
   }
 
   /**
