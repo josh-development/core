@@ -19,52 +19,57 @@ declare module "josh" {
 
     public get size(): Promise<number>;
 
-    public get(keyOrPath: string): Promise<T>;
+    public get<K extends unknown = T>(keyOrPath: string): Promise<K>;
 
-    public getMany(keysOrPaths: string[] | symbol): Promise<T[][]>;
+    public getMany<K extends unknown = T>(
+      keyOrPaths: string[]
+    ): Promise<K[]>;
 
-    public random(count: number): Promise<T[][]>;
+    public random(count: number): Promise<[string, T][]>;
 
-    public randomKey(count: number): Promise<string[][]>;
+    public randomKey(count: number): Promise<string[]>;
 
     public has(keyOrPath: string): Promise<boolean>;
 
-    public set(keyOrPath: string, value: any): Promise<Josh<T>>;
-
-    public setMany(sets: [string, any][]): Promise<Josh<T>>;
-
-    public update(
+    public set<K extends unknown = T>(
       keyOrPath: string,
-      input: T | ((previousValue: T) => T)
-    ): Promise<T>;
+      value: K
+    ): Promise<Josh<T>>;
+
+    public setMany(data: [string, T][], overwrite?: boolean): Promise<Josh<T>>;
+
+    public update<K extends Partial<unknown> = Partial<T>>(
+      keyOrPath: string,
+      input: K
+    ): Promise<K>;
 
     public ensure(keyOrPath: string, defaultValue: T): Promise<T>;
 
     public delete(keyOrPath: string | symbol): Promise<Josh<T>>;
 
-    public push(
+    public push<K extends unknown = T>(
       keyOrPath: string,
-      value: T,
+      value: K,
       allowDupes: boolean
     ): Promise<Josh<T>>;
 
-    public remove(
+    public remove<K extends unknown = T>(
       keyOrPath: string,
-      value: T | ((value: T) => boolean)
+      value: K
     ): Promise<Josh<T>>;
 
     public inc(keyOrPath: string): Promise<Josh<T>>;
 
     public dec(keyOrPath: string): Promise<Josh<T>>;
 
-    public find(
-      valueOrFn: string | ((value: T) => Promise<boolean> | boolean),
-      path?: string
-    ): Promise<[string, T]>;
+    public find<K extends unknown = T>(
+      pathOrFn: string | ((value: K) => Promise<boolean> | boolean),
+      predicate?: string
+    ): Promise<T>;
 
-    public filter(
-      valueOrFn: string | ((value: T) => Promise<boolean> | boolean),
-      path?: string
+    public filter<K extends unknown = T>(
+      pathOrFn: string | ((value: K) => Promise<boolean> | boolean),
+      predicate?: string
     ): Promise<[string, T][]>;
 
     public map<K extends unknown = T>(
