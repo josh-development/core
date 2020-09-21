@@ -1,7 +1,7 @@
 declare module "josh" {
   export interface JoshOptions<T = unknown> {
     name: string;
-    provider: string;
+    provider: unknown,
     ensureProps?: boolean;
     autoEnsure?: T;
     serializer?: (data: T) => Promise<T>;
