@@ -67,6 +67,32 @@ declare module "josh" {
       path?: string
     ): Promise<[string, T][]>;
 
+    public map<K extends unknown = T>(
+      pathOrFn: string | ((value: T) => Promise<K> | K)
+    ): Promise<K[]>;
+
+    public includes<K extends unknown = T>(
+      keyOrPath: string,
+      value: K
+    ): Promise<boolean>;
+
+    public some(
+      keyOrPath: string,
+      value: string | number | boolean | null
+    ): Promise<boolean>;
+
+    public every(
+      pathOrFn: string,
+      value: string | number | boolean | null
+    ): Promise<boolean>;
+
+    public math(
+      keyOrPath: string,
+      operation: string,
+      operand: number,
+      path?: string
+    ): Promise<Josh<T>>;
+
     public get autoId(): Promise<string>;
 
     public import(
