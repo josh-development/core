@@ -103,9 +103,9 @@ class Josh {
   * Internal Method. Splits the key and path
   */
   getKeyAndPath(keyOrPath) {
-    if(!keyOrPath) throw new Err('KeyOrPath must not be null.')
-    const [key, ...path] = keyOrPath.split(".");
-    return [key, path.join(".")];
+    if (!keyOrPath) throw new Err('KeyOrPath must not be null.');
+    const [key, ...path] = keyOrPath.split('.');
+    return [key, path.join('.')];
   }
 
   /**
@@ -128,6 +128,11 @@ class Josh {
     }
     value = this.deserializer ? this.deserializer(value) : value;
     return path.length ? _get(value, path) : value;
+  }
+
+  async query(opts) {
+    await this.readyCheck();
+    this.provider.query(opts);
   }
 
   /**
@@ -193,7 +198,7 @@ class Josh {
     try {
       const [key, path] = this.getKeyAndPath(keyOrPath);
       return this.provider.has(key, path);
-    } catch(err) {
+    } catch (err) {
       return null;
     }
   }
@@ -489,7 +494,7 @@ class Josh {
    * Maps data from each value in your data. Works similarly to Array.map(), but can use both async functions, as well as paths.
    * Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
    * @param {Function|string} pathOrFn Mandatory. Either a function, or the path where to get the value from.
-   * If using a path, the value at the path will be returned, or null. 
+   * If using a path, the value at the path will be returned, or null.
    * If using a function, the function is run on the entire value (no path is used). The function is given the `key` and `value` as arguments,
    * and the value returned will be accessible in the return array.
    * @return {Array<*>} An array of values mapped from the data.
@@ -511,7 +516,7 @@ class Josh {
    * @return {boolean} Whether the value is included in the array.
    * @example
    * josh.set('arr', ['a', 'b', 1, 2, { foo: "bar"}]);
-   * 
+   *
    * josh.includes('arr', 'a'); // true
    * josh.includes('arr', 1) // true
    * josh.includes('arr', val => val.foo === 'bar'); // true
@@ -528,7 +533,7 @@ class Josh {
    * If using a path, the value at he path will be compared to the value provided as a second argument.
    * If using a function, the function is given the *full* value for each key, along with the key itself, for each row in the database.
    * It should return `true` if your match is found.
-   * @param {string|number|boolean|null} value The value to be checked at each path. Cannot be an object or array (use a function for those). 
+   * @param {string|number|boolean|null} value The value to be checked at each path. Cannot be an object or array (use a function for those).
    * Ignored if a function is provided.
    * @return {boolean} Whether the value was found or not (if one of the rows in the database match the value at path, or the function has returned true)
    */
@@ -536,7 +541,7 @@ class Josh {
     await this.readyCheck();
     return isFunction(pathOrFn) ?
       this.provider.someByFunction(pathOrFn) :
-      this.provider.someByValue(pathOrFn ,value);
+      this.provider.someByValue(pathOrFn, value);
   }
 
   /**
@@ -545,7 +550,7 @@ class Josh {
    * If using a path, the value at he path will be compared to the value provided as a second argument.
    * If using a function, the function is given the *full* value for each key, along with the key itself, for each row in the database.
    * It should return `true` if your match is found.
-   * @param {string|number|boolean|null} value The value to be checked at each path. Cannot be an object or array (use a function for those). 
+   * @param {string|number|boolean|null} value The value to be checked at each path. Cannot be an object or array (use a function for those).
    * @return {boolean} Whether the value was found or not, on ever single row.
    */
   async every(pathOrFn, value) {
@@ -557,25 +562,25 @@ class Josh {
 
   // async reduce(fn, initialvalue)
 
-   /**
-   * Executes a mathematical operation on a value and saves the result in the database.
-   * @param {string} keyOrPath Either a key, or full path, to the numerical value you want to exceute math on. Must be an Number value.
-   * @param {string} operation Which mathematical operation to execute. Supports most
-   * math ops: =, -, *, /, %, ^, and english spelling of those operations.
-   * @param {number} operand The right operand of the operation.
-   * @param {string} path Optional. The property path to execute the operation on, if the value is an object or array.
-   * @return {Promise<Josh>} This database wrapper, useful if you want to chain more instructions for Josh.
-   * @example
-   * // Assuming
-   * josh.set("number", 42);
-   * josh.set("numberInObject", {sub: { anInt: 5 }});
-   *
-   * josh.math("number", "/", 2); // 21
-   * josh.math("number", "add", 5); // 26
-   * josh.math("number", "modulo", 3); // 2
-   * josh.math("numberInObject.sub.anInt", "+", 10); // 15
-   *
-   */
+  /**
+ * Executes a mathematical operation on a value and saves the result in the database.
+ * @param {string} keyOrPath Either a key, or full path, to the numerical value you want to exceute math on. Must be an Number value.
+ * @param {string} operation Which mathematical operation to execute. Supports most
+ * math ops: =, -, *, /, %, ^, and english spelling of those operations.
+ * @param {number} operand The right operand of the operation.
+ * @param {string} path Optional. The property path to execute the operation on, if the value is an object or array.
+ * @return {Promise<Josh>} This database wrapper, useful if you want to chain more instructions for Josh.
+ * @example
+ * // Assuming
+ * josh.set("number", 42);
+ * josh.set("numberInObject", {sub: { anInt: 5 }});
+ *
+ * josh.math("number", "/", 2); // 21
+ * josh.math("number", "add", 5); // 26
+ * josh.math("number", "modulo", 3); // 2
+ * josh.math("numberInObject.sub.anInt", "+", 10); // 15
+ *
+ */
   async math(keyOrPath, operation, operand) {
     await this.readyCheck();
     const [key, path] = this.getKeyAndPath(keyOrPath);
@@ -638,12 +643,12 @@ class Josh {
       name: this.name,
       version: pkgdata.version,
       exportDate: Date.now(),
-      keys: data.map(([key, value]) => ({ key, value }))
+      keys: data.map(([key, value]) => ({ key, value })),
     }, null, 2);
   }
 
   /**
-   * Initialize multiple Josh instances easily. Used to simplify the creation of many tables 
+   * Initialize multiple Josh instances easily. Used to simplify the creation of many tables
    * @param {Array<string>} names Array of strings. Each array entry will create a separate josh with that name.
    * @param {Object} options Options object to pass to each josh, excluding the name..
    * @example
