@@ -126,7 +126,7 @@ class Josh {
     } else {
       value = await this.provider.get(key);
     }
-    value = this.deserializer ? this.deserializer(value, key, path.join('.')) : value;
+    value = this.deserializer ? this.deserializer(value, key, path) : value;
     return path.length ? _get(value, path) : value;
   }
 
@@ -156,14 +156,15 @@ class Josh {
       throw new Err('This function requires an array of keys or values', 'JoshArgumentError');
     }
     const data = await this.provider.getMany(keysOrPaths.map(str => str.split('.')[0]));
-    return data.map((value, index) => {
-      const [key, ...path] = keysOrPaths[index].split('.');
+    keysOrPaths.forEach((keyOrPath) => {
+      const [key, ...path] = keyOrPath.split('.');
+      let value = data[key];
       if (this.deserializer) {
-        const [, content] = value;
-        value = [key, this.deserializer(content, key, path)];
+        value = this.deserializer(value, key, path);
       }
-      return path.length ? [keysOrPaths[index], _get(value, path)] : [keysOrPaths[index], value];
+      data[key] = path.length ? _get(value, path) : value;
     });
+    return data;
   }
 
   /**
@@ -203,6 +204,8 @@ class Josh {
       const [key, path] = this.getKeyAndPath(keyOrPath);
       return this.provider.has(key, path);
     } catch (err) {
+      console.log(keyOrPath);
+      console.log(`Error on ${keyOrPath}: ${err}`);
       return null;
     }
   }
