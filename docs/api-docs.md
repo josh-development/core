@@ -5,28 +5,36 @@
 
 * [Josh](#Josh)
     * [new Josh([options])](#new-josh-options)
-    * [.keys](#josh-keys-promise-less-than-array-string-greater-than) ⇒ <code>Promise.&lt;Array.String&gt;</code>
-    * [.values](#josh-values-promise-less-than-array-greater-than) ⇒ <code>Promise.&lt;Array&gt;</code>
-    * [.size](#josh-size-promise-less-than-number-greater-than) ⇒ <code>Promise.&lt;number&gt;</code>
-    * [.get(keyOrPath)](#josh-get-keyorpath-promise-less-than-greater-than) ⇒ <code>Promise.&lt;\*&gt;</code>
-    * [.getMany(keysOrPaths)](#josh-getmany-keysorpaths-promise-less-than-array-less-than-array-greater-than-greater-than) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
-    * [.random(count)](#josh-random-count-promise-less-than-array-less-than-array-greater-than-greater-than) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
-    * [.randomKey(count)](#josh-randomkey-count-promise-less-than-array-less-than-string-greater-than-greater-than) ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code>
-    * [.has(keyOrPath)](#josh-has-keyorpath-promise-less-than-boolean-greater-than) ⇒ <code>Promise.&lt;boolean&gt;</code>
-    * [.set(keyOrPath, value)](#josh-set-keyorpath-value-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
-    * [.setMany(data, overwrite)](#josh-setmany-data-overwrite-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
-    * [.update(keyOrPath, input)](#josh-update-keyorpath-input-promise-less-than-object-greater-than) ⇒ <code>Promise.&lt;Object&gt;</code>
-    * [.ensure(keyOrPath, defaultValue)](#josh-ensure-keyorpath-defaultvalue-promise-less-than-greater-than) ⇒ <code>Promise.&lt;\*&gt;</code>
-    * [.delete(keyOrPath)](#josh-delete-keyorpath-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
-    * [.push(keyOrPath, value, allowDupes)](#josh-push-keyorpath-value-allowdupes-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
-    * [.remove(keyOrPath, value)](#josh-remove-keyorpath-value-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
-    * [.inc(keyOrPath)](#josh-inc-keyorpath-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
-    * [.dec(keyOrPath)](#josh-dec-keyorpath-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
-    * [.find(valueOrFn, path)](#josh-find-valueorfn-path-promise-less-than-array-greater-than) ⇒ <code>Promise.&lt;Array&gt;</code>
-    * [.filter(valueOrFn, path)](#josh-filter-valueorfn-path-promise-less-than-array-less-than-array-greater-than-greater-than) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
-    * [.autoId()](#josh-autoid-promise-less-than-string-greater-than) ⇒ <code>Promise.&lt;string&gt;</code>
-    * [.import(data, overwrite, clear)](#josh-import-data-overwrite-clear-promise-less-than-josh-greater-than) ⇒ [<code>Promise.&lt;Josh&gt;</code>]
-    * [.export()](#josh-export-promise-less-than-string-greater-than) ⇒ <code>Promise.&lt;string&gt;</code>
+    * _instance_
+        * [.keys](#Josh+keys) ⇒ <code>Promise.&lt;Array.String&gt;</code>
+        * [.values](#Josh+values) ⇒ <code>Promise.&lt;Array&gt;</code>
+        * [.size](#Josh+size) ⇒ <code>Promise.&lt;number&gt;</code>
+        * [.get(keyOrPath)](#Josh+get) ⇒ <code>Promise.&lt;\*&gt;</code>
+        * [.getMany(keysOrPaths)](#Josh+getMany) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
+        * [.random(count)](#Josh+random) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
+        * [.randomKey(count)](#Josh+randomKey) ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code>
+        * [.has(keyOrPath)](#Josh+has) ⇒ <code>Promise.&lt;boolean&gt;</code>
+        * [.set(keyOrPath, value)](#Josh+set) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
+        * [.setMany(data, overwrite)](#Josh+setMany) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
+        * [.update(keyOrPath, input)](#Josh+update) ⇒ <code>Promise.&lt;Object&gt;</code>
+        * [.ensure(keyOrPath, defaultValue)](#Josh+ensure) ⇒ <code>Promise.&lt;\*&gt;</code>
+        * [.delete(keyOrPath)](#Josh+delete) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
+        * [.push(keyOrPath, value, allowDupes)](#Josh+push) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
+        * [.remove(keyOrPath, value)](#Josh+remove) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
+        * [.inc(keyOrPath)](#Josh+inc) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
+        * [.dec(keyOrPath)](#Josh+dec) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
+        * [.find(pathOrFn, predicate)](#Josh+find) ⇒ <code>Promise.&lt;Array&gt;</code>
+        * [.filter(pathOrFn, predicate)](#Josh+filter) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
+        * [.map(pathOrFn)](#Josh+map) ⇒ <code>Array.&lt;\*&gt;</code>
+        * [.includes(keyOrPath, value)](#Josh+includes) ⇒ <code>boolean</code>
+        * [.some(pathOrFn, value)](#Josh+some) ⇒ <code>boolean</code>
+        * [.every(pathOrFn, value)](#Josh+every) ⇒ <code>boolean</code>
+        * [.math(keyOrPath, operation, operand, path)](#Josh+math) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
+        * [.autoId()](#Josh+autoId) ⇒ <code>Promise.&lt;string&gt;</code>
+        * [.import(data, overwrite, clear)](#Josh+import) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
+        * [.export()](#Josh+export) ⇒ <code>Promise.&lt;string&gt;</code>
+    * _static_
+        * [.multi(names, options)](#Josh.multi) ⇒ <code>Array.&lt;Map&gt;</code>
 
 <a name="new_Josh_new"></a>
 
@@ -313,19 +321,20 @@ Decrements (remove 1 from the number) the stored value.
 
 <a name="Josh+find"></a>
 
-### josh.find(valueOrFn, path) ⇒ <code>Promise.&lt;Array&gt;</code>
+### josh.find(pathOrFn, predicate) ⇒ <code>Promise.&lt;Array&gt;</code>
 Finds a value within the database, either through an exact value match, or a function.
 Useful for Objects and Array values, will not work on "simple" values like strings.
 Returns the first found match - if you need more than one result, use filter() instead.
 Either a function OR a value **must** be provided.
+Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
 **Returns**: <code>Promise.&lt;Array&gt;</code> - Returns an array composed of the full value (NOT the one at the path!), and the key.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| valueOrFn | <code>function</code> \| <code>string</code> | Mandatory. Either a function, or simple value. If using a function: it will run on either the stored value, OR the value at the path given if it's provided. - The function receives the value (or value at the path) as well the the key currently being checked. - The function must return a boolean or truthy/falsey value! Oh and the function can be async, too ;) If using a value: - A path is mandatory when checking by value. - The value must be simple: string, boolean, integer. It cannot be an object or array. |
-| path | <code>string</code> | Optional on functions, Mandatory on values. If provided, the function or value acts on what's at that path. |
+| pathOrFn | <code>function</code> \| <code>string</code> | Mandatory. Either a function, or the path in which to find the value. If using a function: it will run on either the stored value, OR the value at the path given if it's provided. - The function receives the value (or value at the path) as well the the key currently being checked. - The function must return a boolean or truthy/falsey value! Oh and the function can be async, too ;) If using a path: - A "value" predicate is mandatory when checking by path. - The value must be simple: string, boolean, integer. It cannot be an object or array. |
+| predicate | <code>string</code> | Optional on functions, Mandatory on path finds. If provided, the function or value acts on what's at that path. |
 
 **Example**  
 ```js
@@ -345,7 +354,7 @@ josh.set("john.shmidt", {
 });
 
 // Regular string find:
-josh.find("john", "user.firstName")
+josh.find("user.firstName", "john")
 
 // Simple function find:
 josh.find(value => value.user.firstName === "john");
@@ -370,20 +379,108 @@ josh.find(value => value === "john", "user.firstName");
 ```
 <a name="Josh+filter"></a>
 
-### josh.filter(valueOrFn, path) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
+### josh.filter(pathOrFn, predicate) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
 Filters for values within the database, either through an exact value match, or a function.
 Useful for Objects and Array values, will not work on "simple" values like strings.
 Returns all matches found - if you need a single value, use find() instead.
 Either a function OR a value **must** be provided.
+Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
 **Returns**: <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code> - Returns an array of key/value pair(s) that successfully passes the provided function.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| valueOrFn | <code>function</code> \| <code>string</code> | Mandatory. Either a function, or simple value. If using a function: it will run on either the stored value, OR the value at the path given if it's provided. - The function receives the value (or value at the path) as well the the key currently being checked. - The function must return a boolean or truthy/falsey value! Oh and the function can be async, too ;) If using a value: - A path is mandatory when checking by value. - The value must be simple: string, boolean, integer. It cannot be an object or array. |
-| path | <code>string</code> | Optional on functions, Mandatory on values. If provided, the function or value acts on what's at that path. |
+| pathOrFn | <code>function</code> \| <code>string</code> | Mandatory. Either a function, or the path in which to find the value. If using a function: it will run on either the stored value, OR the value at the path given if it's provided. - The function receives the value (or value at the path) as well the the key currently being checked. - The function must return a boolean or truthy/falsey value! Oh and the function can be async, too ;) If using a path: - A "value" predicate is mandatory when checking by path. - The value must be simple: string, boolean, integer. It cannot be an object or array. |
+| predicate | <code>string</code> | Optional on functions, Mandatory on path finds. If provided, the function or value acts on what's at that path. |
 
+<a name="Josh+map"></a>
+
+### josh.map(pathOrFn) ⇒ <code>Array.&lt;\*&gt;</code>
+Maps data from each value in your data. Works similarly to Array.map(), but can use both async functions, as well as paths.
+Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: <code>Array.&lt;\*&gt;</code> - An array of values mapped from the data.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pathOrFn | <code>function</code> \| <code>string</code> | Mandatory. Either a function, or the path where to get the value from. If using a path, the value at the path will be returned, or null. If using a function, the function is run on the entire value (no path is used). The function is given the `key` and `value` as arguments, and the value returned will be accessible in the return array. |
+
+<a name="Josh+includes"></a>
+
+### josh.includes(keyOrPath, value) ⇒ <code>boolean</code>
+Performs Array.includes() on a certain value. Works similarly to
+[Array.includes()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes).
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: <code>boolean</code> - Whether the value is included in the array.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| keyOrPath | <code>string</code> | Either a key, or full path, to the array you want to check for the value. The value must be an array. |
+| value | <code>\*</code> | Either the value to check in the array, or a function to determine the presence of the value. If using a value, note that this won't work if the value you're checking for is an array or object - use a function for that. If using a function, the function takes in the value and index, and must return a boolean true when the value is the one you want. |
+
+**Example**  
+```js
+josh.set('arr', ['a', 'b', 1, 2, { foo: "bar"}]);
+
+josh.includes('arr', 'a'); // true
+josh.includes('arr', 1) // true
+josh.includes('arr', val => val.foo === 'bar'); // true
+```
+<a name="Josh+some"></a>
+
+### josh.some(pathOrFn, value) ⇒ <code>boolean</code>
+Checks whether *at least one key* contains the expected value. The loop stops once the value is found.
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: <code>boolean</code> - Whether the value was found or not (if one of the rows in the database match the value at path, or the function has returned true)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pathOrFn | <code>string</code> | Either a function, or the full path to the value to check against the provided value. If using a path, the value at he path will be compared to the value provided as a second argument. If using a function, the function is given the *full* value for each key, along with the key itself, for each row in the database. It should return `true` if your match is found. |
+| value | <code>string</code> \| <code>number</code> \| <code>boolean</code> \| <code>null</code> | The value to be checked at each path. Cannot be an object or array (use a function for those). Ignored if a function is provided. |
+
+<a name="Josh+every"></a>
+
+### josh.every(pathOrFn, value) ⇒ <code>boolean</code>
+Checks whether *every single key* contains the expected value. Identical to josh.some() except all must match except just one.
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: <code>boolean</code> - Whether the value was found or not, on ever single row.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pathOrFn | <code>\*</code> | Either a function, or the full path to the value to check against the provided value. If using a path, the value at he path will be compared to the value provided as a second argument. If using a function, the function is given the *full* value for each key, along with the key itself, for each row in the database. It should return `true` if your match is found. |
+| value | <code>string</code> \| <code>number</code> \| <code>boolean</code> \| <code>null</code> | The value to be checked at each path. Cannot be an object or array (use a function for those). |
+
+<a name="Josh+math"></a>
+
+### josh.math(keyOrPath, operation, operand, path) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
+Executes a mathematical operation on a value and saves the result in the database.
+
+**Kind**: instance method of [<code>Josh</code>](#josh)  
+**Returns**: [<code>Promise.&lt;Josh&gt;</code>](#Josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| keyOrPath | <code>string</code> | Either a key, or full path, to the numerical value you want to exceute math on. Must be an Number value. |
+| operation | <code>string</code> | Which mathematical operation to execute. Supports most math ops: =, -, *, /, %, ^, and english spelling of those operations. |
+| operand | <code>number</code> | The right operand of the operation. |
+| path | <code>string</code> | Optional. The property path to execute the operation on, if the value is an object or array. |
+
+**Example**  
+```js
+// Assuming
+josh.set("number", 42);
+josh.set("numberInObject", {sub: { anInt: 5 }});
+
+josh.math("number", "/", 2); // 21
+josh.math("number", "add", 5); // 26
+josh.math("number", "modulo", 3); // 2
+josh.math("numberInObject.sub.anInt", "+", 10); // 15
+```
 <a name="Josh+autoId"></a>
 
 ### josh.autoId() ⇒ <code>Promise.&lt;string&gt;</code>
@@ -434,4 +531,29 @@ Exports your entire database in JSON format. Useable as import data for both Jos
 ```js
 const fs = require("fs");
 josh.export().then(data => fs.writeFileSync("./export.json"), data));
+```
+<a name="Josh.multi"></a>
+
+### Josh.multi(names, options) ⇒ <code>Array.&lt;Map&gt;</code>
+Initialize multiple Josh instances easily. Used to simplify the creation of many tables
+
+**Kind**: static method of [<code>Josh</code>](#josh)  
+**Returns**: <code>Array.&lt;Map&gt;</code> - An array of initialized Josh instances.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| names | <code>Array.&lt;string&gt;</code> | Array of strings. Each array entry will create a separate josh with that name. |
+| options | <code>Object</code> | Options object to pass to each josh, excluding the name.. |
+
+**Example**  
+```js
+// Using local variables.
+const Josh = require('josh');
+const provider = require("@josh-providers/sqlite");
+const { settings, tags, blacklist } = Josh.multi(['settings', 'tags', 'blacklist'], { provider });
+
+// Attaching to an existing object (for instance some API's client)
+const Josh = require("josh");
+const provider = require("@josh-providers/sqlite");
+Object.assign(client, Josh.multi(["settings", "tags", "blacklist"], { provider }));
 ```
