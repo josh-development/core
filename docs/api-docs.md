@@ -405,7 +405,7 @@ Note that using functions here currently is very inefficient, so it's suggested 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| pathOrFn | <code>function</code> \| <code>string</code> | Mandatory. Either a function, or the path where to get the value from. If using a path, the value at the path will be returned, or null.  If using a function, the function is run on the entire value (no path is used). The function is given the `key` and `value` as arguments, and the value returned will be accessible in the return array. |
+| pathOrFn | <code>function</code> \| <code>string</code> | Mandatory. Either a function, or the path where to get the value from. If using a path, the value at the path will be returned, or null. If using a function, the function is run on the entire value (no path is used). The function is given the `key` and `value` as arguments, and the value returned will be accessible in the return array. |
 
 <a name="Josh+includes"></a>
 
@@ -440,7 +440,7 @@ Checks whether *at least one key* contains the expected value. The loop stops on
 | Param | Type | Description |
 | --- | --- | --- |
 | pathOrFn | <code>string</code> | Either a function, or the full path to the value to check against the provided value. If using a path, the value at he path will be compared to the value provided as a second argument. If using a function, the function is given the *full* value for each key, along with the key itself, for each row in the database. It should return `true` if your match is found. |
-| value | <code>string</code> \| <code>number</code> \| <code>boolean</code> \| <code>null</code> | The value to be checked at each path. Cannot be an object or array (use a function for those).  Ignored if a function is provided. |
+| value | <code>string</code> \| <code>number</code> \| <code>boolean</code> \| <code>null</code> | The value to be checked at each path. Cannot be an object or array (use a function for those). Ignored if a function is provided. |
 
 <a name="Josh+every"></a>
 
