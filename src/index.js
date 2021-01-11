@@ -1,10 +1,4 @@
-const {
-  merge,
-  isArray,
-  isFunction,
-  get: _get,
-  isNil,
-} = require('lodash');
+const { merge, isArray, isFunction, get: _get, isNil } = require('lodash');
 
 // Custom error codes with stack support.
 const Err = require('./error.js');
@@ -13,7 +7,6 @@ const Err = require('./error.js');
 const pkgdata = require('../package.json');
 
 class Josh {
-
   /**
    * Initializes a new Josh, with options.
    * @param {Object} [options] Additional options an configurations.
@@ -42,28 +35,30 @@ class Josh {
    * });
    */
   constructor(options = {}) {
-    const {
-      provider: Provider,
-      name,
-      providerOptions,
-    } = options;
+    const { provider: Provider, name, providerOptions } = options;
 
     // Just grab the version from package.json
     this.version = pkgdata.version;
 
     // Fail miserably and weep if no provider, or no name, was given during initialization
     if (!Provider || !name) {
-      throw new Err('Josh requires both a "name" and "provider" given in the options.', 'JoshOptionsError');
+      throw new Err(
+        'Josh requires both a "name" and "provider" given in the options.',
+        'JoshOptionsError',
+      );
     }
 
     // Verify if the provider given is an object, and is a valid provider for Josh...
     const intializedProvider = new Provider({ name, ...providerOptions });
     if (intializedProvider.constructor.name !== 'JoshProvider') {
-      throw new Err(`The given Provider does not seem valid. I expected JoshProvider, but this was a ${intializedProvider.constructor.name}!`, 'JoshOptionsError');
+      throw new Err(
+        `The given Provider does not seem valid. I expected JoshProvider, but this was a ${intializedProvider.constructor.name}!`,
+        'JoshOptionsError',
+      );
     }
 
     // Create a function that will be resolved whenever the provider's database is connected.
-    this.defer = new Promise(resolve => {
+    this.defer = new Promise((resolve) => {
       this.ready = resolve;
     });
 
@@ -78,7 +73,6 @@ class Josh {
     this.deserializer = options.deserializer;
 
     this.autoEnsure = options.autoEnsure;
-
 
     // Connect the provider to its database.
     this.provider.init().then(() => {
@@ -96,12 +90,17 @@ class Josh {
    */
   async readyCheck() {
     await this.defer;
-    if (this.isDestroyed) throw new Err('This Josh has been destroyed and can no longer be used without being re-initialized.', 'JoshDestroyedError');
+    if (this.isDestroyed) {
+      throw new Err(
+        'This Josh has been destroyed and can no longer be used without being re-initialized.',
+        'JoshDestroyedError',
+      );
+    }
   }
 
   /*
-  * Internal Method. Splits the key and path
-  */
+   * Internal Method. Splits the key and path
+   */
   getKeyAndPath(keyOrPath) {
     if (!keyOrPath) throw new Err('KeyOrPath must not be null.');
     const [key, ...path] = keyOrPath.split('.');
@@ -130,47 +129,36 @@ class Josh {
     return path.length ? _get(value, path) : value;
   }
 
-  async query(opts) {
-    await this.readyCheck();
-    this.provider.query(opts);
-  }
+  // Not yet implemented (or implementable)
+  // async query(opts) {
+  //   await this.readyCheck();
+  //   this.provider.query(opts);
+  // }
 
   /**
    * Retrieve many values from the database.
    * If you provide `josh.all` as a value (josh being your variable for the database), the entire data set is returned.
-   * @param {string[]|symbol} keysOrPaths An array of keys or paths to return, or `db.all` to retrieve them all.
-   * @return {Promise<Array.<Array>>} An array of key/value pairs each in their own arrays.
-   * Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c', 3]]
-   * If paths are provided, the "key" is the full path.
+   * @param {string[]|symbol} keys An array of keys to return, or `db.all` to retrieve them all.
+   * @return {Promise<Object>} An object with one or many key/value pairs where the property name is the key and the property value is the database value.
    */
-  async getMany(keysOrPaths) {
+  async getMany(keys) {
     await this.readyCheck();
-    if (keysOrPaths === this.all) {
-      const allValues = await this.provider.getAll();
-      return this.deserializer ? allValues.map(value => {
-        const [key, content] = value;
-        return [key, this.deserializer(content, key, null)];
-      }) : allValues;
+    const data =
+      keys === this.all
+        ? this.provider.getAll()
+        : this.provider.getMany(keys);
+    if(this.deserializer) {
+      Object.keys(data).forEach((key) => {
+        data[key] = this.deserializer(data[key], key);
+      });
     }
-    if (!isArray(keysOrPaths)) {
-      throw new Err('This function requires an array of keys or values', 'JoshArgumentError');
-    }
-    const data = await this.provider.getMany(keysOrPaths.map(str => str.split('.')[0]));
-    keysOrPaths.forEach((keyOrPath) => {
-      const [key, ...path] = keyOrPath.split('.');
-      let value = data[key];
-      if (this.deserializer) {
-        value = this.deserializer(value, key, path);
-      }
-      data[key] = path.length ? _get(value, path) : value;
-    });
     return data;
   }
 
   /**
    * Returns one or more random values from the database.
    * @param {number} count Defaults to 1. The number of random key/value pairs to get.
-   * @return {Promise<Array.<Array>>} An array of key/value pairs each in their own array.
+   * @return {Promise<Object>} An array of key/value pairs each in their own array.
    * The array of values should never contain duplicates. If the requested count is higher than the number
    * of rows in the database, only the available number of rows will be returned, in randomized order.
    * Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c', 3]]
@@ -181,12 +169,12 @@ class Josh {
   }
 
   /**
-  * Returns one or more random keys from the database.
-  * @param {number} count Defaults to 1. The number of random key/value pairs to get.
-  * @return {Promise<Array.<string>>} An array of string keys in a randomized order.
-  * The array of keys should never contain duplicates. If the requested count is higher than the number
-  * of rows in the database, only the available number of rows will be returned.
-  */
+   * Returns one or more random keys from the database.
+   * @param {number} count Defaults to 1. The number of random key/value pairs to get.
+   * @return {Promise<Array.<string>>} An array of string keys in a randomized order.
+   * The array of keys should never contain duplicates. If the requested count is higher than the number
+   * of rows in the database, only the available number of rows will be returned.
+   */
   async randomKey(count) {
     await this.readyCheck();
     return await this.provider.randomKey(count);
@@ -219,9 +207,9 @@ class Josh {
   }
 
   /**
-  * Get all the values in the database.
-  * @return {Promise<Array>} An array of all the values stored in the database.
-  */
+   * Get all the values in the database.
+   * @return {Promise<Array>} An array of all the values stored in the database.
+   */
   get values() {
     return this.readyCheck().then(() => this.provider.values());
   }
@@ -248,25 +236,28 @@ class Josh {
     await this.readyCheck();
     // await this.provider.keyCheck(keyOrPath);
     const [key, path] = this.getKeyAndPath(keyOrPath);
-    await this.provider.set(key, path, this.serializer ? this.serializer(value, key, path) : value);
+    await this.provider.set(
+      key,
+      path,
+      this.serializer ? this.serializer(value, key, path) : value,
+    );
     return this;
   }
 
   /**
    * Store many values at once in the database. DOES NOT SUPPORT PATHS. Or autoId.
-   * @param {Array<Array>} data The data to insert. Must be an array where each element is a [key, value] array.
+   * @param {Object} data The data to insert. Must be an object as key/value pairs.
    * @param {boolean} overwrite Whether to overwrite existing keys. Since this method does not support paths, existin data will be lost.
    * @return {Promise<Josh>} This database wrapper, useful if you want to chain more instructions for Josh.
    * @example
-   * josh.setMany([
-   *   ["thinga", "majig"],
-   *   ["foo", "bar"],
-   *   ["isCool", true]
-   * ]);
+   * josh.setMany({
+   *   "thinga": "majig",
+   *   "foo": "bar",
+   *   "isCool": true
+   * });
    */
-  async setMany(data, overwrite) {
-    await this.readyCheck();
-    await this.provider.setMany(data, overwrite);
+  setMany(data, overwrite) {
+    return this.readyCheck().then(()=> this.provider.setMany(data, overwrite));
   }
 
   /**
@@ -282,13 +273,13 @@ class Josh {
    *   b: 2,
    *   c: 3
    * });
-   * josh.merge('thing', {
+   * josh.update('thing', {
    *   a: 'one',
    *   d: 4
    * });
    * // value is now {a: 'one', b: 2, c: 3, d: 4}
    *
-   * josh.merge('thing', (previousValue) => {
+   * josh.update('thing', (previousValue) => {
    *   ...previousValue,
    *   b: 'two',
    *   e: 5,
@@ -425,7 +416,7 @@ class Josh {
    * - A "value" predicate is mandatory when checking by path.
    * - The value must be simple: string, boolean, integer. It cannot be an object or array.
    * @param {string} predicate Optional on functions, Mandatory on path finds. If provided, the function or value acts on what's at that path.
-   * @return {Promise<Array>} Returns an array composed of the full value (NOT the one at the path!), and the key.
+   * @return {Promise<Object>} Returns an array composed of the full value (NOT the one at the path!), and the key.
    * @example
    * // Assuming:
    * josh.set("john.shmidt", {
@@ -452,25 +443,27 @@ class Josh {
    * josh.find(value => value === "john", "user.firstName");
    *
    * // The return of all the above if the same:
-   * ["john.shmidt", {
-   *   fullName: "John Jacob Jingleheimer Schmidt",
-   *   id: 12345,
-   *   user: {
-   *     username: "john.shmidt",
-   *     firstName: "john",
-   *     lastName: "shmidt",
-   *     password: "somerandombcryptstringthingy",
-   *     lastAccess: -22063545000,
-   *     isActive: false,
-   *     avatar: null,
+   * {
+   *   "john.shmidt": {
+   *     fullName: "John Jacob Jingleheimer Schmidt",
+   *     id: 12345,
+   *     user: {
+   *       username: "john.shmidt",
+   *       firstName: "john",
+   *       lastName: "shmidt",
+   *       password: "somerandombcryptstringthingy",
+   *       lastAccess: -22063545000,
+   *       isActive: false,
+   *       avatar: null,
+   *     }
    *   }
-   * }]
+   * }
    */
   async find(pathOrFn, predicate) {
     await this.readyCheck();
-    return isFunction(pathOrFn) ?
-      this.provider.findByFunction(pathOrFn, predicate) :
-      this.provider.findByValue(pathOrFn, predicate);
+    return isFunction(pathOrFn)
+      ? this.provider.findByFunction(pathOrFn, predicate)
+      : this.provider.findByValue(pathOrFn, predicate);
   }
 
   /**
@@ -487,14 +480,14 @@ class Josh {
    * - A "value" predicate is mandatory when checking by path.
    * - The value must be simple: string, boolean, integer. It cannot be an object or array.
    * @param {string} predicate Optional on functions, Mandatory on path finds. If provided, the function or value acts on what's at that path.
-   * @return {Promise<Array.<Array>>} Returns an array of key/value pair(s) that successfully passes the provided function.
+   * @return {Promise<Object>} Returns an array of key/value pair(s) that successfully passes the provided function.
    *
    */
   async filter(pathOrFn, predicate) {
     await this.readyCheck();
-    return isFunction(pathOrFn) ?
-      this.provider.filterByFunction(pathOrFn, predicate) :
-      this.provider.filterByValue(pathOrFn, predicate);
+    return isFunction(pathOrFn)
+      ? this.provider.filterByFunction(pathOrFn, predicate)
+      : this.provider.filterByValue(pathOrFn, predicate);
   }
 
   /**
@@ -504,13 +497,13 @@ class Josh {
    * If using a path, the value at the path will be returned, or null.
    * If using a function, the function is run on the entire value (no path is used). The function is given the `key` and `value` as arguments,
    * and the value returned will be accessible in the return array.
-   * @return {Array<*>} An array of values mapped from the data.
+   * @return {Promise<Array<*>>} An array of values mapped from the data.
    */
   async map(pathOrFn) {
     await this.readyCheck();
-    return isFunction(pathOrFn) ?
-      this.provider.mapByFunction(pathOrFn) :
-      this.provider.mapByValue(pathOrFn);
+    return isFunction(pathOrFn)
+      ? this.provider.mapByFunction(pathOrFn)
+      : this.provider.mapByValue(pathOrFn);
   }
 
   /**
@@ -546,9 +539,9 @@ class Josh {
    */
   async some(pathOrFn, value) {
     await this.readyCheck();
-    return isFunction(pathOrFn) ?
-      this.provider.someByFunction(pathOrFn) :
-      this.provider.someByValue(pathOrFn, value);
+    return isFunction(pathOrFn)
+      ? this.provider.someByFunction(pathOrFn)
+      : this.provider.someByValue(pathOrFn, value);
   }
 
   /**
@@ -562,36 +555,37 @@ class Josh {
    */
   async every(pathOrFn, value) {
     await this.readyCheck();
-    return isFunction(pathOrFn) ?
-      this.provider.everyByFunction(pathOrFn) :
-      this.provider.everyByValue(pathOrFn, value);
+    return isFunction(pathOrFn)
+      ? this.provider.everyByFunction(pathOrFn)
+      : this.provider.everyByValue(pathOrFn, value);
   }
 
   // async reduce(fn, initialvalue)
 
   /**
- * Executes a mathematical operation on a value and saves the result in the database.
- * @param {string} keyOrPath Either a key, or full path, to the numerical value you want to exceute math on. Must be an Number value.
- * @param {string} operation Which mathematical operation to execute. Supports most
- * math ops: =, -, *, /, %, ^, and english spelling of those operations.
- * @param {number} operand The right operand of the operation.
- * @param {string} path Optional. The property path to execute the operation on, if the value is an object or array.
- * @return {Promise<Josh>} This database wrapper, useful if you want to chain more instructions for Josh.
- * @example
- * // Assuming
- * josh.set("number", 42);
- * josh.set("numberInObject", {sub: { anInt: 5 }});
- *
- * josh.math("number", "/", 2); // 21
- * josh.math("number", "add", 5); // 26
- * josh.math("number", "modulo", 3); // 2
- * josh.math("numberInObject.sub.anInt", "+", 10); // 15
- *
- */
+   * Executes a mathematical operation on a value and saves the result in the database.
+   * @param {string} keyOrPath Either a key, or full path, to the numerical value you want to exceute math on. Must be an Number value.
+   * @param {string} operation Which mathematical operation to execute. Supports most
+   * math ops: =, -, *, /, %, ^, and english spelling of those operations.
+   * @param {number} operand The right operand of the operation.
+   * @param {string} path Optional. The property path to execute the operation on, if the value is an object or array.
+   * @return {Promise<Josh>} This database wrapper, useful if you want to chain more instructions for Josh.
+   * @example
+   * // Assuming
+   * josh.set("number", 42);
+   * josh.set("numberInObject", {sub: { anInt: 5 }});
+   *
+   * josh.math("number", "/", 2); // 21
+   * josh.math("number", "add", 5); // 26
+   * josh.math("number", "modulo", 3); // 2
+   * josh.math("numberInObject.sub.anInt", "+", 10); // 15
+   *
+   */
   async math(keyOrPath, operation, operand) {
     await this.readyCheck();
     const [key, path] = this.getKeyAndPath(keyOrPath);
-    return this.provider.math(key, path, operation, operand);
+    await this.provider.math(key, path, operation, operand);
+    return this;
   }
 
   /**
@@ -618,20 +612,30 @@ class Josh {
   }
 
   /**
-  * Import an existing json export from josh or enmap. This data must have been exported from josh or enmap,
-  * and must be from a version that's equivalent or lower than where you're importing it.
-  * @param {string} data The data to import to Josh. Must contain all the required fields provided by export()
-  * @param {boolean} overwrite Defaults to `true`. Whether to overwrite existing key/value data with incoming imported data
-  * @param {boolean} clear Defaults to `false`. Whether to clear the enmap of all data before importing
-  * (**__WARNING__**: Any exiting data will be lost! This cannot be undone.)
+   * Import an existing json export from josh or enmap. This data must have been exported from josh or enmap,
+   * and must be from a version that's equivalent or lower than where you're importing it.
+   * @param {string} data The data to import to Josh. Must contain all the required fields provided by export()
+   * @param {boolean} overwrite Defaults to `true`. Whether to overwrite existing key/value data with incoming imported data
+   * @param {boolean} clear Defaults to `false`. Whether to clear the enmap of all data before importing
+   * (**__WARNING__**: Any exiting data will be lost! This cannot be undone.)
    * @return {Promise<Josh>} This database wrapper, useful if you want to chain more instructions for Josh.
-  */
+   */
   async import(data, overwrite = true, clear = false) {
     await this.readyCheck();
     if (clear) await this.delete(this.all);
-    if (isNil(data)) throw new Err(`No data provided for import() in "${this.name}"`, 'JoshImportError');
+    if (isNil(data)) {
+      throw new Err(
+        `No data provided for import() in "${this.name}"`,
+        'JoshImportError',
+      );
+    }
     const parsed = JSON.parse(data);
-    await this.provider.setMany(parsed.keys.map(row => [row.key, row.value]), overwrite);
+    if(this.serializer) {
+      Object.keys(parsed.keys).forEach((key) => {
+        parsed.keys[key] = this.serializer(parsed.keys[key], key);
+      });
+    }
+    await this.provider.setMany(parsed, overwrite);
     return this;
   }
 
@@ -646,12 +650,21 @@ class Josh {
   async export() {
     await this.readyCheck();
     const data = this.provider.getAll();
-    return JSON.stringify({
-      name: this.name,
-      version: pkgdata.version,
-      exportDate: Date.now(),
-      keys: data.map(([key, value]) => ({ key, value })),
-    }, null, 2);
+    if(this.deserializer) {
+      Object.keys(data).forEach((key) => {
+        data[key] = this.deserializer(data[key], key);
+      });
+    }
+    return JSON.stringify(
+      {
+        name: this.name,
+        version: pkgdata.version,
+        exportDate: Date.now(),
+        keys: data,
+      },
+      null,
+      2,
+    );
   }
 
   /**
@@ -673,7 +686,10 @@ class Josh {
    */
   static multi(names, options = {}) {
     if (!names.length || names.length < 1) {
-      throw new Err('"names" argument must be an array of string names.', 'joshTypeError');
+      throw new Err(
+        '"names" argument must be an array of string names.',
+        'JoshTypeError',
+      );
     }
 
     const returnvalue = {};
@@ -683,7 +699,6 @@ class Josh {
     }
     return returnvalue;
   }
-
 }
 
 module.exports = Josh;
