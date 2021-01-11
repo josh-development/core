@@ -144,10 +144,8 @@ class Josh {
   async getMany(keys) {
     await this.readyCheck();
     const data =
-      keys === this.all
-        ? this.provider.getAll()
-        : this.provider.getMany(keys);
-    if(this.deserializer) {
+      keys === this.all ? this.provider.getAll() : this.provider.getMany(keys);
+    if (this.deserializer) {
       Object.keys(data).forEach((key) => {
         data[key] = this.deserializer(data[key], key);
       });
@@ -257,7 +255,7 @@ class Josh {
    * });
    */
   setMany(data, overwrite) {
-    return this.readyCheck().then(()=> this.provider.setMany(data, overwrite));
+    return this.readyCheck().then(() => this.provider.setMany(data, overwrite));
   }
 
   /**
@@ -326,13 +324,17 @@ class Josh {
 
   /**
    * Remove a key/value pair, or the property and value at a specific path, or clear the database.
-   * @param {string|symbol} keyOrPath Either a key, or full path, of the value you want to delete.
+   * @param {string|symbol|Array<string>} keyOrPath Either a key, or full path, of the value you want to delete.
    * If providing a path, only the value located at the path is deleted.
+   * If providing an array, will delete all keys in that array (does not support paths)
    * Alternatively: josh.delete(josh.all) will clear the database of all data.
    * @return {Promise<Josh>} This database wrapper, useful if you want to chain more instructions for Josh.
    */
   async delete(keyOrPath) {
     await this.readyCheck();
+    if (isArray(keyOrPath)) {
+      return this.provider.deleteMany(keyOrPath);
+    }
     if (keyOrPath === this.all) {
       await this.provider.clear();
     } else {
@@ -373,7 +375,9 @@ class Josh {
    */
   async remove(keyOrPath, value) {
     await this.readyCheck();
-    const [key, path] = this.getKeyAndPath(keyOrPath);
+    const [key, path] = isArray(keyOrPath) ? 
+      [key, null] :
+      this.getKeyAndPath(keyOrPath);
     await this.provider.remove(key, path, value);
     return this;
   }
@@ -630,7 +634,7 @@ class Josh {
       );
     }
     const parsed = JSON.parse(data);
-    if(this.serializer) {
+    if (this.serializer) {
       Object.keys(parsed.keys).forEach((key) => {
         parsed.keys[key] = this.serializer(parsed.keys[key], key);
       });
@@ -649,8 +653,9 @@ class Josh {
    */
   async export() {
     await this.readyCheck();
-    const data = this.provider.getAll();
-    if(this.deserializer) {
+    const data = await this.provider.getAll();
+    console.log(data);
+    if (this.deserializer) {
       Object.keys(data).forEach((key) => {
         data[key] = this.deserializer(data[key], key);
       });
