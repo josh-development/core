@@ -19,8 +19,6 @@
 
 JOSH is the JavaScript Object Storage Helper - a simple, effective, and efficient database wrapper.
 
-![Under Construction - I've always wanted to use this image seriously!](https://upload.wikimedia.org/wikipedia/en/4/4f/Under_construction.JPG)
-
 ## Documentation
 
  * [Installation](https://josh.evie.dev/install)

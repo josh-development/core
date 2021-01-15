@@ -159,7 +159,7 @@ class Josh {
    * @return {Promise<Object>} An array of key/value pairs each in their own array.
    * The array of values should never contain duplicates. If the requested count is higher than the number
    * of rows in the database, only the available number of rows will be returned, in randomized order.
-   * Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c', 3]]
+   * Each array element is comprised of the key and value: // TODO : FIX [['a', 1], ['b', 2], ['c', 3]]
    */
   async random(count) {
     await this.readyCheck();
@@ -654,7 +654,6 @@ class Josh {
   async export() {
     await this.readyCheck();
     const data = await this.provider.getAll();
-    console.log(data);
     if (this.deserializer) {
       Object.keys(data).forEach((key) => {
         data[key] = this.deserializer(data[key], key);
