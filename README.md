@@ -3,13 +3,13 @@
 <div align="center">
   <p>
     <a href="https://discord.gg/N7ZKH3P"><img src="https://discordapp.com/api/guilds/298508738623438848/embed.png" alt="Discord server" /></a>
-    <a href="https://www.npmjs.com/package/josh"><img src="https://img.shields.io/npm/v/josh.svg?maxAge=3600" alt="NPM version" /></a>
-    <a href="https://www.npmjs.com/package/josh"><img src="https://img.shields.io/npm/dt/josh.svg?maxAge=3600" alt="NPM downloads" /></a>
-    <a href="https://david-dm.org/eslachance/josh"><img src="https://img.shields.io/david/eslachance/josh.svg?maxAge=3600" alt="Dependencies" /></a>
+    <a href="https://www.npmjs.com/package/@joshdb/core"><img src="https://img.shields.io/npm/v/@joshdb/core.svg?maxAge=3600" alt="NPM version" /></a>
+    <a href="https://www.npmjs.com/package/@joshdb/core"><img src="https://img.shields.io/npm/dt/@joshdb/core.svg?maxAge=3600" alt="NPM downloads" /></a>
+    <a href="https://david-dm.org/eslachance/@joshdb/core"><img src="https://img.shields.io/david/eslachance/@joshdb/core.svg?maxAge=3600" alt="Dependencies" /></a>
     <a href="https://www.patreon.com/eviecodes"><img src="https://img.shields.io/badge/donate-patreon-F96854.svg" alt="Patreon" /></a>
   </p>
   <p>
-    <a href="https://nodei.co/npm/josh/"><img src="https://nodei.co/npm/josh.png?downloads=true&stars=true" alt="npm installnfo" /></a>
+    <a href="https://nodei.co/npm/@joshdb/core/"><img src="https://nodei.co/npm/@joshdb/core.png?downloads=true&stars=true" alt="npm installnfo" /></a>
   </p>
 </div>
 
@@ -29,6 +29,16 @@ JOSH is the JavaScript Object Storage Helper - a simple, effective, and efficien
 ## Support
 
 Support is offered on my official [Evie.Codes Discord](https://discord.gg/N7ZKH3P).
+
+## Installation
+
+```
+npm i @joshdb/core
+OR
+yarn add @joshdb/core
+```
+
+JOSH does not operate on its own and requires [a provider](https://josh.evie.dev/providers/about) to connect to a database.
 
 ### FAQs
 
@@ -52,7 +62,3 @@ still giving you all the power it can muster.
 
 If you think you can do better, if you already know database interactions or ORMs, or you don't trust database wrappers made by other people...
 well in any of those cases I don't even know why you're on this page, go on now, `git out --of:here` and go make some good apps, you don't need this!
-
-### When's he coming to town?
-
-Josh is right around the corner, lurking around. It's in Early Access right now, with very limited functionality, but if you want to start testing it out, please, by all means, [Go take a look at the documentation](https://josh.evie.dev/) and try it!
