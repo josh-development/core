@@ -47,9 +47,9 @@ JOSH does not operate on its own and requires [a provider](https://josh.evie.dev
 I'm sure you meant *What* the hell is Josh, and it's quite simply the easiest data storage system you'll ever encounter. Josh will help you
 store any JSON-based data simply, effectively, into any popuplar database back-end.
 
-* Josh is trustworhty: He's never lost a single bit yet, and not about to start.
+* Josh is trustworthy: He's never lost a single bit yet, and not about to start.
 * Josh is dependable: As long as your database doesn't fail, Josh won't fail.
-* Josh is speedy: He has a minimal footprint, walks around light a balerina, silent as a mouse.
+* Josh is speedy: He has a minimal footprint, walks around light a ballerina, silent as a mouse.
 * Josh cares about you: He's friendly, knows his stuff, is documented well, and won't leave you in the dark.
 
 ### Why use Josh?
