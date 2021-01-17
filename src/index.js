@@ -25,8 +25,8 @@ class Josh {
    * This is generally used to convert the value from a stored ID into a more complex object.
    * This function may return a value, or a promise that resolves to that value (in other words, can be an async function).
    * @example
-   * const Josh = require("josh");
-   * const provider = require("@josh-providers/sqlite");
+   * const Josh = require("@joshdb/core");
+   * const provider = require("@joshdb/sqlite");
    *
    * // sqlite-based database, with default options
    * const sqliteDB = new Josh({
@@ -596,8 +596,8 @@ class Josh {
    * Get an automatic ID for insertion of a new record.
    * @return {Promise<string>} A unique ID to insert data.
    * @example
-   * const Josh = require("josh");
-   * const provider = require("@josh-providers/sqlite");
+   * const Josh = require("@joshdb/core");
+   * const provider = require("@joshdb/sqlite");
    *
    *
    * const sqliteDB = new Josh({
@@ -678,12 +678,12 @@ class Josh {
    * @example
    * // Using local variables.
    * const Josh = require('josh');
-   * const provider = require("@josh-providers/sqlite");
+   * const provider = require("@joshdb/sqlite");
    * const { settings, tags, blacklist } = Josh.multi(['settings', 'tags', 'blacklist'], { provider });
    *
    * // Attaching to an existing object (for instance some API's client)
-   * const Josh = require("josh");
-   * const provider = require("@josh-providers/sqlite");
+   * const Josh = require("@joshdb/core");
+   * const provider = require("@joshdb/sqlite");
    * Object.assign(client, Josh.multi(["settings", "tags", "blacklist"], { provider }));
    *
    * @returns {Array<Map>} An array of initialized Josh instances.

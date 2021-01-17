@@ -10,8 +10,8 @@
         * [.values](#Josh+values) ⇒ <code>Promise.&lt;Array&gt;</code>
         * [.size](#Josh+size) ⇒ <code>Promise.&lt;number&gt;</code>
         * [.get(keyOrPath)](#Josh+get) ⇒ <code>Promise.&lt;\*&gt;</code>
-        * [.getMany(keysOrPaths)](#Josh+getMany) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
-        * [.random(count)](#Josh+random) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
+        * [.getMany(keys)](#Josh+getMany) ⇒ <code>Promise.&lt;Object&gt;</code>
+        * [.random(count)](#Josh+random) ⇒ <code>Promise.&lt;Object&gt;</code>
         * [.randomKey(count)](#Josh+randomKey) ⇒ <code>Promise.&lt;Array.&lt;string&gt;&gt;</code>
         * [.has(keyOrPath)](#Josh+has) ⇒ <code>Promise.&lt;boolean&gt;</code>
         * [.set(keyOrPath, value)](#Josh+set) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
@@ -23,9 +23,9 @@
         * [.remove(keyOrPath, value)](#Josh+remove) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
         * [.inc(keyOrPath)](#Josh+inc) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
         * [.dec(keyOrPath)](#Josh+dec) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
-        * [.find(pathOrFn, predicate)](#Josh+find) ⇒ <code>Promise.&lt;Array&gt;</code>
-        * [.filter(pathOrFn, predicate)](#Josh+filter) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
-        * [.map(pathOrFn)](#Josh+map) ⇒ <code>Array.&lt;\*&gt;</code>
+        * [.find(pathOrFn, predicate)](#Josh+find) ⇒ <code>Promise.&lt;Object&gt;</code>
+        * [.filter(pathOrFn, predicate)](#Josh+filter) ⇒ <code>Promise.&lt;Object&gt;</code>
+        * [.map(pathOrFn)](#Josh+map) ⇒ <code>Promise.&lt;Array.&lt;\*&gt;&gt;</code>
         * [.includes(keyOrPath, value)](#Josh+includes) ⇒ <code>boolean</code>
         * [.some(pathOrFn, value)](#Josh+some) ⇒ <code>boolean</code>
         * [.every(pathOrFn, value)](#Josh+every) ⇒ <code>boolean</code>
@@ -54,8 +54,8 @@ Initializes a new Josh, with options.
 
 **Example**  
 ```js
-const Josh = require("josh");
-const provider = require("@josh-providers/sqlite");
+const Josh = require("@joshdb/core");
+const provider = require("@joshdb/sqlite");
 
 // sqlite-based database, with default options
 const sqliteDB = new Josh({
@@ -99,29 +99,27 @@ If a path is provided, will only return the value at that path, if it exists.
 
 <a name="Josh+getMany"></a>
 
-### josh.getMany(keysOrPaths) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
+### josh.getMany(keys) ⇒ <code>Promise.&lt;Object&gt;</code>
 Retrieve many values from the database.
 If you provide `josh.all` as a value (josh being your variable for the database), the entire data set is returned.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code> - An array of key/value pairs each in their own arrays.
-Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c', 3]]
-If paths are provided, the "key" is the full path.  
+**Returns**: <code>Promise.&lt;Object&gt;</code> - An object with one or many key/value pairs where the property name is the key and the property value is the database value.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| keysOrPaths | <code>Array.&lt;string&gt;</code> \| <code>symbol</code> | An array of keys or paths to return, or `db.all` to retrieve them all. |
+| keys | <code>Array.&lt;string&gt;</code> \| <code>symbol</code> | An array of keys to return, or `db.all` to retrieve them all. |
 
 <a name="Josh+random"></a>
 
-### josh.random(count) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
+### josh.random(count) ⇒ <code>Promise.&lt;Object&gt;</code>
 Returns one or more random values from the database.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code> - An array of key/value pairs each in their own array.
+**Returns**: <code>Promise.&lt;Object&gt;</code> - An array of key/value pairs each in their own array.
 The array of values should never contain duplicates. If the requested count is higher than the number
 of rows in the database, only the available number of rows will be returned, in randomized order.
-Each array element is comprised of the key and value: [['a', 1], ['b', 2], ['c', 3]]  
+Each array element is comprised of the key and value: // TODO : FIX [['a', 1], ['b', 2], ['c', 3]]  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -177,16 +175,16 @@ Store many values at once in the database. DOES NOT SUPPORT PATHS. Or autoId.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| data | <code>Array.&lt;Array&gt;</code> | The data to insert. Must be an array where each element is a [key, value] array. |
+| data | <code>Object</code> | The data to insert. Must be an object as key/value pairs. |
 | overwrite | <code>boolean</code> | Whether to overwrite existing keys. Since this method does not support paths, existin data will be lost. |
 
 **Example**  
 ```js
-josh.setMany([
-  ["thinga", "majig"],
-  ["foo", "bar"],
-  ["isCool", true]
-]);
+josh.setMany({
+  "thinga": "majig",
+  "foo": "bar",
+  "isCool": true
+});
 ```
 <a name="Josh+update"></a>
 
@@ -209,13 +207,13 @@ josh.set('thing', {
   b: 2,
   c: 3
 });
-josh.merge('thing', {
+josh.update('thing', {
   a: 'one',
   d: 4
 });
 // value is now {a: 'one', b: 2, c: 3, d: 4}
 
-josh.merge('thing', (previousValue) => {
+josh.update('thing', (previousValue) => {
   ...previousValue,
   b: 'two',
   e: 5,
@@ -257,7 +255,7 @@ Remove a key/value pair, or the property and value at a specific path, or clear 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| keyOrPath | <code>string</code> \| <code>symbol</code> | Either a key, or full path, of the value you want to delete. If providing a path, only the value located at the path is deleted. Alternatively: josh.delete(josh.all) will clear the database of all data. |
+| keyOrPath | <code>string</code> \| <code>symbol</code> \| <code>Array.&lt;string&gt;</code> | Either a key, or full path, of the value you want to delete. If providing a path, only the value located at the path is deleted. If providing an array, will delete all keys in that array (does not support paths) Alternatively: josh.delete(josh.all) will clear the database of all data. |
 
 <a name="Josh+push"></a>
 
@@ -321,7 +319,7 @@ Decrements (remove 1 from the number) the stored value.
 
 <a name="Josh+find"></a>
 
-### josh.find(pathOrFn, predicate) ⇒ <code>Promise.&lt;Array&gt;</code>
+### josh.find(pathOrFn, predicate) ⇒ <code>Promise.&lt;Object&gt;</code>
 Finds a value within the database, either through an exact value match, or a function.
 Useful for Objects and Array values, will not work on "simple" values like strings.
 Returns the first found match - if you need more than one result, use filter() instead.
@@ -329,7 +327,7 @@ Either a function OR a value **must** be provided.
 Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: <code>Promise.&lt;Array&gt;</code> - Returns an array composed of the full value (NOT the one at the path!), and the key.  
+**Returns**: <code>Promise.&lt;Object&gt;</code> - Returns an array composed of the full value (NOT the one at the path!), and the key.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -363,23 +361,25 @@ josh.find(value => value.user.firstName === "john");
 josh.find(value => value === "john", "user.firstName");
 
 // The return of all the above if the same:
-["john.shmidt", {
-  fullName: "John Jacob Jingleheimer Schmidt",
-  id: 12345,
-  user: {
-    username: "john.shmidt",
-    firstName: "john",
-    lastName: "shmidt",
-    password: "somerandombcryptstringthingy",
-    lastAccess: -22063545000,
-    isActive: false,
-    avatar: null,
+{
+  "john.shmidt": {
+    fullName: "John Jacob Jingleheimer Schmidt",
+    id: 12345,
+    user: {
+      username: "john.shmidt",
+      firstName: "john",
+      lastName: "shmidt",
+      password: "somerandombcryptstringthingy",
+      lastAccess: -22063545000,
+      isActive: false,
+      avatar: null,
+    }
   }
-}]
+}
 ```
 <a name="Josh+filter"></a>
 
-### josh.filter(pathOrFn, predicate) ⇒ <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code>
+### josh.filter(pathOrFn, predicate) ⇒ <code>Promise.&lt;Object&gt;</code>
 Filters for values within the database, either through an exact value match, or a function.
 Useful for Objects and Array values, will not work on "simple" values like strings.
 Returns all matches found - if you need a single value, use find() instead.
@@ -387,7 +387,7 @@ Either a function OR a value **must** be provided.
 Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: <code>Promise.&lt;Array.&lt;Array&gt;&gt;</code> - Returns an array of key/value pair(s) that successfully passes the provided function.  
+**Returns**: <code>Promise.&lt;Object&gt;</code> - Returns an array of key/value pair(s) that successfully passes the provided function.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -396,12 +396,12 @@ Note that using functions here currently is very inefficient, so it's suggested 
 
 <a name="Josh+map"></a>
 
-### josh.map(pathOrFn) ⇒ <code>Array.&lt;\*&gt;</code>
+### josh.map(pathOrFn) ⇒ <code>Promise.&lt;Array.&lt;\*&gt;&gt;</code>
 Maps data from each value in your data. Works similarly to Array.map(), but can use both async functions, as well as paths.
 Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: <code>Array.&lt;\*&gt;</code> - An array of values mapped from the data.  
+**Returns**: <code>Promise.&lt;Array.&lt;\*&gt;&gt;</code> - An array of values mapped from the data.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -490,8 +490,8 @@ Get an automatic ID for insertion of a new record.
 **Returns**: <code>Promise.&lt;string&gt;</code> - A unique ID to insert data.  
 **Example**  
 ```js
-const Josh = require("josh");
-const provider = require("@josh-providers/sqlite");
+const Josh = require("@joshdb/core");
+const provider = require("@joshdb/sqlite");
 
 
 const sqliteDB = new Josh({
@@ -549,11 +549,11 @@ Initialize multiple Josh instances easily. Used to simplify the creation of many
 ```js
 // Using local variables.
 const Josh = require('josh');
-const provider = require("@josh-providers/sqlite");
+const provider = require("@joshdb/sqlite");
 const { settings, tags, blacklist } = Josh.multi(['settings', 'tags', 'blacklist'], { provider });
 
 // Attaching to an existing object (for instance some API's client)
-const Josh = require("josh");
-const provider = require("@josh-providers/sqlite");
+const Josh = require("@joshdb/core");
+const provider = require("@joshdb/sqlite");
 Object.assign(client, Josh.multi(["settings", "tags", "blacklist"], { provider }));
 ```
