@@ -102,7 +102,7 @@ class Josh {
    * Internal Method. Splits the key and path
    */
   getKeyAndPath(keyOrPath) {
-    if (!keyOrPath) throw new Err('KeyOrPath must not be null.');
+    if (!keyOrPath) return [];
     const [key, ...path] = keyOrPath.split('.');
     return [key, path.join('.')];
   }
@@ -125,7 +125,7 @@ class Josh {
     } else {
       value = await this.provider.get(key);
     }
-    value = this.deserializer ? this.deserializer(value, key, path) : value;
+    value = this.deserializer ? await this.deserializer(value, key, path) : value;
     return path.length ? _get(value, path) : value;
   }
 
@@ -146,9 +146,9 @@ class Josh {
     const data =
       keys === this.all ? this.provider.getAll() : this.provider.getMany(keys);
     if (this.deserializer) {
-      Object.keys(data).forEach((key) => {
-        data[key] = this.deserializer(data[key], key);
-      });
+      for(const key of Object.keys(data)) {
+        data[key] = await this.deserializer(data[key], key);
+      }
     }
     return data;
   }
@@ -237,7 +237,7 @@ class Josh {
     await this.provider.set(
       key,
       path,
-      this.serializer ? this.serializer(value, key, path) : value,
+      this.serializer ? await this.serializer(value, key, path) : value,
     );
     return this;
   }
@@ -635,9 +635,9 @@ class Josh {
     }
     const parsed = JSON.parse(data);
     if (this.serializer) {
-      Object.keys(parsed.keys).forEach((key) => {
-        parsed.keys[key] = this.serializer(parsed.keys[key], key);
-      });
+      for (const key of Object.keys(parsed.keys)) {
+        parsed[key] = await this.serializer(parsed[key], key);
+      }
     }
     await this.provider.setMany(parsed, overwrite);
     return this;
@@ -655,9 +655,9 @@ class Josh {
     await this.readyCheck();
     const data = await this.provider.getAll();
     if (this.deserializer) {
-      Object.keys(data).forEach((key) => {
-        data[key] = this.deserializer(data[key], key);
-      });
+      for (const key of Object.keys(data.keys)) {
+        data[key] = await this.deserializer(data[key], key);
+      }
     }
     return JSON.stringify(
       {
