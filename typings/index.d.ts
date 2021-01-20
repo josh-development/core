@@ -1,4 +1,4 @@
-declare module "josh" {
+declare module "@joshdb/core" {
   export interface JoshOptions<T = unknown> {
     name: string;
     provider: unknown,
