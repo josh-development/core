@@ -254,8 +254,10 @@ class Josh {
    *   "isCool": true
    * });
    */
-  setMany(data, overwrite) {
-    return this.readyCheck().then(() => this.provider.setMany(data, overwrite));
+  async setMany(data, overwrite) {
+    await this.readyCheck();
+    await this.provider.setMany(data, overwrite);
+    return this;
   }
 
   /**
