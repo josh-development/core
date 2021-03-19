@@ -6,6 +6,7 @@ declare module "@joshdb/core" {
     autoEnsure?: T;
     serializer?: (data: T) => Promise<T>;
     deserializer?: (data: T) => Promise<T>;
+    providerOptions?: object;
   }
 
   export default class Josh<T = unknown> {
