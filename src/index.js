@@ -705,6 +705,20 @@ class Josh {
     }
     return returnvalue;
   }
+
+  /**
+   * Allows you to iterate this db with for await...of loop.
+   * @example
+   * for await (const data of db) {
+   *     console.log(data.key);
+   * }
+   * @returns {AsyncIterableIterator<{key: string; data: any;}>}
+   */
+  async *[Symbol.asyncIterator]() {
+    const data = await this.getMany(this.all);
+
+    yield* Object.keys(data).map(m => ({ key: m, data: data[m] }));
+  }
 }
 
 module.exports = Josh;

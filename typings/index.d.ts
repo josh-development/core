@@ -108,5 +108,7 @@ declare module "@joshdb/core" {
     ): Promise<Josh<T>>;
 
     public export(): Promise<string>;
+
+    public *[Symbol.asyncIterator](): AsyncIterableIterator<{ key: string; data: any; }>;
   }
 }
