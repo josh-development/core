@@ -707,7 +707,8 @@ class Josh {
   }
 
   /**
-   * Allows you to iterate this db with for await...of loop.
+   * Async iterator.
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of}
    * @example
    * for await (const data of db) {
    *     console.log(data.key);
