@@ -519,7 +519,7 @@ class Josh {
    * @param {*} value Either the value to check in the array, or a function to determine the presence of the value.
    * If using a value, note that this won't work if the value you're checking for is an array or object - use a function for that.
    * If using a function, the function takes in the value and index, and must return a boolean true when the value is the one you want.
-   * @return {boolean} Whether the value is included in the array.
+   * @return {Promise<boolean>} Whether the value is included in the array.
    * @example
    * josh.set('arr', ['a', 'b', 1, 2, { foo: "bar"}]);
    *
@@ -541,7 +541,7 @@ class Josh {
    * It should return `true` if your match is found.
    * @param {string|number|boolean|null} value The value to be checked at each path. Cannot be an object or array (use a function for those).
    * Ignored if a function is provided.
-   * @return {boolean} Whether the value was found or not (if one of the rows in the database match the value at path, or the function has returned true)
+   * @return {Promise<boolean>} Whether the value was found or not (if one of the rows in the database match the value at path, or the function has returned true)
    */
   async some(pathOrFn, value) {
     await this.readyCheck();
@@ -556,7 +556,7 @@ class Josh {
    * If using a path, the value at he path will be compared to the value provided as a second argument.
    * If using a function, the function is given the *full* value for each key, along with the key itself, for each row in the database.
    * It should return `true` if your match is found.
-   * @param {string|number|boolean|null} value The value to be checked at each path. Cannot be an object or array (use a function for those).
+   * @param {Promise<string|number|boolean|null>} value The value to be checked at each path. Cannot be an object or array (use a function for those).
    * @return {boolean} Whether the value was found or not, on ever single row.
    */
   async every(pathOrFn, value) {
