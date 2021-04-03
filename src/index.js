@@ -657,18 +657,21 @@ class Josh {
   async export() {
     await this.readyCheck();
     const data = await this.provider.getAll();
-    if (this.deserializer) {
-      for (const key of Object.keys(data.keys)) {
-        data.keys[key] = await this.deserializer(data.keys[key], key);
-      }
+    const output = {
+      name: this.name,
+      version: pkgdata.version,
+      exportDate: Date.now(),
+      keys: [],
+    };
+    // console.log(Object.keys(data));
+    for (const key of Object.keys(data)) {
+      const keydata = this.deserializer
+        ? await this.deserializer(data[key], key)
+        : data[key];
+      output.keys.push({ key, value: keydata });
     }
     return JSON.stringify(
-      {
-        name: this.name,
-        version: pkgdata.version,
-        exportDate: Date.now(),
-        keys: data,
-      },
+      output,
       null,
       2,
     );
