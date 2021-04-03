@@ -636,12 +636,13 @@ class Josh {
       );
     }
     const parsed = JSON.parse(data);
-    if (this.serializer) {
-      for (const key of Object.keys(parsed.keys)) {
-        parsed[key] = await this.serializer(parsed[key], key);
-      }
+    const importData = {};
+    for (const { key, value } of parsed.keys) {
+      importData[key] = this.serializer
+        ? await this.serializer(value, key)
+        : value;
     }
-    await this.provider.setMany(parsed, overwrite);
+    await this.provider.setMany(importData, overwrite);
     return this;
   }
 
@@ -658,7 +659,7 @@ class Josh {
     const data = await this.provider.getAll();
     if (this.deserializer) {
       for (const key of Object.keys(data.keys)) {
-        data[key] = await this.deserializer(data[key], key);
+        data.keys[key] = await this.deserializer(data.keys[key], key);
       }
     }
     return JSON.stringify(
