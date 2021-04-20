@@ -636,7 +636,7 @@ class Josh {
         'JoshImportError',
       );
     }
-    const parsed = JSON.parse(data);
+    const parsed = eval(data); // instead of json parse as enmap outputs serialized
     const importData = {};
     for (const { key, value } of parsed.keys) {
       importData[key] = this.serializer
