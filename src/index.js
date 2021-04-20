@@ -234,6 +234,7 @@ class Josh {
     await this.readyCheck();
     // await this.provider.keyCheck(keyOrPath);
     const [key, path] = this.getKeyAndPath(keyOrPath);
+    if (!value) if (this.autoEnsure) value = this.autoEnsure;
     await this.provider.set(
       key,
       path,
