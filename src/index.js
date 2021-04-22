@@ -1,4 +1,4 @@
-const { merge, isArray, isFunction, get: _get, isNil } = require('lodash');
+const { merge, isArray, isFunction, get: _get, isNil, isObject } = require('lodash');
 
 // Custom error codes with stack support.
 const Err = require('./error.js');
@@ -72,7 +72,8 @@ class Josh {
     this.serializer = options.serializer;
     this.deserializer = options.deserializer;
 
-    this.autoEnsure = options.autoEnsure;
+    this.autoEnsure = isNil(options.autoEnsure) ? this.off : options.autoEnsure;
+    this.ensureProps = isNil(options.ensureProps) ? true : options.ensureProps;
 
     // Connect the provider to its database.
     this.provider.init().then(() => {
@@ -104,7 +105,7 @@ class Josh {
   getKeyAndPath(keyOrPath) {
     if (!keyOrPath) return [];
     const [key, ...path] = keyOrPath.split('.');
-    return [key, path.join('.')];
+    return [key.toString(), path.length ? path.join('.') : null];
   }
 
   /**
@@ -117,16 +118,16 @@ class Josh {
   async get(keyOrPath) {
     await this.readyCheck();
     const [key, path] = this.getKeyAndPath(keyOrPath);
-    const hasKey = await this.has(keyOrPath);
+    if(isNil(key)) return null;
     let value;
-    if (!hasKey) {
-      if (this.autoEnsure) value = this.autoEnsure;
+    if (!(await this.has(keyOrPath))) {
+      if (this.autoEnsure !== this.off) value = this.autoEnsure;
       else return null;
     } else {
       value = await this.provider.get(key);
     }
     value = this.deserializer ? await this.deserializer(value, key, path) : value;
-    return path.length ? _get(value, path) : value;
+    return !isNil(path) ? _get(value, path) : value;
   }
 
   // Not yet implemented (or implementable)
@@ -232,9 +233,10 @@ class Josh {
    */
   async set(keyOrPath, value) {
     await this.readyCheck();
-    // await this.provider.keyCheck(keyOrPath);
     const [key, path] = this.getKeyAndPath(keyOrPath);
-    if (!value) if (this.autoEnsure) value = this.autoEnsure;
+    if(isNil(value) && this.autoEnsure !== this.off) {
+      value = this.autoEnsure;
+    }
     await this.provider.set(
       key,
       path,
@@ -316,13 +318,39 @@ class Josh {
    */
   async ensure(keyOrPath, defaultValue) {
     await this.readyCheck();
-    const hasKey = await this.has(keyOrPath);
-    if (!hasKey) {
+    const [key, path] = this.getKeyAndPath(keyOrPath);
+    if (this.autoEnsure !== this.off) {
+      console.log('AUTOENSURING', this.autoEnsure);
+      if (!isNil(defaultValue)) {
+        console.warn(
+          `WARNING: Saving "${key}" autoEnsure value was provided for this JOSH but a default value has also been provided. The defaultValue will be used, autoEnsure value is used instead.`,
+        );
+      }
+      defaultValue = this.autoEnsure;
+    }
+
+    if (isNil(defaultValue)) {
+      throw new Err(
+        `No default or autoEnsure value provided on ensure method for "${key}" in "${this.name}"`,
+        'JOSHArgumentError',
+      );
+    }
+    if(!isNil(path)) {
+      if (this.ensureProps) this.ensure(key, {});
+      if(this.has(keyOrPath)) return this.get(keyOrPath);
       await this.set(keyOrPath, defaultValue);
       return defaultValue;
-    } else {
-      return await this.get(keyOrPath);
     }
+    let currValue = await this.get(key);
+    if(this.ensureProps && isObject(currValue)) {
+      
+      const merged = merge(defaultValue, currValue);
+      await this.set(key, merged);
+      return merged;
+    }
+    if(await this.has(keyOrPath)) return await this.get(keyOrPath);
+    this.set(keyOrPath, defaultValue);
+    return defaultValue;
   }
 
   /**
@@ -636,7 +664,7 @@ class Josh {
         'JoshImportError',
       );
     }
-    const parsed = eval(data); // instead of json parse as enmap outputs serialized
+    const parsed = eval(`(${data})`);
     const importData = {};
     for (const { key, value } of parsed.keys) {
       importData[key] = this.serializer
