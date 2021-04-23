@@ -320,7 +320,6 @@ class Josh {
     await this.readyCheck();
     const [key, path] = this.getKeyAndPath(keyOrPath);
     if (this.autoEnsure !== this.off) {
-      console.log('AUTOENSURING', this.autoEnsure);
       if (!isNil(defaultValue)) {
         console.warn(
           `WARNING: Saving "${key}" autoEnsure value was provided for this JOSH but a default value has also been provided. The defaultValue will be used, autoEnsure value is used instead.`,
@@ -331,13 +330,13 @@ class Josh {
 
     if (isNil(defaultValue)) {
       throw new Err(
-        `No default or autoEnsure value provided on ensure method for "${key}" in "${this.name}"`,
+        `No defaultValue or autoEnsure value provided on ensure method for "${key}" in "${this.name}"`,
         'JOSHArgumentError',
       );
     }
     if(!isNil(path)) {
-      if (this.ensureProps) this.ensure(key, {});
-      if(this.has(keyOrPath)) return this.get(keyOrPath);
+      if (this.ensureProps) await this.ensure(key, {});
+      if(await this.has(keyOrPath)) return await this.get(keyOrPath);
       await this.set(keyOrPath, defaultValue);
       return defaultValue;
     }
