@@ -1,4 +1,12 @@
-const { merge, isArray, isFunction, get: _get, isNil, isObject } = require('lodash');
+const {
+  merge,
+  isArray,
+  isFunction,
+  get: _get,
+  isNil,
+  isObject,
+  cloneDeep,
+} = require('lodash');
 
 // Custom error codes with stack support.
 const Err = require('./error.js');
@@ -319,6 +327,7 @@ class Josh {
   async ensure(keyOrPath, defaultValue) {
     await this.readyCheck();
     const [key, path] = this.getKeyAndPath(keyOrPath);
+    defaultValue = cloneDeep(defaultValue);
     if (this.autoEnsure !== this.off) {
       if (!isNil(defaultValue)) {
         console.warn(
