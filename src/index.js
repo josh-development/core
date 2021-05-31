@@ -310,7 +310,7 @@ class Josh {
    * josh.get("mykey", "here") // returns "as an example";
    *
    * // Get the default value back in a variable:
-   * const settings = mySettings.ensure("1234567890", defaultSettings);
+   * const settings = await mySettings.ensure("1234567890", defaultSettings);
    * console.log(settings) // josh's value for "1234567890" if it exists, otherwise the defaultSettings value.
    * @return {Promise<*>} The value from the database for the key, or the default value provided for a new key.
    */
@@ -684,7 +684,7 @@ class Josh {
    * @param {Object} options Options object to pass to each josh, excluding the name..
    * @example
    * // Using local variables.
-   * const Josh = require('josh');
+   * const Josh = require('@joshdb/core');
    * const provider = require("@joshdb/sqlite");
    * const { settings, tags, blacklist } = Josh.multi(['settings', 'tags', 'blacklist'], { provider });
    *
