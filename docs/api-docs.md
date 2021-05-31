@@ -26,8 +26,8 @@
         * [.find(pathOrFn, predicate)](#Josh+find) ⇒ <code>Promise.&lt;Object&gt;</code>
         * [.filter(pathOrFn, predicate)](#Josh+filter) ⇒ <code>Promise.&lt;Object&gt;</code>
         * [.map(pathOrFn)](#Josh+map) ⇒ <code>Promise.&lt;Array.&lt;\*&gt;&gt;</code>
-        * [.includes(keyOrPath, value)](#Josh+includes) ⇒ <code>boolean</code>
-        * [.some(pathOrFn, value)](#Josh+some) ⇒ <code>boolean</code>
+        * [.includes(keyOrPath, value)](#Josh+includes) ⇒ <code>Promise.&lt;boolean&gt;</code>
+        * [.some(pathOrFn, value)](#Josh+some) ⇒ <code>Promise.&lt;boolean&gt;</code>
         * [.every(pathOrFn, value)](#Josh+every) ⇒ <code>boolean</code>
         * [.math(keyOrPath, operation, operand, path)](#Josh+math) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
         * [.autoId()](#Josh+autoId) ⇒ <code>Promise.&lt;string&gt;</code>
@@ -54,14 +54,7 @@ Initializes a new Josh, with options.
 
 **Example**  
 ```js
-const Josh = require("@joshdb/core");
-const provider = require("@joshdb/sqlite");
-
-// sqlite-based database, with default options
-const sqliteDB = new Josh({
-  name: 'mydatabase',
-  provider,
-});
+const Josh = require("@joshdb/core");const provider = require("@joshdb/sqlite");// sqlite-based database, with default optionsconst sqliteDB = new Josh({  name: 'mydatabase',  provider,});
 ```
 <a name="Josh+keys"></a>
 
@@ -87,8 +80,7 @@ Get the amount of rows inside the database.
 <a name="Josh+get"></a>
 
 ### josh.get(keyOrPath) ⇒ <code>Promise.&lt;\*&gt;</code>
-Retrieves (fetches) a value from the database. If a simple key is provided, returns the value.
-If a path is provided, will only return the value at that path, if it exists.
+Retrieves (fetches) a value from the database. If a simple key is provided, returns the value.If a path is provided, will only return the value at that path, if it exists.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
 **Returns**: <code>Promise.&lt;\*&gt;</code> - Returns the value for the key or the value found at the specified path.  
@@ -100,8 +92,7 @@ If a path is provided, will only return the value at that path, if it exists.
 <a name="Josh+getMany"></a>
 
 ### josh.getMany(keys) ⇒ <code>Promise.&lt;Object&gt;</code>
-Retrieve many values from the database.
-If you provide `josh.all` as a value (josh being your variable for the database), the entire data set is returned.
+Retrieve many values from the database.If you provide `josh.all` as a value (josh being your variable for the database), the entire data set is returned.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
 **Returns**: <code>Promise.&lt;Object&gt;</code> - An object with one or many key/value pairs where the property name is the key and the property value is the database value.  
@@ -116,10 +107,7 @@ If you provide `josh.all` as a value (josh being your variable for the database)
 Returns one or more random values from the database.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: <code>Promise.&lt;Object&gt;</code> - An array of key/value pairs each in their own array.
-The array of values should never contain duplicates. If the requested count is higher than the number
-of rows in the database, only the available number of rows will be returned, in randomized order.
-Each array element is comprised of the key and value: // TODO : FIX [['a', 1], ['b', 2], ['c', 3]]  
+**Returns**: <code>Promise.&lt;Object&gt;</code> - An array of key/value pairs each in their own array.The array of values should never contain duplicates. If the requested count is higher than the numberof rows in the database, only the available number of rows will be returned, in randomized order.Each array element is comprised of the key and value: // TODO : FIX [['a', 1], ['b', 2], ['c', 3]]  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -131,9 +119,7 @@ Each array element is comprised of the key and value: // TODO : FIX [['a', 1], [
 Returns one or more random keys from the database.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: <code>Promise.&lt;Array.&lt;string&gt;&gt;</code> - An array of string keys in a randomized order.
-The array of keys should never contain duplicates. If the requested count is higher than the number
-of rows in the database, only the available number of rows will be returned.  
+**Returns**: <code>Promise.&lt;Array.&lt;string&gt;&gt;</code> - An array of string keys in a randomized order.The array of keys should never contain duplicates. If the requested count is higher than the numberof rows in the database, only the available number of rows will be returned.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -154,8 +140,7 @@ Verifies whether a key, or a specific property of an object, exists at all.
 <a name="Josh+set"></a>
 
 ### josh.set(keyOrPath, value) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
-Store a value in the database. If a simple key is provided, creates or overwrites the entire value with the new one provide.
-If a path is provided, and the stored value is an object, only the value at the path will be overwritten.
+Store a value in the database. If a simple key is provided, creates or overwrites the entire value with the new one provide.If a path is provided, and the stored value is an object, only the value at the path will be overwritten.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
 **Returns**: [<code>Promise.&lt;Josh&gt;</code>](#Josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
@@ -180,17 +165,12 @@ Store many values at once in the database. DOES NOT SUPPORT PATHS. Or autoId.
 
 **Example**  
 ```js
-josh.setMany({
-  "thinga": "majig",
-  "foo": "bar",
-  "isCool": true
-});
+josh.setMany({  "thinga": "majig",  "foo": "bar",  "isCool": true});
 ```
 <a name="Josh+update"></a>
 
 ### josh.update(keyOrPath, input) ⇒ <code>Promise.&lt;Object&gt;</code>
-Update an object in the database with modified values. Similar to set() except it does not overwrite the entire object.
-Instead, the data is *merged* with the existing object. Object properties not included in your data are not touched.
+Update an object in the database with modified values. Similar to set() except it does not overwrite the entire object.Instead, the data is *merged* with the existing object. Object properties not included in your data are not touched.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
 **Returns**: <code>Promise.&lt;Object&gt;</code> - The merged object that will be stored in the database.  
@@ -202,29 +182,12 @@ Instead, the data is *merged* with the existing object. Object properties not in
 
 **Example**  
 ```js
-josh.set('thing', {
-  a: 1,
-  b: 2,
-  c: 3
-});
-josh.update('thing', {
-  a: 'one',
-  d: 4
-});
-// value is now {a: 'one', b: 2, c: 3, d: 4}
-
-josh.update('thing', (previousValue) => {
-  ...previousValue,
-  b: 'two',
-  e: 5,
-});
-// value is now {a: 'one', b: 'two', c: 3, d: 4, e: 5}
+josh.set('thing', {  a: 1,  b: 2,  c: 3});josh.update('thing', {  a: 'one',  d: 4});// value is now {a: 'one', b: 2, c: 3, d: 4}josh.update('thing', (previousValue) => {  ...previousValue,  b: 'two',  e: 5,});// value is now {a: 'one', b: 'two', c: 3, d: 4, e: 5}
 ```
 <a name="Josh+ensure"></a>
 
 ### josh.ensure(keyOrPath, defaultValue) ⇒ <code>Promise.&lt;\*&gt;</code>
-Returns the key's value, or the default given, ensuring that the data is there.
-This is a shortcut to "if josh doesn't have key, set it, then get it" which is a very common pattern.
+Returns the key's value, or the default given, ensuring that the data is there.This is a shortcut to "if josh doesn't have key, set it, then get it" which is a very common pattern.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
 **Returns**: <code>Promise.&lt;\*&gt;</code> - The value from the database for the key, or the default value provided for a new key.  
@@ -236,14 +199,7 @@ This is a shortcut to "if josh doesn't have key, set it, then get it" which is a
 
 **Example**  
 ```js
-// Simply ensure the data exists (for using property methods):
-josh.ensure("mykey", {some: "value", here: "as an example"});
-josh.has("mykey"); // always returns true
-josh.get("mykey", "here") // returns "as an example";
-
-// Get the default value back in a variable:
-const settings = mySettings.ensure("1234567890", defaultSettings);
-console.log(settings) // josh's value for "1234567890" if it exists, otherwise the defaultSettings value.
+// Simply ensure the data exists (for using property methods):josh.ensure("mykey", {some: "value", here: "as an example"});josh.has("mykey"); // always returns truejosh.get("mykey", "here") // returns "as an example";// Get the default value back in a variable:const settings = await mySettings.ensure("1234567890", defaultSettings);console.log(settings) // josh's value for "1234567890" if it exists, otherwise the defaultSettings value.
 ```
 <a name="Josh+delete"></a>
 
@@ -286,12 +242,7 @@ Remove a value from an array, by value (simple values like strings and numbers) 
 
 **Example**  
 ```js
-// Assuming
-josh.set('array', [1, 2, 3])
-josh.set('objectarray', [{ a: 1, b: 2, c: 3 }, { d: 4, e: 5, f: 6 }])
-
-josh.remove('array', 1); // value is now [2, 3]
-josh.remove('objectarray', (value) => value.e === 5); // value is now [{ a: 1, b: 2, c: 3 }]
+// Assumingjosh.set('array', [1, 2, 3])josh.set('objectarray', [{ a: 1, b: 2, c: 3 }, { d: 4, e: 5, f: 6 }])josh.remove('array', 1); // value is now [2, 3]josh.remove('objectarray', (value) => value.e === 5); // value is now [{ a: 1, b: 2, c: 3 }]
 ```
 <a name="Josh+inc"></a>
 
@@ -320,11 +271,7 @@ Decrements (remove 1 from the number) the stored value.
 <a name="Josh+find"></a>
 
 ### josh.find(pathOrFn, predicate) ⇒ <code>Promise.&lt;Object&gt;</code>
-Finds a value within the database, either through an exact value match, or a function.
-Useful for Objects and Array values, will not work on "simple" values like strings.
-Returns the first found match - if you need more than one result, use filter() instead.
-Either a function OR a value **must** be provided.
-Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
+Finds a value within the database, either through an exact value match, or a function.Useful for Objects and Array values, will not work on "simple" values like strings.Returns the first found match - if you need more than one result, use filter() instead.Either a function OR a value **must** be provided.Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
 **Returns**: <code>Promise.&lt;Object&gt;</code> - Returns an array composed of the full value (NOT the one at the path!), and the key.  
@@ -336,55 +283,12 @@ Note that using functions here currently is very inefficient, so it's suggested 
 
 **Example**  
 ```js
-// Assuming:
-josh.set("john.shmidt", {
-  fullName: "John Jacob Jingleheimer Schmidt",
-  id: 12345,
-  user: {
-    username: "john.shmidt",
-    firstName: "john",
-    lastName: "shmidt",
-    password: "somerandombcryptstringthingy",
-    lastAccess: -22063545000,
-    isActive: false,
-    avatar: null,
-  }
-});
-
-// Regular string find:
-josh.find("user.firstName", "john")
-
-// Simple function find:
-josh.find(value => value.user.firstName === "john");
-
-// Function find with a path:
-josh.find(value => value === "john", "user.firstName");
-
-// The return of all the above if the same:
-{
-  "john.shmidt": {
-    fullName: "John Jacob Jingleheimer Schmidt",
-    id: 12345,
-    user: {
-      username: "john.shmidt",
-      firstName: "john",
-      lastName: "shmidt",
-      password: "somerandombcryptstringthingy",
-      lastAccess: -22063545000,
-      isActive: false,
-      avatar: null,
-    }
-  }
-}
+// Assuming:josh.set("john.shmidt", {  fullName: "John Jacob Jingleheimer Schmidt",  id: 12345,  user: {    username: "john.shmidt",    firstName: "john",    lastName: "shmidt",    password: "somerandombcryptstringthingy",    lastAccess: -22063545000,    isActive: false,    avatar: null,  }});// Regular string find:josh.find("user.firstName", "john")// Simple function find:josh.find(value => value.user.firstName === "john");// Function find with a path:josh.find(value => value === "john", "user.firstName");// The return of all the above if the same:{  "john.shmidt": {    fullName: "John Jacob Jingleheimer Schmidt",    id: 12345,    user: {      username: "john.shmidt",      firstName: "john",      lastName: "shmidt",      password: "somerandombcryptstringthingy",      lastAccess: -22063545000,      isActive: false,      avatar: null,    }  }}
 ```
 <a name="Josh+filter"></a>
 
 ### josh.filter(pathOrFn, predicate) ⇒ <code>Promise.&lt;Object&gt;</code>
-Filters for values within the database, either through an exact value match, or a function.
-Useful for Objects and Array values, will not work on "simple" values like strings.
-Returns all matches found - if you need a single value, use find() instead.
-Either a function OR a value **must** be provided.
-Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
+Filters for values within the database, either through an exact value match, or a function.Useful for Objects and Array values, will not work on "simple" values like strings.Returns all matches found - if you need a single value, use find() instead.Either a function OR a value **must** be provided.Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
 **Returns**: <code>Promise.&lt;Object&gt;</code> - Returns an array of key/value pair(s) that successfully passes the provided function.  
@@ -397,8 +301,7 @@ Note that using functions here currently is very inefficient, so it's suggested 
 <a name="Josh+map"></a>
 
 ### josh.map(pathOrFn) ⇒ <code>Promise.&lt;Array.&lt;\*&gt;&gt;</code>
-Maps data from each value in your data. Works similarly to Array.map(), but can use both async functions, as well as paths.
-Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
+Maps data from each value in your data. Works similarly to Array.map(), but can use both async functions, as well as paths.Note that using functions here currently is very inefficient, so it's suggested to use paths whenever necesary.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
 **Returns**: <code>Promise.&lt;Array.&lt;\*&gt;&gt;</code> - An array of values mapped from the data.  
@@ -409,12 +312,11 @@ Note that using functions here currently is very inefficient, so it's suggested 
 
 <a name="Josh+includes"></a>
 
-### josh.includes(keyOrPath, value) ⇒ <code>boolean</code>
-Performs Array.includes() on a certain value. Works similarly to
-[Array.includes()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes).
+### josh.includes(keyOrPath, value) ⇒ <code>Promise.&lt;boolean&gt;</code>
+Performs Array.includes() on a certain value. Works similarly to[Array.includes()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes).
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: <code>boolean</code> - Whether the value is included in the array.  
+**Returns**: <code>Promise.&lt;boolean&gt;</code> - Whether the value is included in the array.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -423,19 +325,15 @@ Performs Array.includes() on a certain value. Works similarly to
 
 **Example**  
 ```js
-josh.set('arr', ['a', 'b', 1, 2, { foo: "bar"}]);
-
-josh.includes('arr', 'a'); // true
-josh.includes('arr', 1) // true
-josh.includes('arr', val => val.foo === 'bar'); // true
+josh.set('arr', ['a', 'b', 1, 2, { foo: "bar"}]);josh.includes('arr', 'a'); // truejosh.includes('arr', 1) // truejosh.includes('arr', val => val.foo === 'bar'); // true
 ```
 <a name="Josh+some"></a>
 
-### josh.some(pathOrFn, value) ⇒ <code>boolean</code>
+### josh.some(pathOrFn, value) ⇒ <code>Promise.&lt;boolean&gt;</code>
 Checks whether *at least one key* contains the expected value. The loop stops once the value is found.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
-**Returns**: <code>boolean</code> - Whether the value was found or not (if one of the rows in the database match the value at path, or the function has returned true)  
+**Returns**: <code>Promise.&lt;boolean&gt;</code> - Whether the value was found or not (if one of the rows in the database match the value at path, or the function has returned true)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -453,7 +351,7 @@ Checks whether *every single key* contains the expected value. Identical to josh
 | Param | Type | Description |
 | --- | --- | --- |
 | pathOrFn | <code>\*</code> | Either a function, or the full path to the value to check against the provided value. If using a path, the value at he path will be compared to the value provided as a second argument. If using a function, the function is given the *full* value for each key, along with the key itself, for each row in the database. It should return `true` if your match is found. |
-| value | <code>string</code> \| <code>number</code> \| <code>boolean</code> \| <code>null</code> | The value to be checked at each path. Cannot be an object or array (use a function for those). |
+| value | <code>Promise.&lt;(string\|number\|boolean\|null)&gt;</code> | The value to be checked at each path. Cannot be an object or array (use a function for those). |
 
 <a name="Josh+math"></a>
 
@@ -472,14 +370,7 @@ Executes a mathematical operation on a value and saves the result in the databas
 
 **Example**  
 ```js
-// Assuming
-josh.set("number", 42);
-josh.set("numberInObject", {sub: { anInt: 5 }});
-
-josh.math("number", "/", 2); // 21
-josh.math("number", "add", 5); // 26
-josh.math("number", "modulo", 3); // 2
-josh.math("numberInObject.sub.anInt", "+", 10); // 15
+// Assumingjosh.set("number", 42);josh.set("numberInObject", {sub: { anInt: 5 }});josh.math("number", "/", 2); // 21josh.math("number", "add", 5); // 26josh.math("number", "modulo", 3); // 2josh.math("numberInObject.sub.anInt", "+", 10); // 15
 ```
 <a name="Josh+autoId"></a>
 
@@ -490,25 +381,12 @@ Get an automatic ID for insertion of a new record.
 **Returns**: <code>Promise.&lt;string&gt;</code> - A unique ID to insert data.  
 **Example**  
 ```js
-const Josh = require("@joshdb/core");
-const provider = require("@joshdb/sqlite");
-
-
-const sqliteDB = new Josh({
-  name: 'mydatabase',
-  provider,
-});
-(async() => {
-  const newId = await sqliteDB.autoId();
-  console.log("Inserting new row with ID: ", newID);
-  sqliteDB.set(newId, "This is a new test value");
-})();
+const Josh = require("@joshdb/core");const provider = require("@joshdb/sqlite");const sqliteDB = new Josh({  name: 'mydatabase',  provider,});(async() => {  const newId = await sqliteDB.autoId();  console.log("Inserting new row with ID: ", newID);  sqliteDB.set(newId, "This is a new test value");})();
 ```
 <a name="Josh+import"></a>
 
 ### josh.import(data, overwrite, clear) ⇒ [<code>Promise.&lt;Josh&gt;</code>](#Josh)
-Import an existing json export from josh or enmap. This data must have been exported from josh or enmap,
-and must be from a version that's equivalent or lower than where you're importing it.
+Import an existing json export from josh or enmap. This data must have been exported from josh or enmap,and must be from a version that's equivalent or lower than where you're importing it.
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
 **Returns**: [<code>Promise.&lt;Josh&gt;</code>](#Josh) - This database wrapper, useful if you want to chain more instructions for Josh.  
@@ -522,15 +400,13 @@ and must be from a version that's equivalent or lower than where you're importin
 <a name="Josh+export"></a>
 
 ### josh.export() ⇒ <code>Promise.&lt;string&gt;</code>
-Exports your entire database in JSON format. Useable as import data for both Josh and Enmap.
-***WARNING: This currently requires loading the entire database in memory to write to JSON and might fail on large datasets (more than 1Gb)***
+Exports your entire database in JSON format. Useable as import data for both Josh and Enmap.***WARNING: This currently requires loading the entire database in memory to write to JSON and might fail on large datasets (more than 1Gb)***
 
 **Kind**: instance method of [<code>Josh</code>](#josh)  
 **Returns**: <code>Promise.&lt;string&gt;</code> - A JSON string that can be saved wherever you need it.  
 **Example**  
 ```js
-const fs = require("fs");
-josh.export().then(data => fs.writeFileSync("./export.json"), data));
+const fs = require("fs");josh.export().then(data => fs.writeFileSync("./export.json"), data));
 ```
 <a name="Josh.multi"></a>
 
@@ -547,13 +423,5 @@ Initialize multiple Josh instances easily. Used to simplify the creation of many
 
 **Example**  
 ```js
-// Using local variables.
-const Josh = require('josh');
-const provider = require("@joshdb/sqlite");
-const { settings, tags, blacklist } = Josh.multi(['settings', 'tags', 'blacklist'], { provider });
-
-// Attaching to an existing object (for instance some API's client)
-const Josh = require("@joshdb/core");
-const provider = require("@joshdb/sqlite");
-Object.assign(client, Josh.multi(["settings", "tags", "blacklist"], { provider }));
+// Using local variables.const Josh = require('@joshdb/core');const provider = require("@joshdb/sqlite");const { settings, tags, blacklist } = Josh.multi(['settings', 'tags', 'blacklist'], { provider });// Attaching to an existing object (for instance some API's client)const Josh = require("@joshdb/core");const provider = require("@joshdb/sqlite");Object.assign(client, Josh.multi(["settings", "tags", "blacklist"], { provider }));
 ```
