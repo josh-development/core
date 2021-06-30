@@ -707,7 +707,7 @@ class Josh {
         : data[key];
       output.keys.push({ key, value: keydata });
     }
-    return JSON.stringify(
+    return serialise(
       output,
       null,
       2,
