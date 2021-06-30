@@ -1,36 +1,61 @@
 {
-  "name": "@joshdb/core",
-  "version": "1.2.5",
-  "description": "Javascript Object Storage Helper",
-  "main": "src/index.js",
-  "scripts": {
-    "test": "jest",
-    "docs": "node ./docs/build.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/eslachance/josh.git"
-  },
-  "author": "Evelyne Lachance <eslachance@gmail.com> (https://evie.codes/)",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/eslachance/josh/issues"
-  },
-  "homepage": "https://github.com/eslachance/josh#readme",
-  "dependencies": {
-    "lodash": "^4.17.20"
-  },
-  "devDependencies": {
-    "eslint": "6.8.0",
-    "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "jest": "^26.2.2",
-    "jsdoc-to-markdown": "^6.0.1",
-    "limax": "^2.1.0"
-  },
-  "types": "./typings/index.d.ts"
+	"name": "@joshdb/core",
+	"version": "3.0.0",
+	"description": "TODO",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"author": "Evelyne Lachance <eslachance@gmail.com> (https://evie.codes/)",
+	"license": "Apache-2.0",
+	"private": false,
+	"scripts": {
+		"lint": "eslint src tests scripts --ext mjs,ts --fix",
+		"format": "prettier --write {src,tests,scripts}/**/*.{mjs,ts}",
+		"test": "jest",
+		"test:watch": "jest --watch",
+		"build": "run-s build:tsc",
+		"build:cleanup": "node scripts/clean-dist.mjs",
+		"build:tsc": "tsc -b src",
+		"build:clean-extraneous-types": "node scripts/clean-extraneous-types.mjs",
+		"clean": "yarn build:cleanup",
+		"watch": "tsc -b src -w",
+		"commit": "git-cz --disable-emoji",
+		"prepublishOnly": "run-s build:**"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"@sapphire/eslint-config": "^3.2.1",
+		"@sapphire/prettier-config": "^1.1.6",
+		"@sapphire/ts-config": "^2.3.1",
+		"@types/jest": "^26.0.23",
+		"@types/node": "^15.12.5",
+		"eslint": "^7.29.0",
+		"jest": "^27.0.6",
+		"jest-circus": "^27.0.6",
+		"npm-run-all": "^4.1.5",
+		"prettier": "^2.3.2",
+		"ts-jest": "^27.0.3",
+		"ts-node": "^10.0.0",
+		"typescript": "^4.3.4"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+htts://github.com/eslachance/josh"
+	},
+	"files": [
+		"dist",
+		"!dist/*.tsbuildinfo"
+	],
+	"engines": {
+		"node": ">=14",
+		"npm": ">=6"
+	},
+	"keywords": [],
+	"bugs": {
+		"url": "https://github.com/eslachance/josh/issues"
+	},
+	"homepage": "TODO",
+	"publishConfig": {
+		"access": "public"
+	},
+	"prettier": "@sapphire/prettier-config"
 }
