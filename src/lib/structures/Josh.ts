@@ -1,9 +1,10 @@
 import { get } from 'lodash';
 import { JoshError } from './JoshError';
 import { JoshProvider, JoshProviderOptions } from './JoshProvider';
+import { MapProvider } from './MapProvider';
 
 export interface JoshOptions {
-	provider: typeof JoshProvider;
+	provider?: typeof JoshProvider;
 	providerOptions?: JoshProviderOptions;
 	name?: string;
 }
@@ -26,7 +27,7 @@ export class Josh<T = unknown> {
 
 		if (!name) throw new JoshError('Name option not found.', 'JoshOptionsError');
 
-		const Provider = provider;
+		const Provider = provider ?? Josh.defaultProvider;
 
 		if (!JoshProvider.isPrototypeOf(Provider)) throw new JoshError('Provider class must extend JoshProvider.');
 
@@ -68,5 +69,5 @@ export class Josh<T = unknown> {
 		return [key, path.join('.')];
 	}
 
-	public static defaultProvider: typeof JoshProvider;
+	public static defaultProvider: typeof JoshProvider = MapProvider;
 }
