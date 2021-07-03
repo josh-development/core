@@ -10,8 +10,8 @@
 	"scripts": {
 		"lint": "eslint src tests scripts --ext mjs,ts --fix",
 		"format": "prettier --write {src,tests,scripts}/**/*.{mjs,ts}",
-		"test": "jest",
-		"test:watch": "jest --watch",
+		"test": "jest --verbose",
+		"test:watch": "jest --verbose --watch",
 		"build": "run-s build:tsc",
 		"build:cleanup": "node scripts/clean-dist.mjs",
 		"build:tsc": "tsc -b src",
@@ -21,12 +21,15 @@
 		"commit": "git-cz --disable-emoji",
 		"prepublishOnly": "run-s build:**"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"lodash": "^4.17.21"
+	},
 	"devDependencies": {
 		"@sapphire/eslint-config": "^3.2.1",
 		"@sapphire/prettier-config": "^1.1.6",
 		"@sapphire/ts-config": "^2.3.1",
 		"@types/jest": "^26.0.23",
+		"@types/lodash": "^4.14.170",
 		"@types/node": "^15.12.5",
 		"eslint": "^7.29.0",
 		"jest": "^27.0.6",
