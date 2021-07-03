@@ -12,9 +12,6 @@ export interface JoshOptions {
 export class Josh<T = unknown> {
 	public name: string;
 
-	public all = Symbol('all');
-	public off = Symbol('off');
-
 	private provider: JoshProvider<T>;
 
 	private isDestroyed = false;
