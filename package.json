@@ -22,6 +22,7 @@
 		"prepublishOnly": "run-s build:**"
 	},
 	"dependencies": {
+		"@sapphire/pieces": "^2.1.0",
 		"lodash": "^4.17.21"
 	},
 	"devDependencies": {

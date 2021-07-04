@@ -5,4 +5,4 @@ export * from './lib/structures/MapProvider';
 export * from './lib/structures/payloads/Get';
 export * from './lib/structures/payloads/Payload';
 export * from './lib/types/Awaited';
-export * from './lib/types/Methods';
+export * from './lib/types/Method';

@@ -1,4 +1,4 @@
-import { MapProvider, Methods } from '../src';
+import { MapProvider, Method } from '../src';
 
 const provider = new MapProvider({ name: 'tests' });
 
@@ -17,7 +17,7 @@ describe('MapProvider', () => {
 		test('GIVEN key, path and value THEN returns payload for set', () => {
 			const { method, startTimestamp, endTimestamp } = provider.set('test', '', 'test');
 
-			expect(method).toBe(Methods.Set);
+			expect(method).toBe(Method.Set);
 			expect(typeof startTimestamp).toBe('number');
 			expect(typeof endTimestamp).toBe('number');
 		});
@@ -25,7 +25,7 @@ describe('MapProvider', () => {
 		test('GIVEN key and path THEN returns payload for get', () => {
 			const { method, startTimestamp, endTimestamp, data } = provider.get('test', '');
 
-			expect(method).toBe(Methods.Get);
+			expect(method).toBe(Method.Get);
 			expect(typeof startTimestamp).toBe('number');
 			expect(typeof endTimestamp).toBe('number');
 			expect(data).toBe('test');

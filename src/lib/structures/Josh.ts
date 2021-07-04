@@ -1,26 +1,25 @@
 import { get } from 'lodash';
+import { join } from 'path';
 import { JoshError } from './JoshError';
 import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
+import { MiddlewareStore } from './MiddlewareStore';
 
 export interface JoshOptions {
 	provider?: typeof JoshProvider;
 	providerOptions?: JoshProviderOptions;
 	name?: string;
+	middlewareDirectory?: string;
 }
 
 export class Josh<T = unknown> {
 	public name: string;
 
+	private middleware: MiddlewareStore;
 	private provider: JoshProvider<T>;
 
-	private isDestroyed = false;
-
-	private ready!: (value?: unknown) => void;
-	private defer = new Promise((resolve) => (this.ready = resolve));
-
 	public constructor(options: JoshOptions) {
-		const { name, provider } = options;
+		const { name, provider, middlewareDirectory } = options;
 
 		if (!name) throw new JoshError('Name option not found.', 'JoshOptionsError');
 
@@ -33,18 +32,10 @@ export class Josh<T = unknown> {
 
 		this.provider = initializedProvider;
 		this.name = name;
-
-		void this.provider.init().then(() => this.ready());
-	}
-
-	public async readyHook() {
-		await this.defer;
-		if (this.isDestroyed) throw new JoshError('This Josh instance has been destroyed.');
+		this.middleware = new MiddlewareStore().registerPath(middlewareDirectory ?? join(__dirname, '..', 'middleware', this.name));
 	}
 
 	public async get<V = T>(keyOrPath: string): Promise<V | null> {
-		await this.readyHook();
-
 		const [key, path] = this.getKeyAndPath(keyOrPath);
 		const { data } = await this.provider.get<T>(key, path);
 
@@ -52,11 +43,19 @@ export class Josh<T = unknown> {
 	}
 
 	public async set<V = T>(keyOrPath: string, value: V): Promise<this> {
-		await this.readyHook();
-
 		const [key, path] = this.getKeyAndPath(keyOrPath);
 
 		await this.provider.set<V>(key, path, value);
+
+		return this;
+	}
+
+	public async init(): Promise<this> {
+		await this.middleware.loadAll();
+
+		const success = await this.provider.init();
+
+		if (!success) throw new JoshError('Initiating provider was unsuccessful.');
 
 		return this;
 	}

@@ -1,6 +1,6 @@
-import type { Methods } from '../../types/Methods';
+import type { Method } from '../../types/Method';
 import type { Payload } from './Payload';
 
-export interface GetPayload<T> extends Payload<Methods.Get> {
+export interface GetPayload<T> extends Payload<Method.Get> {
 	data: T | null;
 }

@@ -1,5 +1,5 @@
 import { get, set } from 'lodash';
-import { Methods } from '../types/Methods';
+import { Method } from '../types/Method';
 import { JoshProvider } from './JoshProvider';
 import type { GetPayload } from './payloads/Get';
 import type { Payload } from './payloads/Payload';
@@ -15,14 +15,14 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		const endTimestamp = Date.now();
 
 		return {
-			method: Methods.Get,
+			method: Method.Get,
 			startTimestamp,
 			endTimestamp,
 			data
 		};
 	}
 
-	public set<V = T>(key: string, path: string, value: V): Payload<Methods.Set> {
+	public set<V = T>(key: string, path: string, value: V): Payload<Method.Set> {
 		const startTimestamp = Date.now();
 
 		if (path.length) {
@@ -34,7 +34,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		const endTimestamp = Date.now();
 
 		return {
-			method: Methods.Set,
+			method: Method.Set,
 			startTimestamp,
 			endTimestamp
 		};
