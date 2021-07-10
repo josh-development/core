@@ -1,5 +1,6 @@
 import { get } from 'lodash';
 import { join } from 'path';
+import { Method } from '../types/Method';
 import { JoshError } from './JoshError';
 import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
@@ -15,7 +16,8 @@ export interface JoshOptions {
 export class Josh<T = unknown> {
 	public name: string;
 
-	private middleware: MiddlewareStore;
+	private middlewares: MiddlewareStore;
+
 	private provider: JoshProvider<T>;
 
 	public constructor(options: JoshOptions) {
@@ -32,26 +34,33 @@ export class Josh<T = unknown> {
 
 		this.provider = initializedProvider;
 		this.name = name;
-		this.middleware = new MiddlewareStore().registerPath(middlewareDirectory ?? join(__dirname, '..', 'middleware', this.name));
+		this.middlewares = new MiddlewareStore().registerPath(middlewareDirectory ?? join(__dirname, '..', 'middleware', this.name));
 	}
 
 	public async get<V = T>(keyOrPath: string): Promise<V | null> {
 		const [key, path] = this.getKeyAndPath(keyOrPath);
-		const { data } = await this.provider.get<T>(key, path);
+		let payload = await this.provider.get<V>(key, path);
 
-		return (path.length ? get(data, path) : data) ?? null;
+		const middlewares = this.middlewares.findByMethod(Method.Get);
+
+		for (const middleware of middlewares) payload = await middleware.run(payload);
+
+		return (path.length ? get(payload.data, path) : payload.data) ?? null;
 	}
 
 	public async set<V = T>(keyOrPath: string, value: V): Promise<this> {
 		const [key, path] = this.getKeyAndPath(keyOrPath);
+		const payload = await this.provider.set<V>(key, path, value);
 
-		await this.provider.set<V>(key, path, value);
+		const middlewares = this.middlewares.findByMethod(Method.Set);
+
+		for (const middleware of middlewares) await middleware.run(payload);
 
 		return this;
 	}
 
 	public async init(): Promise<this> {
-		await this.middleware.loadAll();
+		await this.middlewares.loadAll();
 
 		const success = await this.provider.init();
 

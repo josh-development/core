@@ -2,7 +2,7 @@ import { get, set } from 'lodash';
 import { Method } from '../types/Method';
 import { JoshProvider } from './JoshProvider';
 import type { GetPayload } from './payloads/Get';
-import type { Payload } from './payloads/Payload';
+import type { SetPayload } from './payloads/Set';
 
 export class MapProvider<T = unknown> extends JoshProvider<T> {
 	private cache = new Map<string, T>();
@@ -22,7 +22,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		};
 	}
 
-	public set<V = T>(key: string, path: string, value: V): Payload<Method.Set> {
+	public set<V = T>(key: string, path: string, value: V): SetPayload {
 		const startTimestamp = Date.now();
 
 		if (path.length) {

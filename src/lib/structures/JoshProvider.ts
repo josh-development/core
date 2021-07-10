@@ -1,8 +1,7 @@
 import type { Awaited } from '../types/Awaited';
-import type { Method } from '../types/Method';
 import type { Josh } from './Josh';
 import type { GetPayload } from './payloads/Get';
-import type { Payload } from './payloads/Payload';
+import type { SetPayload } from './payloads/Set';
 
 export interface JoshProviderOptions {}
 
@@ -33,7 +32,7 @@ export abstract class JoshProvider<T = unknown> {
 
 	public abstract get<V = T>(key: string, path: string): Awaited<GetPayload<V>>;
 
-	public abstract set<V = T>(key: string, path: string, value: V): Awaited<Payload<Method.Set>>;
+	public abstract set<V = T>(key: string, path: string, value: V): Awaited<SetPayload>;
 
 	protected getKeyAndPath(keyOrPath: string): [string, string] {
 		const [key, ...path] = keyOrPath.split('.');

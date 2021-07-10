@@ -1,20 +1,30 @@
 import { Piece, PieceContext, PieceOptions } from '@sapphire/pieces';
+import type { Awaited } from '../types/Awaited';
 import { Method } from '../types/Method';
 import { JoshError } from './JoshError';
+import type { Payload } from './payloads/Payload';
 
-export class Middleware extends Piece {
+export abstract class Middleware extends Piece {
 	public readonly method: Method;
+
+	public readonly position?: number;
 
 	public constructor(context: PieceContext, options: MiddlewareOptions = {}) {
 		super(context, options);
 
-		if (!options.method && !Object.values(Method).find((method) => method === this.name))
-			throw new JoshError('An invalid method was provided.', 'JoshMiddlewareError');
+		const { method, position } = options;
 
-		this.method = options.method ?? (this.name as Method);
+		if (!method) throw new JoshError('No method was provided.', 'JoshMiddlewareError');
+		if (!Object.values(Method).find((m) => m === method)) throw new JoshError('An invalid method was provided.', 'JoshMiddlewareError');
+
+		this.method = method;
+		this.position = position;
 	}
+
+	public abstract run<P extends Payload>(payload: P): Awaited<P>;
 }
 
 export interface MiddlewareOptions extends PieceOptions {
 	method?: Method;
+	position?: number;
 }

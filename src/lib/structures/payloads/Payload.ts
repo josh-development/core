@@ -1,7 +1,7 @@
 import type { Method } from '../../types/Method';
 
-export interface Payload<M extends Method> {
-	method: M;
+export interface Payload {
+	method: Method;
 	startTimestamp: number;
 	endTimestamp: number;
 }
