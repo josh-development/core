@@ -27,7 +27,6 @@
 	},
 	"devDependencies": {
 		"@sapphire/eslint-config": "^3.2.1",
-		"@sapphire/prettier-config": "^1.1.6",
 		"@sapphire/ts-config": "^2.3.1",
 		"@types/jest": "^26.0.23",
 		"@types/lodash": "^4.14.170",
@@ -60,6 +59,5 @@
 	"homepage": "TODO",
 	"publishConfig": {
 		"access": "public"
-	},
-	"prettier": "@sapphire/prettier-config"
+	}
 }

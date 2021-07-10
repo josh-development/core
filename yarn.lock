@@ -568,13 +568,6 @@
     "@sapphire/utilities" "^1.6.0"
     tslib "^2.3.0"
 
-"@sapphire/prettier-config@^1.1.6":
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/@sapphire/prettier-config/-/prettier-config-1.1.6.tgz#7e0ebd4241b9f4eba7d6ab33639ea2a7f5ba519a"
-  integrity sha512-+xM4Fv1WbWCAMa2mOMUhPC+06FNT4fxkJ6K56pLQQyt1Uc3lKEWjDGvCZZciVW2D+wdSJNuSsHSpn6TkZUmMIg==
-  dependencies:
-    prettier "2.x"
-
 "@sapphire/ts-config@^2.3.1":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@sapphire/ts-config/-/ts-config-2.3.1.tgz#db52a105a5c7f1a20629821e64c08ff1867e2337"
@@ -2935,7 +2928,7 @@ prettier-linter-helpers@^1.0.0:
   dependencies:
     fast-diff "^1.1.2"
 
-prettier@2.x, prettier@^2.3.2:
+prettier@^2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.3.2.tgz#ef280a05ec253712e486233db5c6f23441e7342d"
   integrity sha512-lnJzDfJ66zkMy58OL5/NY5zp70S7Nz6KqcKkXYzn2tMVrNxvbqaBpg7H3qHaLxCJ5lNMsGuM8+ohS7cZrthdLQ==
