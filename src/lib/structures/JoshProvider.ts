@@ -3,14 +3,6 @@ import type { Josh } from './Josh';
 import type { GetPayload } from './payloads/Get';
 import type { SetPayload } from './payloads/Set';
 
-export interface JoshProviderOptions {}
-
-export interface JoshProviderContext<T = unknown> {
-	name?: string;
-	instance?: Josh<T>;
-	options?: JoshProviderOptions;
-}
-
 export abstract class JoshProvider<T = unknown> {
 	public name: string;
 
@@ -38,4 +30,12 @@ export abstract class JoshProvider<T = unknown> {
 		const [key, ...path] = keyOrPath.split('.');
 		return [key, path.join('.')];
 	}
+}
+
+export interface JoshProviderOptions {}
+
+export interface JoshProviderContext<T = unknown> {
+	name?: string;
+	instance?: Josh<T>;
+	options?: JoshProviderOptions;
 }

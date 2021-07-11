@@ -1,20 +1,11 @@
 import { classExtends, Constructor } from '@sapphire/utilities';
 import { get } from 'lodash';
 import { join } from 'path';
-import type { JoshReturnBulk } from '../types/JoshReturnBulk';
 import { Method } from '../types/Method';
 import { JoshError } from './JoshError';
 import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
 import { MiddlewareStore } from './MiddlewareStore';
-
-export interface JoshOptions<T = unknown> {
-	provider?: Constructor<JoshProvider<T>>;
-	providerOptions?: JoshProviderOptions;
-	name?: string;
-	middlewareDirectory?: string;
-	returnBulkType: JoshReturnBulk;
-}
 
 export class Josh<T = unknown> {
 	public name: string;
@@ -77,4 +68,19 @@ export class Josh<T = unknown> {
 	}
 
 	public static defaultProvider: Constructor<JoshProvider> = MapProvider;
+}
+
+export interface JoshOptions<T = unknown> {
+	provider?: Constructor<JoshProvider<T>>;
+	providerOptions?: JoshProviderOptions;
+	name?: string;
+	middlewareDirectory?: string;
+	returnBulkType: JoshReturnBulk;
+}
+
+export enum JoshReturnBulk {
+	Object,
+	Map,
+	OneDimensionalArray,
+	TwoDimensionalArray
 }
