@@ -28,7 +28,7 @@ export class Josh<T = unknown> {
 
 		const Provider = provider ?? Josh.defaultProvider;
 
-		if (!classExtends(Provider, JoshProvider as Constructor<JoshProvider>)) throw new JoshError('Provider class must extend JoshProvider.');
+		if (!classExtends(Provider, JoshProvider as Constructor<JoshProvider<T>>)) throw new JoshError('Provider class must extend JoshProvider.');
 
 		const initializedProvider = new Provider({ name, instance: this, options: options.providerOptions });
 
