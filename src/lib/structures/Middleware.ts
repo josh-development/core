@@ -1,5 +1,5 @@
 import { Piece, PieceContext, PieceOptions } from '@sapphire/pieces';
-import type { Awaited } from '../types/Awaited';
+import type { Awaited } from '@sapphire/utilities';
 import { Method } from '../types/Method';
 import { JoshError } from './JoshError';
 import type { Payload } from './payloads/Payload';

@@ -6,5 +6,4 @@ export * from './lib/structures/Middleware';
 export * from './lib/structures/MiddlewareStore';
 export * from './lib/structures/payloads/Get';
 export * from './lib/structures/payloads/Payload';
-export * from './lib/types/Awaited';
 export * from './lib/types/Method';

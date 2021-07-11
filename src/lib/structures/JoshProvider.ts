@@ -1,4 +1,4 @@
-import type { Awaited } from '../types/Awaited';
+import type { Awaited } from '@sapphire/utilities';
 import type { Josh } from './Josh';
 import type { GetPayload } from './payloads/Get';
 import type { SetPayload } from './payloads/Set';
