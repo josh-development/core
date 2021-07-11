@@ -1,6 +1,7 @@
 import { classExtends, Constructor } from '@sapphire/utilities';
 import { get } from 'lodash';
 import { join } from 'path';
+import type { JoshReturnBulk } from '../types/JoshReturnBulk';
 import { Method } from '../types/Method';
 import { JoshError } from './JoshError';
 import { JoshProvider, JoshProviderOptions } from './JoshProvider';
@@ -12,6 +13,7 @@ export interface JoshOptions<T = unknown> {
 	providerOptions?: JoshProviderOptions;
 	name?: string;
 	middlewareDirectory?: string;
+	returnBulkType: JoshReturnBulk;
 }
 
 export class Josh<T = unknown> {
