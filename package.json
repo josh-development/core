@@ -1,7 +1,7 @@
 {
 	"name": "@joshdb/core",
 	"version": "3.0.0",
-	"description": "TODO",
+	"description": "JavaScript Object Storage Helper",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"author": "Evelyne Lachance <eslachance@gmail.com> (https://evie.codes/)",
@@ -23,6 +23,7 @@
 	},
 	"dependencies": {
 		"@sapphire/pieces": "^2.1.0",
+		"@sapphire/utilities": "^1.6.1",
 		"lodash": "^4.17.21"
 	},
 	"devDependencies": {
@@ -42,7 +43,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+htts://github.com/eslachance/josh"
+		"url": "git+https://github.com/eslachance/josh"
 	},
 	"files": [
 		"dist",
@@ -56,7 +57,7 @@
 	"bugs": {
 		"url": "https://github.com/eslachance/josh/issues"
 	},
-	"homepage": "TODO",
+	"homepage": "https://github.com/eslachance/josh",
 	"publishConfig": {
 		"access": "public"
 	}

@@ -1,3 +1,4 @@
+import type { Constructor } from '@sapphire/utilities';
 import { get } from 'lodash';
 import { join } from 'path';
 import { Method } from '../types/Method';
@@ -6,8 +7,8 @@ import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
 import { MiddlewareStore } from './MiddlewareStore';
 
-export interface JoshOptions {
-	provider?: typeof JoshProvider;
+export interface JoshOptions<T = unknown> {
+	provider?: Constructor<JoshProvider<T>>;
 	providerOptions?: JoshProviderOptions;
 	name?: string;
 	middlewareDirectory?: string;
@@ -20,7 +21,7 @@ export class Josh<T = unknown> {
 
 	private provider: JoshProvider<T>;
 
-	public constructor(options: JoshOptions) {
+	public constructor(options: JoshOptions<T>) {
 		const { name, provider, middlewareDirectory } = options;
 
 		if (!name) throw new JoshError('Name option not found.', 'JoshOptionsError');
@@ -29,7 +30,6 @@ export class Josh<T = unknown> {
 
 		if (!JoshProvider.isPrototypeOf(Provider)) throw new JoshError('Provider class must extend JoshProvider.');
 
-		// @ts-expect-error 2511
 		const initializedProvider = new Provider({ name, instance: this, options: options.providerOptions });
 
 		this.provider = initializedProvider;
@@ -74,5 +74,5 @@ export class Josh<T = unknown> {
 		return [key, path.join('.')];
 	}
 
-	public static defaultProvider: typeof JoshProvider = MapProvider;
+	public static defaultProvider: Constructor<JoshProvider> = MapProvider;
 }
