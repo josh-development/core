@@ -1,10 +1,17 @@
 import { Store } from '@sapphire/pieces';
 import { Method } from '../types/Method';
+import type { Josh } from './Josh';
 import { Middleware } from './Middleware';
 
-export class MiddlewareStore extends Store<Middleware> {
-	public constructor() {
+export class MiddlewareStore<T = unknown> extends Store<Middleware> {
+	public instance: Josh<T>;
+
+	public constructor(options: MiddlewareStoreOptions<T>) {
 		super(Middleware as any, { name: 'middlewares' });
+
+		const { instance } = options;
+
+		this.instance = instance;
 	}
 
 	public findByMethod(method: Method): Middleware[] {
@@ -13,8 +20,10 @@ export class MiddlewareStore extends Store<Middleware> {
 		const withoutPositions = middlewares.filter((middleware) => !middleware.position);
 		const sorted = withPositions.sort((a, b) => a.position! - b.position!);
 
-		sorted.push(...withoutPositions);
-
-		return sorted;
+		return [...sorted, ...withoutPositions];
 	}
+}
+
+export interface MiddlewareStoreOptions<T = unknown> {
+	instance: Josh<T>;
 }

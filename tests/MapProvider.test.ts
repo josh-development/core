@@ -4,17 +4,17 @@ const provider = new MapProvider({ name: 'tests' });
 
 describe('MapProvider', () => {
 	describe('Initialization', () => {
-		test('GIVEN provider.init() THEN returns true', () => {
+		test('GIVEN init() THEN returns true', () => {
 			void expect(provider.init()).resolves.toBe(true);
 		});
 
-		test('GIVEN provider.name THEN returns provider name', () => {
+		test('GIVEN name THEN returns provider name', () => {
 			expect(provider.name).toBe('tests');
 		});
 	});
 
 	describe('Payloads', () => {
-		test('GIVEN key, path and value THEN returns payload for set', () => {
+		test('GIVEN set() THEN returns payload for set', () => {
 			const { method, startTimestamp, endTimestamp } = provider.set('test', '', 'test');
 
 			expect(method).toBe(Method.Set);
@@ -22,13 +22,22 @@ describe('MapProvider', () => {
 			expect(typeof endTimestamp).toBe('number');
 		});
 
-		test('GIVEN key and path THEN returns payload for get', () => {
+		test('GIVEN get() THEN returns payload for get', () => {
 			const { method, startTimestamp, endTimestamp, data } = provider.get('test', '');
 
 			expect(method).toBe(Method.Get);
 			expect(typeof startTimestamp).toBe('number');
 			expect(typeof endTimestamp).toBe('number');
 			expect(data).toBe('test');
+		});
+
+		test('GIVEN getAll() THEN returns payload for getAll', () => {
+			const { method, startTimestamp, endTimestamp, data } = provider.getAll();
+
+			expect(method).toBe(Method.GetAll);
+			expect(typeof startTimestamp).toBe('number');
+			expect(typeof endTimestamp).toBe('number');
+			expect(data).toEqual({ test: 'test' });
 		});
 	});
 });

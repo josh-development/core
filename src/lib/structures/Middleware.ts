@@ -26,5 +26,6 @@ export abstract class Middleware extends Piece {
 
 export interface MiddlewareOptions extends PieceOptions {
 	method?: Method;
+
 	position?: number;
 }

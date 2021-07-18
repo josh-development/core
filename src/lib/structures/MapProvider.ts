@@ -2,6 +2,7 @@ import { get, set } from 'lodash';
 import { Method } from '../types/Method';
 import { JoshProvider } from './JoshProvider';
 import type { GetPayload } from './payloads/Get';
+import type { GetAllPayload } from './payloads/GetAllPayload';
 import type { SetPayload } from './payloads/Set';
 
 export class MapProvider<T = unknown> extends JoshProvider<T> {
@@ -14,12 +15,19 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 
 		const endTimestamp = Date.now();
 
-		return {
-			method: Method.Get,
-			startTimestamp,
-			endTimestamp,
-			data
-		};
+		return { method: Method.Get, startTimestamp, endTimestamp, data };
+	}
+
+	public getAll<V = T>(): GetAllPayload<V> {
+		const startTimestamp = Date.now();
+
+		const data: Record<string, V> = {};
+
+		for (const [key, value] of this.cache.entries()) data[key] = value as unknown as V;
+
+		const endTimestamp = Date.now();
+
+		return { method: Method.GetAll, startTimestamp, endTimestamp, data };
 	}
 
 	public set<V = T>(key: string, path: string, value: V): SetPayload {
@@ -33,10 +41,6 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 
 		const endTimestamp = Date.now();
 
-		return {
-			method: Method.Set,
-			startTimestamp,
-			endTimestamp
-		};
+		return { method: Method.Set, startTimestamp, endTimestamp };
 	}
 }

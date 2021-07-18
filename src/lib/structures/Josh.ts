@@ -27,7 +27,7 @@ export class Josh<T = unknown> {
 
 		this.provider = initializedProvider;
 		this.name = name;
-		this.middlewares = new MiddlewareStore().registerPath(middlewareDirectory ?? join(__dirname, '..', 'middleware', this.name));
+		this.middlewares = new MiddlewareStore({ instance: this }).registerPath(middlewareDirectory ?? join(__dirname, '..', 'middleware', this.name));
 	}
 
 	public async get<V = T>(keyOrPath: string): Promise<V | null> {
@@ -39,6 +39,16 @@ export class Josh<T = unknown> {
 		for (const middleware of middlewares) payload = await middleware.run(payload);
 
 		return (path.length ? get(payload.data, path) : payload.data) ?? null;
+	}
+
+	public async getAll<V = T>(): Promise<ReturnBulk<V>> {
+		let payload = await this.provider.getAll<V>();
+
+		const middlewares = this.middlewares.findByMethod(Method.GetAll);
+
+		for (const middleware of middlewares) payload = await middleware.run(payload);
+
+		return payload.data;
 	}
 
 	public async set<V = T>(keyOrPath: string, value: V): Promise<this> {
@@ -62,7 +72,7 @@ export class Josh<T = unknown> {
 		return this;
 	}
 
-	private getKeyAndPath(keyOrPath: string): [string, string] {
+	protected getKeyAndPath(keyOrPath: string): [string, string] {
 		const [key, ...path] = keyOrPath.split('.');
 		return [key, path.join('.')];
 	}
@@ -71,16 +81,25 @@ export class Josh<T = unknown> {
 }
 
 export interface JoshOptions<T = unknown> {
-	provider?: Constructor<JoshProvider<T>>;
-	providerOptions?: JoshProviderOptions;
 	name?: string;
+
+	provider?: Constructor<JoshProvider<T>>;
+
+	providerOptions?: JoshProviderOptions;
+
 	middlewareDirectory?: string;
+
 	returnBulkType: JoshReturnBulk;
 }
 
 export enum JoshReturnBulk {
 	Object,
+
 	Map,
+
 	OneDimensionalArray,
+
 	TwoDimensionalArray
 }
+
+export type ReturnBulk<T = unknown> = Record<string, T> | Map<string, T> | T[] | [string, T][];
