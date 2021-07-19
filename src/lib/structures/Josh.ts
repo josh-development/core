@@ -41,14 +41,14 @@ export class Josh<T = unknown> {
 		return (path.length ? get(payload.data, path) : payload.data) ?? null;
 	}
 
-	public async getAll<V = T>(): Promise<ReturnBulk<V>> {
+	public async getAll<V = T, K extends keyof ReturnBulk<V> = Bulk.Object>(returnBulkType?: K): Promise<ReturnBulk<V>[K]> {
 		let payload = await this.provider.getAll<V>();
 
 		const middlewares = this.middlewares.findByMethod(Method.GetAll);
 
 		for (const middleware of middlewares) payload = await middleware.run(payload);
 
-		return payload.data;
+		return this.convertBulkData(payload.data, returnBulkType);
 	}
 
 	public async set<V = T>(keyOrPath: string, value: V): Promise<this> {
@@ -72,6 +72,28 @@ export class Josh<T = unknown> {
 		return this;
 	}
 
+	protected convertBulkData<V = T, K extends keyof ReturnBulk<V> = Bulk.Object>(
+		data: ReturnBulk<V>[Bulk.Object],
+		returnBulkType?: K
+	): ReturnBulk<V>[K] {
+		switch (returnBulkType) {
+			case Bulk.Object:
+				return data;
+
+			case Bulk.Map:
+				return new Map(Object.entries(data));
+
+			case Bulk.OneDimensionalArray:
+				return Object.values(data);
+
+			case Bulk.TwoDimensionalArray:
+				return Object.entries(data);
+
+			default:
+				return data;
+		}
+	}
+
 	protected getKeyAndPath(keyOrPath: string): [string, string] {
 		const [key, ...path] = keyOrPath.split('.');
 		return [key, path.join('.')];
@@ -88,11 +110,9 @@ export interface JoshOptions<T = unknown> {
 	providerOptions?: JoshProviderOptions;
 
 	middlewareDirectory?: string;
-
-	returnBulkType: JoshReturnBulk;
 }
 
-export enum JoshReturnBulk {
+export enum Bulk {
 	Object,
 
 	Map,
@@ -102,4 +122,14 @@ export enum JoshReturnBulk {
 	TwoDimensionalArray
 }
 
-export type ReturnBulk<T = unknown> = Record<string, T> | Map<string, T> | T[] | [string, T][];
+export interface ReturnBulk<T = unknown> {
+	[Bulk.Object]: Record<string, T>;
+
+	[Bulk.Map]: Map<string, T>;
+
+	[Bulk.OneDimensionalArray]: T[];
+
+	[Bulk.TwoDimensionalArray]: [string, T][];
+
+	[K: string]: Record<string, T> | Map<string, T> | T[] | [string, T][];
+}
