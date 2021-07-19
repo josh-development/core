@@ -1,4 +1,5 @@
-import { get, set } from 'lodash';
+import get from 'lodash.get';
+import set from 'lodash.set';
 import { Method } from '../types/Method';
 import { JoshProvider } from './JoshProvider';
 import type { GetPayload } from './payloads/Get';
