@@ -1,8 +1,6 @@
 import type { Awaited } from '@sapphire/utilities';
 import type { Josh } from './Josh';
-import type { GetPayload } from './payloads/Get';
-import type { GetAllPayload } from './payloads/GetAllPayload';
-import type { SetPayload } from './payloads/Set';
+import type { GetAllPayload, GetPayload, SetPayload } from './payloads';
 
 export abstract class JoshProvider<T = unknown> {
 	public name: string;

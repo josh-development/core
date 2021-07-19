@@ -1,11 +1,11 @@
 import { classExtends, Constructor } from '@sapphire/utilities';
-import { get } from 'lodash';
 import { join } from 'path';
-import { Method } from '../types/Method';
+import { Method, Trigger } from '../types';
 import { JoshError } from './JoshError';
 import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
 import { MiddlewareStore } from './MiddlewareStore';
+import type { GetAllPayload, GetPayload, SetPayload } from './payloads';
 
 export class Josh<T = unknown> {
 	public name: string;
@@ -32,32 +32,46 @@ export class Josh<T = unknown> {
 
 	public async get<V = T>(keyOrPath: string): Promise<V | null> {
 		const [key, path] = this.getKeyAndPath(keyOrPath);
-		let payload = await this.provider.get<V>(key, path);
+		let payload: GetPayload<V> = { method: Method.Get, key, path, data: null };
 
-		const middlewares = this.middlewares.findByMethod(Method.Get);
+		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Get], trigger: Trigger.PreProvider });
+		for (const middleware of preMiddlewares) payload = await (middleware[Method.Get] ? middleware[Method.Get]! : middleware[Method.All])(payload);
 
-		for (const middleware of middlewares) payload = await middleware.run(payload);
+		payload = await this.provider.get<V>(key, path);
 
-		return (path.length ? get(payload.data, path) : payload.data) ?? null;
+		const postMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Get] });
+		for (const middleware of postMiddlewares) payload = await (middleware[Method.Get] ? middleware[Method.Get]! : middleware[Method.All])(payload);
+
+		return payload.data;
 	}
 
 	public async getAll<V = T, K extends keyof ReturnBulk<V> = Bulk.Object>(returnBulkType?: K): Promise<ReturnBulk<V>[K]> {
-		let payload = await this.provider.getAll<V>();
+		let payload: GetAllPayload<V> = { method: Method.GetAll, data: {} };
 
-		const middlewares = this.middlewares.findByMethod(Method.GetAll);
+		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.GetAll], trigger: Trigger.PreProvider });
+		for (const middleware of preMiddlewares)
+			payload = await (middleware[Method.GetAll] ? middleware[Method.GetAll]! : middleware[Method.All])(payload);
 
-		for (const middleware of middlewares) payload = await middleware.run(payload);
+		payload = await this.provider.getAll<V>();
+
+		const postMiddlewares = this.middlewares.filterByCondition({ methods: [Method.GetAll] });
+		for (const middleware of postMiddlewares)
+			payload = await (middleware[Method.GetAll] ? middleware[Method.GetAll]! : middleware[Method.All])(payload);
 
 		return this.convertBulkData(payload.data, returnBulkType);
 	}
 
 	public async set<V = T>(keyOrPath: string, value: V): Promise<this> {
 		const [key, path] = this.getKeyAndPath(keyOrPath);
-		const payload = await this.provider.set<V>(key, path, value);
+		let payload: SetPayload = { method: Method.Set, key, path };
 
-		const middlewares = this.middlewares.findByMethod(Method.Set);
+		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Set], trigger: Trigger.PreProvider });
+		for (const middleware of preMiddlewares) payload = await (middleware[Method.Set] ? middleware[Method.Set]! : middleware[Method.All])(payload);
 
-		for (const middleware of middlewares) await middleware.run(payload);
+		payload = await this.provider.set<V>(key, path, value);
+
+		const postMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Set] });
+		for (const middleware of postMiddlewares) payload = await (middleware[Method.Set] ? middleware[Method.Set]! : middleware[Method.All])(payload);
 
 		return this;
 	}

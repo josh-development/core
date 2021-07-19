@@ -1,10 +1,8 @@
 import get from 'lodash.get';
 import set from 'lodash.set';
-import { Method } from '../types/Method';
+import { Method } from '../types';
 import { JoshProvider } from './JoshProvider';
-import type { GetPayload } from './payloads/Get';
-import type { GetAllPayload } from './payloads/GetAllPayload';
-import type { SetPayload } from './payloads/Set';
+import type { GetAllPayload, GetPayload, SetPayload } from './payloads';
 
 export class MapProvider<T = unknown> extends JoshProvider<T> {
 	private cache = new Map<string, T>();
@@ -16,7 +14,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 
 		const endTimestamp = Date.now();
 
-		return { method: Method.Get, startTimestamp, endTimestamp, data };
+		return { method: Method.Get, startTimestamp, endTimestamp, key, path, data };
 	}
 
 	public getAll<V = T>(): GetAllPayload<V> {
@@ -42,6 +40,6 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 
 		const endTimestamp = Date.now();
 
-		return { method: Method.Set, startTimestamp, endTimestamp };
+		return { method: Method.Set, startTimestamp, endTimestamp, key, path };
 	}
 }

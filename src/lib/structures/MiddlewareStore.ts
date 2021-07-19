@@ -1,5 +1,5 @@
 import { Store } from '@sapphire/pieces';
-import { Method } from '../types/Method';
+import { Condition, Trigger } from '../types';
 import type { Josh } from './Josh';
 import { Middleware } from './Middleware';
 
@@ -14,13 +14,17 @@ export class MiddlewareStore<T = unknown> extends Store<Middleware> {
 		this.instance = instance;
 	}
 
-	public findByMethod(method: Method): Middleware[] {
-		const middlewares = this.array().filter((middleware) => [method, Method.All].includes(middleware.method));
+	public filterByCondition(condition: Condition): Middleware[] {
+		const { methods = [], trigger = Trigger.PostProvider } = condition;
+
+		const middlewares = this.array().filter((middleware) =>
+			middleware.conditions.some((c) => c.methods!.some((method) => methods.includes(method)) && c.trigger === trigger)
+		);
+
 		const withPositions = middlewares.filter((middleware) => Boolean(middleware.position));
 		const withoutPositions = middlewares.filter((middleware) => !middleware.position);
-		const sorted = withPositions.sort((a, b) => a.position! - b.position!);
 
-		return [...sorted, ...withoutPositions];
+		return [...withPositions.sort((a, b) => a.position! - b.position!), ...withoutPositions];
 	}
 }
 
