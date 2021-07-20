@@ -28,6 +28,23 @@ describe('MapProvider', () => {
 			expect(path).toBe('');
 		});
 
+		test('GIVEN has() THEN returns payload for has', () => {
+			const { method, trigger, stopwatch, key, path, data } = provider.has({
+				method: Method.Has,
+				stopwatch: new Stopwatch(),
+				key: 'test',
+				path: '',
+				data: false
+			});
+
+			expect(method).toBe(Method.Has);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(key).toBe('test');
+			expect(path).toBe('');
+			expect(data).toBe(true);
+		});
+
 		test('GIVEN get() THEN returns payload for get', () => {
 			const { method, trigger, stopwatch, key, path, data } = provider.get({
 				method: Method.Get,

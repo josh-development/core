@@ -4,6 +4,7 @@ import set from 'lodash.set';
 import { Method } from '../types';
 import { JoshProvider } from './JoshProvider';
 import type { GetAllPayload, GetPayload, SetPayload } from './payloads';
+import type { HasPayload } from './payloads/Has';
 
 export class MapProvider<T = unknown> extends JoshProvider<T> {
 	private cache = new Map<string, T>();
@@ -22,6 +23,22 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		payload.stopwatch.start();
 
 		for (const [key, value] of this.cache.entries()) payload.data[key] = value as unknown as V;
+
+		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public has(payload: HasPayload): HasPayload {
+		const { key, path } = payload;
+
+		payload.stopwatch.start();
+
+		if (this.cache.has(key)) {
+			payload.data = true;
+
+			if (path.length) payload.data = Boolean(get(this.cache.get(key), path));
+		}
 
 		payload.stopwatch.stop();
 

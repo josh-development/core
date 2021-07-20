@@ -3,5 +3,7 @@ export enum Method {
 
 	GetAll = 'getAll',
 
+	Has = 'has',
+
 	Set = 'set'
 }

@@ -3,6 +3,7 @@ import type { Awaited } from '@sapphire/utilities';
 import { Condition, Method, Trigger } from '../types';
 import { JoshError } from './JoshError';
 import type { GetAllPayload, GetPayload, SetPayload } from './payloads';
+import type { HasPayload } from './payloads/Has';
 
 export abstract class Middleware extends Piece {
 	public readonly position?: number;
@@ -30,6 +31,10 @@ export abstract class Middleware extends Piece {
 	}
 
 	public [Method.GetAll]<V = unknown>(payload: GetAllPayload<V>): Awaited<GetAllPayload<V>> {
+		return payload;
+	}
+
+	public [Method.Has](payload: HasPayload): Awaited<HasPayload> {
 		return payload;
 	}
 

@@ -7,6 +7,7 @@ import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
 import { MiddlewareStore } from './MiddlewareStore';
 import type { GetAllPayload, GetPayload, SetPayload } from './payloads';
+import type { HasPayload } from './payloads/Has';
 
 export class Josh<T = unknown> {
 	public name: string;
@@ -60,6 +61,22 @@ export class Josh<T = unknown> {
 		for (const middleware of postMiddlewares) payload = await middleware[Method.GetAll](payload);
 
 		return this.convertBulkData(payload.data, returnBulkType);
+	}
+
+	public async has(keyOrPath: string): Promise<boolean> {
+		const [key, path] = this.getKeyAndPath(keyOrPath);
+		let payload: HasPayload = { method: Method.Has, trigger: Trigger.PreProvider, stopwatch: new Stopwatch(), key, path, data: false };
+
+		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Has], trigger: Trigger.PreProvider });
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Has](payload);
+
+		payload = await this.provider.has(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		const postMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Has] });
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Has](payload);
+
+		return payload.data;
 	}
 
 	public async set<V = T>(keyOrPath: string, value: V): Promise<this> {
