@@ -1,4 +1,4 @@
 export * from './Get';
-export * from './GetAllPayload';
+export * from './GetAll';
 export * from './Payload';
 export * from './Set';

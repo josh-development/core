@@ -2,18 +2,12 @@ import { Piece, PieceContext, PieceOptions } from '@sapphire/pieces';
 import type { Awaited } from '@sapphire/utilities';
 import { Condition, Method, Trigger } from '../types';
 import { JoshError } from './JoshError';
-import type { Payload } from './payloads';
+import type { GetAllPayload, GetPayload, SetPayload } from './payloads';
 
 export abstract class Middleware extends Piece {
 	public readonly position?: number;
 
 	public readonly conditions: Condition[];
-
-	public [Method.Get]?: MiddlewareHook;
-
-	public [Method.GetAll]?: MiddlewareHook;
-
-	public [Method.Set]?: MiddlewareHook;
 
 	public constructor(context: PieceContext, options: MiddlewareOptions = {}) {
 		super(context, options);
@@ -31,7 +25,15 @@ export abstract class Middleware extends Piece {
 		this.conditions = conditions;
 	}
 
-	public [Method.All]<P extends Payload>(payload: P): Awaited<P> {
+	public [Method.Get]<V = unknown>(payload: GetPayload<V>): Awaited<GetPayload<V>> {
+		return payload;
+	}
+
+	public [Method.GetAll]<V = unknown>(payload: GetAllPayload<V>): Awaited<GetAllPayload<V>> {
+		return payload;
+	}
+
+	public [Method.Set](payload: SetPayload): Awaited<SetPayload> {
 		return payload;
 	}
 }
@@ -41,5 +43,3 @@ export interface MiddlewareOptions extends PieceOptions {
 
 	conditions?: Condition[];
 }
-
-export type MiddlewareHook = <P extends Payload>(payload: P) => Awaited<P>;

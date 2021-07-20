@@ -1,7 +1,8 @@
-import type { Method } from '../../types';
+import type { Stopwatch } from '@sapphire/stopwatch';
+import type { Method, Trigger } from '../../types';
 
 export interface Payload {
 	method: Method;
-	startTimestamp?: number;
-	endTimestamp?: number;
+	trigger?: Trigger;
+	stopwatch: Stopwatch;
 }

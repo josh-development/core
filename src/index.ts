@@ -6,9 +6,11 @@ export * from './lib/structures/MapProvider';
 export * from './lib/structures/Middleware';
 export * from './lib/structures/MiddlewareStore';
 export * from './lib/structures/payloads/Get';
-export * from './lib/structures/payloads/GetAllPayload';
+export * from './lib/structures/payloads/GetAll';
 export * from './lib/structures/payloads/Payload';
 export * from './lib/structures/payloads/Set';
 export * from './lib/types/Condition';
 export * from './lib/types/Method';
 export * from './lib/types/Trigger';
+
+export const version = '[VI]{version}[/VI]';

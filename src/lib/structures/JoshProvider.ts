@@ -21,11 +21,11 @@ export abstract class JoshProvider<T = unknown> {
 		return Promise.resolve(true);
 	}
 
-	public abstract get<V = T>(key: string, path: string): Awaited<GetPayload<V>>;
+	public abstract get<V = T>(payload: GetPayload<V>): Awaited<GetPayload<V>>;
 
-	public abstract getAll<V = T>(): Awaited<GetAllPayload<V>>;
+	public abstract getAll<V = T>(payload: GetAllPayload<V>): Awaited<GetAllPayload<V>>;
 
-	public abstract set<V = T>(key: string, path: string, value: V): Awaited<SetPayload>;
+	public abstract set<V = T>(payload: SetPayload, value: V): Awaited<SetPayload>;
 
 	protected getKeyAndPath(keyOrPath: string): [string, string] {
 		const [key, ...path] = keyOrPath.split('.');
