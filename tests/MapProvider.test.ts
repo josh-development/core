@@ -15,14 +15,20 @@ describe('MapProvider', () => {
 	});
 
 	describe('Payloads', () => {
-		test('GIVEN set() THEN returns payload for set', () => {
-			const { method, trigger, stopwatch, key, path } = provider.set({ method: Method.Set, key: 'test', path: '' }, 'test');
+		test('GIVEN ensure() THEN returns payload for ensure', () => {
+			const { method, trigger, stopwatch, key, data, defaultValue } = provider.ensure({
+				method: Method.Ensure,
+				key: 'test',
+				data: 'test',
+				defaultValue: 'test'
+			});
 
-			expect(method).toBe(Method.Set);
+			expect(method).toBe(Method.Ensure);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
 			expect(key).toBe('test');
-			expect(path).toBe('');
+			expect(data).toBe('test');
+			expect(defaultValue).toBe('test');
 		});
 
 		test('GIVEN has() THEN returns payload for has', () => {
@@ -64,6 +70,16 @@ describe('MapProvider', () => {
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
 			expect(data).toEqual({ test: 'test' });
+		});
+
+		test('GIVEN set() THEN returns payload for set', () => {
+			const { method, trigger, stopwatch, key, path } = provider.set({ method: Method.Set, key: 'test', path: '' }, 'test');
+
+			expect(method).toBe(Method.Set);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(key).toBe('test');
+			expect(path).toBe('');
 		});
 	});
 });

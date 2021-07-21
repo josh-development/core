@@ -9,6 +9,7 @@ import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
 import { MiddlewareStore } from './MiddlewareStore';
 import type { GetAllPayload, GetPayload, SetPayload } from './payloads';
+import type { EnsurePayload } from './payloads/Ensure';
 import type { HasPayload } from './payloads/Has';
 
 export class Josh<T = unknown> {
@@ -38,6 +39,21 @@ export class Josh<T = unknown> {
 		this.middlewares = new MiddlewareStore({ instance: this, provider: initializedProvider })
 			.registerPath(middlewareDirectory ?? join(getRootData().root, 'middlewares', this.name))
 			.registerPath(join(__dirname, '..', 'middlewares'));
+	}
+
+	public async ensure<V = T>(key: string, defaultValue: V): Promise<V> {
+		let payload: EnsurePayload<V> = { method: Method.Ensure, trigger: Trigger.PreProvider, key, data: defaultValue, defaultValue };
+
+		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Ensure], trigger: Trigger.PreProvider });
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Ensure](payload);
+
+		payload = await this.provider.ensure(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		const postMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Ensure] });
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Ensure](payload);
+
+		return payload.data;
 	}
 
 	public async get<V = T>(keyOrPath: string): Promise<V | null> {

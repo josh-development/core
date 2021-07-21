@@ -1,6 +1,7 @@
 import type { Awaited } from '@sapphire/utilities';
 import type { Josh } from './Josh';
 import type { GetAllPayload, GetPayload, SetPayload } from './payloads';
+import type { EnsurePayload } from './payloads/Ensure';
 import type { HasPayload } from './payloads/Has';
 
 export abstract class JoshProvider<T = unknown> {
@@ -21,6 +22,8 @@ export abstract class JoshProvider<T = unknown> {
 	public async init() {
 		return Promise.resolve(true);
 	}
+
+	public abstract ensure<V = T>(payload: EnsurePayload<V>): Awaited<EnsurePayload<V>>;
 
 	public abstract get<V = T>(payload: GetPayload<V>): Awaited<GetPayload<V>>;
 

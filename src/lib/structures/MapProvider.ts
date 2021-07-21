@@ -4,10 +4,25 @@ import set from 'lodash.set';
 import { Method } from '../types';
 import { JoshProvider } from './JoshProvider';
 import type { GetAllPayload, GetPayload, SetPayload } from './payloads';
+import type { EnsurePayload } from './payloads/Ensure';
 import type { HasPayload } from './payloads/Has';
 
 export class MapProvider<T = unknown> extends JoshProvider<T> {
 	private cache = new Map<string, T>();
+
+	public ensure<V = T>(payload: EnsurePayload<V>): EnsurePayload<V> {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		const { key } = payload;
+
+		if (!this.cache.has(key)) this.cache.set(key, payload.defaultValue as unknown as T);
+
+		payload.data = this.cache.get(key) as unknown as V;
+		payload.stopwatch.stop();
+
+		return payload;
+	}
 
 	public get<V = T>(payload: GetPayload<V>): GetPayload<V> {
 		payload.stopwatch = new Stopwatch();

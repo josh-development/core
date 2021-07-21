@@ -12,32 +12,28 @@ import { BuiltInMiddlewares } from '../types/BuiltInMiddlewares';
 })
 export class CoreAutoEnsure extends Middleware {
 	public async [Method.Get]<V = unknown>(payload: GetPayload<V>): Promise<GetPayload<V>> {
-		const defaultData = this.store.instance.options.middlewareOptions?.[BuiltInMiddlewares.AutoEnsure]?.defaultData;
+		const defaultValue = this.store.instance.options.middlewareOptions?.[BuiltInMiddlewares.AutoEnsure]?.defaultValue;
 
 		const { key } = payload;
 
-		if ((await this.store.provider.has({ method: Method.Has, key, path: '', data: false })).data) return payload;
+		const { data } = await this.store.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
 
-		await this.store.provider.set({ method: Method.Has, key, path: '' }, defaultData);
-
-		payload.data = defaultData as any;
+		payload.data = data as V;
 
 		return payload;
 	}
 
 	public async [Method.Set](payload: SetPayload) {
-		const defaultData = this.store.instance.options.middlewareOptions?.[BuiltInMiddlewares.AutoEnsure]?.defaultData;
+		const defaultValue = this.store.instance.options.middlewareOptions?.[BuiltInMiddlewares.AutoEnsure]?.defaultValue;
 
 		const { key } = payload;
 
-		if ((await this.store.provider.has({ method: Method.Has, key, path: '', data: false })).data) return payload;
-
-		await this.store.provider.set({ method: Method.Has, key, path: '' }, defaultData);
+		await this.store.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
 
 		return payload;
 	}
 }
 
 export interface AutoEnsureDataOptions<T = unknown> {
-	defaultData: T;
+	defaultValue: T;
 }

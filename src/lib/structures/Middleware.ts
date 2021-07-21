@@ -4,6 +4,7 @@ import { Condition, Method, Trigger } from '../types';
 import { JoshError } from './JoshError';
 import type { MiddlewareStore } from './MiddlewareStore';
 import type { GetAllPayload, GetPayload, SetPayload } from './payloads';
+import type { EnsurePayload } from './payloads/Ensure';
 import type { HasPayload } from './payloads/Has';
 
 export abstract class Middleware extends Piece {
@@ -30,6 +31,10 @@ export abstract class Middleware extends Piece {
 		this.position = position;
 		this.conditions = conditions;
 		this.use = use ?? true;
+	}
+
+	public [Method.Ensure]<V = unknown>(payload: EnsurePayload<V>): Awaited<EnsurePayload<V>> {
+		return payload;
 	}
 
 	public [Method.Get]<V = unknown>(payload: GetPayload<V>): Awaited<GetPayload<V>> {

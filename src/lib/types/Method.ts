@@ -1,4 +1,6 @@
 export enum Method {
+	Ensure = 'ensure',
+
 	Get = 'get',
 
 	GetAll = 'getAll',
