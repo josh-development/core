@@ -29,11 +29,6 @@ export abstract class JoshProvider<T = unknown> {
 	public abstract has(payload: HasPayload): Awaited<HasPayload>;
 
 	public abstract set<V = T>(payload: SetPayload, value: V): Awaited<SetPayload>;
-
-	protected getKeyAndPath(keyOrPath: string): [string, string] {
-		const [key, ...path] = keyOrPath.split('.');
-		return [key, path.join('.')];
-	}
 }
 
 export interface JoshProviderOptions {}
