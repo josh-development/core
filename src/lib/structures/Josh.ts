@@ -3,7 +3,7 @@ import { classExtends, Constructor } from '@sapphire/utilities';
 import { join } from 'path';
 import type { AutoEnsureDataOptions } from '../middlewares/CoreAutoEnsure';
 import { Method, Trigger } from '../types';
-import { BuiltInMiddlewares } from '../types/BuiltInMiddlewares';
+import { BuiltInMiddleware } from '../types/BuiltInMiddleware';
 import { JoshError } from './JoshError';
 import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
@@ -129,7 +129,7 @@ export class Josh<T = unknown> {
 		return this;
 	}
 
-	public use(name: BuiltInMiddlewares): this;
+	public use(name: BuiltInMiddleware): this;
 	public use(name: string): this {
 		const middleware = this.middlewares.get(name);
 
@@ -207,5 +207,5 @@ export interface ReturnBulk<T = unknown> {
 }
 
 export interface MiddlewareDataOptions<T = unknown> {
-	[BuiltInMiddlewares.AutoEnsure]?: AutoEnsureDataOptions<T>;
+	[BuiltInMiddleware.AutoEnsure]?: AutoEnsureDataOptions<T>;
 }

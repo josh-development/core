@@ -2,17 +2,17 @@ import { ApplyOptions } from '../structures/decorators/ApplyOptions';
 import { Middleware, MiddlewareOptions } from '../structures/Middleware';
 import type { GetPayload, SetPayload } from '../structures/payloads';
 import { Method, Trigger } from '../types';
-import { BuiltInMiddlewares } from '../types/BuiltInMiddlewares';
+import { BuiltInMiddleware } from '../types/BuiltInMiddleware';
 
 @ApplyOptions<MiddlewareOptions>({
-	name: BuiltInMiddlewares.AutoEnsure,
+	name: BuiltInMiddleware.AutoEnsure,
 	position: 0,
 	conditions: [{ methods: [Method.Get] }, { methods: [Method.Set], trigger: Trigger.PreProvider }],
 	use: false
 })
 export class CoreAutoEnsure extends Middleware {
 	public async [Method.Get]<V = unknown>(payload: GetPayload<V>): Promise<GetPayload<V>> {
-		const defaultValue = this.store.instance.options.middlewareOptions?.[BuiltInMiddlewares.AutoEnsure]?.defaultValue;
+		const defaultValue = this.store.instance.options.middlewareOptions?.[BuiltInMiddleware.AutoEnsure]?.defaultValue;
 
 		const { key } = payload;
 
@@ -24,7 +24,7 @@ export class CoreAutoEnsure extends Middleware {
 	}
 
 	public async [Method.Set](payload: SetPayload) {
-		const defaultValue = this.store.instance.options.middlewareOptions?.[BuiltInMiddlewares.AutoEnsure]?.defaultValue;
+		const defaultValue = this.store.instance.options.middlewareOptions?.[BuiltInMiddleware.AutoEnsure]?.defaultValue;
 
 		const { key } = payload;
 
