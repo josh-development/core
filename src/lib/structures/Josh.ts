@@ -3,7 +3,7 @@ import { classExtends, Constructor } from '@sapphire/utilities';
 import { join } from 'path';
 import type { AutoEnsureDataOptions } from '../middlewares/CoreAutoEnsure';
 import { Method, Trigger } from '../types';
-import { Middlewares } from '../types/Middlewares';
+import { BuiltInMiddlewares } from '../types/BuiltInMiddlewares';
 import { JoshError } from './JoshError';
 import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
@@ -113,7 +113,8 @@ export class Josh<T = unknown> {
 		return this;
 	}
 
-	public use(name: Middlewares): this {
+	public use(name: BuiltInMiddlewares): this;
+	public use(name: string): this {
 		const middleware = this.middlewares.get(name);
 
 		if (!middleware) throw new JoshError('This middleware was not found to enable.');
@@ -190,5 +191,5 @@ export interface ReturnBulk<T = unknown> {
 }
 
 export interface MiddlewareDataOptions<T = unknown> {
-	[Middlewares.AutoEnsure]?: AutoEnsureDataOptions<T>;
+	[BuiltInMiddlewares.AutoEnsure]?: AutoEnsureDataOptions<T>;
 }
