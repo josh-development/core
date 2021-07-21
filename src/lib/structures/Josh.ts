@@ -1,7 +1,9 @@
-import { Stopwatch } from '@sapphire/stopwatch';
+import { getRootData } from '@sapphire/pieces';
 import { classExtends, Constructor } from '@sapphire/utilities';
 import { join } from 'path';
+import type { AutoEnsureDataOptions } from '../middlewares/CoreAutoEnsure';
 import { Method, Trigger } from '../types';
+import { Middlewares } from '../types/Middlewares';
 import { JoshError } from './JoshError';
 import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
@@ -12,12 +14,16 @@ import type { HasPayload } from './payloads/Has';
 export class Josh<T = unknown> {
 	public name: string;
 
+	public options: JoshOptions<T>;
+
 	private middlewares: MiddlewareStore;
 
 	private provider: JoshProvider<T>;
 
 	public constructor(options: JoshOptions<T>) {
 		const { name, provider, middlewareDirectory } = options;
+
+		this.options = options;
 
 		if (!name) throw new JoshError('Name option not found.', 'JoshOptionsError');
 
@@ -29,12 +35,14 @@ export class Josh<T = unknown> {
 
 		this.provider = initializedProvider;
 		this.name = name;
-		this.middlewares = new MiddlewareStore({ instance: this }).registerPath(middlewareDirectory ?? join(__dirname, '..', 'middleware', this.name));
+		this.middlewares = new MiddlewareStore({ instance: this, provider: initializedProvider })
+			.registerPath(middlewareDirectory ?? join(getRootData().root, 'middlewares', this.name))
+			.registerPath(join(__dirname, '..', 'middlewares'));
 	}
 
 	public async get<V = T>(keyOrPath: string): Promise<V | null> {
 		const [key, path] = this.getKeyAndPath(keyOrPath);
-		let payload: GetPayload<V> = { method: Method.Get, trigger: Trigger.PreProvider, stopwatch: new Stopwatch(), key, path, data: null };
+		let payload: GetPayload<V> = { method: Method.Get, trigger: Trigger.PreProvider, key, path, data: null };
 
 		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Get], trigger: Trigger.PreProvider });
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Get](payload);
@@ -49,7 +57,7 @@ export class Josh<T = unknown> {
 	}
 
 	public async getAll<V = T, K extends keyof ReturnBulk<V> = Bulk.Object>(returnBulkType?: K): Promise<ReturnBulk<V>[K]> {
-		let payload: GetAllPayload<V> = { method: Method.GetAll, trigger: Trigger.PreProvider, stopwatch: new Stopwatch(), data: {} };
+		let payload: GetAllPayload<V> = { method: Method.GetAll, trigger: Trigger.PreProvider, data: {} };
 
 		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.GetAll], trigger: Trigger.PreProvider });
 		for (const middleware of preMiddlewares) payload = await middleware[Method.GetAll](payload);
@@ -65,7 +73,7 @@ export class Josh<T = unknown> {
 
 	public async has(keyOrPath: string): Promise<boolean> {
 		const [key, path] = this.getKeyAndPath(keyOrPath);
-		let payload: HasPayload = { method: Method.Has, trigger: Trigger.PreProvider, stopwatch: new Stopwatch(), key, path, data: false };
+		let payload: HasPayload = { method: Method.Has, trigger: Trigger.PreProvider, key, path, data: false };
 
 		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Has], trigger: Trigger.PreProvider });
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Has](payload);
@@ -81,7 +89,7 @@ export class Josh<T = unknown> {
 
 	public async set<V = T>(keyOrPath: string, value: V): Promise<this> {
 		const [key, path] = this.getKeyAndPath(keyOrPath);
-		let payload: SetPayload = { method: Method.Set, trigger: Trigger.PreProvider, stopwatch: new Stopwatch(), key, path };
+		let payload: SetPayload = { method: Method.Set, trigger: Trigger.PreProvider, key, path };
 
 		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Set], trigger: Trigger.PreProvider });
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Set](payload);
@@ -101,6 +109,18 @@ export class Josh<T = unknown> {
 		const success = await this.provider.init();
 
 		if (!success) throw new JoshError('Initiating provider was unsuccessful.');
+
+		return this;
+	}
+
+	public use(name: Middlewares): this {
+		const middleware = this.middlewares.get(name);
+
+		if (!middleware) throw new JoshError('This middleware was not found to enable.');
+
+		middleware.use = true;
+
+		this.middlewares.set(name, middleware);
 
 		return this;
 	}
@@ -143,6 +163,8 @@ export interface JoshOptions<T = unknown> {
 	providerOptions?: JoshProviderOptions;
 
 	middlewareDirectory?: string;
+
+	middlewareOptions?: MiddlewareDataOptions<T>;
 }
 
 export enum Bulk {
@@ -165,4 +187,8 @@ export interface ReturnBulk<T = unknown> {
 	[Bulk.TwoDimensionalArray]: [string, T][];
 
 	[K: string]: Record<string, T> | Map<string, T> | T[] | [string, T][];
+}
+
+export interface MiddlewareDataOptions<T = unknown> {
+	[Middlewares.AutoEnsure]?: AutoEnsureDataOptions<T>;
 }

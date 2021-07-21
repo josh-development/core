@@ -10,9 +10,11 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 	private cache = new Map<string, T>();
 
 	public get<V = T>(payload: GetPayload<V>): GetPayload<V> {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
 		const { key, path } = payload;
 
-		payload.stopwatch.start();
 		payload.data = (path.length ? get(this.cache.get(key), path) : this.cache.get(key)) ?? null;
 		payload.stopwatch.stop();
 
@@ -20,6 +22,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 	}
 
 	public getAll<V = T>(payload: GetAllPayload<V>): GetAllPayload<V> {
+		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
 
 		for (const [key, value] of this.cache.entries()) payload.data[key] = value as unknown as V;
@@ -30,9 +33,10 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 	}
 
 	public has(payload: HasPayload): HasPayload {
-		const { key, path } = payload;
-
+		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
+
+		const { key, path } = payload;
 
 		if (this.cache.has(key)) {
 			payload.data = true;
@@ -46,9 +50,10 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 	}
 
 	public set<V = T>(payload: SetPayload, value: V): SetPayload {
-		const { key, path } = payload;
-
+		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
+
+		const { key, path } = payload;
 
 		if (path.length) {
 			const { data } = this.get({ method: Method.Get, stopwatch: new Stopwatch(), key, path, data: null });

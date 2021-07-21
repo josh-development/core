@@ -16,10 +16,7 @@ describe('MapProvider', () => {
 
 	describe('Payloads', () => {
 		test('GIVEN set() THEN returns payload for set', () => {
-			const { method, trigger, stopwatch, key, path } = provider.set(
-				{ method: Method.Set, stopwatch: new Stopwatch(), key: 'test', path: '' },
-				'test'
-			);
+			const { method, trigger, stopwatch, key, path } = provider.set({ method: Method.Set, key: 'test', path: '' }, 'test');
 
 			expect(method).toBe(Method.Set);
 			expect(trigger).toBeUndefined();
@@ -31,7 +28,6 @@ describe('MapProvider', () => {
 		test('GIVEN has() THEN returns payload for has', () => {
 			const { method, trigger, stopwatch, key, path, data } = provider.has({
 				method: Method.Has,
-				stopwatch: new Stopwatch(),
 				key: 'test',
 				path: '',
 				data: false
@@ -48,7 +44,6 @@ describe('MapProvider', () => {
 		test('GIVEN get() THEN returns payload for get', () => {
 			const { method, trigger, stopwatch, key, path, data } = provider.get({
 				method: Method.Get,
-				stopwatch: new Stopwatch(),
 				key: 'test',
 				path: '',
 				data: null
@@ -63,7 +58,7 @@ describe('MapProvider', () => {
 		});
 
 		test('GIVEN getAll() THEN returns payload for getAll', () => {
-			const { method, trigger, stopwatch, data } = provider.getAll({ method: Method.GetAll, stopwatch: new Stopwatch(), data: {} });
+			const { method, trigger, stopwatch, data } = provider.getAll({ method: Method.GetAll, data: {} });
 
 			expect(method).toBe(Method.GetAll);
 			expect(trigger).toBeUndefined();
