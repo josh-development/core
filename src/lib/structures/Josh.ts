@@ -1,12 +1,13 @@
 import { getRootData } from '@sapphire/pieces';
 import { classExtends, Constructor } from '@sapphire/utilities';
 import { join } from 'path';
-import type { AutoEnsureDataOptions } from '../middlewares/CoreAutoEnsure';
+import type { AutoEnsureContext } from '../middlewares/CoreAutoEnsure';
 import { Method, Trigger } from '../types';
 import { BuiltInMiddleware } from '../types/BuiltInMiddleware';
 import { JoshError } from './JoshError';
 import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
+import type { MiddlewareContext } from './Middleware';
 import { MiddlewareStore } from './MiddlewareStore';
 import type { GetAllPayload, GetPayload, SetPayload } from './payloads';
 import type { EnsurePayload } from './payloads/Ensure';
@@ -17,9 +18,9 @@ export class Josh<T = unknown> {
 
 	public options: JoshOptions<T>;
 
-	private middlewares: MiddlewareStore;
+	public middlewares: MiddlewareStore;
 
-	private provider: JoshProvider<T>;
+	public provider: JoshProvider<T>;
 
 	public constructor(options: JoshOptions<T>) {
 		const { name, provider, middlewareDirectory } = options;
@@ -36,7 +37,7 @@ export class Josh<T = unknown> {
 
 		this.provider = initializedProvider;
 		this.name = name;
-		this.middlewares = new MiddlewareStore({ instance: this, provider: initializedProvider })
+		this.middlewares = new MiddlewareStore({ josh: this })
 			.registerPath(middlewareDirectory ?? join(getRootData().root, 'middlewares', this.name))
 			.registerPath(join(__dirname, '..', 'middlewares'));
 	}
@@ -181,7 +182,7 @@ export interface JoshOptions<T = unknown> {
 
 	middlewareDirectory?: string;
 
-	middlewareOptions?: MiddlewareDataOptions<T>;
+	middlewareContextData?: MiddlewareContextData<T>;
 }
 
 export enum Bulk {
@@ -206,6 +207,8 @@ export interface ReturnBulk<T = unknown> {
 	[K: string]: Record<string, T> | Map<string, T> | T[] | [string, T][];
 }
 
-export interface MiddlewareDataOptions<T = unknown> {
-	[BuiltInMiddleware.AutoEnsure]?: AutoEnsureDataOptions<T>;
+export interface MiddlewareContextData<T = unknown> {
+	[BuiltInMiddleware.AutoEnsure]?: AutoEnsureContext<T>;
+
+	[K: string]: MiddlewareContext | undefined;
 }

@@ -1,5 +1,5 @@
 import { ApplyOptions } from '../structures/decorators/ApplyOptions';
-import { Middleware, MiddlewareOptions } from '../structures/Middleware';
+import { Middleware, MiddlewareContext, MiddlewareOptions } from '../structures/Middleware';
 import type { GetPayload, SetPayload } from '../structures/payloads';
 import { Method, Trigger } from '../types';
 import { BuiltInMiddleware } from '../types/BuiltInMiddleware';
@@ -12,11 +12,13 @@ import { BuiltInMiddleware } from '../types/BuiltInMiddleware';
 })
 export class CoreAutoEnsure extends Middleware {
 	public async [Method.Get]<V = unknown>(payload: GetPayload<V>): Promise<GetPayload<V>> {
-		const defaultValue = this.store.instance.options.middlewareOptions?.[BuiltInMiddleware.AutoEnsure]?.defaultValue;
+		const context = this.getContext<AutoEnsureContext>();
 
+		if (!context) return payload;
+
+		const { defaultValue } = context;
 		const { key } = payload;
-
-		const { data } = await this.store.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
+		const { data } = await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
 
 		payload.data = data as V;
 
@@ -24,16 +26,19 @@ export class CoreAutoEnsure extends Middleware {
 	}
 
 	public async [Method.Set](payload: SetPayload) {
-		const defaultValue = this.store.instance.options.middlewareOptions?.[BuiltInMiddleware.AutoEnsure]?.defaultValue;
+		const context = this.getContext<AutoEnsureContext>();
 
+		if (!context) return payload;
+
+		const { defaultValue } = context;
 		const { key } = payload;
 
-		await this.store.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
+		await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
 
 		return payload;
 	}
 }
 
-export interface AutoEnsureDataOptions<T = unknown> {
+export interface AutoEnsureContext<T = unknown> extends MiddlewareContext {
 	defaultValue: T;
 }

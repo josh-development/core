@@ -52,6 +52,16 @@ export abstract class Middleware extends Piece {
 	public [Method.Set](payload: SetPayload): Awaited<SetPayload> {
 		return payload;
 	}
+
+	protected getContext<C extends MiddlewareContext>(): C | undefined {
+		const contextData = this.store.josh.options.middlewareContextData ?? {};
+
+		return contextData[this.name] as C | undefined;
+	}
+
+	protected get provider() {
+		return this.store.josh.provider;
+	}
 }
 
 export interface MiddlewareOptions extends PieceOptions {
@@ -61,3 +71,5 @@ export interface MiddlewareOptions extends PieceOptions {
 
 	use?: boolean;
 }
+
+export interface MiddlewareContext {}

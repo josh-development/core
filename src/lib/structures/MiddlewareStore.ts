@@ -1,21 +1,17 @@
 import { Store } from '@sapphire/pieces';
 import { Condition, Trigger } from '../types';
 import type { Josh } from './Josh';
-import type { JoshProvider } from './JoshProvider';
 import { Middleware } from './Middleware';
 
 export class MiddlewareStore<T = unknown> extends Store<Middleware> {
-	public instance: Josh<T>;
-
-	public provider: JoshProvider<T>;
+	public josh: Josh<T>;
 
 	public constructor(options: MiddlewareStoreOptions<T>) {
 		super(Middleware as any, { name: 'middlewares' });
 
-		const { instance, provider } = options;
+		const { josh } = options;
 
-		this.instance = instance;
-		this.provider = provider;
+		this.josh = josh;
 	}
 
 	public filterByCondition(condition: Condition): Middleware[] {
@@ -34,7 +30,5 @@ export class MiddlewareStore<T = unknown> extends Store<Middleware> {
 }
 
 export interface MiddlewareStoreOptions<T = unknown> {
-	instance: Josh<T>;
-
-	provider: JoshProvider<T>;
+	josh: Josh<T>;
 }
