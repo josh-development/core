@@ -1,11 +1,11 @@
 import { Stopwatch } from '@sapphire/stopwatch';
-import get from 'lodash.get';
-import set from 'lodash.set';
 import { Method } from '../types';
 import { JoshProvider } from './JoshProvider';
 import type { GetAllPayload, GetPayload, SetPayload } from './payloads';
 import type { EnsurePayload } from './payloads/Ensure';
 import type { HasPayload } from './payloads/Has';
+import { get } from './utils/get';
+import { set } from './utils/set';
 
 export class MapProvider<T = unknown> extends JoshProvider<T> {
 	private cache = new Map<string, T>();
@@ -30,7 +30,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 
 		const { key, path } = payload;
 
-		payload.data = (path.length ? get(this.cache.get(key), path) : this.cache.get(key)) ?? null;
+		payload.data = ((path.length ? get(this.cache.get(key), path) : this.cache.get(key)) ?? null) as V | null;
 		payload.stopwatch.stop();
 
 		return payload;
