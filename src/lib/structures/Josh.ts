@@ -29,6 +29,8 @@ export class Josh<T = unknown> {
 
 		if (!name) throw new JoshError('Name option not found.', 'JoshOptionsError');
 
+		this.name = name;
+
 		const Provider = provider ?? Josh.defaultProvider;
 
 		if (!classExtends(Provider, JoshProvider as Constructor<JoshProvider<T>>)) throw new JoshError('Provider class must extend JoshProvider.');
@@ -36,7 +38,6 @@ export class Josh<T = unknown> {
 		const initializedProvider = new Provider({ name, instance: this, options: options.providerOptions });
 
 		this.provider = initializedProvider;
-		this.name = name;
 		this.middlewares = new MiddlewareStore({ josh: this })
 			.registerPath(middlewareDirectory ?? join(getRootData().root, 'middlewares', this.name))
 			.registerPath(join(__dirname, '..', 'middlewares'));
