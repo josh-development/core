@@ -4,14 +4,14 @@ import type { Josh } from './Josh';
 import { Middleware } from './Middleware';
 
 export class MiddlewareStore<T = unknown> extends Store<Middleware> {
-	public josh: Josh<T>;
+	public instance: Josh<T>;
 
 	public constructor(options: MiddlewareStoreOptions<T>) {
 		super(Middleware as any, { name: 'middlewares' });
 
-		const { josh } = options;
+		const { instance } = options;
 
-		this.josh = josh;
+		this.instance = instance;
 	}
 
 	public filterByCondition(condition: Condition): Middleware[] {
@@ -30,5 +30,5 @@ export class MiddlewareStore<T = unknown> extends Store<Middleware> {
 }
 
 export interface MiddlewareStoreOptions<T = unknown> {
-	josh: Josh<T>;
+	instance: Josh<T>;
 }

@@ -38,7 +38,7 @@ export class Josh<T = unknown> {
 		const initializedProvider = new Provider({ name, instance: this, options: options.providerOptions });
 
 		this.provider = initializedProvider;
-		this.middlewares = new MiddlewareStore({ josh: this })
+		this.middlewares = new MiddlewareStore({ instance: this })
 			.registerPath(middlewareDirectory ?? join(getRootData().root, 'middlewares', this.name))
 			.registerPath(join(__dirname, '..', 'middlewares'));
 	}
