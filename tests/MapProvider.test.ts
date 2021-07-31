@@ -91,6 +91,15 @@ describe('MapProvider', () => {
 			expect(path).toEqual([]);
 		});
 
+		test('GIVEN size() THEN returns payload for size', () => {
+			const { method, trigger, stopwatch, data } = provider.size({ method: Method.Size, data: 0 });
+
+			expect(method).toBe(Method.Size);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(data).toBe(1);
+		});
+
 		test('GIVEN values() THEN returns payload for values', () => {
 			const { method, trigger, stopwatch, data } = provider.values({ method: Method.Values, data: [] });
 

@@ -11,5 +11,7 @@ export enum Method {
 
 	Set = 'set',
 
+	Size = 'size',
+
 	Values = 'values'
 }
