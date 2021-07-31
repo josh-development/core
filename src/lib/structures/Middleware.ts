@@ -3,9 +3,7 @@ import type { Awaited } from '@sapphire/utilities';
 import { Condition, Method, Trigger } from '../types';
 import { JoshError } from './JoshError';
 import type { MiddlewareStore } from './MiddlewareStore';
-import type { GetAllPayload, GetPayload, SetPayload } from './payloads';
-import type { EnsurePayload } from './payloads/Ensure';
-import type { HasPayload } from './payloads/Has';
+import type { EnsurePayload, GetAllPayload, GetPayload, HasPayload, KeysPayload, SetPayload } from './payloads';
 
 export abstract class Middleware extends Piece {
 	public declare store: MiddlewareStore;
@@ -46,6 +44,10 @@ export abstract class Middleware extends Piece {
 	}
 
 	public [Method.Has](payload: HasPayload): Awaited<HasPayload> {
+		return payload;
+	}
+
+	public [Method.Keys](payload: KeysPayload): Awaited<KeysPayload> {
 		return payload;
 	}
 

@@ -7,5 +7,7 @@ export enum Method {
 
 	Has = 'has',
 
+	Keys = 'keys',
+
 	Set = 'set'
 }

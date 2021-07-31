@@ -72,6 +72,15 @@ describe('MapProvider', () => {
 			expect(data).toBe(true);
 		});
 
+		test('GIVEN keys() THEN returns payload for keys', () => {
+			const { method, trigger, stopwatch, data } = provider.keys({ method: Method.Keys, data: [] });
+
+			expect(method).toBe(Method.Keys);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(data).toEqual(['test']);
+		});
+
 		test('GIVEN set() THEN returns payload for set', () => {
 			const { method, trigger, stopwatch, key, path } = provider.set({ method: Method.Set, key: 'test', path: [] }, 'test');
 
