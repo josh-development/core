@@ -10,8 +10,9 @@ export * from './lib/structures/payloads/Get';
 export * from './lib/structures/payloads/GetAll';
 export * from './lib/structures/payloads/Payload';
 export * from './lib/structures/payloads/Set';
-export * from './lib/structures/utils/constants';
 export * from './lib/types/BuiltInMiddleware';
 export * from './lib/types/Condition';
 export * from './lib/types/Method';
 export * from './lib/types/Trigger';
+
+export const version = '[VI]{version}[/VI]';
