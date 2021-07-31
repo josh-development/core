@@ -1,6 +1,6 @@
 import { Piece, PieceContext, PieceOptions } from '@sapphire/pieces';
 import type { Awaited } from '@sapphire/utilities';
-import { Condition, Method, Trigger } from '../types';
+import { Condition, Method } from '../types';
 import { JoshError } from './JoshError';
 import type { MiddlewareStore } from './MiddlewareStore';
 import type {
@@ -30,11 +30,6 @@ export abstract class Middleware extends Piece {
 		const { position, conditions, use } = options;
 
 		if (!conditions) throw new JoshError('Missing condition option.', 'JoshMiddlewareError');
-
-		for (const condition of conditions) {
-			condition.methods ??= [];
-			condition.trigger ??= Trigger.PostProvider;
-		}
 
 		this.position = position;
 		this.conditions = conditions;

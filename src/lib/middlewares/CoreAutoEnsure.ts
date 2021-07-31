@@ -7,7 +7,16 @@ import { BuiltInMiddleware } from '../types/BuiltInMiddleware';
 @ApplyOptions<MiddlewareOptions>({
 	name: BuiltInMiddleware.AutoEnsure,
 	position: 0,
-	conditions: [{ methods: [Method.Get] }, { methods: [Method.Set], trigger: Trigger.PreProvider }],
+	conditions: [
+		{
+			methods: [Method.Get],
+			trigger: Trigger.PostProvider
+		},
+		{
+			methods: [Method.Set],
+			trigger: Trigger.PreProvider
+		}
+	],
 	use: false
 })
 export class CoreAutoEnsure extends Middleware {
