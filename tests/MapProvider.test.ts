@@ -56,6 +56,16 @@ describe('MapProvider', () => {
 			expect(data).toEqual({ test: 'test' });
 		});
 
+		test('GIVEN getMany() THEN returns payload for getMany', () => {
+			const { method, trigger, stopwatch, keys, data } = provider.getMany({ method: Method.GetMany, keys: [['test', []]], data: {} });
+
+			expect(method).toBe(Method.GetMany);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(keys).toEqual([['test', []]]);
+			expect(data).toEqual({ test: 'test' });
+		});
+
 		test('GIVEN has() THEN returns payload for has', () => {
 			const { method, trigger, stopwatch, key, path, data } = provider.has({
 				method: Method.Has,

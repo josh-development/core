@@ -1,6 +1,16 @@
 import type { Awaited } from '@sapphire/utilities';
 import type { Josh } from './Josh';
-import type { EnsurePayload, GetAllPayload, GetPayload, HasPayload, KeysPayload, SetPayload, SizePayload, ValuesPayload } from './payloads';
+import type {
+	EnsurePayload,
+	GetAllPayload,
+	GetManyPayload,
+	GetPayload,
+	HasPayload,
+	KeysPayload,
+	SetPayload,
+	SizePayload,
+	ValuesPayload
+} from './payloads';
 
 export abstract class JoshProvider<T = unknown> {
 	public name: string;
@@ -26,6 +36,8 @@ export abstract class JoshProvider<T = unknown> {
 	public abstract get<V = T>(payload: GetPayload<V>): Awaited<GetPayload<V>>;
 
 	public abstract getAll<V = T>(payload: GetAllPayload<V>): Awaited<GetAllPayload<V>>;
+
+	public abstract getMany<V = T>(payload: GetManyPayload<V>): Awaited<GetManyPayload<V>>;
 
 	public abstract has(payload: HasPayload): Awaited<HasPayload>;
 

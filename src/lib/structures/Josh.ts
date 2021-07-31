@@ -9,7 +9,7 @@ import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
 import type { MiddlewareContext } from './Middleware';
 import { MiddlewareStore } from './MiddlewareStore';
-import type { GetAllPayload, GetPayload, KeysPayload, SetPayload, SizePayload, ValuesPayload } from './payloads';
+import type { GetAllPayload, GetManyPayload, GetPayload, KeysPayload, SetPayload, SizePayload, ValuesPayload } from './payloads';
 import type { EnsurePayload } from './payloads/Ensure';
 import type { HasPayload } from './payloads/Has';
 
@@ -85,6 +85,24 @@ export class Josh<T = unknown> {
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.GetAll, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.GetAll](payload);
+
+		return this.convertBulkData(payload.data, returnBulkType);
+	}
+
+	public async getMany<V = T, K extends keyof ReturnBulk<V> = Bulk.Object>(
+		keys: [string, string[]][],
+		returnBulkType?: K
+	): Promise<ReturnBulk<V>[K]> {
+		let payload: GetManyPayload<V> = { method: Method.GetMany, trigger: Trigger.PreProvider, keys, data: {} };
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.GetMany, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.GetMany](payload);
+
+		payload = await this.provider.getMany<V>(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.GetMany, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.GetMany](payload);
 
 		return this.convertBulkData(payload.data, returnBulkType);
 	}

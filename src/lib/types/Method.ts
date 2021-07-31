@@ -5,6 +5,8 @@ export enum Method {
 
 	GetAll = 'getAll',
 
+	GetMany = 'getMany',
+
 	Has = 'has',
 
 	Keys = 'keys',
