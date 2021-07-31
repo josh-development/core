@@ -10,6 +10,5 @@
 		"source.fixAll.eslint": true,
 		"source.organizeImports": true
 	},
-	"typescript.tsdk": "node_modules\\typescript\\lib",
-	"cSpell.words": ["middlewares"]
+	"typescript.tsdk": "node_modules\\typescript\\lib"
 }
