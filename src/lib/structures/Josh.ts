@@ -46,13 +46,13 @@ export class Josh<T = unknown> {
 	public async ensure<V = T>(key: string, defaultValue: V): Promise<V> {
 		let payload: EnsurePayload<V> = { method: Method.Ensure, trigger: Trigger.PreProvider, key, data: defaultValue, defaultValue };
 
-		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Ensure], trigger: Trigger.PreProvider });
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Ensure, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Ensure](payload);
 
 		payload = await this.provider.ensure(payload);
 		payload.trigger = Trigger.PostProvider;
 
-		const postMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Ensure] });
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Ensure, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Ensure](payload);
 
 		return payload.data;
@@ -62,13 +62,13 @@ export class Josh<T = unknown> {
 		const [key, path] = this.getKeyAndPath(keyOrPath);
 		let payload: GetPayload<V> = { method: Method.Get, trigger: Trigger.PreProvider, key, path, data: null };
 
-		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Get], trigger: Trigger.PreProvider });
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Get, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Get](payload);
 
 		payload = await this.provider.get<V>(payload);
 		payload.trigger = Trigger.PostProvider;
 
-		const postMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Get] });
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Get, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Get](payload);
 
 		return payload.data;
@@ -77,13 +77,13 @@ export class Josh<T = unknown> {
 	public async getAll<V = T, K extends keyof ReturnBulk<V> = Bulk.Object>(returnBulkType?: K): Promise<ReturnBulk<V>[K]> {
 		let payload: GetAllPayload<V> = { method: Method.GetAll, trigger: Trigger.PreProvider, data: {} };
 
-		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.GetAll], trigger: Trigger.PreProvider });
+		const preMiddlewares = this.middlewares.filterByCondition(Method.GetAll, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.GetAll](payload);
 
 		payload = await this.provider.getAll<V>(payload);
 		payload.trigger = Trigger.PostProvider;
 
-		const postMiddlewares = this.middlewares.filterByCondition({ methods: [Method.GetAll] });
+		const postMiddlewares = this.middlewares.filterByCondition(Method.GetAll, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.GetAll](payload);
 
 		return this.convertBulkData(payload.data, returnBulkType);
@@ -93,13 +93,13 @@ export class Josh<T = unknown> {
 		const [key, path] = this.getKeyAndPath(keyOrPath);
 		let payload: HasPayload = { method: Method.Has, trigger: Trigger.PreProvider, key, path, data: false };
 
-		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Has], trigger: Trigger.PreProvider });
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Has, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Has](payload);
 
 		payload = await this.provider.has(payload);
 		payload.trigger = Trigger.PostProvider;
 
-		const postMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Has] });
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Has, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Has](payload);
 
 		return payload.data;
@@ -108,13 +108,13 @@ export class Josh<T = unknown> {
 	public async keys(): Promise<string[]> {
 		let payload: KeysPayload = { method: Method.Keys, trigger: Trigger.PreProvider, data: [] };
 
-		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Set], trigger: Trigger.PreProvider });
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Keys, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Keys](payload);
 
 		payload = await this.provider.keys(payload);
 		payload.trigger = Trigger.PostProvider;
 
-		const postMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Keys] });
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Keys, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Keys](payload);
 
 		return payload.data;
@@ -124,13 +124,13 @@ export class Josh<T = unknown> {
 		const [key, path] = this.getKeyAndPath(keyOrPath);
 		let payload: SetPayload = { method: Method.Set, trigger: Trigger.PreProvider, key, path };
 
-		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Set], trigger: Trigger.PreProvider });
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Set, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Set](payload);
 
 		payload = await this.provider.set<V>(payload, value);
 		payload.trigger = Trigger.PostProvider;
 
-		const postMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Set] });
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Set, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Set](payload);
 
 		return this;
@@ -139,13 +139,13 @@ export class Josh<T = unknown> {
 	public async size(): Promise<number> {
 		let payload: SizePayload = { method: Method.Size, trigger: Trigger.PreProvider, data: 0 };
 
-		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Size], trigger: Trigger.PreProvider });
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Size, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Size](payload);
 
 		payload = await this.provider.size(payload);
 		payload.trigger = Trigger.PostProvider;
 
-		const postMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Size] });
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Size, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Size](payload);
 
 		return payload.data;
@@ -154,13 +154,13 @@ export class Josh<T = unknown> {
 	public async values<V = T>(): Promise<V[]> {
 		let payload: ValuesPayload<V> = { method: Method.Values, trigger: Trigger.PreProvider, data: [] };
 
-		const preMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Values], trigger: Trigger.PreProvider });
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Values, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Values](payload);
 
 		payload = await this.provider.values<V>(payload);
 		payload.trigger = Trigger.PostProvider;
 
-		const postMiddlewares = this.middlewares.filterByCondition({ methods: [Method.Values] });
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Values, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Values](payload);
 
 		return payload.data;

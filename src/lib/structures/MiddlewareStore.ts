@@ -1,5 +1,5 @@
 import { Store } from '@sapphire/pieces';
-import { Condition, Trigger } from '../types';
+import type { Method, Trigger } from '../types';
 import type { Josh } from './Josh';
 import { Middleware } from './Middleware';
 
@@ -14,12 +14,9 @@ export class MiddlewareStore<T = unknown> extends Store<Middleware> {
 		this.instance = instance;
 	}
 
-	public filterByCondition(condition: Condition): Middleware[] {
-		const { methods = [], trigger = Trigger.PostProvider } = condition;
-
+	public filterByCondition(method: Method, trigger: Trigger): Middleware[] {
 		const middlewares = this.array().filter(
-			(middleware) =>
-				middleware.use && middleware.conditions.some((c) => c.methods!.some((method) => methods.includes(method)) && c.trigger === trigger)
+			(middleware) => middleware.use && middleware.conditions.some((c) => c.methods!.includes(method) && c.trigger === trigger)
 		);
 
 		const withPositions = middlewares.filter((middleware) => Boolean(middleware.position));
