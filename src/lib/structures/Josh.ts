@@ -58,7 +58,7 @@ export class Josh<T = unknown> {
 		return payload.data;
 	}
 
-	public async get<V = T>(keyOrPath: string): Promise<V | null> {
+	public async get<V = T>(keyOrPath: string | [string, string[]]): Promise<V | null> {
 		const [key, path] = this.getKeyAndPath(keyOrPath);
 		let payload: GetPayload<V> = { method: Method.Get, trigger: Trigger.PreProvider, key, path, data: null };
 
@@ -89,7 +89,7 @@ export class Josh<T = unknown> {
 		return this.convertBulkData(payload.data, returnBulkType);
 	}
 
-	public async has(keyOrPath: string): Promise<boolean> {
+	public async has(keyOrPath: string | [string, string[]]): Promise<boolean> {
 		const [key, path] = this.getKeyAndPath(keyOrPath);
 		let payload: HasPayload = { method: Method.Has, trigger: Trigger.PreProvider, key, path, data: false };
 
@@ -105,7 +105,7 @@ export class Josh<T = unknown> {
 		return payload.data;
 	}
 
-	public async set<V = T>(keyOrPath: string, value: V): Promise<this> {
+	public async set<V = T>(keyOrPath: string | [string, string[]], value: V): Promise<this> {
 		const [key, path] = this.getKeyAndPath(keyOrPath);
 		let payload: SetPayload = { method: Method.Set, trigger: Trigger.PreProvider, key, path };
 
@@ -166,9 +166,13 @@ export class Josh<T = unknown> {
 		}
 	}
 
-	protected getKeyAndPath(keyOrPath: string): [string, string] {
-		const [key, ...path] = keyOrPath.split('.');
-		return [key, path.join('.')];
+	protected getKeyAndPath(keyOrPath: string | [string, string[]]): [string, string[]] {
+		if (typeof keyOrPath === 'string') {
+			const [key, ...path] = keyOrPath.split('.');
+			return [key, path];
+		}
+
+		return keyOrPath;
 	}
 
 	public static defaultProvider: Constructor<JoshProvider> = MapProvider;
