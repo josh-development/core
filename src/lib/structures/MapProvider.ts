@@ -15,7 +15,8 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 
 		const { key } = payload;
 
-		if (!this.cache.has(key)) this.cache.set(key, payload.defaultValue as unknown as T);
+		// @ts-expect-error 2345
+		if (!this.cache.has(key)) this.cache.set(key, payload.defaultValue);
 
 		Reflect.set(payload, 'data', this.cache.get(key));
 		payload.stopwatch.stop();
@@ -97,8 +98,11 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		if (path.length) {
 			const { data } = this.get({ method: Method.Get, stopwatch: new Stopwatch(), key, path, data: null });
 
-			this.cache.set(key, set(data as unknown as Record<any, any>, path, value));
-		} else this.cache.set(key, value as unknown as T);
+			// @ts-expect-error 2345
+			this.cache.set(key, set(data, path, value));
+
+			// @ts-expect-error 2345
+		} else this.cache.set(key, value);
 
 		payload.stopwatch.stop();
 

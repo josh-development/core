@@ -20,7 +20,7 @@ export class CoreAutoEnsure extends Middleware {
 		const { key } = payload;
 		const { data } = await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
 
-		payload.data = data as V;
+		Reflect.set(payload, 'data', data);
 
 		return payload;
 	}

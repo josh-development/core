@@ -80,7 +80,7 @@ export abstract class Middleware extends Piece {
 	protected getContext<C extends MiddlewareContext>(): C | undefined {
 		const contextData = this.instance.options.middlewareContextData ?? {};
 
-		return contextData[this.name] as C | undefined;
+		return Reflect.get(contextData, this.name);
 	}
 
 	protected get instance() {
