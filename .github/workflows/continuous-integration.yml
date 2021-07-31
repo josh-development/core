@@ -52,11 +52,6 @@ jobs:
         run: yarn --frozen-lockfile
       - name: Run tests
         run: yarn test --coverage
-      - name: Store code coverage report
-        uses: actions/upload-artifact@v2
-        with:
-          name: coverage
-          path: coverage/
 
   Building:
     name: Compile source code
