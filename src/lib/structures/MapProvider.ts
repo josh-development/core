@@ -2,7 +2,7 @@ import { Stopwatch } from '@sapphire/stopwatch';
 import { get, set } from '@shadowware/utilities';
 import { Method } from '../types';
 import { JoshProvider } from './JoshProvider';
-import type { GetAllPayload, GetPayload, KeysPayload, SetPayload } from './payloads';
+import type { GetAllPayload, GetPayload, KeysPayload, SetPayload, ValuesPayload } from './payloads';
 import type { EnsurePayload } from './payloads/Ensure';
 import type { HasPayload } from './payloads/Has';
 
@@ -85,6 +85,17 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 
 			this.cache.set(key, set(data as unknown as Record<any, any>, path, value));
 		} else this.cache.set(key, value as unknown as T);
+
+		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public values<V = T>(payload: ValuesPayload<V>): ValuesPayload<V> {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		Reflect.set(payload, 'data', Array.from(this.cache.values()));
 
 		payload.stopwatch.stop();
 

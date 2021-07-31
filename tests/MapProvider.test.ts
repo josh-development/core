@@ -90,5 +90,14 @@ describe('MapProvider', () => {
 			expect(key).toBe('test');
 			expect(path).toEqual([]);
 		});
+
+		test('GIVEN values() THEN returns payload for values', () => {
+			const { method, trigger, stopwatch, data } = provider.values({ method: Method.Values, data: [] });
+
+			expect(method).toBe(Method.Values);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(data).toEqual(['test']);
+		});
 	});
 });

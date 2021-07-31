@@ -9,5 +9,7 @@ export enum Method {
 
 	Keys = 'keys',
 
-	Set = 'set'
+	Set = 'set',
+
+	Values = 'values'
 }
