@@ -17,7 +17,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 
 		if (!this.cache.has(key)) this.cache.set(key, payload.defaultValue as unknown as T);
 
-		payload.data = this.cache.get(key) as unknown as V;
+		Reflect.set(payload, 'data', this.cache.get(key));
 		payload.stopwatch.stop();
 
 		return payload;
@@ -29,7 +29,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 
 		const { key, path } = payload;
 
-		payload.data = ((path.length ? get(this.cache.get(key), path) : this.cache.get(key)) ?? null) as V | null;
+		Reflect.set(payload, 'data', (path.length ? get(this.cache.get(key), path) : this.cache.get(key)) ?? null);
 		payload.stopwatch.stop();
 
 		return payload;
@@ -39,7 +39,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
 
-		for (const [key, value] of this.cache.entries()) payload.data[key] = value as unknown as V;
+		for (const [key, value] of this.cache.entries()) Reflect.set(payload.data, key, value);
 
 		payload.stopwatch.stop();
 
