@@ -1,5 +1,5 @@
-import { get, set } from '@joshdb/utilities';
 import { Stopwatch } from '@sapphire/stopwatch';
+import { get, set } from '@shadowware/utilities';
 import { Method } from '../types';
 import { JoshProvider } from './JoshProvider';
 import type { GetAllPayload, GetPayload, SetPayload } from './payloads';

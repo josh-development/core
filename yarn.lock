@@ -618,6 +618,11 @@
   resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-2.0.0.tgz#9bdf877d54125261c04cd17e4dbbb7817f677ea6"
   integrity sha512-86hLyARI3171b8n0u7t2cJ2stUO3/2KX2usP7+lwVz+PT0mVBVYUH+yx6Pg0QcDyp/jQteBcjG1diLodZVA3OQ==
 
+"@shadowware/utilities@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@shadowware/utilities/-/utilities-1.0.0.tgz#c5c0f4f67b901d7bbb025724dda441de4009e377"
+  integrity sha512-kHL7yjqNyE0odRuGVZK2/bP1pmT/8IqXHawQZsPhAT2Bhhw23VeQn5flPnbaeTZzEDpvl9brzGog/r8tFeJibg==
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.3.tgz#3802ddd21a50a949b6721ddd72da36e67e7f1b2d"
