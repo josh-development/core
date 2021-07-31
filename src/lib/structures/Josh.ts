@@ -58,8 +58,8 @@ export class Josh<T = unknown> {
 		return payload.data;
 	}
 
-	public async get<V = T>(keyOrPath: string | [string, string[]]): Promise<V | null> {
-		const [key, path] = this.getKeyAndPath(keyOrPath);
+	public async get<V = T>(keyPath: [string, string[]] | string): Promise<V | null> {
+		const [key, path] = this.getKeyPath(keyPath);
 		let payload: GetPayload<V> = { method: Method.Get, trigger: Trigger.PreProvider, key, path, data: null };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Get, Trigger.PreProvider);
@@ -90,10 +90,10 @@ export class Josh<T = unknown> {
 	}
 
 	public async getMany<V = T, K extends keyof ReturnBulk<V> = Bulk.Object>(
-		keys: [string, string[]][],
+		keyPaths: [string, string[]][],
 		returnBulkType?: K
 	): Promise<ReturnBulk<V>[K]> {
-		let payload: GetManyPayload<V> = { method: Method.GetMany, trigger: Trigger.PreProvider, keys, data: {} };
+		let payload: GetManyPayload<V> = { method: Method.GetMany, trigger: Trigger.PreProvider, keyPaths, data: {} };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.GetMany, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.GetMany](payload);
@@ -107,8 +107,8 @@ export class Josh<T = unknown> {
 		return this.convertBulkData(payload.data, returnBulkType);
 	}
 
-	public async has(keyOrPath: string | [string, string[]]): Promise<boolean> {
-		const [key, path] = this.getKeyAndPath(keyOrPath);
+	public async has(keyPath: [string, string[]] | string): Promise<boolean> {
+		const [key, path] = this.getKeyPath(keyPath);
 		let payload: HasPayload = { method: Method.Has, trigger: Trigger.PreProvider, key, path, data: false };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Has, Trigger.PreProvider);
@@ -138,8 +138,8 @@ export class Josh<T = unknown> {
 		return payload.data;
 	}
 
-	public async set<V = T>(keyOrPath: string | [string, string[]], value: V): Promise<this> {
-		const [key, path] = this.getKeyAndPath(keyOrPath);
+	public async set<V = T>(keyPath: [string, string[]] | string, value: V): Promise<this> {
+		const [key, path] = this.getKeyPath(keyPath);
 		let payload: SetPayload = { method: Method.Set, trigger: Trigger.PreProvider, key, path };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Set, Trigger.PreProvider);
@@ -229,13 +229,13 @@ export class Josh<T = unknown> {
 		}
 	}
 
-	protected getKeyAndPath(keyOrPath: string | [string, string[]]): [string, string[]] {
-		if (typeof keyOrPath === 'string') {
-			const [key, ...path] = keyOrPath.split('.');
+	protected getKeyPath(keyPath: string | [string, string[]]): [string, string[]] {
+		if (typeof keyPath === 'string') {
+			const [key, ...path] = keyPath.split('.');
 			return [key, path];
 		}
 
-		return keyOrPath;
+		return keyPath;
 	}
 
 	public static defaultProvider: Constructor<JoshProvider> = MapProvider;

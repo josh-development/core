@@ -57,12 +57,12 @@ describe('MapProvider', () => {
 		});
 
 		test('GIVEN getMany() THEN returns payload for getMany', () => {
-			const { method, trigger, stopwatch, keys, data } = provider.getMany({ method: Method.GetMany, keys: [['test', []]], data: {} });
+			const { method, trigger, stopwatch, keyPaths, data } = provider.getMany({ method: Method.GetMany, keyPaths: [['test', []]], data: {} });
 
 			expect(method).toBe(Method.GetMany);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
-			expect(keys).toEqual([['test', []]]);
+			expect(keyPaths).toEqual([['test', []]]);
 			expect(data).toEqual({ test: 'test' });
 		});
 

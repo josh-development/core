@@ -50,7 +50,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
 
-		for (const [key, path] of payload.keys) {
+		for (const [key, path] of payload.keyPaths) {
 			const { data } = this.get({ method: Method.Get, key, path, data: null });
 			if (data !== null) Reflect.set(payload.data, key, data);
 		}
