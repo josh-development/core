@@ -11,6 +11,7 @@ import type {
 	SizePayload,
 	ValuesPayload
 } from './payloads';
+import type { SetManyPayload } from './payloads/SetMany';
 
 export abstract class JoshProvider<T = unknown> {
 	public name: string;
@@ -44,6 +45,8 @@ export abstract class JoshProvider<T = unknown> {
 	public abstract keys(payload: KeysPayload): Awaited<KeysPayload>;
 
 	public abstract set<V = T>(payload: SetPayload, value: V): Awaited<SetPayload>;
+
+	public abstract setMany<V = T>(payload: SetManyPayload, value: V): Awaited<SetManyPayload>;
 
 	public abstract size(payload: SizePayload): Awaited<SizePayload>;
 

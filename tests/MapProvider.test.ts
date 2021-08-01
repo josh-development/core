@@ -101,6 +101,15 @@ describe('MapProvider', () => {
 			expect(path).toEqual([]);
 		});
 
+		test('GIVEN setMany() THEN returns payload for setMany', () => {
+			const { method, trigger, stopwatch, keyPaths } = provider.setMany({ method: Method.SetMany, keyPaths: [['test', []]] }, 'test');
+
+			expect(method).toBe(Method.SetMany);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(keyPaths).toEqual([['test', []]]);
+		});
+
 		test('GIVEN size() THEN returns payload for size', () => {
 			const { method, trigger, stopwatch, data } = provider.size({ method: Method.Size, data: 0 });
 

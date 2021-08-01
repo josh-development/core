@@ -5,6 +5,7 @@ import { JoshProvider } from './JoshProvider';
 import type { GetAllPayload, GetManyPayload, GetPayload, KeysPayload, SetPayload, SizePayload, ValuesPayload } from './payloads';
 import type { EnsurePayload } from './payloads/Ensure';
 import type { HasPayload } from './payloads/Has';
+import type { SetManyPayload } from './payloads/SetMany';
 
 export class MapProvider<T = unknown> extends JoshProvider<T> {
 	private cache = new Map<string, T>();
@@ -103,6 +104,17 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 
 			// @ts-expect-error 2345
 		} else this.cache.set(key, value);
+
+		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public setMany<V = T>(payload: SetManyPayload, value: V): SetManyPayload {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		for (const [key, path] of payload.keyPaths) this.set<V>({ method: Method.Set, key, path }, value);
 
 		payload.stopwatch.stop();
 

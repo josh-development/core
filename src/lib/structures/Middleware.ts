@@ -14,6 +14,7 @@ import type {
 	SizePayload,
 	ValuesPayload
 } from './payloads';
+import type { SetManyPayload } from './payloads/SetMany';
 
 export abstract class Middleware extends Piece {
 	public declare store: MiddlewareStore;
@@ -61,6 +62,10 @@ export abstract class Middleware extends Piece {
 	}
 
 	public [Method.Set](payload: SetPayload): Awaited<SetPayload> {
+		return payload;
+	}
+
+	public [Method.SetMany](payload: SetManyPayload): Awaited<SetManyPayload> {
 		return payload;
 	}
 

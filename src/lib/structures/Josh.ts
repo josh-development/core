@@ -2,16 +2,24 @@ import { getRootData } from '@sapphire/pieces';
 import { classExtends, Constructor } from '@sapphire/utilities';
 import { join } from 'path';
 import type { AutoEnsureContext } from '../middlewares/CoreAutoEnsure';
-import { Method, Trigger } from '../types';
-import { BuiltInMiddleware } from '../types/BuiltInMiddleware';
+import { BuiltInMiddleware, Method, Trigger } from '../types';
 import { JoshError } from './JoshError';
 import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
 import type { MiddlewareContext } from './Middleware';
 import { MiddlewareStore } from './MiddlewareStore';
-import type { GetAllPayload, GetManyPayload, GetPayload, KeysPayload, SetPayload, SizePayload, ValuesPayload } from './payloads';
-import type { EnsurePayload } from './payloads/Ensure';
-import type { HasPayload } from './payloads/Has';
+import type {
+	EnsurePayload,
+	GetAllPayload,
+	GetManyPayload,
+	GetPayload,
+	HasPayload,
+	KeysPayload,
+	SetPayload,
+	SizePayload,
+	ValuesPayload
+} from './payloads';
+import type { SetManyPayload } from './payloads/SetMany';
 
 export class Josh<T = unknown> {
 	public name: string;
@@ -150,6 +158,21 @@ export class Josh<T = unknown> {
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Set, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Set](payload);
+
+		return this;
+	}
+
+	public async setMany<V = T>(keyPaths: [string, string[]][], value: V): Promise<this> {
+		let payload: SetManyPayload = { method: Method.SetMany, trigger: Trigger.PreProvider, keyPaths };
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.SetMany, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.SetMany](payload);
+
+		payload = await this.provider.setMany<V>(payload, value);
+		payload.trigger = Trigger.PostProvider;
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.SetMany, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.SetMany](payload);
 
 		return this;
 	}

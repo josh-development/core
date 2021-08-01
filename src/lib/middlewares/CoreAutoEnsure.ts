@@ -1,8 +1,7 @@
 import { ApplyOptions } from '../structures/decorators/ApplyOptions';
 import { Middleware, MiddlewareContext, MiddlewareOptions } from '../structures/Middleware';
 import type { GetPayload, SetPayload } from '../structures/payloads';
-import { Method, Trigger } from '../types';
-import { BuiltInMiddleware } from '../types/BuiltInMiddleware';
+import { BuiltInMiddleware, Method, Trigger } from '../types';
 
 @ApplyOptions<MiddlewareOptions>({
 	name: BuiltInMiddleware.AutoEnsure,
