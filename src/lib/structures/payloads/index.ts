@@ -1,3 +1,4 @@
+export * from './AutoKey';
 export * from './Ensure';
 export * from './Get';
 export * from './GetAll';

@@ -9,6 +9,7 @@ import { MapProvider } from './MapProvider';
 import type { MiddlewareContext } from './Middleware';
 import { MiddlewareStore } from './MiddlewareStore';
 import type {
+	AutoKeyPayload,
 	EnsurePayload,
 	GetAllPayload,
 	GetManyPayload,
@@ -49,6 +50,21 @@ export class Josh<T = unknown> {
 		this.middlewares = new MiddlewareStore({ instance: this })
 			.registerPath(middlewareDirectory ?? join(getRootData().root, 'middlewares', this.name))
 			.registerPath(join(__dirname, '..', 'middlewares'));
+	}
+
+	public async autoKey(): Promise<string> {
+		let payload: AutoKeyPayload = { method: Method.AutoKey, trigger: Trigger.PreProvider, data: '' };
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.AutoKey, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.AutoKey](payload);
+
+		payload = await this.provider.autoKey(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.AutoKey, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.AutoKey](payload);
+
+		return payload.data;
 	}
 
 	public async ensure<V = T>(key: string, defaultValue: V): Promise<V> {

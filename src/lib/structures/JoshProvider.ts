@@ -1,6 +1,7 @@
 import type { Awaited } from '@sapphire/utilities';
 import type { Josh } from './Josh';
 import type {
+	AutoKeyPayload,
 	EnsurePayload,
 	GetAllPayload,
 	GetManyPayload,
@@ -31,6 +32,8 @@ export abstract class JoshProvider<T = unknown> {
 	public async init() {
 		return Promise.resolve(true);
 	}
+
+	public abstract autoKey(payload: AutoKeyPayload): Awaited<AutoKeyPayload>;
 
 	public abstract ensure<V = T>(payload: EnsurePayload<V>): Awaited<EnsurePayload<V>>;
 

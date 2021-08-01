@@ -4,6 +4,7 @@ import { Condition, Method } from '../types';
 import { JoshError } from './JoshError';
 import type { MiddlewareStore } from './MiddlewareStore';
 import type {
+	AutoKeyPayload,
 	EnsurePayload,
 	GetAllPayload,
 	GetManyPayload,
@@ -35,6 +36,10 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 		this.position = position;
 		this.conditions = conditions;
 		this.use = use ?? true;
+	}
+
+	public [Method.AutoKey](payload: AutoKeyPayload): Awaited<AutoKeyPayload> {
+		return payload;
 	}
 
 	public [Method.Ensure]<V = unknown>(payload: EnsurePayload<V>): Awaited<EnsurePayload<V>> {

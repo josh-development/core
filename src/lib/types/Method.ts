@@ -1,4 +1,6 @@
 export enum Method {
+	AutoKey = 'autoKey',
+
 	Ensure = 'ensure',
 
 	Get = 'get',

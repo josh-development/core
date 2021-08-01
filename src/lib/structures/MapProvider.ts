@@ -3,6 +3,7 @@ import { get, set } from '@shadowware/utilities';
 import { Method } from '../types';
 import { JoshProvider } from './JoshProvider';
 import type {
+	AutoKeyPayload,
 	EnsurePayload,
 	GetAllPayload,
 	GetManyPayload,
@@ -17,6 +18,20 @@ import type {
 
 export class MapProvider<T = unknown> extends JoshProvider<T> {
 	private cache = new Map<string, T>();
+
+	private autoKeyCount = 0;
+
+	public autoKey(payload: AutoKeyPayload): AutoKeyPayload {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		this.autoKeyCount++;
+
+		payload.data = this.autoKeyCount.toString();
+		payload.stopwatch.stop();
+
+		return payload;
+	}
 
 	public ensure<V = T>(payload: EnsurePayload<V>): EnsurePayload<V> {
 		payload.stopwatch = new Stopwatch();
@@ -93,7 +108,6 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		payload.stopwatch.start();
 
 		payload.data = Array.from(this.cache.keys());
-
 		payload.stopwatch.stop();
 
 		return payload;
@@ -135,7 +149,6 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		payload.stopwatch.start();
 
 		payload.data = this.cache.size;
-
 		payload.stopwatch.stop();
 
 		return payload;
@@ -146,7 +159,6 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		payload.stopwatch.start();
 
 		Reflect.set(payload, 'data', Array.from(this.cache.values()));
-
 		payload.stopwatch.stop();
 
 		return payload;

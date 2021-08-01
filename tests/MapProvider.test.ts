@@ -15,6 +15,15 @@ describe('MapProvider', () => {
 	});
 
 	describe('Payloads', () => {
+		test('GIVEN autoKey() THEN returns payload for autoKey', () => {
+			const { method, trigger, stopwatch, data } = provider.autoKey({ method: Method.AutoKey, data: '' });
+
+			expect(method).toBe(Method.AutoKey);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(data).toBe('1');
+		});
+
 		test('GIVEN ensure() THEN returns payload for ensure', () => {
 			const { method, trigger, stopwatch, key, data, defaultValue } = provider.ensure({
 				method: Method.Ensure,
