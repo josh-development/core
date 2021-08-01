@@ -7,11 +7,11 @@ import type {
 	GetPayload,
 	HasPayload,
 	KeysPayload,
+	SetManyPayload,
 	SetPayload,
 	SizePayload,
 	ValuesPayload
 } from './payloads';
-import type { SetManyPayload } from './payloads/SetMany';
 
 export abstract class JoshProvider<T = unknown> {
 	public name: string;

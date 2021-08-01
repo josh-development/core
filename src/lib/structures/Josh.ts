@@ -15,11 +15,11 @@ import type {
 	GetPayload,
 	HasPayload,
 	KeysPayload,
+	SetManyPayload,
 	SetPayload,
 	SizePayload,
 	ValuesPayload
 } from './payloads';
-import type { SetManyPayload } from './payloads/SetMany';
 
 export class Josh<T = unknown> {
 	public name: string;

@@ -2,10 +2,18 @@ import { Stopwatch } from '@sapphire/stopwatch';
 import { get, set } from '@shadowware/utilities';
 import { Method } from '../types';
 import { JoshProvider } from './JoshProvider';
-import type { GetAllPayload, GetManyPayload, GetPayload, KeysPayload, SetPayload, SizePayload, ValuesPayload } from './payloads';
-import type { EnsurePayload } from './payloads/Ensure';
-import type { HasPayload } from './payloads/Has';
-import type { SetManyPayload } from './payloads/SetMany';
+import type {
+	EnsurePayload,
+	GetAllPayload,
+	GetManyPayload,
+	GetPayload,
+	HasPayload,
+	KeysPayload,
+	SetManyPayload,
+	SetPayload,
+	SizePayload,
+	ValuesPayload
+} from './payloads';
 
 export class MapProvider<T = unknown> extends JoshProvider<T> {
 	private cache = new Map<string, T>();
