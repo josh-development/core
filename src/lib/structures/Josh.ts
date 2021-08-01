@@ -287,15 +287,15 @@ export enum Bulk {
 }
 
 export interface ReturnBulk<T = unknown> {
-	[Bulk.Object]: Record<string, T>;
+	[Bulk.Object]: Record<string, T | null>;
 
-	[Bulk.Map]: Map<string, T>;
+	[Bulk.Map]: Map<string, T | null>;
 
-	[Bulk.OneDimensionalArray]: T[];
+	[Bulk.OneDimensionalArray]: (T | null)[];
 
-	[Bulk.TwoDimensionalArray]: [string, T][];
+	[Bulk.TwoDimensionalArray]: [string, T | null][];
 
-	[K: string]: Record<string, T> | Map<string, T> | T[] | [string, T][];
+	[K: string]: Record<string, T | null> | Map<string, T | null> | (T | null)[] | [string, T | null][];
 }
 
 export interface MiddlewareContextData<T = unknown> {
