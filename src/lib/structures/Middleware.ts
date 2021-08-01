@@ -16,7 +16,7 @@ import type {
 } from './payloads';
 import type { SetManyPayload } from './payloads/SetMany';
 
-export abstract class Middleware extends Piece {
+export abstract class Middleware<Context extends MiddlewareContext = MiddlewareContext> extends Piece {
 	public declare store: MiddlewareStore;
 
 	public readonly position?: number;
@@ -77,7 +77,7 @@ export abstract class Middleware extends Piece {
 		return payload;
 	}
 
-	protected getContext<C extends MiddlewareContext>(): C | undefined {
+	protected getContext<C extends MiddlewareContext = Context>(): C | undefined {
 		const contextData = this.instance.options.middlewareContextData ?? {};
 
 		return Reflect.get(contextData, this.name);
