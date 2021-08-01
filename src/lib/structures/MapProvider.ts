@@ -1,4 +1,5 @@
 import { Stopwatch } from '@sapphire/stopwatch';
+import { isObject, mergeDefault } from '@sapphire/utilities';
 import { get, set } from '@shadowware/utilities';
 import { Method } from '../types';
 import { JoshProvider } from './JoshProvider';
@@ -13,6 +14,8 @@ import type {
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
+	UpdateByDataPayload,
+	UpdateByHookPayload,
 	ValuesPayload
 } from './payloads';
 
@@ -149,6 +152,32 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		payload.stopwatch.start();
 
 		payload.data = this.cache.size;
+		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public updateByData<V = T>(payload: UpdateByDataPayload<V>): UpdateByDataPayload<V> {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		const { key, path } = payload;
+		const { data } = this.get({ method: Method.Get, key, path, data: payload.inputData! });
+
+		Reflect.set(payload, 'data', isObject(payload.inputData) ? mergeDefault(data ?? {}, payload.inputData) : payload.inputData);
+		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public async updateByHook<V = T>(payload: UpdateByHookPayload<V>): Promise<UpdateByHookPayload<V>> {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		const { key, path, inputHook } = payload;
+		const { data } = this.get({ method: Method.Get, key, path, data: null });
+
+		payload.data = await inputHook!(data);
 		payload.stopwatch.stop();
 
 		return payload;

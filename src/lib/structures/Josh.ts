@@ -19,6 +19,8 @@ import type {
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
+	UpdateHook,
+	UpdatePayload,
 	ValuesPayload
 } from './payloads';
 
@@ -206,6 +208,26 @@ export class Josh<T = unknown> {
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Size](payload);
 
 		return payload.data;
+	}
+
+	public async update<V = T>(keyPath: [string, string[]] | string, inputDataOrHook: V | UpdateHook<V>): Promise<V> {
+		const [key, path] = this.getKeyPath(keyPath);
+
+		let payload: UpdatePayload<V> = { method: Method.Update, trigger: Trigger.PreProvider, key, path };
+
+		if (typeof inputDataOrHook === 'function') Reflect.set(payload, 'inputHook', inputDataOrHook);
+		else Reflect.set(payload, 'inputData', inputDataOrHook);
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Update](payload);
+
+		payload = await this.provider[typeof inputDataOrHook === 'function' ? 'updateByHook' : 'updateByData'](payload);
+		payload.trigger = Trigger.PostProvider;
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Update](payload);
+
+		return payload.data!;
 	}
 
 	public async values<V = T>(): Promise<V[]> {

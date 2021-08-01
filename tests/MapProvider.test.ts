@@ -128,6 +128,42 @@ describe('MapProvider', () => {
 			expect(data).toBe(1);
 		});
 
+		test('GIVEN updateByData() THEN returns payload for updateByData', () => {
+			const { method, trigger, stopwatch, key, path, inputData, data } = provider.updateByData({
+				method: Method.Update,
+				key: 'test',
+				path: [],
+				inputData: 'test',
+				data: null
+			});
+
+			expect(method).toBe(Method.Update);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(key).toBe('test');
+			expect(path).toEqual([]);
+			expect(inputData).toBe('test');
+			expect(data).toBe('test');
+		});
+
+		test('GIVEN updateByHook() THEN returns payload for updateByHook', async () => {
+			const { method, trigger, stopwatch, key, path, inputHook, data } = await provider.updateByHook({
+				method: Method.Update,
+				key: 'test',
+				path: [],
+				inputHook: () => 'test',
+				data: null
+			});
+
+			expect(method).toBe(Method.Update);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(key).toBe('test');
+			expect(path).toEqual([]);
+			expect(typeof inputHook).toBe('function');
+			expect(data).toBe('test');
+		});
+
 		test('GIVEN values() THEN returns payload for values', () => {
 			const { method, trigger, stopwatch, data } = provider.values({ method: Method.Values, data: [] });
 

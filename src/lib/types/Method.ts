@@ -19,5 +19,7 @@ export enum Method {
 
 	Size = 'size',
 
+	Update = 'update',
+
 	Values = 'values'
 }

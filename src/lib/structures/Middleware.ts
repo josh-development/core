@@ -13,6 +13,7 @@ import type {
 	KeysPayload,
 	SetPayload,
 	SizePayload,
+	UpdatePayload,
 	ValuesPayload
 } from './payloads';
 import type { SetManyPayload } from './payloads/SetMany';
@@ -75,6 +76,10 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 	}
 
 	public [Method.Size](payload: SizePayload): Awaited<SizePayload> {
+		return payload;
+	}
+
+	public [Method.Update]<V = unknown>(payload: UpdatePayload<V>): Awaited<UpdatePayload<V>> {
 		return payload;
 	}
 
