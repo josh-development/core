@@ -165,6 +165,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		const { data } = this.get({ method: Method.Get, key, path, data: payload.inputData! });
 
 		Reflect.set(payload, 'data', isObject(payload.inputData) ? mergeDefault(data ?? {}, payload.inputData) : payload.inputData);
+		this.set({ method: Method.Set, key, path }, payload.data);
 		payload.stopwatch.stop();
 
 		return payload;
@@ -178,6 +179,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		const { data } = this.get({ method: Method.Get, key, path, data: null });
 
 		payload.data = await inputHook!(data);
+		this.set({ method: Method.Set, key, path }, payload.data);
 		payload.stopwatch.stop();
 
 		return payload;
