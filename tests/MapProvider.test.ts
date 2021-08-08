@@ -100,6 +100,15 @@ describe('MapProvider', () => {
 			expect(data).toEqual(['test']);
 		});
 
+		test('GIVEN random() THEN returns payload for random', () => {
+			const { method, trigger, stopwatch, data } = provider.random({ method: Method.Random, data: null });
+
+			expect(method).toBe(Method.Random);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(data).toBe('test');
+		});
+
 		test('GIVEN randomKey() THEN returns payload for randomKey', () => {
 			const { method, trigger, stopwatch, data } = provider.randomKey({ method: Method.RandomKey, data: null });
 

@@ -17,6 +17,7 @@ import type {
 	HasPayload,
 	KeysPayload,
 	RandomKeyPayload,
+	RandomPayload,
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
@@ -161,6 +162,21 @@ export class Josh<T = unknown> {
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Keys, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Keys](payload);
+
+		return payload.data;
+	}
+
+	public async random<V = T>(): Promise<V | null> {
+		let payload: RandomPayload<V> = { method: Method.Random, trigger: Trigger.PreProvider, data: null };
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Random, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Random](payload);
+
+		payload = await this.provider.random<V>(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Random, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Random](payload);
 
 		return payload.data;
 	}

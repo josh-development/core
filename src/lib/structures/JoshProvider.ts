@@ -9,6 +9,7 @@ import type {
 	HasPayload,
 	KeysPayload,
 	RandomKeyPayload,
+	RandomPayload,
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
@@ -49,6 +50,8 @@ export abstract class JoshProvider<T = unknown> {
 	public abstract has(payload: HasPayload): Awaited<HasPayload>;
 
 	public abstract keys(payload: KeysPayload): Awaited<KeysPayload>;
+
+	public abstract random<V = T>(payload: RandomPayload<V>): Awaited<RandomPayload<V>>;
 
 	public abstract randomKey(payload: RandomKeyPayload): Awaited<RandomKeyPayload>;
 

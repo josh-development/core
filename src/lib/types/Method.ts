@@ -13,6 +13,8 @@ export enum Method {
 
 	Keys = 'keys',
 
+	Random = 'random',
+
 	RandomKey = 'randomKey',
 
 	Set = 'set',
