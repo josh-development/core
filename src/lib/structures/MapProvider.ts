@@ -11,6 +11,7 @@ import type {
 	GetPayload,
 	HasPayload,
 	KeysPayload,
+	RandomKeyPayload,
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
@@ -111,6 +112,18 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		payload.stopwatch.start();
 
 		payload.data = Array.from(this.cache.keys());
+		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public randomKey(payload: RandomKeyPayload): RandomKeyPayload {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		const keys = Array.from(this.cache.keys());
+
+		payload.data = keys.length ? keys[Math.floor(Math.random() * keys.length)] : null;
 		payload.stopwatch.stop();
 
 		return payload;

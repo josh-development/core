@@ -6,6 +6,7 @@ export * from './GetMany';
 export * from './Has';
 export * from './Keys';
 export * from './Payload';
+export * from './RandomKey';
 export * from './Set';
 export * from './SetMany';
 export * from './Size';
