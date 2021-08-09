@@ -13,7 +13,9 @@ export namespace Payload {
 		path?: string[];
 	}
 
-	export interface Data<T = unknown> {
-		data: T;
+	export interface Data<Value = unknown> {
+		data: Value;
 	}
+
+	export type OptionalData<Value = unknown> = Partial<Data<Value>>;
 }
