@@ -1,6 +1,3 @@
-import type { KeyPath } from '../../types';
 import type { Payload } from './Payload';
 
-export interface GetPayload<T = unknown> extends Payload, KeyPath {
-	data: T | null;
-}
+export interface GetPayload<Value = unknown> extends Payload, Payload.KeyPath, Partial<Payload.Data<Value>> {}

@@ -21,8 +21,8 @@ import type {
 	ValuesPayload
 } from './payloads';
 
-export class MapProvider<T = unknown> extends JoshProvider<T> {
-	private cache = new Map<string, T>();
+export class MapProvider<Value = unknown> extends JoshProvider<Value> {
+	private cache = new Map<string, Value>();
 
 	private autoKeyCount = 0;
 
@@ -38,7 +38,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		return payload;
 	}
 
-	public ensure<V = T>(payload: EnsurePayload<V>): EnsurePayload<V> {
+	public ensure<CustomValue = Value>(payload: EnsurePayload<CustomValue>): EnsurePayload<CustomValue> {
 		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
 
@@ -53,19 +53,19 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		return payload;
 	}
 
-	public get<V = T>(payload: GetPayload<V>): GetPayload<V> {
+	public get<CustomValue = Value>(payload: GetPayload<CustomValue>): GetPayload<CustomValue> {
 		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
 
 		const { key, path } = payload;
 
-		Reflect.set(payload, 'data', (path.length ? get(this.cache.get(key), path) : this.cache.get(key)) ?? null);
+		Reflect.set(payload, 'data', (path ? get(this.cache.get(key), path) : this.cache.get(key)) ?? null);
 		payload.stopwatch.stop();
 
 		return payload;
 	}
 
-	public getAll<V = T>(payload: GetAllPayload<V>): GetAllPayload<V> {
+	public getAll<CustomValue = Value>(payload: GetAllPayload<CustomValue>): GetAllPayload<CustomValue> {
 		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
 
@@ -76,12 +76,12 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		return payload;
 	}
 
-	public getMany<V = T>(payload: GetManyPayload<V>): GetManyPayload<V> {
+	public getMany<CustomValue = Value>(payload: GetManyPayload<CustomValue>): GetManyPayload<CustomValue> {
 		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
 
 		for (const [key, path] of payload.keyPaths) {
-			const { data } = this.get<V>({ method: Method.Get, key, path, data: null });
+			const { data } = this.get({ method: Method.Get, key, path, data: null });
 
 			Reflect.set(payload.data, key, data);
 		}
@@ -100,7 +100,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		if (this.cache.has(key)) {
 			payload.data = true;
 
-			if (path.length) payload.data = Boolean(get(this.cache.get(key), path));
+			if (path) payload.data = Boolean(get(this.cache.get(key), path));
 		}
 
 		payload.stopwatch.stop();
@@ -118,7 +118,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		return payload;
 	}
 
-	public random<V = T>(payload: RandomPayload<V>): RandomPayload<V> {
+	public random<CustomValue = Value>(payload: RandomPayload<CustomValue>): RandomPayload<CustomValue> {
 		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
 
@@ -136,19 +136,19 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 
 		const keys = Array.from(this.cache.keys());
 
-		payload.data = keys.length ? keys[Math.floor(Math.random() * keys.length)] : null;
+		payload.data = keys[Math.floor(Math.random() * keys.length)];
 		payload.stopwatch.stop();
 
 		return payload;
 	}
 
-	public set<V = T>(payload: SetPayload, value: V): SetPayload {
+	public set<CustomValue = Value>(payload: SetPayload, value: CustomValue): SetPayload {
 		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
 
 		const { key, path } = payload;
 
-		if (path.length) {
+		if (path) {
 			const { data } = this.get({ method: Method.Get, stopwatch: new Stopwatch(), key, path, data: null });
 
 			// @ts-expect-error 2345
@@ -162,11 +162,11 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		return payload;
 	}
 
-	public setMany<V = T>(payload: SetManyPayload, value: V): SetManyPayload {
+	public setMany<CustomValue = Value>(payload: SetManyPayload, value: CustomValue): SetManyPayload {
 		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
 
-		for (const [key, path] of payload.keyPaths) this.set<V>({ method: Method.Set, key, path }, value);
+		for (const [key, path] of payload.keyPaths) this.set({ method: Method.Set, key, path }, value);
 
 		payload.stopwatch.stop();
 
@@ -183,7 +183,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		return payload;
 	}
 
-	public updateByData<V = T>(payload: UpdateByDataPayload<V>): UpdateByDataPayload<V> {
+	public updateByData<CustomValue = Value>(payload: UpdateByDataPayload<CustomValue>): UpdateByDataPayload<CustomValue> {
 		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
 
@@ -197,12 +197,14 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		return payload;
 	}
 
-	public async updateByHook<V = T>(payload: UpdateByHookPayload<V>): Promise<UpdateByHookPayload<V>> {
+	public async updateByHook<CustomValue = Value>(payload: UpdateByHookPayload<CustomValue>): Promise<UpdateByHookPayload<CustomValue>> {
 		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
 
 		const { key, path, inputHook } = payload;
-		const { data } = this.get({ method: Method.Get, key, path, data: null });
+		const { data } = this.get<CustomValue>({ method: Method.Get, key, path });
+
+		if (data === undefined) return payload;
 
 		payload.data = await inputHook!(data);
 		this.set({ method: Method.Set, key, path }, payload.data);
@@ -211,7 +213,7 @@ export class MapProvider<T = unknown> extends JoshProvider<T> {
 		return payload;
 	}
 
-	public values<V = T>(payload: ValuesPayload<V>): ValuesPayload<V> {
+	public values<CustomValue = Value>(payload: ValuesPayload<CustomValue>): ValuesPayload<CustomValue> {
 		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
 

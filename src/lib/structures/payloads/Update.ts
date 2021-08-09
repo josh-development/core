@@ -1,17 +1,14 @@
 import type { Awaited } from '@sapphire/utilities';
-import type { KeyPath } from '../../types';
 import type { Payload } from './Payload';
 
-export interface UpdateByDataPayload<T = unknown> extends Payload, KeyPath {
-	inputData?: T;
-	data?: T;
+export interface UpdateByDataPayload<Value = unknown> extends Payload, Payload.KeyPath, Partial<Payload.Data<Value>> {
+	inputData?: Value;
 }
 
-export interface UpdateByHookPayload<T = unknown> extends Payload, KeyPath {
-	inputHook?: UpdateHook<T>;
-	data?: T;
+export interface UpdateByHookPayload<Value = unknown> extends Payload, Payload.KeyPath, Partial<Payload.Data<Value>> {
+	inputHook?: UpdateHook<Value>;
 }
 
-export type UpdateHook<T = unknown> = (currentData: T | null) => Awaited<T>;
+export type UpdateHook<Value = unknown> = (currentData: Value) => Awaited<Value>;
 
-export type UpdatePayload<T = unknown> = UpdateByDataPayload<T> | UpdateByHookPayload<T>;
+export type UpdatePayload<Value = unknown> = UpdateByDataPayload<Value> | UpdateByHookPayload<Value>;

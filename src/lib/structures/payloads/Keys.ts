@@ -1,5 +1,3 @@
 import type { Payload } from './Payload';
 
-export interface KeysPayload extends Payload {
-	data: string[];
-}
+export interface KeysPayload extends Payload, Payload.Data<string[]> {}

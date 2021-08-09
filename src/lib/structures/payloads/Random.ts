@@ -1,5 +1,3 @@
 import type { Payload } from './Payload';
 
-export interface RandomPayload<V = unknown> extends Payload {
-	data: V | null;
-}
+export interface RandomPayload<Value = unknown> extends Payload, Partial<Payload.Data<Value>> {}

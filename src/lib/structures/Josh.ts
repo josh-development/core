@@ -2,7 +2,7 @@ import { getRootData } from '@sapphire/pieces';
 import { classExtends, Constructor } from '@sapphire/utilities';
 import { join } from 'path';
 import type { AutoEnsureContext } from '../middlewares/CoreAutoEnsure';
-import { BuiltInMiddleware, Method, Trigger } from '../types';
+import { BuiltInMiddleware, KeyPath, KeyPathArray, Method, Trigger } from '../types';
 import { JoshError } from './JoshError';
 import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
@@ -26,16 +26,16 @@ import type {
 	ValuesPayload
 } from './payloads';
 
-export class Josh<T = unknown> {
+export class Josh<Value = unknown> {
 	public name: string;
 
-	public options: JoshOptions<T>;
+	public options: JoshOptions<Value>;
 
 	public middlewares: MiddlewareStore;
 
-	public provider: JoshProvider<T>;
+	public provider: JoshProvider<Value>;
 
-	public constructor(options: JoshOptions<T>) {
+	public constructor(options: JoshOptions<Value>) {
 		const { name, provider, middlewareDirectory } = options;
 
 		this.options = options;
@@ -46,7 +46,7 @@ export class Josh<T = unknown> {
 
 		const Provider = provider ?? Josh.defaultProvider;
 
-		if (!classExtends(Provider, JoshProvider as Constructor<JoshProvider<T>>)) throw new JoshError('Provider class must extend JoshProvider.');
+		if (!classExtends(Provider, JoshProvider as Constructor<JoshProvider<Value>>)) throw new JoshError('Provider class must extend JoshProvider.');
 
 		const initializedProvider = new Provider({ name, instance: this, options: options.providerOptions });
 
@@ -71,8 +71,8 @@ export class Josh<T = unknown> {
 		return payload.data;
 	}
 
-	public async ensure<V = T>(key: string, defaultValue: V): Promise<V> {
-		let payload: EnsurePayload<V> = { method: Method.Ensure, trigger: Trigger.PreProvider, key, data: defaultValue, defaultValue };
+	public async ensure<CustomValue = Value>(key: string, defaultValue: CustomValue): Promise<CustomValue> {
+		let payload: EnsurePayload<CustomValue> = { method: Method.Ensure, trigger: Trigger.PreProvider, key, data: defaultValue, defaultValue };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Ensure, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Ensure](payload);
@@ -86,29 +86,31 @@ export class Josh<T = unknown> {
 		return payload.data;
 	}
 
-	public async get<V = T>(keyPath: [string, string[]] | string): Promise<V | null> {
+	public async get<CustomValue = Value>(keyPath: KeyPath): Promise<CustomValue | null> {
 		const [key, path] = this.getKeyPath(keyPath);
-		let payload: GetPayload<V> = { method: Method.Get, trigger: Trigger.PreProvider, key, path, data: null };
+		let payload: GetPayload<CustomValue> = { method: Method.Get, trigger: Trigger.PreProvider, key, path };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Get, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Get](payload);
 
-		payload = await this.provider.get<V>(payload);
+		payload = await this.provider.get(payload);
 		payload.trigger = Trigger.PostProvider;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Get, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Get](payload);
 
-		return payload.data;
+		return payload.data ?? null;
 	}
 
-	public async getAll<V = T, K extends keyof ReturnBulk<V> = Bulk.Object>(returnBulkType?: K): Promise<ReturnBulk<V>[K]> {
-		let payload: GetAllPayload<V> = { method: Method.GetAll, trigger: Trigger.PreProvider, data: {} };
+	public async getAll<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
+		returnBulkType?: K
+	): Promise<ReturnBulk<CustomValue>[K]> {
+		let payload: GetAllPayload<CustomValue> = { method: Method.GetAll, trigger: Trigger.PreProvider, data: {} };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.GetAll, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.GetAll](payload);
 
-		payload = await this.provider.getAll<V>(payload);
+		payload = await this.provider.getAll(payload);
 		payload.trigger = Trigger.PostProvider;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.GetAll, Trigger.PostProvider);
@@ -117,16 +119,16 @@ export class Josh<T = unknown> {
 		return this.convertBulkData(payload.data, returnBulkType);
 	}
 
-	public async getMany<V = T, K extends keyof ReturnBulk<V> = Bulk.Object>(
-		keyPaths: [string, string[]][],
+	public async getMany<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
+		keyPaths: KeyPathArray[],
 		returnBulkType?: K
-	): Promise<ReturnBulk<V>[K]> {
-		let payload: GetManyPayload<V> = { method: Method.GetMany, trigger: Trigger.PreProvider, keyPaths, data: {} };
+	): Promise<ReturnBulk<CustomValue>[K]> {
+		let payload: GetManyPayload<CustomValue> = { method: Method.GetMany, trigger: Trigger.PreProvider, keyPaths, data: {} };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.GetMany, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.GetMany](payload);
 
-		payload = await this.provider.getMany<V>(payload);
+		payload = await this.provider.getMany(payload);
 		payload.trigger = Trigger.PostProvider;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.GetMany, Trigger.PostProvider);
@@ -135,7 +137,7 @@ export class Josh<T = unknown> {
 		return this.convertBulkData(payload.data, returnBulkType);
 	}
 
-	public async has(keyPath: [string, string[]] | string): Promise<boolean> {
+	public async has(keyPath: KeyPath): Promise<boolean> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: HasPayload = { method: Method.Has, trigger: Trigger.PreProvider, key, path, data: false };
 
@@ -166,23 +168,23 @@ export class Josh<T = unknown> {
 		return payload.data;
 	}
 
-	public async random<V = T>(): Promise<V | null> {
-		let payload: RandomPayload<V> = { method: Method.Random, trigger: Trigger.PreProvider, data: null };
+	public async random<CustomValue = Value>(): Promise<CustomValue | null> {
+		let payload: RandomPayload<CustomValue> = { method: Method.Random, trigger: Trigger.PreProvider };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Random, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Random](payload);
 
-		payload = await this.provider.random<V>(payload);
+		payload = await this.provider.random(payload);
 		payload.trigger = Trigger.PostProvider;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Random, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Random](payload);
 
-		return payload.data;
+		return payload.data ?? null;
 	}
 
 	public async randomKey(): Promise<string | null> {
-		let payload: RandomKeyPayload = { method: Method.RandomKey, trigger: Trigger.PreProvider, data: null };
+		let payload: RandomKeyPayload = { method: Method.RandomKey, trigger: Trigger.PreProvider };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.RandomKey, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.RandomKey](payload);
@@ -193,17 +195,17 @@ export class Josh<T = unknown> {
 		const postMiddlewares = this.middlewares.filterByCondition(Method.RandomKey, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.RandomKey](payload);
 
-		return payload.data;
+		return payload.data ?? null;
 	}
 
-	public async set<V = T>(keyPath: [string, string[]] | string, value: V): Promise<this> {
+	public async set<CustomValue = Value>(keyPath: KeyPathArray, value: CustomValue): Promise<this> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: SetPayload = { method: Method.Set, trigger: Trigger.PreProvider, key, path };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Set, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Set](payload);
 
-		payload = await this.provider.set<V>(payload, value);
+		payload = await this.provider.set(payload, value);
 		payload.trigger = Trigger.PostProvider;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Set, Trigger.PostProvider);
@@ -212,13 +214,13 @@ export class Josh<T = unknown> {
 		return this;
 	}
 
-	public async setMany<V = T>(keyPaths: [string, string[]][], value: V): Promise<this> {
+	public async setMany<CustomValue = Value>(keyPaths: [string, string[]][], value: CustomValue): Promise<this> {
 		let payload: SetManyPayload = { method: Method.SetMany, trigger: Trigger.PreProvider, keyPaths };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.SetMany, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.SetMany](payload);
 
-		payload = await this.provider.setMany<V>(payload, value);
+		payload = await this.provider.setMany(payload, value);
 		payload.trigger = Trigger.PostProvider;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.SetMany, Trigger.PostProvider);
@@ -242,10 +244,9 @@ export class Josh<T = unknown> {
 		return payload.data;
 	}
 
-	public async update<V = T>(keyPath: [string, string[]] | string, inputDataOrHook: V | UpdateHook<V>): Promise<V> {
+	public async update<CustomValue = Value>(keyPath: KeyPathArray, inputDataOrHook: CustomValue | UpdateHook<CustomValue>): Promise<CustomValue> {
 		const [key, path] = this.getKeyPath(keyPath);
-
-		let payload: UpdatePayload<V> = { method: Method.Update, trigger: Trigger.PreProvider, key, path };
+		let payload: UpdatePayload<CustomValue> = { method: Method.Update, trigger: Trigger.PreProvider, key, path };
 
 		if (typeof inputDataOrHook === 'function') Reflect.set(payload, 'inputHook', inputDataOrHook);
 		else Reflect.set(payload, 'inputData', inputDataOrHook);
@@ -262,13 +263,13 @@ export class Josh<T = unknown> {
 		return payload.data!;
 	}
 
-	public async values<V = T>(): Promise<V[]> {
-		let payload: ValuesPayload<V> = { method: Method.Values, trigger: Trigger.PreProvider, data: [] };
+	public async values<CustomValue = Value>(): Promise<CustomValue[]> {
+		let payload: ValuesPayload<CustomValue> = { method: Method.Values, trigger: Trigger.PreProvider, data: [] };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Values, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Values](payload);
 
-		payload = await this.provider.values<V>(payload);
+		payload = await this.provider.values(payload);
 		payload.trigger = Trigger.PostProvider;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Values, Trigger.PostProvider);
@@ -300,10 +301,10 @@ export class Josh<T = unknown> {
 		return this;
 	}
 
-	protected convertBulkData<V = T, K extends keyof ReturnBulk<V> = Bulk.Object>(
-		data: ReturnBulk<V>[Bulk.Object],
+	protected convertBulkData<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
+		data: ReturnBulk<CustomValue>[Bulk.Object],
 		returnBulkType?: K
-	): ReturnBulk<V>[K] {
+	): ReturnBulk<CustomValue>[K] {
 		switch (returnBulkType) {
 			case Bulk.Object:
 				return data;
@@ -322,11 +323,8 @@ export class Josh<T = unknown> {
 		}
 	}
 
-	protected getKeyPath(keyPath: string | [string, string[]]): [string, string[]] {
-		if (typeof keyPath === 'string') {
-			const [key, ...path] = keyPath.split('.');
-			return [key, path];
-		}
+	protected getKeyPath(keyPath: KeyPath): [string, string[] | undefined] {
+		if (typeof keyPath === 'string') return [keyPath, undefined];
 
 		return keyPath;
 	}

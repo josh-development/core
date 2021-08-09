@@ -45,19 +45,19 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 		return payload;
 	}
 
-	public [Method.Ensure]<V = unknown>(payload: EnsurePayload<V>): Awaited<EnsurePayload<V>> {
+	public [Method.Ensure]<Value = unknown>(payload: EnsurePayload<Value>): Awaited<EnsurePayload<Value>> {
 		return payload;
 	}
 
-	public [Method.Get]<V = unknown>(payload: GetPayload<V>): Awaited<GetPayload<V>> {
+	public [Method.Get]<Value = unknown>(payload: GetPayload<Value>): Awaited<GetPayload<Value>> {
 		return payload;
 	}
 
-	public [Method.GetAll]<V = unknown>(payload: GetAllPayload<V>): Awaited<GetAllPayload<V>> {
+	public [Method.GetAll]<Value = unknown>(payload: GetAllPayload<Value>): Awaited<GetAllPayload<Value>> {
 		return payload;
 	}
 
-	public [Method.GetMany]<V = unknown>(payload: GetManyPayload<V>): Awaited<GetManyPayload<V>> {
+	public [Method.GetMany]<Value = unknown>(payload: GetManyPayload<Value>): Awaited<GetManyPayload<Value>> {
 		return payload;
 	}
 
@@ -69,7 +69,7 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 		return payload;
 	}
 
-	public [Method.Random]<V = unknown>(payload: RandomPayload<V>): Awaited<RandomPayload<V>> {
+	public [Method.Random]<Value = unknown>(payload: RandomPayload<Value>): Awaited<RandomPayload<Value>> {
 		return payload;
 	}
 
@@ -89,11 +89,11 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 		return payload;
 	}
 
-	public [Method.Update]<V = unknown>(payload: UpdatePayload<V>): Awaited<UpdatePayload<V>> {
+	public [Method.Update]<Value = unknown>(payload: UpdatePayload<Value>): Awaited<UpdatePayload<Value>> {
 		return payload;
 	}
 
-	public [Method.Values]<V = unknown>(payload: ValuesPayload<V>): Awaited<ValuesPayload<V>> {
+	public [Method.Values]<Value = unknown>(payload: ValuesPayload<Value>): Awaited<ValuesPayload<Value>> {
 		return payload;
 	}
 

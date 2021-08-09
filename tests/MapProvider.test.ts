@@ -43,16 +43,14 @@ describe('MapProvider', () => {
 		test('GIVEN get() THEN returns payload for get', () => {
 			const { method, trigger, stopwatch, key, path, data } = provider.get({
 				method: Method.Get,
-				key: 'test',
-				path: [],
-				data: null
+				key: 'test'
 			});
 
 			expect(method).toBe(Method.Get);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
 			expect(key).toBe('test');
-			expect(path).toEqual([]);
+			expect(path).toBeUndefined();
 			expect(data).toBe('test');
 		});
 
@@ -79,7 +77,6 @@ describe('MapProvider', () => {
 			const { method, trigger, stopwatch, key, path, data } = provider.has({
 				method: Method.Has,
 				key: 'test',
-				path: [],
 				data: false
 			});
 
@@ -87,7 +84,7 @@ describe('MapProvider', () => {
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
 			expect(key).toBe('test');
-			expect(path).toEqual([]);
+			expect(path).toBeUndefined();
 			expect(data).toBe(true);
 		});
 
@@ -101,7 +98,7 @@ describe('MapProvider', () => {
 		});
 
 		test('GIVEN random() THEN returns payload for random', () => {
-			const { method, trigger, stopwatch, data } = provider.random({ method: Method.Random, data: null });
+			const { method, trigger, stopwatch, data } = provider.random({ method: Method.Random });
 
 			expect(method).toBe(Method.Random);
 			expect(trigger).toBeUndefined();
@@ -110,7 +107,7 @@ describe('MapProvider', () => {
 		});
 
 		test('GIVEN randomKey() THEN returns payload for randomKey', () => {
-			const { method, trigger, stopwatch, data } = provider.randomKey({ method: Method.RandomKey, data: null });
+			const { method, trigger, stopwatch, data } = provider.randomKey({ method: Method.RandomKey });
 
 			expect(method).toBe(Method.RandomKey);
 			expect(trigger).toBeUndefined();
@@ -119,13 +116,13 @@ describe('MapProvider', () => {
 		});
 
 		test('GIVEN set() THEN returns payload for set', () => {
-			const { method, trigger, stopwatch, key, path } = provider.set({ method: Method.Set, key: 'test', path: [] }, 'test');
+			const { method, trigger, stopwatch, key, path } = provider.set({ method: Method.Set, key: 'test' }, 'test');
 
 			expect(method).toBe(Method.Set);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
 			expect(key).toBe('test');
-			expect(path).toEqual([]);
+			expect(path).toBeUndefined();
 		});
 
 		test('GIVEN setMany() THEN returns payload for setMany', () => {
@@ -150,16 +147,14 @@ describe('MapProvider', () => {
 			const { method, trigger, stopwatch, key, path, inputData, data } = provider.updateByData({
 				method: Method.Update,
 				key: 'test',
-				path: [],
-				inputData: 'test',
-				data: null
+				inputData: 'test'
 			});
 
 			expect(method).toBe(Method.Update);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
 			expect(key).toBe('test');
-			expect(path).toEqual([]);
+			expect(path).toBeUndefined();
 			expect(inputData).toBe('test');
 			expect(data).toBe('test');
 		});
@@ -168,16 +163,14 @@ describe('MapProvider', () => {
 			const { method, trigger, stopwatch, key, path, inputHook, data } = await provider.updateByHook({
 				method: Method.Update,
 				key: 'test',
-				path: [],
-				inputHook: () => 'test',
-				data: null
+				inputHook: () => 'test'
 			});
 
 			expect(method).toBe(Method.Update);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
 			expect(key).toBe('test');
-			expect(path).toEqual([]);
+			expect(path).toBeUndefined();
 			expect(typeof inputHook).toBe('function');
 			expect(data).toBe('test');
 		});

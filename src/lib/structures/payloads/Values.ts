@@ -1,5 +1,3 @@
 import type { Payload } from './Payload';
 
-export interface ValuesPayload<T = unknown> extends Payload {
-	data: T[];
-}
+export interface ValuesPayload<Value = unknown> extends Payload, Payload.Data<Value[]> {}

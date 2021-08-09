@@ -20,8 +20,8 @@ import { BuiltInMiddleware, Method, Trigger } from '../types';
 	use: false
 })
 export class CoreAutoEnsure extends Middleware<AutoEnsureContext> {
-	public async [Method.Get]<V = unknown>(payload: GetPayload<V>): Promise<GetPayload<V>> {
-		if (payload.data !== null) return payload;
+	public async [Method.Get]<Value = unknown>(payload: GetPayload<Value>): Promise<GetPayload<Value>> {
+		if (payload.data !== undefined) return payload;
 
 		const context = this.getContext();
 
@@ -36,7 +36,7 @@ export class CoreAutoEnsure extends Middleware<AutoEnsureContext> {
 		return payload;
 	}
 
-	public async [Method.GetMany]<V = unknown>(payload: GetManyPayload<V>): Promise<GetManyPayload<V>> {
+	public async [Method.GetMany]<Value = unknown>(payload: GetManyPayload<Value>): Promise<GetManyPayload<Value>> {
 		if (Object.keys(payload.data).length !== 0) return payload;
 
 		const context = this.getContext();
@@ -46,7 +46,7 @@ export class CoreAutoEnsure extends Middleware<AutoEnsureContext> {
 		const { defaultValue } = context;
 
 		for (const [key] of payload.keyPaths) {
-			if (payload.data[key] !== null) continue;
+			if (payload.data[key] !== undefined) continue;
 
 			const { data } = await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
 
@@ -82,6 +82,6 @@ export class CoreAutoEnsure extends Middleware<AutoEnsureContext> {
 	}
 }
 
-export interface AutoEnsureContext<T = unknown> extends MiddlewareContext {
-	defaultValue: T;
+export interface AutoEnsureContext<Value = unknown> extends MiddlewareContext {
+	defaultValue: Value;
 }

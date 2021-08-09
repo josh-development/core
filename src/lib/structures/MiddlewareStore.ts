@@ -3,10 +3,10 @@ import type { Method, Trigger } from '../types';
 import type { Josh } from './Josh';
 import { Middleware } from './Middleware';
 
-export class MiddlewareStore<T = unknown> extends Store<Middleware> {
-	public instance: Josh<T>;
+export class MiddlewareStore<Value = unknown> extends Store<Middleware> {
+	public instance: Josh<Value>;
 
-	public constructor(options: MiddlewareStoreOptions<T>) {
+	public constructor(options: MiddlewareStoreOptions<Value>) {
 		super(Middleware as any, { name: 'middlewares' });
 
 		const { instance } = options;
@@ -26,6 +26,6 @@ export class MiddlewareStore<T = unknown> extends Store<Middleware> {
 	}
 }
 
-export interface MiddlewareStoreOptions<T = unknown> {
-	instance: Josh<T>;
+export interface MiddlewareStoreOptions<Value = unknown> {
+	instance: Josh<Value>;
 }

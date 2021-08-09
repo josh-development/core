@@ -1,7 +1,6 @@
 import type { Payload } from './Payload';
 
-export interface EnsurePayload<T = unknown> extends Payload {
+export interface EnsurePayload<Value = unknown> extends Payload, Payload.Data<Value> {
 	key: string;
-	data: T;
-	defaultValue: T;
+	defaultValue: Value;
 }

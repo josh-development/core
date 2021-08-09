@@ -6,3 +6,14 @@ export interface Payload {
 	trigger?: Trigger;
 	stopwatch?: Stopwatch;
 }
+
+export namespace Payload {
+	export interface KeyPath {
+		key: string;
+		path?: string[];
+	}
+
+	export interface Data<T = unknown> {
+		data: T;
+	}
+}

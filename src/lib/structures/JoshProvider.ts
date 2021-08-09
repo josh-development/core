@@ -18,14 +18,14 @@ import type {
 	ValuesPayload
 } from './payloads';
 
-export abstract class JoshProvider<T = unknown> {
+export abstract class JoshProvider<Value = unknown> {
 	public name: string;
 
-	public instance?: Josh<T>;
+	public instance?: Josh<Value>;
 
 	public options: JoshProviderOptions;
 
-	public constructor(context: JoshProviderContext<T>) {
+	public constructor(context: JoshProviderContext<Value>) {
 		const { name, options, instance } = context;
 
 		this.name = name ?? 'unknown';
@@ -39,41 +39,41 @@ export abstract class JoshProvider<T = unknown> {
 
 	public abstract autoKey(payload: AutoKeyPayload): Awaited<AutoKeyPayload>;
 
-	public abstract ensure<V = T>(payload: EnsurePayload<V>): Awaited<EnsurePayload<V>>;
+	public abstract ensure<CustomValue = Value>(payload: EnsurePayload<CustomValue>): Awaited<EnsurePayload<CustomValue>>;
 
-	public abstract get<V = T>(payload: GetPayload<V>): Awaited<GetPayload<V>>;
+	public abstract get<CustomValue = Value>(payload: GetPayload<CustomValue>): Awaited<GetPayload<CustomValue>>;
 
-	public abstract getAll<V = T>(payload: GetAllPayload<V>): Awaited<GetAllPayload<V>>;
+	public abstract getAll<CustomValue = Value>(payload: GetAllPayload<CustomValue>): Awaited<GetAllPayload<CustomValue>>;
 
-	public abstract getMany<V = T>(payload: GetManyPayload<V>): Awaited<GetManyPayload<V>>;
+	public abstract getMany<CustomValue = Value>(payload: GetManyPayload<CustomValue>): Awaited<GetManyPayload<CustomValue>>;
 
 	public abstract has(payload: HasPayload): Awaited<HasPayload>;
 
 	public abstract keys(payload: KeysPayload): Awaited<KeysPayload>;
 
-	public abstract random<V = T>(payload: RandomPayload<V>): Awaited<RandomPayload<V>>;
+	public abstract random<CustomValue = Value>(payload: RandomPayload<CustomValue>): Awaited<RandomPayload<CustomValue>>;
 
 	public abstract randomKey(payload: RandomKeyPayload): Awaited<RandomKeyPayload>;
 
-	public abstract set<V = T>(payload: SetPayload, value: V): Awaited<SetPayload>;
+	public abstract set<CustomValue = Value>(payload: SetPayload, value: CustomValue): Awaited<SetPayload>;
 
-	public abstract setMany<V = T>(payload: SetManyPayload, value: V): Awaited<SetManyPayload>;
+	public abstract setMany<CustomValue = Value>(payload: SetManyPayload, value: CustomValue): Awaited<SetManyPayload>;
 
 	public abstract size(payload: SizePayload): Awaited<SizePayload>;
 
-	public abstract updateByData<V = T>(payload: UpdateByDataPayload<V>): Awaited<UpdateByDataPayload<V>>;
+	public abstract updateByData<CustomValue = Value>(payload: UpdateByDataPayload<CustomValue>): Awaited<UpdateByDataPayload<CustomValue>>;
 
-	public abstract updateByHook<V = T>(payload: UpdateByHookPayload<V>): Awaited<UpdateByHookPayload<V>>;
+	public abstract updateByHook<CustomValue = Value>(payload: UpdateByHookPayload<CustomValue>): Awaited<UpdateByHookPayload<CustomValue>>;
 
-	public abstract values<V = T>(payload: ValuesPayload<V>): Awaited<ValuesPayload<V>>;
+	public abstract values<CustomValue = Value>(payload: ValuesPayload<CustomValue>): Awaited<ValuesPayload<CustomValue>>;
 }
 
 export interface JoshProviderOptions {}
 
-export interface JoshProviderContext<T = unknown> {
+export interface JoshProviderContext<Value = unknown> {
 	name?: string;
 
-	instance?: Josh<T>;
+	instance?: Josh<Value>;
 
 	options?: JoshProviderOptions;
 }
