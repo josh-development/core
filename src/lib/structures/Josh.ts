@@ -333,6 +333,18 @@ export class Josh<Value = unknown> {
 	}
 
 	public static defaultProvider: Constructor<JoshProvider> = MapProvider;
+
+	public static multi<Instances extends Record<string, Josh> = Record<string, Josh>>(
+		names: string[],
+		options: Omit<JoshOptions, 'name'> = {}
+	): Instances {
+		const instances: Record<string, Josh> = {};
+
+		for (const [name, instance] of names.map((name) => [name, new Josh({ ...options, name })]) as [string, Josh][]) instances[name] = instance;
+
+		// @ts-expect-error 2322
+		return instances;
+	}
 }
 
 export interface JoshOptions<T = unknown> {
