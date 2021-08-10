@@ -108,5 +108,7 @@ declare module "@joshdb/core" {
     ): Promise<Josh<T>>;
 
     public export(): Promise<string>;
+    
+    static multi(names: string[], options: Omit<JoshOptions, "name">): Josh[];
   }
 }
