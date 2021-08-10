@@ -190,6 +190,8 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		const { key, path } = payload;
 		const { data } = this.get({ method: Method.Get, key, path, data: payload.inputData! });
 
+		if (data === undefined) return payload;
+
 		Reflect.set(payload, 'data', isObject(payload.inputData) ? mergeDefault(data ?? {}, payload.inputData) : payload.inputData);
 		this.set({ method: Method.Set, key, path }, payload.data);
 		payload.stopwatch.stop();

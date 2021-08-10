@@ -244,7 +244,10 @@ export class Josh<Value = unknown> {
 		return payload.data;
 	}
 
-	public async update<CustomValue = Value>(keyPath: KeyPathArray, inputDataOrHook: CustomValue | UpdateHook<CustomValue>): Promise<CustomValue> {
+	public async update<CustomValue = Value>(
+		keyPath: KeyPathArray,
+		inputDataOrHook: CustomValue | UpdateHook<CustomValue>
+	): Promise<CustomValue | null> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: UpdatePayload<CustomValue> = { method: Method.Update, trigger: Trigger.PreProvider, key, path };
 
@@ -260,7 +263,7 @@ export class Josh<Value = unknown> {
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Update](payload);
 
-		return payload.data!;
+		return payload.data ?? null;
 	}
 
 	public async values<CustomValue = Value>(): Promise<CustomValue[]> {
