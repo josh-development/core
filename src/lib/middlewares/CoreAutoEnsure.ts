@@ -1,6 +1,6 @@
 import { ApplyOptions } from '../structures/decorators/ApplyOptions';
 import { Middleware, MiddlewareContext, MiddlewareOptions } from '../structures/Middleware';
-import type { GetManyPayload, GetPayload, SetPayload } from '../structures/payloads';
+import type { GetManyPayload, GetPayload, SetPayload, UpdatePayload } from '../structures/payloads';
 import type { SetManyPayload } from '../structures/payloads/SetMany';
 import { BuiltInMiddleware, Method, Trigger } from '../types';
 
@@ -9,7 +9,7 @@ import { BuiltInMiddleware, Method, Trigger } from '../types';
 	position: 0,
 	conditions: [
 		{
-			methods: [Method.Get, Method.GetMany],
+			methods: [Method.Get, Method.GetMany, Method.Update],
 			trigger: Trigger.PostProvider
 		},
 		{
@@ -77,6 +77,19 @@ export class CoreAutoEnsure extends Middleware<AutoEnsureContext> {
 		const { defaultValue } = context;
 
 		for (const [key] of payload.keyPaths) await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
+
+		return payload;
+	}
+
+	public async [Method.Update]<Value = unknown>(payload: UpdatePayload<Value>): Promise<UpdatePayload<Value>> {
+		const context = this.getContext();
+
+		if (!context) return payload;
+
+		const { defaultValue } = context;
+		const { key } = payload;
+
+		await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
 
 		return payload;
 	}
