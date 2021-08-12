@@ -6,6 +6,8 @@ import { JoshProvider } from './JoshProvider';
 import type {
 	AutoKeyPayload,
 	EnsurePayload,
+	FindByDataPayload,
+	FindByHookPayload,
 	GetAllPayload,
 	GetManyPayload,
 	GetPayload,
@@ -48,6 +50,48 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		if (!this.cache.has(key)) this.cache.set(key, payload.defaultValue);
 
 		Reflect.set(payload, 'data', this.cache.get(key));
+		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public findByData<CustomValue = Value>(payload: FindByDataPayload<CustomValue>): FindByDataPayload<CustomValue> {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		const { path, inputData } = payload;
+
+		for (const key of this.keys({ method: Method.Keys, data: [] }).data) {
+			const { data } = this.get<CustomValue>({ method: Method.Get, key, path });
+
+			if (data === undefined) continue;
+			if (inputData !== data) continue;
+
+			payload.data = data;
+			break;
+		}
+
+		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public findByHook<CustomValue = Value>(payload: FindByHookPayload<CustomValue>): FindByHookPayload<CustomValue> {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		const { path, inputHook } = payload;
+
+		for (const key of this.keys({ method: Method.Keys, data: [] }).data) {
+			const { data } = this.get<CustomValue>({ method: Method.Get, key, path });
+
+			if (data === undefined) continue;
+			if (!inputHook(data)) continue;
+
+			payload.data = data;
+			break;
+		}
+
 		payload.stopwatch.stop();
 
 		return payload;

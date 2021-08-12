@@ -6,6 +6,9 @@ import type { MiddlewareStore } from './MiddlewareStore';
 import type {
 	AutoKeyPayload,
 	EnsurePayload,
+	FindByDataPayload,
+	FindByHookPayload,
+	FindPayload,
 	GetAllPayload,
 	GetManyPayload,
 	GetPayload,
@@ -46,6 +49,12 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 	}
 
 	public [Method.Ensure]<Value = unknown>(payload: EnsurePayload<Value>): Awaited<EnsurePayload<Value>> {
+		return payload;
+	}
+
+	public [Method.Find]<Value = unknown>(payload: FindByDataPayload<Value>): Awaited<FindByDataPayload<Value>>;
+	public [Method.Find]<Value = unknown>(payload: FindByHookPayload<Value>): Awaited<FindByHookPayload<Value>>;
+	public [Method.Find]<Value = unknown>(payload: FindPayload<Value>): Awaited<FindPayload<Value>> {
 		return payload;
 	}
 

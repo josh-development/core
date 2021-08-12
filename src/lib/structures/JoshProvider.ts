@@ -3,6 +3,8 @@ import type { Josh } from './Josh';
 import type {
 	AutoKeyPayload,
 	EnsurePayload,
+	FindByDataPayload,
+	FindByHookPayload,
 	GetAllPayload,
 	GetManyPayload,
 	GetPayload,
@@ -40,6 +42,10 @@ export abstract class JoshProvider<Value = unknown> {
 	public abstract autoKey(payload: AutoKeyPayload): Awaited<AutoKeyPayload>;
 
 	public abstract ensure<CustomValue = Value>(payload: EnsurePayload<CustomValue>): Awaited<EnsurePayload<CustomValue>>;
+
+	public abstract findByData<CustomValue = Value>(payload: FindByDataPayload<CustomValue>): Awaited<FindByDataPayload<CustomValue>>;
+
+	public abstract findByHook<CustomValue = Value>(payload: FindByHookPayload<CustomValue>): Awaited<FindByHookPayload<CustomValue>>;
 
 	public abstract get<CustomValue = Value>(payload: GetPayload<CustomValue>): Awaited<GetPayload<CustomValue>>;
 

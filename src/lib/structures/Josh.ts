@@ -11,6 +11,9 @@ import { MiddlewareStore } from './MiddlewareStore';
 import type {
 	AutoKeyPayload,
 	EnsurePayload,
+	FindByDataPayload,
+	FindByHookPayload,
+	FindHook,
 	GetAllPayload,
 	GetManyPayload,
 	GetPayload,
@@ -84,6 +87,53 @@ export class Josh<Value = unknown> {
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Ensure](payload);
 
 		return payload.data;
+	}
+
+	public async find<CustomValue = Value>(path: string[], value: CustomValue): Promise<CustomValue>;
+	public async find<CustomValue = Value>(hook: FindHook<CustomValue>, path?: string[]): Promise<CustomValue | null>;
+	public async find<CustomValue = Value>(
+		pathOrHook: string[] | FindHook<CustomValue>,
+		pathOrValue?: string[] | CustomValue
+	): Promise<CustomValue | null> {
+		let data;
+
+		if (Array.isArray(pathOrHook)) {
+			if (pathOrValue === undefined || Array.isArray(pathOrValue))
+				throw new JoshError('Value parameter is required when a path is provided in the first parameter.');
+
+			let payload: FindByDataPayload<CustomValue> = { method: Method.Find, trigger: Trigger.PreProvider, path: pathOrHook, inputData: pathOrValue };
+
+			const preMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PreProvider);
+			for (const middleware of preMiddlewares) payload = await middleware[Method.Find](payload);
+
+			payload = await this.provider.findByData(payload);
+			payload.trigger = Trigger.PostProvider;
+
+			const postMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PostProvider);
+			for (const middleware of postMiddlewares) payload = await middleware[Method.Find](payload);
+
+			data = payload.data;
+		} else {
+			let payload: FindByHookPayload<CustomValue> = {
+				method: Method.Find,
+				trigger: Trigger.PreProvider,
+				path: pathOrValue as string[] | undefined,
+				inputHook: pathOrHook
+			};
+
+			const preMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PreProvider);
+			for (const middleware of preMiddlewares) payload = await middleware[Method.Find](payload);
+
+			payload = await this.provider.findByHook(payload);
+			payload.trigger = Trigger.PostProvider;
+
+			const postMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PostProvider);
+			for (const middleware of postMiddlewares) payload = await middleware[Method.Find](payload);
+
+			data = payload.data;
+		}
+
+		return data ?? null;
 	}
 
 	public async get<CustomValue = Value>(keyPath: KeyPath): Promise<CustomValue | null> {

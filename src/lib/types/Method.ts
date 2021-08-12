@@ -3,6 +3,8 @@ export enum Method {
 
 	Ensure = 'ensure',
 
+	Find = 'find',
+
 	Get = 'get',
 
 	GetAll = 'getAll',
