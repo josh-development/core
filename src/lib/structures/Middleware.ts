@@ -18,6 +18,8 @@ import type {
 	RandomPayload,
 	SetPayload,
 	SizePayload,
+	UpdateByDataPayload,
+	UpdateByHookPayload,
 	UpdatePayload,
 	ValuesPayload
 } from './payloads';
@@ -98,6 +100,8 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 		return payload;
 	}
 
+	public [Method.Update]<Value = unknown>(payload: UpdateByDataPayload<Value>): Awaited<UpdateByDataPayload<Value>>;
+	public [Method.Update]<Value = unknown>(payload: UpdateByHookPayload<Value>): Awaited<UpdateByHookPayload<Value>>;
 	public [Method.Update]<Value = unknown>(payload: UpdatePayload<Value>): Awaited<UpdatePayload<Value>> {
 		return payload;
 	}
