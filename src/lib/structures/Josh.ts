@@ -8,7 +8,7 @@ import { JoshProvider, JoshProviderOptions } from './JoshProvider';
 import { MapProvider } from './MapProvider';
 import type { MiddlewareContext } from './Middleware';
 import { MiddlewareStore } from './MiddlewareStore';
-import type {
+import {
 	AutoKeyPayload,
 	EnsurePayload,
 	FindByDataPayload,
@@ -19,6 +19,7 @@ import type {
 	GetPayload,
 	HasPayload,
 	KeysPayload,
+	Payload,
 	RandomKeyPayload,
 	RandomPayload,
 	SetManyPayload,
@@ -102,7 +103,13 @@ export class Josh<Value = unknown> {
 			if (pathOrValue === undefined || Array.isArray(pathOrValue))
 				throw new JoshError('Value parameter is required when a path is provided in the first parameter.');
 
-			let payload: FindByDataPayload<CustomValue> = { method: Method.Find, trigger: Trigger.PreProvider, path: pathOrHook, inputData: pathOrValue };
+			let payload: FindByDataPayload<CustomValue> = {
+				method: Method.Find,
+				trigger: Trigger.PreProvider,
+				type: Payload.Type.Data,
+				path: pathOrHook,
+				inputData: pathOrValue
+			};
 
 			const preMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PreProvider);
 			for (const middleware of preMiddlewares) payload = await middleware[Method.Find](payload);
@@ -118,6 +125,7 @@ export class Josh<Value = unknown> {
 			let payload: FindByHookPayload<CustomValue> = {
 				method: Method.Find,
 				trigger: Trigger.PreProvider,
+				type: Payload.Type.Hook,
 				path: pathOrValue as string[] | undefined,
 				inputHook: pathOrHook
 			};
@@ -304,7 +312,13 @@ export class Josh<Value = unknown> {
 		let data;
 
 		if (typeof inputDataOrHook === 'function') {
-			let payload: UpdateByHookPayload<CustomValue> = { method: Method.Update, key, path, inputHook: inputDataOrHook as UpdateHook<CustomValue> };
+			let payload: UpdateByHookPayload<CustomValue> = {
+				method: Method.Update,
+				key,
+				path,
+				type: Payload.Type.Hook,
+				inputHook: inputDataOrHook as UpdateHook<CustomValue>
+			};
 
 			const preMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PreProvider);
 			for (const middleware of preMiddlewares) payload = await middleware[Method.Update](payload);
@@ -317,7 +331,7 @@ export class Josh<Value = unknown> {
 
 			data = payload.data;
 		} else {
-			let payload: UpdateByDataPayload<CustomValue> = { method: Method.Update, key, path, inputData: inputDataOrHook };
+			let payload: UpdateByDataPayload<CustomValue> = { method: Method.Update, key, path, type: Payload.Type.Data, inputData: inputDataOrHook };
 
 			const preMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PreProvider);
 			for (const middleware of preMiddlewares) payload = await middleware[Method.Update](payload);

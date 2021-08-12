@@ -1,4 +1,4 @@
-import { Josh, MapProvider } from '../src';
+import { Josh, MapProvider } from '../../../src';
 
 describe('Josh', () => {
 	describe('Statics', () => {

@@ -1,5 +1,5 @@
 import { Stopwatch } from '@sapphire/stopwatch';
-import { MapProvider, Method } from '../src';
+import { MapProvider, Method, Payload } from '../../../src';
 
 const provider = new MapProvider({ name: 'tests' });
 
@@ -41,7 +41,11 @@ describe('MapProvider', () => {
 		});
 
 		test('GIVEN findByData() THEN returns payload for findByData', () => {
-			const { method, trigger, stopwatch, path, inputData, data } = provider.findByData({ method: Method.Find, inputData: 'test' });
+			const { method, trigger, stopwatch, path, inputData, data } = provider.findByData({
+				method: Method.Find,
+				type: Payload.Type.Data,
+				inputData: 'test'
+			});
 
 			expect(method).toBe(Method.Find);
 			expect(trigger).toBeUndefined();
@@ -54,6 +58,7 @@ describe('MapProvider', () => {
 		test('GIVEN findByHook() THEN returns payload for findByHook', () => {
 			const { method, trigger, stopwatch, path, inputHook, data } = provider.findByHook({
 				method: Method.Find,
+				type: Payload.Type.Hook,
 				inputHook: (data) => data === 'test'
 			});
 
@@ -172,6 +177,7 @@ describe('MapProvider', () => {
 			const { method, trigger, stopwatch, key, path, inputData, data } = provider.updateByData({
 				method: Method.Update,
 				key: 'test',
+				type: Payload.Type.Data,
 				inputData: 'test'
 			});
 
@@ -188,6 +194,7 @@ describe('MapProvider', () => {
 			const { method, trigger, stopwatch, key, path, inputHook, data } = await provider.updateByHook({
 				method: Method.Update,
 				key: 'test',
+				type: Payload.Type.Hook,
 				inputHook: () => 'test'
 			});
 

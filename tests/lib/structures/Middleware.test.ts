@@ -1,4 +1,4 @@
-import { Middleware } from '../src';
+import { Middleware } from '../../../src';
 
 describe('Middleware', () => {
 	test('GIVEN typeof Middleware THEN returns function', () => {

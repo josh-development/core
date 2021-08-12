@@ -18,4 +18,17 @@ export namespace Payload {
 	}
 
 	export type OptionalData<Value = unknown> = Partial<Data<Value>>;
+
+	export interface ByData {
+		type: Type.Data;
+	}
+
+	export interface ByHook {
+		type: Type.Hook;
+	}
+
+	export enum Type {
+		Data = 'DATA',
+		Hook = 'HOOK'
+	}
 }
