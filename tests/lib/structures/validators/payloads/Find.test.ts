@@ -1,6 +1,6 @@
 import { isFindByDataPayload, isFindByHookPayload, Method, Payload, UpdateByDataPayload, UpdateByHookPayload } from '../../../../../src';
 
-describe('Validators', () => {
+describe('Validator functions', () => {
 	test('GIVEN isFindByDataPayload() THEN returns true', () => {
 		const payload: UpdateByDataPayload = { method: Method.Find, type: Payload.Type.Data, key: 'test', inputData: 'test' };
 

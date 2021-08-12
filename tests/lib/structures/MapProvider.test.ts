@@ -3,7 +3,7 @@ import { MapProvider, Method, Payload } from '../../../src';
 
 const provider = new MapProvider({ name: 'tests' });
 
-describe('MapProvider', () => {
+describe('MapProvider class', () => {
 	describe('Initialization', () => {
 		test('GIVEN init() THEN returns true', () => {
 			void expect(provider.init()).resolves.toBe(true);
@@ -14,7 +14,7 @@ describe('MapProvider', () => {
 		});
 	});
 
-	describe('Payloads', () => {
+	describe('Payload validation', () => {
 		test('GIVEN autoKey() THEN returns payload for autoKey', () => {
 			const { method, trigger, stopwatch, data } = provider.autoKey({ method: Method.AutoKey, data: '' });
 

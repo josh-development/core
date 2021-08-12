@@ -1,7 +1,7 @@
 import { Josh, MapProvider } from '../../../src';
 
-describe('Josh', () => {
-	describe('Statics', () => {
+describe('Josh class', () => {
+	describe('Static properties and methods', () => {
 		test('GIVEN defaultProvider THEN returns MapProvider', () => {
 			expect(Josh.defaultProvider).toBe(MapProvider);
 		});
