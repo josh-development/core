@@ -1,6 +1,6 @@
 {
   "name": "@joshdb/core",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Javascript Object Storage Helper",
   "main": "src/index.js",
   "scripts": {
