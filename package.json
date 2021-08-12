@@ -23,7 +23,7 @@
 		"@sapphire/pieces": "^2.1.0",
 		"@sapphire/stopwatch": "^1.1.4",
 		"@sapphire/utilities": "^2.0.1",
-		"@shadowware/utilities": "^1.1.0"
+		"@shadowware/utilities": "^1.1.1"
 	},
 	"devDependencies": {
 		"@favware/rollup-type-bundler": "^1.0.3",

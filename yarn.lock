@@ -619,10 +619,10 @@
   resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-2.0.1.tgz#c436c5b2b72679c89a40abe46d2f9301d03e63e2"
   integrity sha512-KgJsgQ1cnfVKqscrMX4GH29mIVhVQkF8kSTIRCB+hgCCRfIvUU5peE4g/cegnesPS5eMiQqV+NWk7cNwhjextQ==
 
-"@shadowware/utilities@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@shadowware/utilities/-/utilities-1.1.0.tgz#06b0e94978c013b9e2dee9461a7cf7d2837843c1"
-  integrity sha512-HvsLXQFPOFF4Af7VBq6VFy9Nh+WkffR1QE6TgmyoL+Qg9mCSZCtqzbVEjhknC1ZCeizkr+hGhS44rQ0Wr4qd6Q==
+"@shadowware/utilities@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@shadowware/utilities/-/utilities-1.1.1.tgz#e2715755f1471241d038c394567a4c45bf1349d8"
+  integrity sha512-G5hC/YiVXkzusoUpNehuTQHCwoCC767c75SaKFyhyFaCcg2s2/gLxdFOp15ZNY99s6E30OeY2znUhdl6FgFSFA==
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
