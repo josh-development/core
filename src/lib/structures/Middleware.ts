@@ -5,6 +5,7 @@ import { JoshError } from './JoshError';
 import type { MiddlewareStore } from './MiddlewareStore';
 import type {
 	AutoKeyPayload,
+	DeletePayload,
 	EnsurePayload,
 	FindByDataPayload,
 	FindByHookPayload,
@@ -47,6 +48,10 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 	}
 
 	public [Method.AutoKey](payload: AutoKeyPayload): Awaited<AutoKeyPayload> {
+		return payload;
+	}
+
+	public [Method.Delete](payload: DeletePayload): Awaited<DeletePayload> {
 		return payload;
 	}
 

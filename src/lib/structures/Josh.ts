@@ -10,6 +10,7 @@ import type { MiddlewareContext } from './Middleware';
 import { MiddlewareStore } from './MiddlewareStore';
 import {
 	AutoKeyPayload,
+	DeletePayload,
 	EnsurePayload,
 	FindByDataPayload,
 	FindByHookPayload,
@@ -74,6 +75,22 @@ export class Josh<Value = unknown> {
 		for (const middleware of postMiddlewares) payload = await middleware[Method.AutoKey](payload);
 
 		return payload.data;
+	}
+
+	public async delete(keyPath: KeyPath): Promise<this> {
+		const [key, path] = this.getKeyPath(keyPath);
+		let payload: DeletePayload = { method: Method.Delete, trigger: Trigger.PreProvider, key, path };
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Delete, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Delete](payload);
+
+		payload = await this.provider.delete(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Delete, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Delete](payload);
+
+		return this;
 	}
 
 	public async ensure<CustomValue = Value>(key: string, defaultValue: CustomValue): Promise<CustomValue> {
@@ -257,7 +274,7 @@ export class Josh<Value = unknown> {
 		return payload.data ?? null;
 	}
 
-	public async set<CustomValue = Value>(keyPath: KeyPathArray, value: CustomValue): Promise<this> {
+	public async set<CustomValue = Value>(keyPath: KeyPath, value: CustomValue): Promise<this> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: SetPayload = { method: Method.Set, trigger: Trigger.PreProvider, key, path };
 
@@ -303,10 +320,7 @@ export class Josh<Value = unknown> {
 		return payload.data;
 	}
 
-	public async update<CustomValue = Value>(
-		keyPath: KeyPathArray,
-		inputDataOrHook: CustomValue | UpdateHook<CustomValue>
-	): Promise<CustomValue | null> {
+	public async update<CustomValue = Value>(keyPath: KeyPath, inputDataOrHook: CustomValue | UpdateHook<CustomValue>): Promise<CustomValue | null> {
 		const [key, path] = this.getKeyPath(keyPath);
 
 		let data;

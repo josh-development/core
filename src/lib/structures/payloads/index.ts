@@ -1,4 +1,5 @@
 export * from './AutoKey';
+export * from './Delete';
 export * from './Ensure';
 export * from './Find';
 export * from './Get';

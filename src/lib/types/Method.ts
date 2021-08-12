@@ -1,6 +1,8 @@
 export enum Method {
 	AutoKey = 'autoKey',
 
+	Delete = 'delete',
+
 	Ensure = 'ensure',
 
 	Find = 'find',

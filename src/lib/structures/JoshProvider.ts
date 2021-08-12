@@ -2,6 +2,7 @@ import type { Awaited } from '@sapphire/utilities';
 import type { Josh } from './Josh';
 import type {
 	AutoKeyPayload,
+	DeletePayload,
 	EnsurePayload,
 	FindByDataPayload,
 	FindByHookPayload,
@@ -40,6 +41,8 @@ export abstract class JoshProvider<Value = unknown> {
 	}
 
 	public abstract autoKey(payload: AutoKeyPayload): Awaited<AutoKeyPayload>;
+
+	public abstract delete(payload: DeletePayload): Awaited<DeletePayload>;
 
 	public abstract ensure<CustomValue = Value>(payload: EnsurePayload<CustomValue>): Awaited<EnsurePayload<CustomValue>>;
 

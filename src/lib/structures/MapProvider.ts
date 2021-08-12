@@ -1,10 +1,11 @@
 import { Stopwatch } from '@sapphire/stopwatch';
 import { isObject, mergeDefault } from '@sapphire/utilities';
-import { get, set } from '@shadowware/utilities';
+import { deleteFromObject, get, set } from '@shadowware/utilities';
 import { Method } from '../types';
 import { JoshProvider } from './JoshProvider';
 import type {
 	AutoKeyPayload,
+	DeletePayload,
 	EnsurePayload,
 	FindByDataPayload,
 	FindByHookPayload,
@@ -35,6 +36,31 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		this.autoKeyCount++;
 
 		payload.data = this.autoKeyCount.toString();
+		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public delete(payload: DeletePayload): DeletePayload {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		const { key, path } = payload;
+
+		if (!path) {
+			this.cache.delete(key);
+
+			return payload;
+		}
+
+		if (this.has({ method: Method.Has, key, path, data: false }).data) {
+			const { data } = this.get({ method: Method.Get, key });
+
+			if (!data) return payload;
+
+			this.set({ method: Method.Set, key, path }, deleteFromObject(data, path));
+		}
+
 		payload.stopwatch.stop();
 
 		return payload;

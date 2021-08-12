@@ -24,6 +24,16 @@ describe('MapProvider class', () => {
 			expect(data).toBe('1');
 		});
 
+		test('GIVEN delete() THEN returns payload for delete', () => {
+			const { method, trigger, stopwatch, key, path } = provider.delete({ method: Method.Delete, key: 'test' });
+
+			expect(method).toBe(Method.Delete);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(key).toBe('test');
+			expect(path).toBeUndefined();
+		});
+
 		test('GIVEN ensure() THEN returns payload for ensure', () => {
 			const { method, trigger, stopwatch, key, data, defaultValue } = provider.ensure({
 				method: Method.Ensure,
