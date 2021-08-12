@@ -1,6 +1,6 @@
 import { Piece, PieceContext, PieceOptions } from '@sapphire/pieces';
 import type { Awaited } from '@sapphire/utilities';
-import { Condition, Method } from '../types';
+import { Method, Trigger } from '../types';
 import { JoshError } from './JoshError';
 import type { MiddlewareStore } from './MiddlewareStore';
 import type {
@@ -16,6 +16,7 @@ import type {
 	KeysPayload,
 	RandomKeyPayload,
 	RandomPayload,
+	SetManyPayload,
 	SetPayload,
 	SizePayload,
 	UpdateByDataPayload,
@@ -23,7 +24,6 @@ import type {
 	UpdatePayload,
 	ValuesPayload
 } from './payloads';
-import type { SetManyPayload } from './payloads/SetMany';
 
 export abstract class Middleware<Context extends MiddlewareContext = MiddlewareContext> extends Piece {
 	public declare store: MiddlewareStore;
@@ -134,3 +134,9 @@ export interface MiddlewareOptions extends PieceOptions {
 }
 
 export interface MiddlewareContext {}
+
+export interface Condition {
+	methods: Method[];
+
+	trigger: Trigger;
+}
