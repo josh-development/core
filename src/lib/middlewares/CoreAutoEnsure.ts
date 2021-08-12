@@ -1,6 +1,6 @@
 import { ApplyOptions } from '../structures/decorators/ApplyOptions';
 import { Middleware, MiddlewareContext, MiddlewareOptions } from '../structures/Middleware';
-import type { GetManyPayload, GetPayload, SetPayload, UpdatePayload } from '../structures/payloads';
+import type { GetManyPayload, GetPayload, SetPayload, UpdateByDataPayload, UpdateByHookPayload, UpdatePayload } from '../structures/payloads';
 import type { SetManyPayload } from '../structures/payloads/SetMany';
 import { BuiltInMiddleware, Method, Trigger } from '../types';
 
@@ -81,6 +81,8 @@ export class CoreAutoEnsure extends Middleware<AutoEnsureContext> {
 		return payload;
 	}
 
+	public async [Method.Update]<Value = unknown>(payload: UpdateByDataPayload<Value>): Promise<UpdateByDataPayload<Value>>;
+	public async [Method.Update]<Value = unknown>(payload: UpdateByHookPayload<Value>): Promise<UpdateByHookPayload<Value>>;
 	public async [Method.Update]<Value = unknown>(payload: UpdatePayload<Value>): Promise<UpdatePayload<Value>> {
 		const context = this.getContext();
 
