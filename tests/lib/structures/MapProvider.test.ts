@@ -50,6 +50,38 @@ describe('MapProvider class', () => {
 			expect(defaultValue).toBe('test');
 		});
 
+		test('GIVEN filterByData() THEN returns payload for filterByData', () => {
+			const { method, trigger, stopwatch, path, inputData, data } = provider.filterByData({
+				method: Method.Filter,
+				type: Payload.Type.Data,
+				inputData: 'test',
+				data: {}
+			});
+
+			expect(method).toBe(Method.Filter);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(path).toBeUndefined();
+			expect(inputData).toBe('test');
+			expect(data).toEqual({ test: 'test' });
+		});
+
+		test('GIVEN filterByHook() THEN returns payload for filterByHook', async () => {
+			const { method, trigger, stopwatch, path, inputHook, data } = await provider.filterByHook({
+				method: Method.Filter,
+				type: Payload.Type.Hook,
+				inputHook: (data) => data === 'test',
+				data: {}
+			});
+
+			expect(method).toBe(Method.Filter);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(path).toBeUndefined();
+			expect(typeof inputHook).toBe('function');
+			expect(data).toEqual({ test: 'test' });
+		});
+
 		test('GIVEN findByData() THEN returns payload for findByData', () => {
 			const { method, trigger, stopwatch, path, inputData, data } = provider.findByData({
 				method: Method.Find,

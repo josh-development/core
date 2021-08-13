@@ -7,6 +7,9 @@ import type {
 	AutoKeyPayload,
 	DeletePayload,
 	EnsurePayload,
+	FilterByDataPayload,
+	FilterByHookPayload,
+	FilterPayload,
 	FindByDataPayload,
 	FindByHookPayload,
 	FindPayload,
@@ -56,6 +59,12 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 	}
 
 	public [Method.Ensure]<Value = unknown>(payload: EnsurePayload<Value>): Awaited<EnsurePayload<Value>> {
+		return payload;
+	}
+
+	public [Method.Filter]<Value = unknown>(payload: FilterByDataPayload<Value>): Awaited<FilterByDataPayload<Value>>;
+	public [Method.Filter]<Value = unknown>(payload: FilterByHookPayload<Value>): Awaited<FilterByHookPayload<Value>>;
+	public [Method.Filter]<Value = unknown>(payload: FilterPayload<Value>): Awaited<FilterPayload<Value>> {
 		return payload;
 	}
 

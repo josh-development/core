@@ -12,6 +12,9 @@ import {
 	AutoKeyPayload,
 	DeletePayload,
 	EnsurePayload,
+	FilterByDataPayload,
+	FilterByHookPayload,
+	FilterHook,
 	FindByDataPayload,
 	FindByHookPayload,
 	FindHook,
@@ -106,6 +109,71 @@ export class Josh<Value = unknown> {
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Ensure](payload);
 
 		return payload.data;
+	}
+
+	public async filter<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
+		path: string[],
+		value: CustomValue,
+		returnBulkType?: K
+	): Promise<ReturnBulk<CustomValue>[K]>;
+	public async filter<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
+		hook: FilterHook<CustomValue>,
+		path?: string[],
+		returnBulkType?: K
+	): Promise<ReturnBulk<CustomValue>[K]>;
+	public async filter<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
+		pathOrHook: string[] | FilterHook<CustomValue>,
+		pathOrValue: string[] | CustomValue,
+		returnBulkType?: K
+	): Promise<ReturnBulk<CustomValue>[K]> {
+		let data;
+
+		if (Array.isArray(pathOrHook)) {
+			if (pathOrValue === undefined || Array.isArray(pathOrValue))
+				throw new JoshError('Value parameter is required when a path is provided in the first parameter.');
+
+			let payload: FilterByDataPayload<CustomValue> = {
+				method: Method.Filter,
+				trigger: Trigger.PreProvider,
+				type: Payload.Type.Data,
+				path: pathOrHook,
+				inputData: pathOrValue,
+				data: {}
+			};
+
+			const preMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PreProvider);
+			for (const middleware of preMiddlewares) payload = await middleware[Method.Filter](payload);
+
+			payload = await this.provider.filterByData(payload);
+			payload.trigger = Trigger.PostProvider;
+
+			const postMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PostProvider);
+			for (const middleware of postMiddlewares) payload = await middleware[Method.Filter](payload);
+
+			data = payload.data;
+		} else {
+			let payload: FilterByHookPayload<CustomValue> = {
+				method: Method.Filter,
+				trigger: Trigger.PreProvider,
+				type: Payload.Type.Hook,
+				path: pathOrValue as string[] | undefined,
+				inputHook: pathOrHook,
+				data: {}
+			};
+
+			const preMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PreProvider);
+			for (const middleware of preMiddlewares) payload = await middleware[Method.Filter](payload);
+
+			payload = await this.provider.filterByHook(payload);
+			payload.trigger = Trigger.PostProvider;
+
+			const postMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PostProvider);
+			for (const middleware of postMiddlewares) payload = await middleware[Method.Filter](payload);
+
+			data = payload.data;
+		}
+
+		return this.convertBulkData(data, returnBulkType);
 	}
 
 	public async find<CustomValue = Value>(path: string[], value: CustomValue): Promise<CustomValue>;

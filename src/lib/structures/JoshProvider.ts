@@ -4,6 +4,8 @@ import type {
 	AutoKeyPayload,
 	DeletePayload,
 	EnsurePayload,
+	FilterByDataPayload,
+	FilterByHookPayload,
 	FindByDataPayload,
 	FindByHookPayload,
 	GetAllPayload,
@@ -45,6 +47,10 @@ export abstract class JoshProvider<Value = unknown> {
 	public abstract delete(payload: DeletePayload): Awaited<DeletePayload>;
 
 	public abstract ensure<CustomValue = Value>(payload: EnsurePayload<CustomValue>): Awaited<EnsurePayload<CustomValue>>;
+
+	public abstract filterByData<CustomValue = Value>(payload: FilterByDataPayload<CustomValue>): Awaited<FilterByDataPayload<CustomValue>>;
+
+	public abstract filterByHook<CustomValue = Value>(payload: FilterByHookPayload<CustomValue>): Awaited<FilterByHookPayload<CustomValue>>;
 
 	public abstract findByData<CustomValue = Value>(payload: FindByDataPayload<CustomValue>): Awaited<FindByDataPayload<CustomValue>>;
 

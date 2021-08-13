@@ -5,6 +5,8 @@ export enum Method {
 
 	Ensure = 'ensure',
 
+	Filter = 'filter',
+
 	Find = 'find',
 
 	Get = 'get',

@@ -1,6 +1,7 @@
 export * from './AutoKey';
 export * from './Delete';
 export * from './Ensure';
+export * from './Filter';
 export * from './Find';
 export * from './Get';
 export * from './GetAll';
