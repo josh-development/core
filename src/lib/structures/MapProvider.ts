@@ -1,6 +1,6 @@
+import { deleteFromObject, getFromObject, setFromObject } from '@realware/utilities';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { isObject, mergeDefault } from '@sapphire/utilities';
-import { deleteFromObject, get, set } from '@shadowware/utilities';
 import { Method } from '../types';
 import { JoshProvider } from './JoshProvider';
 import type {
@@ -171,7 +171,7 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 
 		const { key, path } = payload;
 
-		Reflect.set(payload, 'data', (path ? get(this.cache.get(key), path) : this.cache.get(key)) ?? null);
+		Reflect.set(payload, 'data', (path ? getFromObject(this.cache.get(key), path) : this.cache.get(key)) ?? null);
 		payload.stopwatch.stop();
 
 		return payload;
@@ -212,7 +212,7 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		if (this.cache.has(key)) {
 			payload.data = true;
 
-			if (path) payload.data = Boolean(get(this.cache.get(key), path));
+			if (path) payload.data = Boolean(getFromObject(this.cache.get(key), path));
 		}
 
 		payload.stopwatch.stop();
@@ -264,7 +264,7 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 			const { data } = this.get({ method: Method.Get, stopwatch: new Stopwatch(), key, path, data: null });
 
 			// @ts-expect-error 2345
-			this.cache.set(key, set(data, path, value));
+			this.cache.set(key, setFromObject(data, path, value));
 
 			// @ts-expect-error 2345
 		} else this.cache.set(key, value);

@@ -572,6 +572,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@realware/utilities@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@realware/utilities/-/utilities-1.0.0.tgz#99734c4af2c9db760f5e90d88782a8d7041b7658"
+  integrity sha512-SzlW9ILgVXBV1UHZoIknPfaUFePzcVAWTbS15ihm0IK2RIJtUHXXg9txdwI1ehzGXyuMbWaoI0dAfx2oIAMG1A==
+
 "@sapphire/eslint-config@^3.2.3":
   version "3.2.3"
   resolved "https://registry.yarnpkg.com/@sapphire/eslint-config/-/eslint-config-3.2.3.tgz#4dfdb6915617715303fd9dcd399035943d5dd362"
@@ -618,11 +623,6 @@
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/@sapphire/utilities/-/utilities-2.0.1.tgz#c436c5b2b72679c89a40abe46d2f9301d03e63e2"
   integrity sha512-KgJsgQ1cnfVKqscrMX4GH29mIVhVQkF8kSTIRCB+hgCCRfIvUU5peE4g/cegnesPS5eMiQqV+NWk7cNwhjextQ==
-
-"@shadowware/utilities@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@shadowware/utilities/-/utilities-1.1.1.tgz#e2715755f1471241d038c394567a4c45bf1349d8"
-  integrity sha512-G5hC/YiVXkzusoUpNehuTQHCwoCC767c75SaKFyhyFaCcg2s2/gLxdFOp15ZNY99s6E30OeY2znUhdl6FgFSFA==
 
 "@sinonjs/commons@^1.7.0":
   version "1.8.3"
