@@ -97,8 +97,8 @@ describe('MapProvider class', () => {
 			expect(data).toBe('test');
 		});
 
-		test('GIVEN findByHook() THEN returns payload for findByHook', () => {
-			const { method, trigger, stopwatch, path, inputHook, data } = provider.findByHook({
+		test('GIVEN findByHook() THEN returns payload for findByHook', async () => {
+			const { method, trigger, stopwatch, path, inputHook, data } = await provider.findByHook({
 				method: Method.Find,
 				type: Payload.Type.Hook,
 				inputHook: (data) => data === 'test'

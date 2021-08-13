@@ -144,7 +144,7 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		return payload;
 	}
 
-	public findByHook<CustomValue = Value>(payload: FindByHookPayload<CustomValue>): FindByHookPayload<CustomValue> {
+	public async findByHook<CustomValue = Value>(payload: FindByHookPayload<CustomValue>): Promise<FindByHookPayload<CustomValue>> {
 		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
 
@@ -154,7 +154,7 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 			const { data } = this.get<CustomValue>({ method: Method.Get, key, path });
 
 			if (data === undefined) continue;
-			if (!inputHook(data)) continue;
+			if (!(await inputHook(data))) continue;
 
 			payload.data = data;
 			break;
