@@ -1,3 +1,5 @@
+<div align="center">
+
 # JOSH [![Discord](https://discordapp.com/api/guilds/298508738623438848/embed.png)](https://discord.gg/N7ZKH3P)
 
 [![NPM Version](https://img.shields.io/npm/v/@joshdb/core.svg?maxAge=3600)](https://www.npmjs.com/package/@joshdb/core)
@@ -9,6 +11,8 @@
 [![JOSH Logo](https://evie.codes/josh-light.png)](https://www.npmjs.com/package/@joshdb/core)
 
 JOSH is the JavaScript Object Storage Helper - a simple, effective, and efficient database wrapper.
+
+</div>
 
 ## Documentation
 
