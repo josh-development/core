@@ -1,6 +1,15 @@
 import { ApplyOptions } from '../structures/decorators/ApplyOptions';
 import { Middleware, MiddlewareContext, MiddlewareOptions } from '../structures/Middleware';
-import type { GetManyPayload, GetPayload, SetPayload, UpdateByDataPayload, UpdateByHookPayload, UpdatePayload } from '../structures/payloads';
+import type {
+	DecPayload,
+	GetManyPayload,
+	GetPayload,
+	IncPayload,
+	SetPayload,
+	UpdateByDataPayload,
+	UpdateByHookPayload,
+	UpdatePayload
+} from '../structures/payloads';
 import type { SetManyPayload } from '../structures/payloads/SetMany';
 import { BuiltInMiddleware, Method, Trigger } from '../types';
 
@@ -13,13 +22,26 @@ import { BuiltInMiddleware, Method, Trigger } from '../types';
 			trigger: Trigger.PostProvider
 		},
 		{
-			methods: [Method.Set, Method.SetMany],
+			methods: [Method.Dec, Method.Inc, Method.Set, Method.SetMany],
 			trigger: Trigger.PreProvider
 		}
 	],
 	use: false
 })
 export class CoreAutoEnsure extends Middleware<AutoEnsureContext> {
+	public async [Method.Dec](payload: DecPayload): Promise<DecPayload> {
+		const context = this.getContext();
+
+		if (!context) return payload;
+
+		const { defaultValue } = context;
+		const { key } = payload;
+
+		await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
+
+		return payload;
+	}
+
 	public async [Method.Get]<Value = unknown>(payload: GetPayload<Value>): Promise<GetPayload<Value>> {
 		if (payload.data !== undefined) return payload;
 
@@ -52,6 +74,19 @@ export class CoreAutoEnsure extends Middleware<AutoEnsureContext> {
 
 			Reflect.set(payload, 'data', data);
 		}
+
+		return payload;
+	}
+
+	public async [Method.Inc](payload: IncPayload): Promise<IncPayload> {
+		const context = this.getContext();
+
+		if (!context) return payload;
+
+		const { defaultValue } = context;
+		const { key } = payload;
+
+		await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
 
 		return payload;
 	}

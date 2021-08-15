@@ -1,4 +1,5 @@
 export * from './AutoKey';
+export * from './Dec';
 export * from './Delete';
 export * from './Ensure';
 export * from './Filter';
@@ -7,6 +8,7 @@ export * from './Get';
 export * from './GetAll';
 export * from './GetMany';
 export * from './Has';
+export * from './Inc';
 export * from './Keys';
 export * from './Payload';
 export * from './Random';

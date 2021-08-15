@@ -2,6 +2,7 @@ import type { Awaited } from '@sapphire/utilities';
 import type { Josh } from './Josh';
 import type {
 	AutoKeyPayload,
+	DecPayload,
 	DeletePayload,
 	EnsurePayload,
 	FilterByDataPayload,
@@ -12,6 +13,7 @@ import type {
 	GetManyPayload,
 	GetPayload,
 	HasPayload,
+	IncPayload,
 	KeysPayload,
 	RandomKeyPayload,
 	RandomPayload,
@@ -46,6 +48,8 @@ export abstract class JoshProvider<Value = unknown> {
 
 	public abstract autoKey(payload: AutoKeyPayload): Awaited<AutoKeyPayload>;
 
+	public abstract dec(payload: DecPayload): Awaited<DecPayload>;
+
 	public abstract delete(payload: DeletePayload): Awaited<DeletePayload>;
 
 	public abstract ensure<CustomValue = Value>(payload: EnsurePayload<CustomValue>): Awaited<EnsurePayload<CustomValue>>;
@@ -65,6 +69,8 @@ export abstract class JoshProvider<Value = unknown> {
 	public abstract getMany<CustomValue = Value>(payload: GetManyPayload<CustomValue>): Awaited<GetManyPayload<CustomValue>>;
 
 	public abstract has(payload: HasPayload): Awaited<HasPayload>;
+
+	public abstract inc(payload: IncPayload): Awaited<IncPayload>;
 
 	public abstract keys(payload: KeysPayload): Awaited<KeysPayload>;
 

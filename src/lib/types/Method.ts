@@ -1,6 +1,8 @@
 export enum Method {
 	AutoKey = 'autoKey',
 
+	Dec = 'dec',
+
 	Delete = 'delete',
 
 	Ensure = 'ensure',
@@ -16,6 +18,8 @@ export enum Method {
 	GetMany = 'getMany',
 
 	Has = 'has',
+
+	Inc = 'inc',
 
 	Keys = 'keys',
 

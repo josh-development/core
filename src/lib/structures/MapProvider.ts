@@ -5,6 +5,7 @@ import { Method } from '../types';
 import { JoshProvider } from './JoshProvider';
 import type {
 	AutoKeyPayload,
+	DecPayload,
 	DeletePayload,
 	EnsurePayload,
 	FilterByDataPayload,
@@ -15,6 +16,7 @@ import type {
 	GetManyPayload,
 	GetPayload,
 	HasPayload,
+	IncPayload,
 	KeysPayload,
 	RandomKeyPayload,
 	RandomPayload,
@@ -41,6 +43,35 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 
 		payload.data = this.autoKeyCount.toString();
 		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public dec(payload: DecPayload): DecPayload {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		const { key, path } = payload;
+		const { data } = this.get({ method: Method.Get, key });
+
+		if (!path) {
+			if (typeof data !== 'number') return payload;
+
+			payload.data = data - 1;
+
+			this.set({ method: Method.Set, key }, payload.data);
+
+			return payload;
+		}
+
+		const number = getFromObject(data, path);
+
+		if (number === undefined) return payload;
+		if (typeof number !== 'number') return payload;
+
+		payload.data = number - 1;
+
+		this.set({ method: Method.Set, key, path }, payload.data);
 
 		return payload;
 	}
@@ -218,6 +249,35 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		}
 
 		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public inc(payload: IncPayload): IncPayload {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		const { key, path } = payload;
+		const { data } = this.get({ method: Method.Get, key });
+
+		if (!path) {
+			if (typeof data !== 'number') return payload;
+
+			payload.data = data + 1;
+
+			this.set({ method: Method.Set, key }, payload.data);
+
+			return payload;
+		}
+
+		const number = getFromObject(data, path);
+
+		if (number === undefined) return payload;
+		if (typeof number !== 'number') return payload;
+
+		payload.data = number + 1;
+
+		this.set({ method: Method.Set, key, path }, payload.data);
 
 		return payload;
 	}

@@ -5,6 +5,7 @@ import { JoshError } from './JoshError';
 import type { MiddlewareStore } from './MiddlewareStore';
 import type {
 	AutoKeyPayload,
+	DecPayload,
 	DeletePayload,
 	EnsurePayload,
 	FilterByDataPayload,
@@ -17,6 +18,7 @@ import type {
 	GetManyPayload,
 	GetPayload,
 	HasPayload,
+	IncPayload,
 	KeysPayload,
 	RandomKeyPayload,
 	RandomPayload,
@@ -57,6 +59,10 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 		return payload;
 	}
 
+	public [Method.Dec](payload: DecPayload): Awaited<DecPayload> {
+		return payload;
+	}
+
 	public [Method.Delete](payload: DeletePayload): Awaited<DeletePayload> {
 		return payload;
 	}
@@ -90,6 +96,10 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 	}
 
 	public [Method.Has](payload: HasPayload): Awaited<HasPayload> {
+		return payload;
+	}
+
+	public [Method.Inc](payload: IncPayload): Awaited<IncPayload> {
 		return payload;
 	}
 

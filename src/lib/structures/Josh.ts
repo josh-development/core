@@ -10,6 +10,7 @@ import type { MiddlewareContext } from './Middleware';
 import { MiddlewareStore } from './MiddlewareStore';
 import {
 	AutoKeyPayload,
+	DecPayload,
 	DeletePayload,
 	EnsurePayload,
 	FilterByDataPayload,
@@ -22,6 +23,7 @@ import {
 	GetManyPayload,
 	GetPayload,
 	HasPayload,
+	IncPayload,
 	KeysPayload,
 	Payload,
 	RandomKeyPayload,
@@ -81,6 +83,22 @@ export class Josh<Value = unknown> {
 		for (const middleware of postMiddlewares) payload = await middleware[Method.AutoKey](payload);
 
 		return payload.data;
+	}
+
+	public async dec(keyPath: KeyPath): Promise<this> {
+		const [key, path] = this.getKeyPath(keyPath);
+		let payload: DecPayload = { method: Method.Dec, trigger: Trigger.PreProvider, key, path, data: 0 };
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Dec, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Dec](payload);
+
+		payload = await this.provider.dec(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Dec, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Dec](payload);
+
+		return this;
 	}
 
 	public async delete(keyPath: KeyPath): Promise<this> {
@@ -298,6 +316,22 @@ export class Josh<Value = unknown> {
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Has](payload);
 
 		return payload.data;
+	}
+
+	public async inc(keyPath: KeyPath): Promise<this> {
+		const [key, path] = this.getKeyPath(keyPath);
+		let payload: IncPayload = { method: Method.Inc, trigger: Trigger.PreProvider, key, path, data: 0 };
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Inc, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Inc](payload);
+
+		payload = await this.provider.inc(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Inc, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Inc](payload);
+
+		return this;
 	}
 
 	public async keys(): Promise<string[]> {
