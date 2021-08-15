@@ -133,6 +133,10 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 		return payload;
 	}
 
+	public toJSON(): Record<string, any> {
+		return { ...super.toJSON(), position: this.position, conditions: this.conditions, use: this.use };
+	}
+
 	protected getContext<C extends MiddlewareContext = Context>(): C | undefined {
 		const contextData = this.instance.options.middlewareContextData ?? {};
 
