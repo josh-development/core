@@ -1,5 +1,5 @@
 import { getRootData } from '@sapphire/pieces';
-import { classExtends, Constructor } from '@sapphire/utilities';
+import { classExtends, Constructor, isFunction } from '@sapphire/utilities';
 import { join } from 'path';
 import type { AutoEnsureContext } from '../middlewares/CoreAutoEnsure';
 import { BuiltInMiddleware, KeyPath, KeyPathArray, Method, Trigger } from '../types';
@@ -483,13 +483,13 @@ export class Josh<Value = unknown> {
 
 		let data;
 
-		if (typeof inputDataOrHook === 'function') {
+		if (isFunction(inputDataOrHook)) {
 			let payload: UpdateByHookPayload<CustomValue> = {
 				method: Method.Update,
 				key,
 				path,
 				type: Payload.Type.Hook,
-				inputHook: inputDataOrHook as UpdateHook<CustomValue>
+				inputHook: inputDataOrHook
 			};
 
 			const preMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PreProvider);
