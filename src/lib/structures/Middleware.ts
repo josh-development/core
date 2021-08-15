@@ -23,6 +23,9 @@ import type {
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
+	SomeByDataPayload,
+	SomeByHookPayload,
+	SomePayload,
 	UpdateByDataPayload,
 	UpdateByHookPayload,
 	UpdatePayload,
@@ -111,6 +114,12 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 	}
 
 	public [Method.Size](payload: SizePayload): Awaited<SizePayload> {
+		return payload;
+	}
+
+	public [Method.Some]<Value = unknown>(payload: SomeByDataPayload<Value>): Awaited<SomeByDataPayload<Value>>;
+	public [Method.Some]<Value = unknown>(payload: SomeByHookPayload<Value>): Awaited<SomeByHookPayload<Value>>;
+	public [Method.Some]<Value = unknown>(payload: SomePayload<Value>): Awaited<SomePayload<Value>> {
 		return payload;
 	}
 

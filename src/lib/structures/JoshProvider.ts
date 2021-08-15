@@ -18,6 +18,8 @@ import type {
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
+	SomeByDataPayload,
+	SomeByHookPayload,
 	UpdateByDataPayload,
 	UpdateByHookPayload,
 	ValuesPayload
@@ -75,6 +77,10 @@ export abstract class JoshProvider<Value = unknown> {
 	public abstract setMany<CustomValue = Value>(payload: SetManyPayload, value: CustomValue): Awaited<SetManyPayload>;
 
 	public abstract size(payload: SizePayload): Awaited<SizePayload>;
+
+	public abstract someByData<CustomValue = Value>(payload: SomeByDataPayload<CustomValue>): Awaited<SomeByDataPayload<CustomValue>>;
+
+	public abstract someByHook<CustomValue = Value>(payload: SomeByHookPayload<CustomValue>): Awaited<SomeByHookPayload<CustomValue>>;
 
 	public abstract updateByData<CustomValue = Value>(payload: UpdateByDataPayload<CustomValue>): Awaited<UpdateByDataPayload<CustomValue>>;
 

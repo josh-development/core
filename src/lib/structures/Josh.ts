@@ -29,6 +29,9 @@ import {
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
+	SomeByDataPayload,
+	SomeByHookPayload,
+	SomeHook,
 	UpdateByDataPayload,
 	UpdateByHookPayload,
 	UpdateHook,
@@ -386,6 +389,59 @@ export class Josh<Value = unknown> {
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Size](payload);
 
 		return payload.data;
+	}
+
+	public async some<CustomValue = Value>(path: string[], value: CustomValue): Promise<boolean>;
+	public async some<CustomValue = Value>(hook: SomeHook<CustomValue>, path?: string[]): Promise<boolean>;
+	public async some<CustomValue = Value>(pathOrHook: string[] | SomeHook<CustomValue>, pathOrValue?: string[] | CustomValue): Promise<boolean> {
+		let data;
+
+		if (Array.isArray(pathOrHook)) {
+			if (pathOrValue === undefined || Array.isArray(pathOrValue))
+				throw new JoshError('Value parameter is required when a path is provided in the first parameter.');
+
+			let payload: SomeByDataPayload<CustomValue> = {
+				method: Method.Some,
+				trigger: Trigger.PreProvider,
+				type: Payload.Type.Data,
+				path: pathOrHook,
+				inputData: pathOrValue,
+				data: false
+			};
+
+			const preMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PreProvider);
+			for (const middleware of preMiddlewares) payload = await middleware[Method.Some](payload);
+
+			payload = await this.provider.someByData(payload);
+			payload.trigger = Trigger.PostProvider;
+
+			const postMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PostProvider);
+			for (const middleware of postMiddlewares) payload = await middleware[Method.Some](payload);
+
+			data = payload.data;
+		} else {
+			let payload: SomeByHookPayload<CustomValue> = {
+				method: Method.Some,
+				trigger: Trigger.PreProvider,
+				type: Payload.Type.Hook,
+				path: pathOrValue as string[] | undefined,
+				inputHook: pathOrHook,
+				data: false
+			};
+
+			const preMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PreProvider);
+			for (const middleware of preMiddlewares) payload = await middleware[Method.Some](payload);
+
+			payload = await this.provider.someByHook(payload);
+			payload.trigger = Trigger.PostProvider;
+
+			const postMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PostProvider);
+			for (const middleware of postMiddlewares) payload = await middleware[Method.Some](payload);
+
+			data = payload.data;
+		}
+
+		return data;
 	}
 
 	public async update<CustomValue = Value>(keyPath: KeyPath, inputDataOrHook: CustomValue | UpdateHook<CustomValue>): Promise<CustomValue | null> {

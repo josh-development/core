@@ -21,6 +21,8 @@ import type {
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
+	SomeByDataPayload,
+	SomeByHookPayload,
 	UpdateByDataPayload,
 	UpdateByHookPayload,
 	ValuesPayload
@@ -290,6 +292,48 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		payload.stopwatch.start();
 
 		payload.data = this.cache.size;
+		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public someByData<CustomValue = Value>(payload: SomeByDataPayload<CustomValue>): SomeByDataPayload<CustomValue> {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		const { path, inputData } = payload;
+
+		for (const key of this.keys({ method: Method.Keys, data: [] }).data) {
+			const { data } = this.get<CustomValue>({ method: Method.Get, key, path });
+
+			if (data === undefined) continue;
+			if (inputData !== data) continue;
+
+			payload.data = true;
+			break;
+		}
+
+		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public async someByHook<CustomValue = Value>(payload: SomeByHookPayload<CustomValue>): Promise<SomeByHookPayload<CustomValue>> {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		const { path, inputHook } = payload;
+
+		for (const key of this.keys({ method: Method.Keys, data: [] }).data) {
+			const { data } = this.get<CustomValue>({ method: Method.Get, key, path });
+
+			if (data === undefined) continue;
+			if (!(await inputHook(data))) continue;
+
+			payload.data = true;
+			break;
+		}
+
 		payload.stopwatch.stop();
 
 		return payload;

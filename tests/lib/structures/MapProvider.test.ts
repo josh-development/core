@@ -215,6 +215,38 @@ describe('MapProvider class', () => {
 			expect(data).toBe(1);
 		});
 
+		test('GIVEN someByData() THEN returns payload for someByData', () => {
+			const { method, trigger, stopwatch, path, inputData, data } = provider.someByData({
+				method: Method.Find,
+				type: Payload.Type.Data,
+				inputData: 'test',
+				data: false
+			});
+
+			expect(method).toBe(Method.Find);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(path).toBeUndefined();
+			expect(inputData).toBe('test');
+			expect(data).toBe(true);
+		});
+
+		test('GIVEN someByHook() THEN returns payload for someByHook', async () => {
+			const { method, trigger, stopwatch, path, inputHook, data } = await provider.someByHook({
+				method: Method.Find,
+				type: Payload.Type.Hook,
+				inputHook: (data) => data === 'test',
+				data: false
+			});
+
+			expect(method).toBe(Method.Find);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(path).toBeUndefined();
+			expect(typeof inputHook).toBe('function');
+			expect(data).toBe(true);
+		});
+
 		test('GIVEN updateByData() THEN returns payload for updateByData', () => {
 			const { method, trigger, stopwatch, key, path, inputData, data } = provider.updateByData({
 				method: Method.Update,
