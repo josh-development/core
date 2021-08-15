@@ -1,7 +1,7 @@
 import type { Awaited } from '@sapphire/utilities';
 import type { Payload } from './Payload';
 
-export interface FilterPayload<Value = unknown> extends Payload, Payload.OptionalData<Value> {
+export interface FilterPayload<Value = unknown> extends Payload, Payload.OptionalData<Record<string, Value | null>> {
 	type: Payload.Type;
 	inputData?: Value;
 	inputHook?: FilterHook<Value>;
