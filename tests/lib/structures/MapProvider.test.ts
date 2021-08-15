@@ -28,7 +28,7 @@ describe('MapProvider class', () => {
 		});
 
 		test('GIVEN dec() THEN returns payload for dec', () => {
-			const { method, trigger, stopwatch, key, path, data } = provider.dec({ method: Method.Dec, key: 'number', data: 0 });
+			const { method, trigger, stopwatch, key, path, data } = provider.dec({ method: Method.Dec, key: 'number' });
 
 			expect(method).toBe(Method.Dec);
 			expect(trigger).toBeUndefined();
@@ -178,7 +178,7 @@ describe('MapProvider class', () => {
 		});
 
 		test('GIVEN inc() THEN returns payload for inc', () => {
-			const { method, trigger, stopwatch, key, path, data } = provider.inc({ method: Method.Inc, key: 'number', data: 0 });
+			const { method, trigger, stopwatch, key, path, data } = provider.inc({ method: Method.Inc, key: 'number' });
 
 			expect(method).toBe(Method.Inc);
 			expect(trigger).toBeUndefined();

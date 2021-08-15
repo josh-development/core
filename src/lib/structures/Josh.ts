@@ -87,12 +87,16 @@ export class Josh<Value = unknown> {
 
 	public async dec(keyPath: KeyPath): Promise<this> {
 		const [key, path] = this.getKeyPath(keyPath);
-		let payload: DecPayload = { method: Method.Dec, trigger: Trigger.PreProvider, key, path, data: 0 };
+		let payload: DecPayload = { method: Method.Dec, trigger: Trigger.PreProvider, key, path };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Dec, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Dec](payload);
 
 		payload = await this.provider.dec(payload);
+
+		if (payload.invalidType) throw new JoshError('Cannot decrement an invalid type. Data at "keyPath" must be of type "number".');
+		if (payload.missingData) throw new JoshError('Cannot decrement missing data. Data at "keyPath" did not exist.');
+
 		payload.trigger = Trigger.PostProvider;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Dec, Trigger.PostProvider);
@@ -109,6 +113,9 @@ export class Josh<Value = unknown> {
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Delete](payload);
 
 		payload = await this.provider.delete(payload);
+
+		if (payload.missingData) throw new JoshError('Cannot delete missing data. The data at "keyPath" did not exist.');
+
 		payload.trigger = Trigger.PostProvider;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Delete, Trigger.PostProvider);
@@ -320,12 +327,16 @@ export class Josh<Value = unknown> {
 
 	public async inc(keyPath: KeyPath): Promise<this> {
 		const [key, path] = this.getKeyPath(keyPath);
-		let payload: IncPayload = { method: Method.Inc, trigger: Trigger.PreProvider, key, path, data: 0 };
+		let payload: IncPayload = { method: Method.Inc, trigger: Trigger.PreProvider, key, path };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Inc, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Inc](payload);
 
 		payload = await this.provider.inc(payload);
+
+		if (payload.invalidType) throw new JoshError('Cannot increment an invalid type. Data at "keyPath" must be of type "number".');
+		if (payload.missingData) throw new JoshError('Cannot increment missing data. Data at "keyPath" did not exist.');
+
 		payload.trigger = Trigger.PostProvider;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Inc, Trigger.PostProvider);
@@ -387,6 +398,9 @@ export class Josh<Value = unknown> {
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Set](payload);
 
 		payload = await this.provider.set(payload, value);
+
+		if (payload.missingData) throw new JoshError('Cannot set missing data. The data at "keyPath" was missing to set.');
+
 		payload.trigger = Trigger.PostProvider;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Set, Trigger.PostProvider);

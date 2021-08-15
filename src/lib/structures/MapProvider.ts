@@ -1,6 +1,7 @@
 import { deleteFromObject, getFromObject, setFromObject } from '@realware/utilities';
 import { Stopwatch } from '@sapphire/stopwatch';
 import { isObject, mergeDefault } from '@sapphire/utilities';
+import { inspect } from 'node:util';
 import { Method } from '../types';
 import { JoshProvider } from './JoshProvider';
 import type {
@@ -55,7 +56,11 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		const { data } = this.get({ method: Method.Get, key });
 
 		if (!path) {
-			if (typeof data !== 'number') return payload;
+			if (typeof data !== 'number') {
+				payload.invalidType = true;
+
+				return payload;
+			}
 
 			payload.data = data - 1;
 
@@ -67,7 +72,11 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		const number = getFromObject(data, path);
 
 		if (number === undefined) return payload;
-		if (typeof number !== 'number') return payload;
+		if (typeof number !== 'number') {
+			payload.invalidType = true;
+
+			return payload;
+		}
 
 		payload.data = number - 1;
 
@@ -204,7 +213,7 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 
 		const { key, path } = payload;
 
-		Reflect.set(payload, 'data', (path ? getFromObject(this.cache.get(key), path) : this.cache.get(key)) ?? null);
+		Reflect.set(payload, 'data', path ? getFromObject(this.cache.get(key), path) : this.cache.get(key));
 		payload.stopwatch.stop();
 
 		return payload;
@@ -261,7 +270,11 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		const { data } = this.get({ method: Method.Get, key });
 
 		if (!path) {
-			if (typeof data !== 'number') return payload;
+			if (typeof data !== 'number') {
+				payload.invalidType = true;
+
+				return payload;
+			}
 
 			payload.data = data + 1;
 
@@ -273,7 +286,11 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		const number = getFromObject(data, path);
 
 		if (number === undefined) return payload;
-		if (typeof number !== 'number') return payload;
+		if (typeof number !== 'number') {
+			payload.invalidType = true;
+
+			return payload;
+		}
 
 		payload.data = number + 1;
 
@@ -323,9 +340,16 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		const { key, path } = payload;
 
 		if (path) {
-			const { data } = this.get({ method: Method.Get, stopwatch: new Stopwatch(), key, path, data: null });
+			const { data } = this.get({ method: Method.Get, stopwatch: new Stopwatch(), key });
 
-			// @ts-expect-error 2345
+			console.log(inspect(data));
+
+			if (data === undefined) {
+				payload.missingData = true;
+
+				return payload;
+			}
+
 			this.cache.set(key, setFromObject(data, path, value));
 
 			// @ts-expect-error 2345
