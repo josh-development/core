@@ -18,4 +18,4 @@ export interface FindByHookPayload<Value = unknown> extends Payload, Payload.ByH
 	path?: string[];
 }
 
-export type FindHook<Value = unknown> = (data: Value) => Awaited<Value>;
+export type FindHook<Value = unknown> = (data: Value) => Awaited<boolean>;
