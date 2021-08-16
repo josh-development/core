@@ -5,6 +5,7 @@ const provider = new MapProvider({ name: 'tests' });
 
 provider.set({ method: Method.Set, key: 'number' }, 1);
 provider.set({ method: Method.Set, key: 'string' }, 'test');
+provider.set({ method: Method.Set, key: 'array' }, []);
 
 describe('MapProvider class', () => {
 	describe('Initialization', () => {
@@ -148,8 +149,10 @@ describe('MapProvider class', () => {
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
 			expect(Object.keys(data)).toContain('number');
 			expect(Object.keys(data)).toContain('string');
+			expect(Object.keys(data)).toContain('array');
 			expect(Object.values(data)).toContain('test');
 			expect(Object.values(data)).toContain(0);
+			expect(Object.values(data)).toContainEqual([]);
 		});
 
 		test('GIVEN getMany() THEN returns payload for getMany', () => {
@@ -194,7 +197,19 @@ describe('MapProvider class', () => {
 			expect(method).toBe(Method.Keys);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
-			expect(data).toEqual(['number', 'string']);
+			expect(data).toContain('string');
+			expect(data).toContain('number');
+			expect(data).toContain('array');
+		});
+
+		test('GIVEN push() THEN returns payload for push', () => {
+			const { method, trigger, stopwatch, key, path } = provider.push({ method: Method.Push, key: 'array' }, 'test');
+
+			expect(method).toBe(Method.Push);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(key).toBe('array');
+			expect(path).toBeUndefined();
 		});
 
 		test('GIVEN random() THEN returns payload for random', () => {
@@ -240,7 +255,7 @@ describe('MapProvider class', () => {
 			expect(method).toBe(Method.Size);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
-			expect(data).toBe(2);
+			expect(data).toBe(3);
 		});
 
 		test('GIVEN someByData() THEN returns payload for someByData', () => {
@@ -315,7 +330,9 @@ describe('MapProvider class', () => {
 			expect(method).toBe(Method.Values);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
-			expect(data).toEqual([1, 'test']);
+			expect(data).toContain(1);
+			expect(data).toContain('test');
+			expect(data).toContainEqual(['test']);
 		});
 	});
 });

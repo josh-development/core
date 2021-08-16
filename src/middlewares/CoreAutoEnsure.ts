@@ -4,6 +4,7 @@ import type {
 	GetManyPayload,
 	GetPayload,
 	IncPayload,
+	PushPayload,
 	SetPayload,
 	UpdateByDataPayload,
 	UpdateByHookPayload,
@@ -22,7 +23,7 @@ import { BuiltInMiddleware, Method, Trigger } from '../lib/types';
 			trigger: Trigger.PostProvider
 		},
 		{
-			methods: [Method.Dec, Method.Inc, Method.Set, Method.SetMany],
+			methods: [Method.Dec, Method.Inc, Method.Push, Method.Set, Method.SetMany],
 			trigger: Trigger.PreProvider
 		}
 	],
@@ -79,6 +80,19 @@ export class CoreAutoEnsure extends Middleware<AutoEnsureContext> {
 	}
 
 	public async [Method.Inc](payload: IncPayload): Promise<IncPayload> {
+		const context = this.getContext();
+
+		if (!context) return payload;
+
+		const { defaultValue } = context;
+		const { key } = payload;
+
+		await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
+
+		return payload;
+	}
+
+	public async [Method.Push](payload: PushPayload): Promise<PushPayload> {
 		const context = this.getContext();
 
 		if (!context) return payload;

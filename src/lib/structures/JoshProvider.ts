@@ -14,6 +14,7 @@ import type {
 	HasPayload,
 	IncPayload,
 	KeysPayload,
+	PushPayload,
 	RandomKeyPayload,
 	RandomPayload,
 	SetManyPayload,
@@ -73,6 +74,8 @@ export abstract class JoshProvider<Value = unknown> {
 	public abstract inc(payload: IncPayload): Awaited<IncPayload>;
 
 	public abstract keys(payload: KeysPayload): Awaited<KeysPayload>;
+
+	public abstract push<CustomValue = Value>(payload: PushPayload, value: CustomValue): Awaited<PushPayload>;
 
 	public abstract random<CustomValue = Value>(payload: RandomPayload<CustomValue>): Awaited<RandomPayload<CustomValue>>;
 

@@ -16,6 +16,7 @@ import type {
 	HasPayload,
 	IncPayload,
 	KeysPayload,
+	PushPayload,
 	RandomKeyPayload,
 	RandomPayload,
 	SetManyPayload,
@@ -333,6 +334,60 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		return payload;
 	}
 
+	public push<CustomValue = Value>(payload: PushPayload, value: CustomValue): PushPayload {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		const { key, path } = payload;
+		const { data } = this.get({ method: Method.Get, key });
+
+		if (!path) {
+			if (!Array.isArray(data)) {
+				payload.error = new MapProviderError({
+					identifier: MapProvider.Identifiers.PushInvalidType,
+					message: `The data at "${key}" must be an array.`,
+					method: Method.Push
+				});
+
+				return payload;
+			}
+
+			data.push(value);
+
+			this.set({ method: Method.Set, key }, data);
+
+			return payload;
+		}
+
+		const array = getFromObject(data, path);
+
+		if (array === undefined) {
+			payload.error = new MapProviderError({
+				identifier: MapProvider.Identifiers.PushMissingData,
+				message: `The data at "${key}.${path.join('.')}" does not exist.`,
+				method: Method.Push
+			});
+
+			return payload;
+		}
+
+		if (!Array.isArray(array)) {
+			payload.error = new MapProviderError({
+				identifier: MapProvider.Identifiers.PushInvalidType,
+				message: `The data at "${key}.${path.join('.')} must be an array.`,
+				method: Method.Push
+			});
+
+			return payload;
+		}
+
+		array.push(value);
+
+		this.set({ method: Method.Set, key, path }, array);
+
+		return payload;
+	}
+
 	public random<CustomValue = Value>(payload: RandomPayload<CustomValue>): RandomPayload<CustomValue> {
 		payload.stopwatch = new Stopwatch();
 		payload.stopwatch.start();
@@ -499,6 +554,10 @@ export namespace MapProvider {
 		DeleteMissingData = 'deleteMissingData',
 
 		IncInvalidType = 'incInvalidType',
+
+		PushInvalidType = 'pushInvalidType',
+
+		PushMissingData = 'pushMissingData',
 
 		SetMissingData = 'setMissingData'
 	}

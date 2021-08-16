@@ -18,6 +18,7 @@ import type {
 	HasPayload,
 	IncPayload,
 	KeysPayload,
+	PushPayload,
 	RandomKeyPayload,
 	RandomPayload,
 	SetManyPayload,
@@ -108,6 +109,10 @@ export abstract class Middleware<Context extends Middleware.Context = Middleware
 	}
 
 	public [Method.Keys](payload: KeysPayload): Awaited<KeysPayload> {
+		return payload;
+	}
+
+	public [Method.Push](payload: PushPayload): Awaited<PushPayload> {
 		return payload;
 	}
 

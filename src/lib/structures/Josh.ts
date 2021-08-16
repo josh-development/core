@@ -21,6 +21,7 @@ import {
 	IncPayload,
 	KeysPayload,
 	Payload,
+	PushPayload,
 	RandomKeyPayload,
 	RandomPayload,
 	SetManyPayload,
@@ -381,6 +382,24 @@ export class Josh<Value = unknown> {
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Keys](payload);
 
 		return payload.data;
+	}
+
+	public async push<CustomValue = Value>(keyPath: KeyPath, value: CustomValue): Promise<this> {
+		const [key, path] = this.getKeyPath(keyPath);
+		let payload: PushPayload = { method: Method.Push, trigger: Trigger.PreProvider, key, path };
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Push, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Push](payload);
+
+		payload = await this.provider.push(payload, value);
+		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Push, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Push](payload);
+
+		return this;
 	}
 
 	public async random<CustomValue = Value>(): Promise<CustomValue | null> {

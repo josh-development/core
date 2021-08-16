@@ -11,6 +11,7 @@ export * from './Has';
 export * from './Inc';
 export * from './Keys';
 export * from './Payload';
+export * from './Push';
 export * from './Random';
 export * from './RandomKey';
 export * from './Set';
