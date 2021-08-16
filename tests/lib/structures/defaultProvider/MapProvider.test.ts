@@ -66,7 +66,7 @@ describe('MapProvider class', () => {
 		});
 
 		test('GIVEN filterByData() THEN returns payload for filterByData', () => {
-			const { method, trigger, stopwatch, path, inputData, data } = provider.filterByData({
+			const { method, trigger, stopwatch, type, path, inputData, data } = provider.filterByData({
 				method: Method.Filter,
 				type: Payload.Type.Data,
 				inputData: 'test',
@@ -76,13 +76,14 @@ describe('MapProvider class', () => {
 			expect(method).toBe(Method.Filter);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(type).toBe(Payload.Type.Data);
 			expect(path).toBeUndefined();
 			expect(inputData).toBe('test');
 			expect(data).toEqual({ string: 'test' });
 		});
 
 		test('GIVEN filterByHook() THEN returns payload for filterByHook', async () => {
-			const { method, trigger, stopwatch, path, inputHook, data } = await provider.filterByHook({
+			const { method, trigger, stopwatch, type, path, inputHook, data } = await provider.filterByHook({
 				method: Method.Filter,
 				type: Payload.Type.Hook,
 				inputHook: (data) => data === 'test',
@@ -92,13 +93,14 @@ describe('MapProvider class', () => {
 			expect(method).toBe(Method.Filter);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(type).toBe(Payload.Type.Hook);
 			expect(path).toBeUndefined();
 			expect(typeof inputHook).toBe('function');
 			expect(data).toEqual({ string: 'test' });
 		});
 
 		test('GIVEN findByData() THEN returns payload for findByData', () => {
-			const { method, trigger, stopwatch, path, inputData, data } = provider.findByData({
+			const { method, trigger, stopwatch, type, path, inputData, data } = provider.findByData({
 				method: Method.Find,
 				type: Payload.Type.Data,
 				inputData: 'test'
@@ -107,13 +109,14 @@ describe('MapProvider class', () => {
 			expect(method).toBe(Method.Find);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(type).toBe(Payload.Type.Data);
 			expect(path).toBeUndefined();
 			expect(inputData).toBe('test');
 			expect(data).toBe('test');
 		});
 
 		test('GIVEN findByHook() THEN returns payload for findByHook', async () => {
-			const { method, trigger, stopwatch, path, inputHook, data } = await provider.findByHook({
+			const { method, trigger, stopwatch, type, path, inputHook, data } = await provider.findByHook({
 				method: Method.Find,
 				type: Payload.Type.Hook,
 				inputHook: (data) => data === 'test'
@@ -122,6 +125,7 @@ describe('MapProvider class', () => {
 			expect(method).toBe(Method.Find);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(type).toBe(Payload.Type.Hook);
 			expect(path).toBeUndefined();
 			expect(typeof inputHook).toBe('function');
 			expect(data).toBe('test');
@@ -259,7 +263,7 @@ describe('MapProvider class', () => {
 		});
 
 		test('GIVEN someByData() THEN returns payload for someByData', () => {
-			const { method, trigger, stopwatch, path, inputData, data } = provider.someByData({
+			const { method, trigger, stopwatch, type, path, inputData, data } = provider.someByData({
 				method: Method.Find,
 				type: Payload.Type.Data,
 				inputData: 'test',
@@ -269,13 +273,14 @@ describe('MapProvider class', () => {
 			expect(method).toBe(Method.Find);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(type).toBe(Payload.Type.Data);
 			expect(path).toBeUndefined();
 			expect(inputData).toBe('test');
 			expect(data).toBe(true);
 		});
 
 		test('GIVEN someByHook() THEN returns payload for someByHook', async () => {
-			const { method, trigger, stopwatch, path, inputHook, data } = await provider.someByHook({
+			const { method, trigger, stopwatch, type, path, inputHook, data } = await provider.someByHook({
 				method: Method.Find,
 				type: Payload.Type.Hook,
 				inputHook: (data) => data === 'test',
@@ -285,6 +290,7 @@ describe('MapProvider class', () => {
 			expect(method).toBe(Method.Find);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(type).toBe(Payload.Type.Hook);
 			expect(path).toBeUndefined();
 			expect(typeof inputHook).toBe('function');
 			expect(data).toBe(true);
@@ -308,7 +314,7 @@ describe('MapProvider class', () => {
 		});
 
 		test('GIVEN updateByHook() THEN returns payload for updateByHook', async () => {
-			const { method, trigger, stopwatch, key, path, inputHook, data } = await provider.updateByHook({
+			const { method, trigger, stopwatch, type, key, path, inputHook, data } = await provider.updateByHook({
 				method: Method.Update,
 				key: 'string',
 				type: Payload.Type.Hook,
@@ -318,6 +324,7 @@ describe('MapProvider class', () => {
 			expect(method).toBe(Method.Update);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(type).toBe(Payload.Type.Hook);
 			expect(key).toBe('string');
 			expect(path).toBeUndefined();
 			expect(typeof inputHook).toBe('function');
