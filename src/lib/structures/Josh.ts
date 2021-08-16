@@ -150,11 +150,13 @@ export class Josh<Value = unknown> {
 		value: CustomValue,
 		returnBulkType?: K
 	): Promise<ReturnBulk<CustomValue>[K]>;
+
 	public async filter<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
 		hook: FilterHook<CustomValue>,
 		path?: string[],
 		returnBulkType?: K
 	): Promise<ReturnBulk<CustomValue>[K]>;
+
 	public async filter<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
 		pathOrHook: string[] | FilterHook<CustomValue>,
 		pathOrValue?: string[] | CustomValue,
