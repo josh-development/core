@@ -572,10 +572,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@realware/utilities@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@realware/utilities/-/utilities-1.0.0.tgz#99734c4af2c9db760f5e90d88782a8d7041b7658"
-  integrity sha512-SzlW9ILgVXBV1UHZoIknPfaUFePzcVAWTbS15ihm0IK2RIJtUHXXg9txdwI1ehzGXyuMbWaoI0dAfx2oIAMG1A==
+"@realware/utilities@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@realware/utilities/-/utilities-1.0.1.tgz#9463bde755bf3e19f3ba4eb594fa5ee185dbe929"
+  integrity sha512-X3ju98rE57ZVRomFg0pf2qEqMSRUnMO8ibQSMg6YVVz4rkjTsc5orjWVXvUrtAC51XuzIe7pt1a04SkBbAoebw==
 
 "@sapphire/eslint-config@^3.2.3":
   version "3.2.3"

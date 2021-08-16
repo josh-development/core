@@ -20,7 +20,7 @@
 		"prepublishOnly": "rollup-type-bundler"
 	},
 	"dependencies": {
-		"@realware/utilities": "^1.0.0",
+		"@realware/utilities": "^1.0.1",
 		"@sapphire/pieces": "^2.1.0",
 		"@sapphire/stopwatch": "^1.1.4",
 		"@sapphire/utilities": "^2.0.1"
