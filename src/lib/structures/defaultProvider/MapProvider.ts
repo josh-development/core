@@ -76,7 +76,16 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 
 		const number = getFromObject(data, path);
 
-		if (number === undefined) return payload;
+		if (number === undefined) {
+			payload.error = new MapProviderError({
+				identifier: MapProvider.Identifiers.DecMissingData,
+				message: `The data at "${key}.${path.join('.')}" does not exist.`,
+				method: Method.Dec
+			});
+
+			return payload;
+		}
+
 		if (typeof number !== 'number') {
 			payload.error = new MapProviderError({
 				identifier: MapProvider.Identifiers.DecInvalidType,
@@ -306,7 +315,16 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 
 		const number = getFromObject(data, path);
 
-		if (number === undefined) return payload;
+		if (number === undefined) {
+			payload.error = new MapProviderError({
+				identifier: MapProvider.Identifiers.IncMissingData,
+				message: `The data at "${key}.${path.join('.')}" does not exist.`,
+				method: Method.Inc
+			});
+
+			return payload;
+		}
+
 		if (typeof number !== 'number') {
 			payload.error = new MapProviderError({
 				identifier: MapProvider.Identifiers.IncInvalidType,
@@ -551,9 +569,13 @@ export namespace MapProvider {
 	export enum Identifiers {
 		DecInvalidType = 'decInvalidType',
 
+		DecMissingData = 'decMissingData',
+
 		DeleteMissingData = 'deleteMissingData',
 
 		IncInvalidType = 'incInvalidType',
+
+		IncMissingData = 'incMissingData',
 
 		PushInvalidType = 'pushInvalidType',
 
