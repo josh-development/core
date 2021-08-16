@@ -1,5 +1,4 @@
 import type { Awaited } from '@sapphire/utilities';
-import type { Josh } from './Josh';
 import type {
 	AutoKeyPayload,
 	DecPayload,
@@ -25,16 +24,17 @@ import type {
 	UpdateByDataPayload,
 	UpdateByHookPayload,
 	ValuesPayload
-} from './payloads';
+} from '../payloads';
+import type { Josh } from './Josh';
 
 export abstract class JoshProvider<Value = unknown> {
 	public name: string;
 
 	public instance?: Josh<Value>;
 
-	public options: JoshProviderOptions;
+	public options: JoshProvider.Options;
 
-	public constructor(context: JoshProviderContext<Value>) {
+	public constructor(context: JoshProvider.Context<Value>) {
 		const { name, options, instance } = context;
 
 		this.name = name ?? 'unknown';
@@ -95,12 +95,14 @@ export abstract class JoshProvider<Value = unknown> {
 	public abstract values<CustomValue = Value>(payload: ValuesPayload<CustomValue>): Awaited<ValuesPayload<CustomValue>>;
 }
 
-export interface JoshProviderOptions {}
+export namespace JoshProvider {
+	export interface Options {}
 
-export interface JoshProviderContext<Value = unknown> {
-	name?: string;
+	export interface Context<Value = unknown> {
+		name?: string;
 
-	instance?: Josh<Value>;
+		instance?: Josh<Value>;
 
-	options?: JoshProviderOptions;
+		options?: Options;
+	}
 }

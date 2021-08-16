@@ -1,8 +1,6 @@
 import { Piece, PieceContext, PieceOptions } from '@sapphire/pieces';
 import type { Awaited } from '@sapphire/utilities';
-import { Method, Trigger } from '../types';
-import { JoshError } from './JoshError';
-import type { MiddlewareStore } from './MiddlewareStore';
+import { JoshError } from '../errors/JoshError';
 import type {
 	AutoKeyPayload,
 	DecPayload,
@@ -32,23 +30,29 @@ import type {
 	UpdateByHookPayload,
 	UpdatePayload,
 	ValuesPayload
-} from './payloads';
+} from '../payloads';
+import { Method, Trigger } from '../types';
+import type { MiddlewareStore } from './MiddlewareStore';
 
-export abstract class Middleware<Context extends MiddlewareContext = MiddlewareContext> extends Piece {
+export abstract class Middleware<Context extends Middleware.Context = Middleware.Context> extends Piece {
 	public declare store: MiddlewareStore;
 
 	public readonly position?: number;
 
-	public readonly conditions: Condition[];
+	public readonly conditions: Middleware.Condition[];
 
 	public use: boolean;
 
-	public constructor(context: PieceContext, options: MiddlewareOptions = {}) {
+	public constructor(context: PieceContext, options: Middleware.Options = {}) {
 		super(context, options);
 
 		const { position, conditions, use } = options;
 
-		if (!conditions) throw new JoshError('Missing condition option.', 'JoshMiddlewareError');
+		if (!conditions)
+			throw new JoshError({
+				identifier: Middleware.Identifiers.MissingConditions,
+				message: 'The "conditions" property is a required Middleware option.'
+			});
 
 		this.position = position;
 		this.conditions = conditions;
@@ -147,7 +151,7 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 		return { ...super.toJSON(), position: this.position, conditions: this.conditions, use: this.use };
 	}
 
-	protected getContext<C extends MiddlewareContext = Context>(): C | undefined {
+	protected getContext<C extends Middleware.Context = Context>(): C | undefined {
 		const contextData = this.instance.options.middlewareContextData ?? {};
 
 		return Reflect.get(contextData, this.name);
@@ -162,18 +166,24 @@ export abstract class Middleware<Context extends MiddlewareContext = MiddlewareC
 	}
 }
 
-export interface MiddlewareOptions extends PieceOptions {
-	position?: number;
+export namespace Middleware {
+	export interface Options extends PieceOptions {
+		position?: number;
 
-	conditions?: Condition[];
+		conditions?: Condition[];
 
-	use?: boolean;
-}
+		use?: boolean;
+	}
 
-export interface MiddlewareContext {}
+	export interface Context {}
 
-export interface Condition {
-	methods: Method[];
+	export interface Condition {
+		methods: Method[];
 
-	trigger: Trigger;
+		trigger: Trigger;
+	}
+
+	export enum Identifiers {
+		MissingConditions = 'missingConditions'
+	}
 }

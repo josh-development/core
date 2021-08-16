@@ -1,13 +1,8 @@
 import { getRootData } from '@sapphire/pieces';
 import { classExtends, Constructor, isFunction } from '@sapphire/utilities';
 import { join } from 'path';
-import type { AutoEnsureContext } from '../middlewares/CoreAutoEnsure';
-import { BuiltInMiddleware, KeyPath, KeyPathArray, Method, Trigger } from '../types';
-import { JoshError } from './JoshError';
-import { JoshProvider, JoshProviderOptions } from './JoshProvider';
-import { MapProvider } from './MapProvider';
-import type { MiddlewareContext } from './Middleware';
-import { MiddlewareStore } from './MiddlewareStore';
+import type { AutoEnsureContext } from '../../middlewares/CoreAutoEnsure';
+import { JoshError } from '../errors';
 import {
 	AutoKeyPayload,
 	DecPayload,
@@ -38,36 +33,46 @@ import {
 	UpdateByHookPayload,
 	UpdateHook,
 	ValuesPayload
-} from './payloads';
+} from '../payloads';
+import { BuiltInMiddleware, KeyPath, KeyPathArray, Method, Trigger } from '../types';
+import { MapProvider } from './defaultProvider';
+import { JoshProvider } from './JoshProvider';
+import type { Middleware } from './Middleware';
+import { MiddlewareStore } from './MiddlewareStore';
 
 export class Josh<Value = unknown> {
 	public name: string;
 
-	public options: JoshOptions<Value>;
+	public options: Josh.Options<Value>;
 
 	public middlewares: MiddlewareStore;
 
 	public provider: JoshProvider<Value>;
 
-	public constructor(options: JoshOptions<Value>) {
+	public constructor(options: Josh.Options<Value>) {
 		const { name, provider, middlewareDirectory } = options;
 
 		this.options = options;
 
-		if (!name) throw new JoshError('Name option not found.', 'JoshOptionsError');
+		if (!name)
+			throw new JoshError({ identifier: Josh.Identifiers.MissingName, message: 'The "name" option is required to initiate a Josh instance.' });
 
 		this.name = name;
 
 		const Provider = provider ?? Josh.defaultProvider;
 
-		if (!classExtends(Provider, JoshProvider as Constructor<JoshProvider<Value>>)) throw new JoshError('Provider class must extend JoshProvider.');
+		if (!classExtends(Provider, JoshProvider as Constructor<JoshProvider<Value>>))
+			throw new JoshError({
+				identifier: Josh.Identifiers.InvalidProvider,
+				message: 'The "provider" option must extend the exported "JoshProvider" class.'
+			});
 
 		const initializedProvider = new Provider({ name, instance: this, options: options.providerOptions });
 
 		this.provider = initializedProvider;
 		this.middlewares = new MiddlewareStore({ instance: this })
 			.registerPath(middlewareDirectory ?? join(getRootData().root, 'middlewares', this.name))
-			.registerPath(join(__dirname, '..', 'middlewares'));
+			.registerPath(join(__dirname, '..', '..', 'middlewares'));
 	}
 
 	public async autoKey(): Promise<string> {
@@ -78,6 +83,8 @@ export class Josh<Value = unknown> {
 
 		payload = await this.provider.autoKey(payload);
 		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.AutoKey, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.AutoKey](payload);
@@ -93,11 +100,9 @@ export class Josh<Value = unknown> {
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Dec](payload);
 
 		payload = await this.provider.dec(payload);
-
-		if (payload.invalidType) throw new JoshError('Cannot decrement an invalid type. Data at "keyPath" must be of type "number".');
-		if (payload.missingData) throw new JoshError('Cannot decrement missing data. Data at "keyPath" did not exist.');
-
 		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Dec, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Dec](payload);
@@ -113,10 +118,9 @@ export class Josh<Value = unknown> {
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Delete](payload);
 
 		payload = await this.provider.delete(payload);
-
-		if (payload.missingData) throw new JoshError('Cannot delete missing data. The data at "keyPath" did not exist.');
-
 		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Delete, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Delete](payload);
@@ -132,6 +136,8 @@ export class Josh<Value = unknown> {
 
 		payload = await this.provider.ensure(payload);
 		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Ensure, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Ensure](payload);
@@ -151,21 +157,22 @@ export class Josh<Value = unknown> {
 	): Promise<ReturnBulk<CustomValue>[K]>;
 	public async filter<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
 		pathOrHook: string[] | FilterHook<CustomValue>,
-		pathOrValue: string[] | CustomValue,
+		pathOrValue?: string[] | CustomValue,
 		returnBulkType?: K
 	): Promise<ReturnBulk<CustomValue>[K]> {
-		let data;
-
 		if (Array.isArray(pathOrHook)) {
-			if (pathOrValue === undefined || Array.isArray(pathOrValue))
-				throw new JoshError('Value parameter is required when a path is provided in the first parameter.');
+			if (pathOrValue === undefined)
+				throw new JoshError({
+					identifier: Josh.Identifiers.FilterMissingValue,
+					message: 'The "value" parameter is required when filtering by data.'
+				});
 
 			let payload: FilterByDataPayload<CustomValue> = {
 				method: Method.Filter,
 				trigger: Trigger.PreProvider,
 				type: Payload.Type.Data,
 				path: pathOrHook,
-				inputData: pathOrValue,
+				inputData: pathOrValue as CustomValue,
 				data: {}
 			};
 
@@ -175,33 +182,38 @@ export class Josh<Value = unknown> {
 			payload = await this.provider.filterByData(payload);
 			payload.trigger = Trigger.PostProvider;
 
-			const postMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PostProvider);
-			for (const middleware of postMiddlewares) payload = await middleware[Method.Filter](payload);
-
-			data = payload.data;
-		} else {
-			let payload: FilterByHookPayload<CustomValue> = {
-				method: Method.Filter,
-				trigger: Trigger.PreProvider,
-				type: Payload.Type.Hook,
-				path: pathOrValue as string[] | undefined,
-				inputHook: pathOrHook,
-				data: {}
-			};
-
-			const preMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PreProvider);
-			for (const middleware of preMiddlewares) payload = await middleware[Method.Filter](payload);
-
-			payload = await this.provider.filterByHook(payload);
-			payload.trigger = Trigger.PostProvider;
+			if (payload.error) throw payload.error;
 
 			const postMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PostProvider);
 			for (const middleware of postMiddlewares) payload = await middleware[Method.Filter](payload);
 
-			data = payload.data;
+			return this.convertBulkData(payload.data, returnBulkType);
 		}
 
-		return this.convertBulkData(data, returnBulkType);
+		if (pathOrValue !== undefined && !Array.isArray(pathOrValue))
+			throw new JoshError({ identifier: Josh.Identifiers.FilterInvalidPath, message: 'The "path" parameter must be an array of strings.' });
+
+		let payload: FilterByHookPayload<CustomValue> = {
+			method: Method.Filter,
+			trigger: Trigger.PreProvider,
+			type: Payload.Type.Hook,
+			path: pathOrValue as string[] | undefined,
+			inputHook: pathOrHook,
+			data: {}
+		};
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Filter](payload);
+
+		payload = await this.provider.filterByHook(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Filter](payload);
+
+		return this.convertBulkData(payload.data, returnBulkType);
 	}
 
 	public async find<CustomValue = Value>(path: string[], value: CustomValue): Promise<CustomValue>;
@@ -210,18 +222,16 @@ export class Josh<Value = unknown> {
 		pathOrHook: string[] | FindHook<CustomValue>,
 		pathOrValue?: string[] | CustomValue
 	): Promise<CustomValue | null> {
-		let data;
-
 		if (Array.isArray(pathOrHook)) {
-			if (pathOrValue === undefined || Array.isArray(pathOrValue))
-				throw new JoshError('Value parameter is required when a path is provided in the first parameter.');
+			if (pathOrValue === undefined)
+				throw new JoshError({ identifier: Josh.Identifiers.FindMissingValue, message: 'The "value" parameter is required when finding by data.' });
 
 			let payload: FindByDataPayload<CustomValue> = {
 				method: Method.Find,
 				trigger: Trigger.PreProvider,
 				type: Payload.Type.Data,
 				path: pathOrHook,
-				inputData: pathOrValue
+				inputData: pathOrValue as CustomValue
 			};
 
 			const preMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PreProvider);
@@ -230,32 +240,35 @@ export class Josh<Value = unknown> {
 			payload = await this.provider.findByData(payload);
 			payload.trigger = Trigger.PostProvider;
 
-			const postMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PostProvider);
-			for (const middleware of postMiddlewares) payload = await middleware[Method.Find](payload);
-
-			data = payload.data;
-		} else {
-			let payload: FindByHookPayload<CustomValue> = {
-				method: Method.Find,
-				trigger: Trigger.PreProvider,
-				type: Payload.Type.Hook,
-				path: pathOrValue as string[] | undefined,
-				inputHook: pathOrHook
-			};
-
-			const preMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PreProvider);
-			for (const middleware of preMiddlewares) payload = await middleware[Method.Find](payload);
-
-			payload = await this.provider.findByHook(payload);
-			payload.trigger = Trigger.PostProvider;
+			if (payload.error) throw payload.error;
 
 			const postMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PostProvider);
 			for (const middleware of postMiddlewares) payload = await middleware[Method.Find](payload);
 
-			data = payload.data;
+			return payload.data ?? null;
 		}
 
-		return data ?? null;
+		if (pathOrValue !== undefined && !Array.isArray(pathOrValue))
+			throw new JoshError({ identifier: Josh.Identifiers.FindInvalidPath, message: 'The "path" parameter must be an array of strings.' });
+
+		let payload: FindByHookPayload<CustomValue> = {
+			method: Method.Find,
+			trigger: Trigger.PreProvider,
+			type: Payload.Type.Hook,
+			path: pathOrValue as string[] | undefined,
+			inputHook: pathOrHook
+		};
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Find](payload);
+
+		payload = await this.provider.findByHook(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Find](payload);
+
+		return payload.data ?? null;
 	}
 
 	public async get<CustomValue = Value>(keyPath: KeyPath): Promise<CustomValue | null> {
@@ -267,6 +280,8 @@ export class Josh<Value = unknown> {
 
 		payload = await this.provider.get(payload);
 		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Get, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Get](payload);
@@ -284,6 +299,8 @@ export class Josh<Value = unknown> {
 
 		payload = await this.provider.getAll(payload);
 		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.GetAll, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.GetAll](payload);
@@ -303,6 +320,8 @@ export class Josh<Value = unknown> {
 		payload = await this.provider.getMany(payload);
 		payload.trigger = Trigger.PostProvider;
 
+		if (payload.error) throw payload.error;
+
 		const postMiddlewares = this.middlewares.filterByCondition(Method.GetMany, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.GetMany](payload);
 
@@ -319,6 +338,8 @@ export class Josh<Value = unknown> {
 		payload = await this.provider.has(payload);
 		payload.trigger = Trigger.PostProvider;
 
+		if (payload.error) throw payload.error;
+
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Has, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Has](payload);
 
@@ -333,11 +354,9 @@ export class Josh<Value = unknown> {
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Inc](payload);
 
 		payload = await this.provider.inc(payload);
-
-		if (payload.invalidType) throw new JoshError('Cannot increment an invalid type. Data at "keyPath" must be of type "number".');
-		if (payload.missingData) throw new JoshError('Cannot increment missing data. Data at "keyPath" did not exist.');
-
 		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Inc, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Inc](payload);
@@ -354,6 +373,8 @@ export class Josh<Value = unknown> {
 		payload = await this.provider.keys(payload);
 		payload.trigger = Trigger.PostProvider;
 
+		if (payload.error) throw payload.error;
+
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Keys, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Keys](payload);
 
@@ -368,6 +389,8 @@ export class Josh<Value = unknown> {
 
 		payload = await this.provider.random(payload);
 		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Random, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Random](payload);
@@ -384,6 +407,8 @@ export class Josh<Value = unknown> {
 		payload = await this.provider.randomKey(payload);
 		payload.trigger = Trigger.PostProvider;
 
+		if (payload.error) throw payload.error;
+
 		const postMiddlewares = this.middlewares.filterByCondition(Method.RandomKey, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.RandomKey](payload);
 
@@ -398,10 +423,9 @@ export class Josh<Value = unknown> {
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Set](payload);
 
 		payload = await this.provider.set(payload, value);
-
-		if (payload.missingData) throw new JoshError('Cannot set missing data. The data at "keyPath" was missing to set.');
-
 		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Set, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Set](payload);
@@ -418,6 +442,8 @@ export class Josh<Value = unknown> {
 		payload = await this.provider.setMany(payload, value);
 		payload.trigger = Trigger.PostProvider;
 
+		if (payload.error) throw payload.error;
+
 		const postMiddlewares = this.middlewares.filterByCondition(Method.SetMany, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.SetMany](payload);
 
@@ -433,6 +459,8 @@ export class Josh<Value = unknown> {
 		payload = await this.provider.size(payload);
 		payload.trigger = Trigger.PostProvider;
 
+		if (payload.error) throw payload.error;
+
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Size, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Size](payload);
 
@@ -442,18 +470,16 @@ export class Josh<Value = unknown> {
 	public async some<CustomValue = Value>(path: string[], value: CustomValue): Promise<boolean>;
 	public async some<CustomValue = Value>(hook: SomeHook<CustomValue>, path?: string[]): Promise<boolean>;
 	public async some<CustomValue = Value>(pathOrHook: string[] | SomeHook<CustomValue>, pathOrValue?: string[] | CustomValue): Promise<boolean> {
-		let data;
-
 		if (Array.isArray(pathOrHook)) {
-			if (pathOrValue === undefined || Array.isArray(pathOrValue))
-				throw new JoshError('Value parameter is required when a path is provided in the first parameter.');
+			if (pathOrValue === undefined)
+				throw new JoshError({ identifier: Josh.Identifiers.SomeMissingValue, message: 'The "value" parameter is required when finding by data.' });
 
 			let payload: SomeByDataPayload<CustomValue> = {
 				method: Method.Some,
 				trigger: Trigger.PreProvider,
 				type: Payload.Type.Data,
 				path: pathOrHook,
-				inputData: pathOrValue,
+				inputData: pathOrValue as CustomValue,
 				data: false
 			};
 
@@ -463,39 +489,42 @@ export class Josh<Value = unknown> {
 			payload = await this.provider.someByData(payload);
 			payload.trigger = Trigger.PostProvider;
 
-			const postMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PostProvider);
-			for (const middleware of postMiddlewares) payload = await middleware[Method.Some](payload);
-
-			data = payload.data;
-		} else {
-			let payload: SomeByHookPayload<CustomValue> = {
-				method: Method.Some,
-				trigger: Trigger.PreProvider,
-				type: Payload.Type.Hook,
-				path: pathOrValue as string[] | undefined,
-				inputHook: pathOrHook,
-				data: false
-			};
-
-			const preMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PreProvider);
-			for (const middleware of preMiddlewares) payload = await middleware[Method.Some](payload);
-
-			payload = await this.provider.someByHook(payload);
-			payload.trigger = Trigger.PostProvider;
+			if (payload.error) throw payload.error;
 
 			const postMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PostProvider);
 			for (const middleware of postMiddlewares) payload = await middleware[Method.Some](payload);
 
-			data = payload.data;
+			return payload.data;
 		}
 
-		return data;
+		if (pathOrValue !== undefined && !Array.isArray(pathOrValue))
+			throw new JoshError({ identifier: Josh.Identifiers.SomeInvalidPath, message: 'The "path" parameter must be an array of strings.' });
+
+		let payload: SomeByHookPayload<CustomValue> = {
+			method: Method.Some,
+			trigger: Trigger.PreProvider,
+			type: Payload.Type.Hook,
+			path: pathOrValue as string[] | undefined,
+			inputHook: pathOrHook,
+			data: false
+		};
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Some](payload);
+
+		payload = await this.provider.someByHook(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Some](payload);
+
+		return payload.data;
 	}
 
 	public async update<CustomValue = Value>(keyPath: KeyPath, inputDataOrHook: CustomValue | UpdateHook<CustomValue>): Promise<CustomValue | null> {
 		const [key, path] = this.getKeyPath(keyPath);
-
-		let data;
 
 		if (isFunction(inputDataOrHook)) {
 			let payload: UpdateByHookPayload<CustomValue> = {
@@ -512,26 +541,28 @@ export class Josh<Value = unknown> {
 			payload = await this.provider.updateByHook(payload);
 			payload.trigger = Trigger.PostProvider;
 
-			const postMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PostProvider);
-			for (const middleware of postMiddlewares) payload = await middleware[Method.Update](payload);
-
-			data = payload.data;
-		} else {
-			let payload: UpdateByDataPayload<CustomValue> = { method: Method.Update, key, path, type: Payload.Type.Data, inputData: inputDataOrHook };
-
-			const preMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PreProvider);
-			for (const middleware of preMiddlewares) payload = await middleware[Method.Update](payload);
-
-			payload = await this.provider.updateByData(payload);
-			payload.trigger = Trigger.PostProvider;
+			if (payload.error) throw payload.error;
 
 			const postMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PostProvider);
 			for (const middleware of postMiddlewares) payload = await middleware[Method.Update](payload);
 
-			data = payload.data;
+			return payload.data ?? null;
 		}
 
-		return data ?? null;
+		let payload: UpdateByDataPayload<CustomValue> = { method: Method.Update, key, path, type: Payload.Type.Data, inputData: inputDataOrHook };
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Update](payload);
+
+		payload = await this.provider.updateByData(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Update](payload);
+
+		return payload.data ?? null;
 	}
 
 	public async values<CustomValue = Value>(): Promise<CustomValue[]> {
@@ -542,6 +573,8 @@ export class Josh<Value = unknown> {
 
 		payload = await this.provider.values(payload);
 		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Values, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Values](payload);
@@ -554,7 +587,7 @@ export class Josh<Value = unknown> {
 
 		const success = await this.provider.init();
 
-		if (!success) throw new JoshError('Initiating provider was unsuccessful.');
+		if (!success) throw new JoshError({ identifier: Josh.Identifiers.FailedInitialization, message: 'The "provider" failed to initialize.' });
 
 		return this;
 	}
@@ -563,7 +596,7 @@ export class Josh<Value = unknown> {
 	public use(name: string): this {
 		const middleware = this.middlewares.get(name);
 
-		if (!middleware) throw new JoshError('This middleware was not found to enable.');
+		if (!middleware) throw new JoshError({ identifier: Josh.Identifiers.MiddlewareNotFound, message: `The middleware "${name}" does not exist.` });
 
 		middleware.use = true;
 
@@ -604,7 +637,7 @@ export class Josh<Value = unknown> {
 
 	public static multi<Instances extends Record<string, Josh> = Record<string, Josh>>(
 		names: string[],
-		options: Omit<JoshOptions, 'name'> = {}
+		options: Omit<Josh.Options, 'name'> = {}
 	): Instances {
 		const instances: Record<string, Josh> = {};
 
@@ -615,16 +648,40 @@ export class Josh<Value = unknown> {
 	}
 }
 
-export interface JoshOptions<T = unknown> {
-	name?: string;
+export namespace Josh {
+	export interface Options<T = unknown> {
+		name?: string;
 
-	provider?: Constructor<JoshProvider<T>>;
+		provider?: Constructor<JoshProvider<T>>;
 
-	providerOptions?: JoshProviderOptions;
+		providerOptions?: JoshProvider.Options;
 
-	middlewareDirectory?: string;
+		middlewareDirectory?: string;
 
-	middlewareContextData?: MiddlewareContextData<T>;
+		middlewareContextData?: MiddlewareContextData<T>;
+	}
+
+	export enum Identifiers {
+		FilterInvalidPath = 'filterInvalidPath',
+
+		FilterMissingValue = 'filterMissingValue',
+
+		FindInvalidPath = 'findInvalidPath',
+
+		FindMissingValue = 'findMissingValue',
+
+		MissingName = 'missingName',
+
+		InvalidProvider = 'invalidProvider',
+
+		FailedInitialization = 'failedInitialization',
+
+		MiddlewareNotFound = 'middlewareNotFound',
+
+		SomeInvalidPath = 'someInvalidPath',
+
+		SomeMissingValue = 'someMissingValue'
+	}
 }
 
 export enum Bulk {
@@ -652,5 +709,5 @@ export interface ReturnBulk<T = unknown> {
 export interface MiddlewareContextData<T = unknown> {
 	[BuiltInMiddleware.AutoEnsure]?: AutoEnsureContext<T>;
 
-	[K: string]: MiddlewareContext | undefined;
+	[K: string]: Middleware.Context | undefined;
 }
