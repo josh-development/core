@@ -1,5 +1,5 @@
 import { getRootData } from '@sapphire/pieces';
-import { classExtends, Constructor, isFunction } from '@sapphire/utilities';
+import { isFunction } from '@sapphire/utilities';
 import { join } from 'path';
 import type { AutoEnsureContext } from '../../middlewares/CoreAutoEnsure';
 import { JoshError } from '../errors';
@@ -59,18 +59,14 @@ export class Josh<Value = unknown> {
 			throw new JoshError({ identifier: Josh.Identifiers.MissingName, message: 'The "name" option is required to initiate a Josh instance.' });
 
 		this.name = name;
+		this.provider = provider ?? new MapProvider<Value>();
 
-		const Provider = provider ?? Josh.defaultProvider;
-
-		if (!classExtends(Provider, JoshProvider as Constructor<JoshProvider<Value>>))
+		if (!(this.provider instanceof JoshProvider))
 			throw new JoshError({
 				identifier: Josh.Identifiers.InvalidProvider,
 				message: 'The "provider" option must extend the exported "JoshProvider" class.'
 			});
 
-		const initializedProvider = new Provider({ name, instance: this, options: options.providerOptions });
-
-		this.provider = initializedProvider;
 		this.middlewares = new MiddlewareStore({ instance: this })
 			.registerPath(middlewareDirectory ?? join(getRootData().root, 'middlewares', this.name))
 			.registerPath(join(__dirname, '..', '..', 'middlewares'));
@@ -606,9 +602,9 @@ export class Josh<Value = unknown> {
 	public async init(): Promise<this> {
 		await this.middlewares.loadAll();
 
-		const success = await this.provider.init();
+		const context = await this.provider.init({ name: this.name, instance: this });
 
-		if (!success) throw new JoshError({ identifier: Josh.Identifiers.FailedInitialization, message: 'The "provider" failed to initialize.' });
+		if (context.error) throw context.error;
 
 		return this;
 	}
@@ -654,8 +650,6 @@ export class Josh<Value = unknown> {
 		return keyPath;
 	}
 
-	public static defaultProvider: Constructor<JoshProvider> = MapProvider;
-
 	public static multi<Instances extends Record<string, Josh> = Record<string, Josh>>(
 		names: string[],
 		options: Omit<Josh.Options, 'name'> = {}
@@ -670,16 +664,14 @@ export class Josh<Value = unknown> {
 }
 
 export namespace Josh {
-	export interface Options<T = unknown> {
+	export interface Options<Value = unknown> {
 		name?: string;
 
-		provider?: Constructor<JoshProvider<T>>;
-
-		providerOptions?: JoshProvider.Options;
+		provider?: JoshProvider<Value>;
 
 		middlewareDirectory?: string;
 
-		middlewareContextData?: MiddlewareContextData<T>;
+		middlewareContextData?: MiddlewareContextData<Value>;
 	}
 
 	export enum Identifiers {
@@ -694,8 +686,6 @@ export namespace Josh {
 		MissingName = 'missingName',
 
 		InvalidProvider = 'invalidProvider',
-
-		FailedInitialization = 'failedInitialization',
 
 		MiddlewareNotFound = 'middlewareNotFound',
 

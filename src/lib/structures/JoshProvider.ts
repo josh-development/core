@@ -1,4 +1,5 @@
 import type { Awaited } from '@sapphire/utilities';
+import type { JoshProviderError } from '../errors';
 import type {
 	AutoKeyPayload,
 	DecPayload,
@@ -29,22 +30,23 @@ import type {
 import type { Josh } from './Josh';
 
 export abstract class JoshProvider<Value = unknown> {
-	public name: string;
+	public name?: string;
 
 	public instance?: Josh<Value>;
 
 	public options: JoshProvider.Options;
 
-	public constructor(context: JoshProvider.Context<Value>) {
-		const { name, options, instance } = context;
-
-		this.name = name ?? 'unknown';
-		this.options = options ?? {};
-		this.instance = instance;
+	public constructor(options: JoshProvider.Options = {}) {
+		this.options = options;
 	}
 
-	public async init() {
-		return Promise.resolve(true);
+	public async init(context: JoshProvider.Context<Value>): Promise<JoshProvider.Context<Value>> {
+		const { name, instance } = context;
+
+		this.name = name;
+		this.instance = instance;
+
+		return Promise.resolve(context);
 	}
 
 	public abstract autoKey(payload: AutoKeyPayload): Awaited<AutoKeyPayload>;
@@ -102,10 +104,10 @@ export namespace JoshProvider {
 	export interface Options {}
 
 	export interface Context<Value = unknown> {
-		name?: string;
+		name: string;
 
 		instance?: Josh<Value>;
 
-		options?: Options;
+		error?: JoshProviderError;
 	}
 }

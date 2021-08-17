@@ -21,6 +21,8 @@ export enum Method {
 
 	Inc = 'inc',
 
+	Init = 'init',
+
 	Keys = 'keys',
 
 	Push = 'push',
