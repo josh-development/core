@@ -1,7 +1,7 @@
 import { Stopwatch } from '@sapphire/stopwatch';
 import { MapProvider, Method, Payload } from '../../../../src';
 
-const provider = new MapProvider({ name: 'tests' });
+const provider = new MapProvider();
 
 provider.set({ method: Method.Set, key: 'number' }, 1);
 provider.set({ method: Method.Set, key: 'string' }, 'test');
@@ -10,7 +10,7 @@ provider.set({ method: Method.Set, key: 'array' }, []);
 describe('MapProvider class', () => {
 	describe('Initialization', () => {
 		test('GIVEN init() THEN returns true', () => {
-			void expect(provider.init()).resolves.toBe(true);
+			void expect(provider.init({ name: 'tests' })).resolves.toEqual({ name: 'tests' });
 		});
 
 		test('GIVEN name THEN returns provider name', () => {
