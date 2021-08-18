@@ -63,7 +63,7 @@ jobs:
           echo -e "\n# Remove any old files in the dist folder"
           rm -rfv out/dist/*
 
-          echo "\n# Move the generated files to the newly-checkout-out repo, to be committed and "\n# Move the generated docs to the newly-checked-out repo, to be committed and pushed"
+          echo -e "\n# Move the generated docs to the newly-checked-out repo, to be committed and pushed"
           rsync -vaI package.json out/
           rsync -vaI LICENSE out/
           rsync -vaI README.md out/
@@ -74,7 +74,7 @@ jobs:
 
           echo -e "\n# Commit and push"
           cd out
-          git add --all
+          git add --all .
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_EMAIL}"
           git commit -m "build: tsc build for ${GITHUB_SHA}" || true
