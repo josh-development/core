@@ -1,4 +1,5 @@
 import type { Awaited } from '@sapphire/utilities';
+import type { Method } from '../types';
 import type { Payload } from './Payload';
 
 /**
@@ -6,6 +7,12 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface SomePayload<Value = unknown> extends Payload, Payload.Data<boolean> {
+	/**
+	 * The method for this payload.
+	 * @since 2.0.0
+	 */
+	method: Method.Some;
+
 	/**
 	 * The type for this payload.
 	 * @since 2.0.0
@@ -37,6 +44,12 @@ export interface SomePayload<Value = unknown> extends Payload, Payload.Data<bool
  */
 export interface SomeByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.Data<boolean> {
 	/**
+	 * The method for this payload.
+	 * @since 2.0.0
+	 */
+	method: Method.Some;
+
+	/**
 	 * The input data for this payload.
 	 * @since 2.0.0
 	 */
@@ -55,10 +68,15 @@ export interface SomeByDataPayload<Value = unknown> extends Payload, Payload.ByD
  */
 export interface SomeByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.Data<boolean> {
 	/**
-	 * The input hook for this payload.
+	 * The method for this payload.
 	 * @since 2.0.0
 	 */
-	inputHook: SomeHook<Value>;
+	method: Method.Some;
+
+	/**
+	 * The input hook for this payload.
+	 * @since 2.0.0
+	 */ inputHook: SomeHook<Value>;
 
 	/**
 	 * The path for this payload.

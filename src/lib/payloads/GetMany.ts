@@ -1,4 +1,4 @@
-import type { KeyPathArray } from '../types';
+import type { KeyPathArray, Method } from '../types';
 import type { Payload } from './Payload';
 
 /**
@@ -6,6 +6,12 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface GetManyPayload<Value = unknown> extends Payload, Payload.Data<Record<string, Value | null>> {
+	/**
+	 * The method for this payload.
+	 * @since 2.0.0
+	 */
+	method: Method.GetMany;
+
 	/**
 	 * The key/paths for this payload.
 	 * @since 2.0.0

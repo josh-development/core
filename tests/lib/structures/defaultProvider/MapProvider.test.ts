@@ -264,13 +264,13 @@ describe('MapProvider class', () => {
 
 		test('GIVEN someByData() THEN returns payload for someByData', () => {
 			const { method, trigger, stopwatch, type, path, inputData, data } = provider.someByData({
-				method: Method.Find,
+				method: Method.Some,
 				type: Payload.Type.Data,
 				inputData: 'test',
 				data: false
 			});
 
-			expect(method).toBe(Method.Find);
+			expect(method).toBe(Method.Some);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
 			expect(type).toBe(Payload.Type.Data);
@@ -281,13 +281,13 @@ describe('MapProvider class', () => {
 
 		test('GIVEN someByHook() THEN returns payload for someByHook', async () => {
 			const { method, trigger, stopwatch, type, path, inputHook, data } = await provider.someByHook({
-				method: Method.Find,
+				method: Method.Some,
 				type: Payload.Type.Hook,
 				inputHook: (data) => data === 'test',
 				data: false
 			});
 
-			expect(method).toBe(Method.Find);
+			expect(method).toBe(Method.Some);
 			expect(trigger).toBeUndefined();
 			expect(stopwatch).toBeInstanceOf(Stopwatch);
 			expect(type).toBe(Payload.Type.Hook);

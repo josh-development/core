@@ -1,4 +1,5 @@
 import type { Awaited } from '@sapphire/utilities';
+import type { Method } from '../types';
 import type { Payload } from './Payload';
 
 /**
@@ -7,10 +8,15 @@ import type { Payload } from './Payload';
  */
 export interface UpdatePayload<Value = unknown> extends Payload, Payload.KeyPath, Payload.OptionalData<Value> {
 	/**
-	 * The type for this payload.
+	 * The method for this payload.
 	 * @since 2.0.0
 	 */
-	type: Payload.Type;
+	method: Method.Update;
+
+	/**
+	 * The type for this payload.
+	 * @since 2.0.0
+	 */ type: Payload.Type;
 
 	/**
 	 * The input data for this payload.
@@ -31,10 +37,13 @@ export interface UpdatePayload<Value = unknown> extends Payload, Payload.KeyPath
  */
 export interface UpdateByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.KeyPath, Payload.OptionalData<Value> {
 	/**
+	 * The method for this payload.
+	 * @since 2.0.0 */ method: Method.Update;
+
+	/**
 	 * The input data for this payload.
 	 * @since 2.0.0
-	 */
-	inputData: Value;
+	 */ inputData: Value;
 }
 
 /**
@@ -43,10 +52,15 @@ export interface UpdateByDataPayload<Value = unknown> extends Payload, Payload.B
  */
 export interface UpdateByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.KeyPath, Payload.OptionalData<Value> {
 	/**
-	 * The input hook for this payload.
+	 * The method for this payload.
 	 * @since 2.0.0
 	 */
-	inputHook: UpdateHook<Value>;
+	method: Method.Update;
+
+	/**
+	 * The input hook for this payload.
+	 * @since 2.0.0
+	 */ inputHook: UpdateHook<Value>;
 }
 
 /**
