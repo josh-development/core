@@ -62,7 +62,7 @@ jobs:
           echo -e "\n# Remove any old files in the dist folder"
           rm -rfv out/dist/*
 
-          echo -e "\n# Move the generated docs to the newly-checked-out repo, to be committed and pushed"
+          echo -e "\n# Move the generated files to the newly-checked-out repo, to be committed and pushed"
           rsync -vaI package.json out/
           rsync -vaI LICENSE out/
           rsync -vaI README.md out/
