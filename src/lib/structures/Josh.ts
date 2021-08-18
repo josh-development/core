@@ -609,7 +609,6 @@ export class Josh<Value = unknown> {
 		return this;
 	}
 
-	public use(name: BuiltInMiddleware): this;
 	public use(name: string): this {
 		const middleware = this.middlewares.get(name);
 
@@ -622,7 +621,7 @@ export class Josh<Value = unknown> {
 		return this;
 	}
 
-	protected convertBulkData<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
+	private convertBulkData<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
 		data: ReturnBulk<CustomValue>[Bulk.Object],
 		returnBulkType?: K
 	): ReturnBulk<CustomValue>[K] {
@@ -644,7 +643,7 @@ export class Josh<Value = unknown> {
 		}
 	}
 
-	protected getKeyPath(keyPath: KeyPath): [string, string[] | undefined] {
+	private getKeyPath(keyPath: KeyPath): [string, string[] | undefined] {
 		if (typeof keyPath === 'string') return [keyPath, undefined];
 
 		return keyPath;
