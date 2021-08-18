@@ -310,7 +310,7 @@ export class Josh<Value = unknown> {
 	public async getMany<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
 		keyPaths: KeyPathArray[],
 		returnBulkType?: K
-	): Promise<ReturnBulk<CustomValue>[K]> {
+	): Promise<ReturnBulk<CustomValue | null>[K]> {
 		let payload: GetManyPayload<CustomValue> = { method: Method.GetMany, trigger: Trigger.PreProvider, keyPaths, data: {} };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.GetMany, Trigger.PreProvider);
@@ -705,20 +705,20 @@ export enum Bulk {
 	TwoDimensionalArray
 }
 
-export interface ReturnBulk<T = unknown> {
-	[Bulk.Object]: Record<string, T | null>;
+export interface ReturnBulk<Value = unknown> {
+	[Bulk.Object]: Record<string, Value>;
 
-	[Bulk.Map]: Map<string, T | null>;
+	[Bulk.Map]: Map<string, Value>;
 
-	[Bulk.OneDimensionalArray]: (T | null)[];
+	[Bulk.OneDimensionalArray]: Value[];
 
-	[Bulk.TwoDimensionalArray]: [string, T | null][];
+	[Bulk.TwoDimensionalArray]: [string, Value][];
 
-	[K: string]: Record<string, T | null> | Map<string, T | null> | (T | null)[] | [string, T | null][];
+	[K: string]: Record<string, Value> | Map<string, Value> | Value[] | [string, Value][];
 }
 
-export interface MiddlewareContextData<T = unknown> {
-	[BuiltInMiddleware.AutoEnsure]?: AutoEnsureContext<T>;
+export interface MiddlewareContextData<Value = unknown> {
+	[BuiltInMiddleware.AutoEnsure]?: AutoEnsureContext<Value>;
 
 	[K: string]: Middleware.Context | undefined;
 }

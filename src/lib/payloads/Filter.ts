@@ -11,13 +11,13 @@ export interface FilterPayload<Value = unknown> extends Payload, Payload.Optiona
 	path?: string[];
 }
 
-export interface FilterByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.Data<Record<string, Value | null>> {
+export interface FilterByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.Data<Record<string, Value>> {
 	inputData: Value;
 
 	path?: string[];
 }
 
-export interface FilterByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.Data<Record<string, Value | null>> {
+export interface FilterByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.Data<Record<string, Value>> {
 	inputHook: FilterHook<Value>;
 
 	path?: string[];
