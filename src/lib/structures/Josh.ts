@@ -559,7 +559,7 @@ export class Josh<Value = unknown> {
 	public async getMany<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
 		keyPaths: KeyPathArray[],
 		returnBulkType?: K
-	): Promise<ReturnBulk<CustomValue>[K]> {
+	): Promise<ReturnBulk<CustomValue | null>[K]> {
 		let payload: GetManyPayload<CustomValue> = { method: Method.GetMany, trigger: Trigger.PreProvider, keyPaths, data: {} };
 
 		const preMiddlewares = this.middlewares.filterByCondition(Method.GetMany, Trigger.PreProvider);
@@ -1016,7 +1016,6 @@ export class Josh<Value = unknown> {
 	 * @since 2.0.0
 	 * @param name The name of the middleware to enable.
 	 */
-	public use(name: BuiltInMiddleware): this;
 	public use(name: string): this {
 		const middleware = this.middlewares.get(name);
 
@@ -1029,13 +1028,14 @@ export class Josh<Value = unknown> {
 		return this;
 	}
 
-	/** A protected method for converting bulk data.
+	/** A private method for converting bulk data.
 	 * @since 2.0.0
+	 * @private
 	 * @param data The data to convert.
 	 * @param returnBulkType The return bulk type. Defaults to {@link Bulk.Object}
 	 * @returns The bulk data.
 	 */
-	protected convertBulkData<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
+	private convertBulkData<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
 		data: ReturnBulk<CustomValue>[Bulk.Object],
 		returnBulkType?: K
 	): ReturnBulk<CustomValue>[K] {
@@ -1058,12 +1058,13 @@ export class Josh<Value = unknown> {
 	}
 
 	/**
-	 * A protected method for extracting the key/path from a {@link KeyPath} type.
+	 * A private method for extracting the key/path from a {@link KeyPath} type.
 	 * @since 2.0.0
+	 * @private
 	 * @param keyPath The key/path to extract from.
 	 * @returns The extracted key/path data.
 	 */
-	protected getKeyPath(keyPath: KeyPath): [string, string[] | undefined] {
+	private getKeyPath(keyPath: KeyPath): [string, string[] | undefined] {
 		if (typeof keyPath === 'string') return [keyPath, undefined];
 
 		return keyPath;
@@ -1151,24 +1152,24 @@ export enum Bulk {
 	TwoDimensionalArray
 }
 
-export interface ReturnBulk<T = unknown> {
-	[Bulk.Object]: Record<string, T | null>;
+export interface ReturnBulk<Value = unknown> {
+	[Bulk.Object]: Record<string, Value>;
 
-	[Bulk.Map]: Map<string, T | null>;
+	[Bulk.Map]: Map<string, Value>;
 
-	[Bulk.OneDimensionalArray]: (T | null)[];
+	[Bulk.OneDimensionalArray]: Value[];
 
-	[Bulk.TwoDimensionalArray]: [string, T | null][];
+	[Bulk.TwoDimensionalArray]: [string, Value][];
 
-	[K: string]: Record<string, T | null> | Map<string, T | null> | (T | null)[] | [string, T | null][];
+	[K: string]: Record<string, Value> | Map<string, Value> | Value[] | [string, Value][];
 }
 
 /**
  * The context data for middlewares. Indexed by their keys being the name of the middleware.
  * @since 2.0.0
  */
-export interface MiddlewareContextData<T = unknown> {
-	[BuiltInMiddleware.AutoEnsure]?: AutoEnsureContext<T>;
+export interface MiddlewareContextData<Value = unknown> {
+	[BuiltInMiddleware.AutoEnsure]?: AutoEnsureContext<Value>;
 
 	[K: string]: Middleware.Context | undefined;
 }
