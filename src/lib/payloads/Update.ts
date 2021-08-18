@@ -19,7 +19,8 @@ export interface UpdatePayload<Value = unknown> extends Payload, Payload.KeyPath
 	/**
 	 * The type for this payload.
 	 * @since 2.0.0
-	 */ type: Payload.Type;
+	 */
+	type: Payload.Type;
 
 	/**
 	 * The input data for this payload.
@@ -35,6 +36,7 @@ export interface UpdatePayload<Value = unknown> extends Payload, Payload.KeyPath
 }
 
 /**
+<<<<<<< HEAD
  * The data payload for {@link Method.Update}
  * @see {@link Payload}
  * @see {@link Payload.ByData}

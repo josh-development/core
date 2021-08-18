@@ -9,7 +9,7 @@ import type { Payload } from './Payload';
  */
 export interface KeysPayload extends Payload, Payload.Data<string[]> {
 	/**
-	 * THe method for this payload.
+	 * The method for this payload.
 	 * @since 2.0.0
 	 */
 	method: Method.Keys;

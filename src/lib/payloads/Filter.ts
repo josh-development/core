@@ -3,9 +3,13 @@ import type { Method } from '../types';
 import type { Payload } from './Payload';
 
 /**
+<<<<<<< HEAD
  * The union payload for {@link Method.Filter}
  * @see {@link Payload}
  * @see {@link Payload.OptionalData}
+=======
+ * The {@link Payload} for `filter using {@link Payload.OptionalData}
+>>>>>>> 8fc025f (docs: implemtned for `payloads/*`)
  * @since 2.0.0
  */
 export interface FilterPayload<Value = unknown> extends Payload, Payload.OptionalData<Record<string, Value | null>> {
@@ -41,10 +45,14 @@ export interface FilterPayload<Value = unknown> extends Payload, Payload.Optiona
 }
 
 /**
+<<<<<<< HEAD
  * The data payload for {@link Method.Filter}
  * @see {@link Payload}
  * @see {@link Payload.ByData}
  * @see {@link Payload.Data}
+=======
+ * The {@link Payload} for `filter` using {@link Payload.ByData} and {@link Payload.Data}
+>>>>>>> 8fc025f (docs: implemtned for `payloads/*`)
  * @since 2.0.0
  */
 export interface FilterByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.Data<Record<string, Value>> {

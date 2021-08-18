@@ -11,6 +11,7 @@ import type { Payload } from './Payload';
 export interface FindPayload<Value = unknown> extends Payload, Payload.OptionalData<Value> {
 	/**
 	 * The method for this payload.
+	 * @since 2.0.0
 	 */
 	method: Method.Find;
 
