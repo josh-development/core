@@ -58,7 +58,7 @@ import { MiddlewareStore } from './MiddlewareStore';
  * ```typescript
  * // Using a provider.
  * const josh = new Josh({
- *   provider: new MapProvider(),
+ *   provider: new Provider(),
  *   // More options...
  * });
  * ```
