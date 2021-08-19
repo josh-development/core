@@ -2,7 +2,8 @@ import type { KeyPathArray, Method } from '../types';
 import type { Payload } from './Payload';
 
 /**
- * The {@link Payload} for `setMany`
+ * The payload for {@link Method.SetMany}
+ * @see {@link Payload}
  * @since 2.0.0
  */
 export interface SetManyPayload extends Payload {

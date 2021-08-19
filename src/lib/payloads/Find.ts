@@ -3,7 +3,9 @@ import type { Method } from '../types';
 import type { Payload } from './Payload';
 
 /**
- * The {@link Payload} for `find` using {@link Payload.OptionalData}
+ * The union payload for {@link Method.Find}
+ * @see {@link Payload}
+ * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
 export interface FindPayload<Value = unknown> extends Payload, Payload.OptionalData<Value> {
@@ -38,7 +40,10 @@ export interface FindPayload<Value = unknown> extends Payload, Payload.OptionalD
 }
 
 /**
- * The {@link Payload} for `find` using {@link Payload.ByData} and {@link Payload.OptionalData}
+ * The data payload for {@link Method.Find}
+ * @see {@link Payload}
+ * @see {@link Payload.ByData}
+ * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
 export interface FindByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.OptionalData<Value> {
@@ -62,7 +67,10 @@ export interface FindByDataPayload<Value = unknown> extends Payload, Payload.ByD
 }
 
 /**
- * The {@link Payload} for `find` using {@link Payload.ByHook} and {@link Payload.OptionalData}
+ * The hook payload for {@link Method.Find}
+ * @see {@link Payload}
+ * @see {@link Payload.ByHook}
+ * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
 export interface FindByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.OptionalData<Value> {

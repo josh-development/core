@@ -2,7 +2,9 @@ import type { Method } from '../types';
 import type { Payload } from './Payload';
 
 /**
- * The {@link Payload} for `set` using {@link Payload.KeyPath}
+ * The payload for {@link Method.Set}
+ * @see {@link Payload}
+ * @see {@link Payload.KeyPath}
  * @since 2.0.0
  */
 export interface SetPayload extends Payload, Payload.KeyPath {

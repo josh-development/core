@@ -2,7 +2,9 @@ import type { KeyPathArray, Method } from '../types';
 import type { Payload } from './Payload';
 
 /**
- * The {@link Payload} for `getMany` using {@link Payload.Data}
+ * The payload for {@link Method.GetMany}
+ * @see {@link Payload}
+ * @see {@link Payload.Data}
  * @since 2.0.0
  */
 export interface GetManyPayload<Value = unknown> extends Payload, Payload.Data<Record<string, Value | null>> {

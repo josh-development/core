@@ -3,7 +3,9 @@ import type { Method } from '../types';
 import type { Payload } from './Payload';
 
 /**
- * The {@link Payload} for `filter using {@link Payload.OptionalData}
+ * The union payload for {@link Method.Filter}
+ * @see {@link Payload}
+ * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
 export interface FilterPayload<Value = unknown> extends Payload, Payload.OptionalData<Record<string, Value | null>> {
@@ -39,7 +41,10 @@ export interface FilterPayload<Value = unknown> extends Payload, Payload.Optiona
 }
 
 /**
- * The {@link Payload} for `filter` using {@link Payload.ByData} and {@link Payload.Data}
+ * The data payload for {@link Method.Filter}
+ * @see {@link Payload}
+ * @see {@link Payload.ByData}
+ * @see {@link Payload.Data}
  * @since 2.0.0
  */
 export interface FilterByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.Data<Record<string, Value>> {
@@ -63,7 +68,10 @@ export interface FilterByDataPayload<Value = unknown> extends Payload, Payload.B
 }
 
 /**
- * The {@link Payload} for `filter` using {@link Payload.ByHook} and {@link Payload.Data}
+ * The hook payload for {@link Method.Filter}
+ * @see {@link Payload}
+ * @see {@link Payload.ByHook}
+ * @see {@link Payload.Data}
  * @since 2.0.0
  */
 export interface FilterByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.Data<Record<string, Value>> {

@@ -2,7 +2,9 @@ import type { Method } from '../types';
 import type { Payload } from './Payload';
 
 /**
- * The {@link Payload} for `ensure` using {@link Payload.Data}
+ * The payload for {@link Method.Ensure}
+ * @see {@link Payload}
+ * @see {@link Payload.Data}
  * @since 2.0.0
  */
 export interface EnsurePayload<Value = unknown> extends Payload, Payload.Data<Value> {

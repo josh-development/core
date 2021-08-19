@@ -65,6 +65,7 @@ export namespace Payload {
 
 	/**
 	 * The optional data extension for {@link Payload}.
+	 * @see {@link Data}
 	 * @since 2.0.0
 	 */
 	export type OptionalData<Value = unknown> = Partial<Data<Value>>;

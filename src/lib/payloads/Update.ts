@@ -3,7 +3,10 @@ import type { Method } from '../types';
 import type { Payload } from './Payload';
 
 /**
- * The {@link Payload} for `update` using {@link Payload.KeyPath} and {@link Payload.OptionalData}
+ * The union payload for {@link Method.Update}
+ * @see {@link Payload}
+ * @see {@link Payload.KeyPath}
+ * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
 export interface UpdatePayload<Value = unknown> extends Payload, Payload.KeyPath, Payload.OptionalData<Value> {
@@ -32,22 +35,33 @@ export interface UpdatePayload<Value = unknown> extends Payload, Payload.KeyPath
 }
 
 /**
- * The {@link Payload} for `update` using {@link Payload.ByData}, {@link Payload.KeyPath}, and {@link Payload.OptionalData}
+ * The data payload for {@link Method.Update}
+ * @see {@link Payload}
+ * @see {@link Payload.ByData}
+ * @see {@link Payload.KeyPath}
+ * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
 export interface UpdateByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.KeyPath, Payload.OptionalData<Value> {
 	/**
 	 * The method for this payload.
-	 * @since 2.0.0 */ method: Method.Update;
+	 * @since 2.0.0
+	 */
+	method: Method.Update;
 
 	/**
 	 * The input data for this payload.
 	 * @since 2.0.0
-	 */ inputData: Value;
+	 */
+	inputData: Value;
 }
 
 /**
- * The {@link Payload} for `update` using {@link Payload.ByHook}, {@link Payload.KeyPath}, and {@link Payload.OptionalData}
+ * The hook payload for {@link Method.Update}
+ * @see {@link Payload}
+ * @see {@link Payload.ByHook}
+ * @see {@link Payload.KeyPath}
+ * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
 export interface UpdateByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.KeyPath, Payload.OptionalData<Value> {
@@ -60,7 +74,8 @@ export interface UpdateByHookPayload<Value = unknown> extends Payload, Payload.B
 	/**
 	 * The input hook for this payload.
 	 * @since 2.0.0
-	 */ inputHook: UpdateHook<Value>;
+	 */
+	inputHook: UpdateHook<Value>;
 }
 
 /**

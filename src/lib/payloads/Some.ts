@@ -3,7 +3,9 @@ import type { Method } from '../types';
 import type { Payload } from './Payload';
 
 /**
- * The {@link Payload} for `some` using {@link Payload.Data}
+ * The union payload for {@link Method.Some}
+ * @see {@link Payload}
+ * @see {@link Payload.Data}
  * @since 2.0.0
  */
 export interface SomePayload<Value = unknown> extends Payload, Payload.Data<boolean> {
@@ -39,7 +41,10 @@ export interface SomePayload<Value = unknown> extends Payload, Payload.Data<bool
 }
 
 /**
- * The {@link Payload} for `some` using {@link Payload.ByData} and {@link Payload.Data}
+ * The data payload for {@link Method.Some}
+ * @see {@link Payload}
+ * @see {@link Payload.ByData}
+ * @see {@link Payload.Data}
  * @since 2.0.0
  */
 export interface SomeByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.Data<boolean> {
@@ -63,7 +68,10 @@ export interface SomeByDataPayload<Value = unknown> extends Payload, Payload.ByD
 }
 
 /**
- * The {@link Payload} for `some` using {@link Payload.ByHook} and {@link Payload.Data}
+ * The hook payload for {@link Method.Some}
+ * @see {@link Payload}
+ * @see {@link Payload.ByHook}
+ * @see {@link Payload.Data}
  * @since 2.0.0
  */
 export interface SomeByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.Data<boolean> {
