@@ -32,9 +32,22 @@ import { Method } from '../../types';
 import { JoshProvider } from '../JoshProvider';
 import { MapProviderError } from './MapProviderError';
 
+/**
+ * A provider that uses the Node.js native [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) class.
+ * @since 2.0.0
+ */
 export class MapProvider<Value = unknown> extends JoshProvider<Value> {
+	/**
+	 * The [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) cache to store data.
+	 * @since 2.0.0
+	 * @private
+	 */
 	private cache = new Map<string, Value>();
 
+	/**
+	 * A simple cache for the {@link MapProvider.autoKey} method.
+	 * @since 2.0.0
+	 */
 	private autoKeyCount = 0;
 
 	public autoKey(payload: AutoKeyPayload): AutoKeyPayload {
