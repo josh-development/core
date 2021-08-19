@@ -35,13 +35,46 @@ import type {
 import { Method, Trigger } from '../types';
 import type { MiddlewareStore } from './MiddlewareStore';
 
+/**
+ * The base class piece for creating middlewares. Extend this piece to create a middleware.
+ * @see {@link Middleware.Options} for all available options for middlewares.
+ * @since 2.0.0
+ *
+ * @example
+ * ```typescript
+ * (at)ApplyOptions<MiddlewareOptions>({
+ *   name: 'middleware',
+ *   // More options...
+ * })
+ * export class CoreMiddleware extends Middleware {
+ *   // Make method implementations...
+ * }
+ * ```
+ */
 export abstract class Middleware<Context extends Middleware.Context = Middleware.Context> extends Piece {
+	/**
+	 * The store for this middleware.
+	 * @since 2.0.0
+	 */
 	public declare store: MiddlewareStore;
 
+	/**
+	 * The position of this middleware.
+	 * @since 2.0.0
+	 */
 	public readonly position?: number;
 
+	/**
+	 * The conditions of this middleware.
+	 * @since 2.0.0
+	 */
 	public readonly conditions: Middleware.Condition[];
 
+	/**
+	 * Whether to use this middleware or not.
+	 * @since 2.0.0
+	 * @default true
+	 */
 	public use: boolean;
 
 	public constructor(context: PieceContext, options: Middleware.Options = {}) {
@@ -156,35 +189,79 @@ export abstract class Middleware<Context extends Middleware.Context = Middleware
 		return { ...super.toJSON(), position: this.position, conditions: this.conditions, use: this.use };
 	}
 
+	/**
+	 * Retrieve this middleware'es context data from the Josh instance.
+	 * @since 2.0.0
+	 * @returns The context or `undefined`
+	 */
 	protected getContext<C extends Middleware.Context = Context>(): C | undefined {
 		const contextData = this.instance.options.middlewareContextData ?? {};
 
 		return Reflect.get(contextData, this.name);
 	}
 
+	/**
+	 * Get this middleware's Josh instance.
+	 * @since 2.0.0
+	 */
 	protected get instance() {
 		return this.store.instance;
 	}
 
+	/**
+	 * Get this middleware's provider instance.
+	 * @since 2.0.0
+	 */
 	protected get provider() {
 		return this.instance.provider;
 	}
 }
 
 export namespace Middleware {
+	/**
+	 * The options for {@link Middleware}
+	 * @since 2.0.0
+	 */
 	export interface Options extends PieceOptions {
+		/**
+		 * The position at which this middleware runs at.
+		 * @since 2.0.0
+		 */
 		position?: number;
 
+		/**
+		 * The conditions for this middleware to run on.
+		 * @since 2.0.0
+		 */
 		conditions?: Condition[];
 
+		/**
+		 * Whether this middleware is enabled or not.
+		 * @since 2.0.0
+		 */
 		use?: boolean;
 	}
 
+	/**
+	 * The middleware context base interface.
+	 * @since 2.0.0
+	 */
 	export interface Context {}
 
+	/**
+	 * A middleware condition to run on.
+	 * @since 2.0.0
+	 */
 	export interface Condition {
+		/**
+		 * The methods for this condition.
+		 * @since 2.0.0
+		 */
 		methods: Method[];
 
+		/**
+		 * The trigger for this condition.
+		 */
 		trigger: Trigger;
 	}
 
