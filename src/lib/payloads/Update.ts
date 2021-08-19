@@ -36,7 +36,6 @@ export interface UpdatePayload<Value = unknown> extends Payload, Payload.KeyPath
 }
 
 /**
-<<<<<<< HEAD
  * The data payload for {@link Method.Update}
  * @see {@link Payload}
  * @see {@link Payload.ByData}

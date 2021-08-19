@@ -3,13 +3,9 @@ import type { Method } from '../types';
 import type { Payload } from './Payload';
 
 /**
-<<<<<<< HEAD
  * The union payload for {@link Method.Some}
  * @see {@link Payload}
  * @see {@link Payload.Data}
-=======
- * The {@link Payload} for `some` using {@link Payload.Data}
->>>>>>> 8fc025f (docs: implemtned for `payloads/*`)
  * @since 2.0.0
  */
 export interface SomePayload<Value = unknown> extends Payload, Payload.Data<boolean> {
