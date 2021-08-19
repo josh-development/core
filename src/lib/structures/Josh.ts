@@ -43,10 +43,9 @@ import { MiddlewareStore } from './MiddlewareStore';
 
 /**
  * The base class that makes Josh work.
- *
  * @see {@link Josh.Options} for all options available to the Josh class.
- *
  * @since 2.0.0
+ *
  * @example
  * ```typescript
  * const josh = new Josh({
