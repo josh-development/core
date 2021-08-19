@@ -1,6 +1,6 @@
 import type { Method } from '../types';
 import type { Payload } from './Payload';
 
-export interface RandomKeyPayload extends Payload, Partial<Payload.Data<string>> {
+export interface RandomKeyPayload extends Payload, Payload.OptionalData<string> {
 	method: Method.RandomKey;
 }
