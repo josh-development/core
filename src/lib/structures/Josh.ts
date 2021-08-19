@@ -185,6 +185,8 @@ export class Josh<Value = unknown> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: DecPayload = { method: Method.Dec, trigger: Trigger.PreProvider, key, path };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Dec, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Dec](payload);
 
@@ -192,6 +194,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Dec, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Dec](payload);
@@ -227,6 +231,8 @@ export class Josh<Value = unknown> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: DeletePayload = { method: Method.Delete, trigger: Trigger.PreProvider, key, path };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Delete, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Delete](payload);
 
@@ -234,6 +240,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Delete, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Delete](payload);
@@ -263,6 +271,8 @@ export class Josh<Value = unknown> {
 	public async ensure<CustomValue = Value>(key: string, defaultValue: CustomValue): Promise<CustomValue> {
 		let payload: EnsurePayload<CustomValue> = { method: Method.Ensure, trigger: Trigger.PreProvider, key, data: defaultValue, defaultValue };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Ensure, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Ensure](payload);
 
@@ -270,6 +280,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Ensure, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Ensure](payload);
@@ -332,6 +344,8 @@ export class Josh<Value = unknown> {
 				data: {}
 			};
 
+			for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 			const preMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PreProvider);
 			for (const middleware of preMiddlewares) payload = await middleware[Method.Filter](payload);
 
@@ -339,6 +353,8 @@ export class Josh<Value = unknown> {
 			payload.trigger = Trigger.PostProvider;
 
 			if (payload.error) throw payload.error;
+
+			for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 			const postMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PostProvider);
 			for (const middleware of postMiddlewares) payload = await middleware[Method.Filter](payload);
@@ -358,6 +374,8 @@ export class Josh<Value = unknown> {
 			data: {}
 		};
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Filter](payload);
 
@@ -365,6 +383,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Filter](payload);
@@ -412,6 +432,8 @@ export class Josh<Value = unknown> {
 				inputData: pathOrValue as CustomValue
 			};
 
+			for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 			const preMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PreProvider);
 			for (const middleware of preMiddlewares) payload = await middleware[Method.Find](payload);
 
@@ -419,6 +441,8 @@ export class Josh<Value = unknown> {
 			payload.trigger = Trigger.PostProvider;
 
 			if (payload.error) throw payload.error;
+
+			for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 			const postMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PostProvider);
 			for (const middleware of postMiddlewares) payload = await middleware[Method.Find](payload);
@@ -437,11 +461,17 @@ export class Josh<Value = unknown> {
 			inputHook: pathOrHook
 		};
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Find](payload);
 
 		payload = await this.provider.findByHook(payload);
 		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Find](payload);
@@ -473,6 +503,8 @@ export class Josh<Value = unknown> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: GetPayload<CustomValue> = { method: Method.Get, trigger: Trigger.PreProvider, key, path };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Get, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Get](payload);
 
@@ -480,6 +512,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Get, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Get](payload);
@@ -516,6 +550,8 @@ export class Josh<Value = unknown> {
 	): Promise<ReturnBulk<CustomValue>[K]> {
 		let payload: GetAllPayload<CustomValue> = { method: Method.GetAll, trigger: Trigger.PreProvider, data: {} };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.GetAll, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.GetAll](payload);
 
@@ -523,6 +559,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.GetAll, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.GetAll](payload);
@@ -561,6 +599,8 @@ export class Josh<Value = unknown> {
 	): Promise<ReturnBulk<CustomValue | null>[K]> {
 		let payload: GetManyPayload<CustomValue> = { method: Method.GetMany, trigger: Trigger.PreProvider, keyPaths, data: {} };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.GetMany, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.GetMany](payload);
 
@@ -568,6 +608,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.GetMany, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.GetMany](payload);
@@ -579,6 +621,8 @@ export class Josh<Value = unknown> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: HasPayload = { method: Method.Has, trigger: Trigger.PreProvider, key, path, data: false };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Has, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Has](payload);
 
@@ -586,6 +630,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Has, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Has](payload);
@@ -612,6 +658,8 @@ export class Josh<Value = unknown> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: IncPayload = { method: Method.Inc, trigger: Trigger.PreProvider, key, path };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Inc, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Inc](payload);
 
@@ -619,6 +667,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Inc, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Inc](payload);
@@ -641,6 +691,8 @@ export class Josh<Value = unknown> {
 	public async keys(): Promise<string[]> {
 		let payload: KeysPayload = { method: Method.Keys, trigger: Trigger.PreProvider, data: [] };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Keys, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Keys](payload);
 
@@ -648,6 +700,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Keys, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Keys](payload);
@@ -666,6 +720,8 @@ export class Josh<Value = unknown> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: PushPayload = { method: Method.Push, trigger: Trigger.PreProvider, key, path };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Push, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Push](payload);
 
@@ -673,6 +729,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Push, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Push](payload);
@@ -688,6 +746,8 @@ export class Josh<Value = unknown> {
 	public async random<CustomValue = Value>(): Promise<CustomValue | null> {
 		let payload: RandomPayload<CustomValue> = { method: Method.Random, trigger: Trigger.PreProvider };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Random, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Random](payload);
 
@@ -695,6 +755,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Random, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Random](payload);
@@ -710,6 +772,8 @@ export class Josh<Value = unknown> {
 	public async randomKey(): Promise<string | null> {
 		let payload: RandomKeyPayload = { method: Method.RandomKey, trigger: Trigger.PreProvider };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.RandomKey, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.RandomKey](payload);
 
@@ -717,6 +781,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.RandomKey, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.RandomKey](payload);
@@ -742,6 +808,8 @@ export class Josh<Value = unknown> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: SetPayload = { method: Method.Set, trigger: Trigger.PreProvider, key, path };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Set, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Set](payload);
 
@@ -749,6 +817,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Set, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Set](payload);
@@ -773,6 +843,8 @@ export class Josh<Value = unknown> {
 	public async setMany<CustomValue = Value>(keyPaths: [string, string[]][], value: CustomValue): Promise<this> {
 		let payload: SetManyPayload = { method: Method.SetMany, trigger: Trigger.PreProvider, keyPaths };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.SetMany, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.SetMany](payload);
 
@@ -780,6 +852,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.SetMany, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.SetMany](payload);
@@ -800,6 +874,8 @@ export class Josh<Value = unknown> {
 	public async size(): Promise<number> {
 		let payload: SizePayload = { method: Method.Size, trigger: Trigger.PreProvider, data: 0 };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Size, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Size](payload);
 
@@ -807,6 +883,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Size, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Size](payload);
@@ -853,6 +931,8 @@ export class Josh<Value = unknown> {
 				data: false
 			};
 
+			for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 			const preMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PreProvider);
 			for (const middleware of preMiddlewares) payload = await middleware[Method.Some](payload);
 
@@ -860,6 +940,8 @@ export class Josh<Value = unknown> {
 			payload.trigger = Trigger.PostProvider;
 
 			if (payload.error) throw payload.error;
+
+			for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 			const postMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PostProvider);
 			for (const middleware of postMiddlewares) payload = await middleware[Method.Some](payload);
@@ -879,6 +961,8 @@ export class Josh<Value = unknown> {
 			data: false
 		};
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Some](payload);
 
@@ -886,6 +970,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Some](payload);
@@ -930,6 +1016,8 @@ export class Josh<Value = unknown> {
 				inputHook: inputDataOrHook
 			};
 
+			for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 			const preMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PreProvider);
 			for (const middleware of preMiddlewares) payload = await middleware[Method.Update](payload);
 
@@ -937,6 +1025,8 @@ export class Josh<Value = unknown> {
 			payload.trigger = Trigger.PostProvider;
 
 			if (payload.error) throw payload.error;
+
+			for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 			const postMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PostProvider);
 			for (const middleware of postMiddlewares) payload = await middleware[Method.Update](payload);
@@ -946,6 +1036,8 @@ export class Josh<Value = unknown> {
 
 		let payload: UpdateByDataPayload<CustomValue> = { method: Method.Update, key, path, type: Payload.Type.Data, inputData: inputDataOrHook };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Update](payload);
 
@@ -953,6 +1045,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Update](payload);
@@ -976,6 +1070,8 @@ export class Josh<Value = unknown> {
 	public async values<CustomValue = Value>(): Promise<CustomValue[]> {
 		let payload: ValuesPayload<CustomValue> = { method: Method.Values, trigger: Trigger.PreProvider, data: [] };
 
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
 		const preMiddlewares = this.middlewares.filterByCondition(Method.Values, Trigger.PreProvider);
 		for (const middleware of preMiddlewares) payload = await middleware[Method.Values](payload);
 
@@ -983,6 +1079,8 @@ export class Josh<Value = unknown> {
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Values, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Values](payload);

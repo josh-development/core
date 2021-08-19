@@ -18,6 +18,7 @@ import type {
 	HasPayload,
 	IncPayload,
 	KeysPayload,
+	Payload,
 	PushPayload,
 	RandomKeyPayload,
 	RandomPayload,
@@ -182,6 +183,10 @@ export abstract class Middleware<Context extends Middleware.Context = Middleware
 	}
 
 	public [Method.Values]<Value = unknown>(payload: ValuesPayload<Value>): Awaited<ValuesPayload<Value>> {
+		return payload;
+	}
+
+	public run<P extends Payload>(payload: P): Awaited<unknown> {
 		return payload;
 	}
 
