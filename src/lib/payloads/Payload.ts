@@ -1,4 +1,3 @@
-import type { Stopwatch } from '@sapphire/stopwatch';
 import type { JoshProviderError } from '../errors';
 import type { Method, Trigger } from '../types';
 
@@ -18,12 +17,6 @@ export interface Payload {
 	 * @since 2.0.0
 	 */
 	trigger?: Trigger;
-
-	/**
-	 * The stopwatch to be used in the provider.
-	 * @since 2.0.0
-	 */
-	stopwatch?: Stopwatch;
 
 	/**
 	 * The error for this payload.
