@@ -33,6 +33,8 @@ export enum Method {
 
 	RandomKey = 'randomKey',
 
+	Remove = 'remove',
+
 	Set = 'set',
 
 	SetMany = 'setMany',

@@ -20,6 +20,8 @@ import type {
 	PushPayload,
 	RandomKeyPayload,
 	RandomPayload,
+	RemoveByDataPayload,
+	RemoveByHookPayload,
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
@@ -226,6 +228,20 @@ export abstract class JoshProvider<Value = unknown> {
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
 	public abstract randomKey(payload: RandomKeyPayload): Awaited<RandomKeyPayload>;
+
+	/**
+	 * @since 2.0.0
+	 * @param payload The payload sent by this provider's {@link Josh} instance.
+	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+	 */
+	public abstract removeByData<CustomValue = Value>(payload: RemoveByDataPayload<CustomValue>): Awaited<RemoveByDataPayload<CustomValue>>;
+
+	/**
+	 * @since 2.0.0
+	 * @param payload The payload sent by this provider's {@link Josh} instance.
+	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+	 */
+	public abstract removeByHook<CustomValue = Value>(payload: RemoveByHookPayload<CustomValue>): Awaited<RemoveByHookPayload<CustomValue>>;
 
 	/**
 	 * @since 2.0.0

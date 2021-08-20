@@ -25,6 +25,9 @@ import type {
 	PushPayload,
 	RandomKeyPayload,
 	RandomPayload,
+	RemoveByDataPayload,
+	RemoveByHookPayload,
+	RemovePayload,
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
@@ -164,6 +167,12 @@ export abstract class Middleware<Context extends Middleware.Context = Middleware
 	}
 
 	public [Method.RandomKey](payload: RandomKeyPayload): Awaited<RandomKeyPayload> {
+		return payload;
+	}
+
+	public [Method.Remove]<Value = unknown>(payload: RemoveByDataPayload<Value>): Awaited<RemoveByDataPayload<Value>>;
+	public [Method.Remove]<Value = unknown>(payload: RemoveByHookPayload<Value>): Awaited<RemoveByHookPayload<Value>>;
+	public [Method.Remove]<Value = unknown>(payload: RemovePayload<Value>): Awaited<RemovePayload<Value>> {
 		return payload;
 	}
 

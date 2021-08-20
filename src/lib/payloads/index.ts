@@ -15,6 +15,7 @@ export * from './Payload';
 export * from './Push';
 export * from './Random';
 export * from './RandomKey';
+export * from './Remove';
 export * from './Set';
 export * from './SetMany';
 export * from './Size';

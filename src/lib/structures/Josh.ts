@@ -27,6 +27,9 @@ import {
 	PushPayload,
 	RandomKeyPayload,
 	RandomPayload,
+	RemoveByDataPayload,
+	RemoveByHookPayload,
+	RemoveHook,
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
@@ -842,6 +845,50 @@ export class Josh<Value = unknown> {
 		for (const middleware of postMiddlewares) payload = await middleware[Method.RandomKey](payload);
 
 		return payload.data ?? null;
+	}
+
+	public async remove<CustomValue = Value>(keyPath: KeyPath, inputDataOrHook: CustomValue | RemoveHook<CustomValue>): Promise<this> {
+		const [key, path] = this.getKeyPath(keyPath);
+
+		if (isFunction(inputDataOrHook)) {
+			let payload: RemoveByHookPayload<CustomValue> = { method: Method.Remove, type: Payload.Type.Hook, key, path, inputHook: inputDataOrHook };
+
+			for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
+			const preMiddlewares = this.middlewares.filterByCondition(Method.Remove, Trigger.PreProvider);
+			for (const middleware of preMiddlewares) payload = await middleware[Method.Remove](payload);
+
+			payload = await this.provider.removeByHook(payload);
+			payload.trigger = Trigger.PostProvider;
+
+			if (payload.error) throw payload.error;
+
+			for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
+			const postMiddlewares = this.middlewares.filterByCondition(Method.Remove, Trigger.PostProvider);
+			for (const middleware of postMiddlewares) payload = await middleware[Method.Remove](payload);
+
+			return this;
+		}
+
+		let payload: RemoveByDataPayload<CustomValue> = { method: Method.Remove, type: Payload.Type.Data, key, path, inputData: inputDataOrHook };
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Remove, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Remove](payload);
+
+		payload = await this.provider.removeByData(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Remove, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Remove](payload);
+
+		return this;
 	}
 
 	/**

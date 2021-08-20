@@ -250,6 +250,38 @@ describe('MapProvider class', () => {
 			expect(typeof data).toBe('string');
 		});
 
+		test('GIVEN removeByData() THEN returns payload for removeByData', () => {
+			const { method, trigger, type, key, path, inputData } = provider.removeByData({
+				method: Method.Remove,
+				type: Payload.Type.Data,
+				key: 'array',
+				inputData: 'test'
+			});
+
+			expect(method).toBe(Method.Remove);
+			expect(trigger).toBeUndefined();
+			expect(type).toBe(Payload.Type.Data);
+			expect(key).toBe('array');
+			expect(path).toBeUndefined();
+			expect(inputData).toBe('test');
+		});
+
+		test('GIVEN removeByHook() THEN returns payload for removeByHook', async () => {
+			const { method, trigger, type, key, path, inputHook } = await provider.removeByHook({
+				method: Method.Remove,
+				type: Payload.Type.Hook,
+				key: 'array',
+				inputHook: (data) => data === 'test'
+			});
+
+			expect(method).toBe(Method.Remove);
+			expect(trigger).toBeUndefined();
+			expect(type).toBe(Payload.Type.Hook);
+			expect(key).toBe('array');
+			expect(path).toBeUndefined();
+			expect(typeof inputHook).toBe('function');
+		});
+
 		test('GIVEN set() THEN returns payload for set', () => {
 			const { method, trigger, key, path } = provider.set({ method: Method.Set, key: 'string' }, 'test');
 
@@ -347,7 +379,7 @@ describe('MapProvider class', () => {
 			expect(trigger).toBeUndefined();
 			expect(data).toContain(1);
 			expect(data).toContain('test');
-			expect(data).toContainEqual(['test']);
+			expect(data).toContainEqual([]);
 		});
 	});
 });
