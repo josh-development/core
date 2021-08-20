@@ -15,6 +15,8 @@ import type {
 	HasPayload,
 	IncPayload,
 	KeysPayload,
+	MapByHookPayload,
+	MapByPathPayload,
 	PushPayload,
 	RandomKeyPayload,
 	RandomPayload,
@@ -189,6 +191,20 @@ export abstract class JoshProvider<Value = unknown> {
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
 	public abstract keys(payload: KeysPayload): Awaited<KeysPayload>;
+
+	/**
+	 * @since 2.0.0
+	 * @param payload The payload sent by this provider's {@link Josh} instance.
+	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+	 */
+	public abstract mapByPath<CustomValue = Value>(payload: MapByPathPayload<CustomValue>): Awaited<MapByPathPayload<CustomValue>>;
+
+	/**
+	 * @since 2.0.0
+	 * @param payload The payload sent by this provider's {@link Josh} instance.
+	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+	 */
+	public abstract mapByHook<CustomValue = Value>(payload: MapByHookPayload<CustomValue>): Awaited<MapByHookPayload<CustomValue>>;
 
 	/**
 	 * @since 2.0.0

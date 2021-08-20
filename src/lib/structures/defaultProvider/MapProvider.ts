@@ -16,6 +16,8 @@ import type {
 	HasPayload,
 	IncPayload,
 	KeysPayload,
+	MapByHookPayload,
+	MapByPathPayload,
 	PushPayload,
 	RandomKeyPayload,
 	RandomPayload,
@@ -360,6 +362,33 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		payload.stopwatch.start();
 
 		payload.data = Array.from(this.cache.keys());
+		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public mapByPath<CustomValue = Value>(payload: MapByPathPayload<CustomValue>): MapByPathPayload<CustomValue> {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		const { path } = payload;
+
+		for (const key of this.keys({ method: Method.Keys, data: [] }).data)
+			payload.data.push(this.get<CustomValue>({ method: Method.Get, key, path }).data!);
+
+		payload.stopwatch.stop();
+
+		return payload;
+	}
+
+	public async mapByHook<CustomValue = Value>(payload: MapByHookPayload<CustomValue>): Promise<MapByHookPayload<CustomValue>> {
+		payload.stopwatch = new Stopwatch();
+		payload.stopwatch.start();
+
+		const { hook } = payload;
+
+		for (const value of this.values({ method: Method.Values, data: [] }).data) payload.data.push(await hook(value));
+
 		payload.stopwatch.stop();
 
 		return payload;

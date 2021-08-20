@@ -206,6 +206,42 @@ describe('MapProvider class', () => {
 			expect(data).toContain('array');
 		});
 
+		test('GIVEN mapByPath() THEN returns payload for mapByPath', () => {
+			const { method, trigger, stopwatch, type, path, data } = provider.mapByPath({
+				method: Method.Map,
+				type: Payload.Type.Path,
+				path: [],
+				data: []
+			});
+
+			expect(method).toBe(Method.Map);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(type).toBe(Payload.Type.Path);
+			expect(path).toEqual([]);
+			expect(data).toContain(1);
+			expect(data).toContain('test');
+			expect(data).toContainEqual([]);
+		});
+
+		test('GIVEN mapByHook() THEN returns payload for mapByHook', async () => {
+			const { method, trigger, stopwatch, type, hook, data } = await provider.mapByHook({
+				method: Method.Map,
+				type: Payload.Type.Hook,
+				hook: (data) => data,
+				data: []
+			});
+
+			expect(method).toBe(Method.Map);
+			expect(trigger).toBeUndefined();
+			expect(stopwatch).toBeInstanceOf(Stopwatch);
+			expect(type).toBe(Payload.Type.Hook);
+			expect(typeof hook).toBe('function');
+			expect(data).toContain(1);
+			expect(data).toContain('test');
+			expect(data).toContainEqual([]);
+		});
+
 		test('GIVEN push() THEN returns payload for push', () => {
 			const { method, trigger, stopwatch, key, path } = provider.push({ method: Method.Push, key: 'array' }, 'test');
 

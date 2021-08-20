@@ -25,6 +25,8 @@ export enum Method {
 
 	Keys = 'keys',
 
+	Map = 'map',
+
 	Push = 'push',
 
 	Random = 'random',

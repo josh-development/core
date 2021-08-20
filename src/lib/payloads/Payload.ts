@@ -95,6 +95,17 @@ export namespace Payload {
 	}
 
 	/**
+	 * The byPath extension for {@link Payload}
+	 */
+	export interface ByPath {
+		/**
+		 * The type for this extension
+		 * @since 2.0.0
+		 */
+		type: Type.Path;
+	}
+
+	/**
 	 * The type enum for {@link Payload}.
 	 * @since 2.0.0
 	 */
@@ -109,6 +120,12 @@ export namespace Payload {
 		 * The hook type.
 		 * @since 2.0.0
 		 */
-		Hook = 'HOOK'
+		Hook = 'HOOK',
+
+		/**
+		 * The path type.
+		 * @since 2.0.0
+		 */
+		Path = 'PATH'
 	}
 }

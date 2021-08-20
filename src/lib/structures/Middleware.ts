@@ -18,6 +18,9 @@ import type {
 	HasPayload,
 	IncPayload,
 	KeysPayload,
+	MapByHookPayload,
+	MapByPathPayload,
+	MapPayload,
 	Payload,
 	PushPayload,
 	RandomKeyPayload,
@@ -143,6 +146,12 @@ export abstract class Middleware<Context extends Middleware.Context = Middleware
 	}
 
 	public [Method.Keys](payload: KeysPayload): Awaited<KeysPayload> {
+		return payload;
+	}
+
+	public [Method.Map]<Value = unknown>(payload: MapByPathPayload<Value>): Awaited<MapByPathPayload<Value>>;
+	public [Method.Map]<Value = unknown>(payload: MapByHookPayload<Value>): Awaited<MapByHookPayload<Value>>;
+	public [Method.Map]<Value = unknown>(payload: MapPayload<Value>): Awaited<MapPayload<Value>> {
 		return payload;
 	}
 

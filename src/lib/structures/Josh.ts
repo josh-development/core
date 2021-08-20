@@ -20,6 +20,9 @@ import {
 	HasPayload,
 	IncPayload,
 	KeysPayload,
+	MapByHookPayload,
+	MapByPathPayload,
+	MapHook,
 	Payload,
 	PushPayload,
 	RandomKeyPayload,
@@ -705,6 +708,57 @@ export class Josh<Value = unknown> {
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Keys, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Keys](payload);
+
+		return payload.data;
+	}
+
+	/**
+	 * Map all stored data to an array.
+	 * @since 2.0.0
+	 * @param pathOrHook A path array or hook function.
+	 * @returns The mapped data.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.setMany([['key', []], ['anotherKey', []]], { path: 'value' });
+	 *
+	 * await josh.map((data) => data.path); // ['value', 'value']
+	 * ```
+	 */
+	public async map<CustomValue = Value>(pathOrHook: string[] | MapHook<CustomValue>): Promise<CustomValue[]> {
+		if (isFunction(pathOrHook)) {
+			let payload: MapByHookPayload<CustomValue> = { method: Method.Map, type: Payload.Type.Hook, hook: pathOrHook, data: [] };
+
+			for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
+			const preMiddlewares = this.middlewares.filterByCondition(Method.Map, Trigger.PreProvider);
+			for (const middleware of preMiddlewares) payload = await middleware[Method.Map](payload);
+
+			payload = await this.provider.mapByHook(payload);
+			payload.trigger = Trigger.PostProvider;
+
+			for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
+			const postMiddlewares = this.middlewares.filterByCondition(Method.Map, Trigger.PostProvider);
+			for (const middleware of postMiddlewares) payload = await middleware[Method.Map](payload);
+
+			return payload.data;
+		}
+
+		let payload: MapByPathPayload<CustomValue> = { method: Method.Map, type: Payload.Type.Path, path: pathOrHook, data: [] };
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Map, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Map](payload);
+
+		payload = await this.provider.mapByPath(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Map, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Map](payload);
 
 		return payload.data;
 	}
