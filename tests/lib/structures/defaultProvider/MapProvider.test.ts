@@ -60,6 +60,38 @@ describe('MapProvider class', () => {
 			expect(defaultValue).toBe('test');
 		});
 
+		test('GIVEN everyByData() THEN returns payload for everyByData', () => {
+			const { method, trigger, type, path, inputData, data } = provider.everyByData({
+				method: Method.Every,
+				type: Payload.Type.Data,
+				inputData: '',
+				data: true
+			});
+
+			expect(method).toBe(Method.Every);
+			expect(trigger).toBeUndefined();
+			expect(type).toBe(Payload.Type.Data);
+			expect(path).toBeUndefined();
+			expect(inputData).toBe('');
+			expect(data).toBe(true);
+		});
+
+		test('GIVEN everyByHook() THEN returns payload for everyByHook', async () => {
+			const { method, trigger, type, path, inputHook, data } = await provider.everyByHook({
+				method: Method.Every,
+				type: Payload.Type.Hook,
+				inputHook: () => false,
+				data: true
+			});
+
+			expect(method).toBe(Method.Every);
+			expect(trigger).toBeUndefined();
+			expect(type).toBe(Payload.Type.Hook);
+			expect(path).toBeUndefined();
+			expect(typeof inputHook).toBe('function');
+			expect(data).toBe(true);
+		});
+
 		test('GIVEN filterByData() THEN returns payload for filterByData', () => {
 			const { method, trigger, type, path, inputData, data } = provider.filterByData({
 				method: Method.Filter,

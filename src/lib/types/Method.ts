@@ -7,6 +7,8 @@ export enum Method {
 
 	Ensure = 'ensure',
 
+	Every = 'every',
+
 	Filter = 'filter',
 
 	Find = 'find',

@@ -8,6 +8,9 @@ import {
 	DecPayload,
 	DeletePayload,
 	EnsurePayload,
+	EveryByDataPayload,
+	EveryByHookPayload,
+	EveryHook,
 	FilterByDataPayload,
 	FilterByHookPayload,
 	FilterHook,
@@ -291,6 +294,73 @@ export class Josh<Value = unknown> {
 
 		const postMiddlewares = this.middlewares.filterByCondition(Method.Ensure, Trigger.PostProvider);
 		for (const middleware of postMiddlewares) payload = await middleware[Method.Ensure](payload);
+
+		return payload.data;
+	}
+
+	public async every<CustomValue = Value>(path: string[], value: CustomValue): Promise<boolean>;
+	public async every<CustomValue = Value>(hook: EveryHook<CustomValue>, path?: string[]): Promise<boolean>;
+	public async every<CustomValue = Value>(pathOrHook: string[] | EveryHook<CustomValue>, pathOrValue?: string[] | CustomValue): Promise<boolean> {
+		if (Array.isArray(pathOrHook)) {
+			if (pathOrValue === undefined)
+				throw new JoshError({
+					identifier: Josh.Identifiers.EveryMissingValue,
+					message: 'The "value" parameter is required when using every by data.'
+				});
+
+			let payload: EveryByDataPayload<CustomValue> = {
+				method: Method.Every,
+				trigger: Trigger.PreProvider,
+				type: Payload.Type.Data,
+				path: pathOrHook,
+				inputData: pathOrValue as CustomValue,
+				data: true
+			};
+
+			for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
+			const preMiddlewares = this.middlewares.filterByCondition(Method.Every, Trigger.PreProvider);
+			for (const middleware of preMiddlewares) payload = await middleware[Method.Every](payload);
+
+			payload = await this.provider.everyByData(payload);
+			payload.trigger = Trigger.PostProvider;
+
+			if (payload.error) throw payload.error;
+
+			for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
+			const postMiddlewares = this.middlewares.filterByCondition(Method.Every, Trigger.PostProvider);
+			for (const middleware of postMiddlewares) payload = await middleware[Method.Every](payload);
+
+			return payload.data;
+		}
+
+		if (pathOrValue !== undefined && !Array.isArray(pathOrValue))
+			throw new JoshError({ identifier: Josh.Identifiers.EveryInvalidPath, message: 'The path parameter must be an array of strings.' });
+
+		let payload: EveryByHookPayload<CustomValue> = {
+			method: Method.Every,
+			trigger: Trigger.PreProvider,
+			type: Payload.Type.Hook,
+			path: pathOrValue as string[] | undefined,
+			inputHook: pathOrHook,
+			data: true
+		};
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
+		const preMiddlewares = this.middlewares.filterByCondition(Method.Every, Trigger.PreProvider);
+		for (const middleware of preMiddlewares) payload = await middleware[Method.Every](payload);
+
+		payload = await this.provider.everyByHook(payload);
+		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+
+		const postMiddlewares = this.middlewares.filterByCondition(Method.Every, Trigger.PostProvider);
+		for (const middleware of postMiddlewares) payload = await middleware[Method.Every](payload);
 
 		return payload.data;
 	}
@@ -1320,6 +1390,10 @@ export namespace Josh {
 	}
 
 	export enum Identifiers {
+		EveryInvalidPath = 'everyInvalidPath',
+
+		EveryMissingValue = 'everyMissingValue',
+
 		FilterInvalidPath = 'filterInvalidPath',
 
 		FilterMissingValue = 'filterMissingValue',

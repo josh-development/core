@@ -6,6 +6,9 @@ import type {
 	DecPayload,
 	DeletePayload,
 	EnsurePayload,
+	EveryByDataPayload,
+	EveryByHookPayload,
+	EveryPayload,
 	FilterByDataPayload,
 	FilterByHookPayload,
 	FilterPayload,
@@ -113,6 +116,12 @@ export abstract class Middleware<Context extends Middleware.Context = Middleware
 	}
 
 	public [Method.Ensure]<Value = unknown>(payload: EnsurePayload<Value>): Awaited<EnsurePayload<Value>> {
+		return payload;
+	}
+
+	public [Method.Every]<Value = unknown>(payload: EveryByDataPayload<Value>): Awaited<EveryByDataPayload<Value>>;
+	public [Method.Every]<Value = unknown>(payload: EveryByHookPayload<Value>): Awaited<EveryByHookPayload<Value>>;
+	public [Method.Every]<Value = unknown>(payload: EveryPayload<Value>): Awaited<EveryPayload<Value>> {
 		return payload;
 	}
 

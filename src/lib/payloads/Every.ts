@@ -3,17 +3,17 @@ import type { Method } from '../types';
 import type { Payload } from './Payload';
 
 /**
- * The union payload for {@link Method.Some}
+ * The union payload for {@link Method.Every}
  * @see {@link Payload}
  * @see {@link Payload.Data}
  * @since 2.0.0
  */
-export interface SomePayload<Value = unknown> extends Payload, Payload.Data<boolean> {
+export interface EveryPayload<Value = unknown> extends Payload, Payload.Data<boolean> {
 	/**
 	 * The method for this payload.
 	 * @since 2.0.0
 	 */
-	method: Method.Some;
+	method: Method.Every;
 
 	/**
 	 * The type for this payload.
@@ -31,7 +31,7 @@ export interface SomePayload<Value = unknown> extends Payload, Payload.Data<bool
 	 * The input hook for this payload.
 	 * @since 2.0.0
 	 */
-	inputHook?: SomeHook<Value>;
+	inputHook?: EveryHook<Value>;
 
 	/**
 	 * The path for this payload.
@@ -41,18 +41,18 @@ export interface SomePayload<Value = unknown> extends Payload, Payload.Data<bool
 }
 
 /**
- * The data payload for {@link Method.Some}
+ * The data payload for {@link Method.Every}
  * @see {@link Payload}
  * @see {@link Payload.ByData}
  * @see {@link Payload.Data}
  * @since 2.0.0
  */
-export interface SomeByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.Data<boolean> {
+export interface EveryByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.Data<boolean> {
 	/**
 	 * The method for this payload.
 	 * @since 2.0.0
 	 */
-	method: Method.Some;
+	method: Method.Every;
 
 	/**
 	 * The input data for this payload.
@@ -68,24 +68,24 @@ export interface SomeByDataPayload<Value = unknown> extends Payload, Payload.ByD
 }
 
 /**
- * The hook payload for {@link Method.Some}
+ * The hook payload for {@link Method.Every}
  * @see {@link Payload}
  * @see {@link Payload.ByHook}
  * @see {@link Payload.Data}
  * @since 2.0.0
  */
-export interface SomeByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.Data<boolean> {
+export interface EveryByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.Data<boolean> {
 	/**
 	 * The method for this payload.
 	 * @since 2.0.0
 	 */
-	method: Method.Some;
+	method: Method.Every;
 
 	/**
 	 * The input hook for this payload.
 	 * @since 2.0.0
 	 */
-	inputHook: SomeHook<Value>;
+	inputHook: EveryHook<Value>;
 
 	/**
 	 * The path for this payload.
@@ -95,7 +95,7 @@ export interface SomeByHookPayload<Value = unknown> extends Payload, Payload.ByH
 }
 
 /**
- * The hook for {@link SomeByHookPayload}
+ * The hook for {@link EveryByHookPayload}
  * @since 2.0.0
  */
-export type SomeHook<Value = unknown> = (data: Value) => Awaited<boolean>;
+export type EveryHook<Value = unknown> = (data: Value) => Awaited<boolean>;

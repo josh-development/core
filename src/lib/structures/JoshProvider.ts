@@ -5,6 +5,8 @@ import type {
 	DecPayload,
 	DeletePayload,
 	EnsurePayload,
+	EveryByDataPayload,
+	EveryByHookPayload,
 	FilterByDataPayload,
 	FilterByHookPayload,
 	FindByDataPayload,
@@ -123,6 +125,20 @@ export abstract class JoshProvider<Value = unknown> {
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
 	public abstract ensure<CustomValue = Value>(payload: EnsurePayload<CustomValue>): Awaited<EnsurePayload<CustomValue>>;
+
+	/**
+	 * @since 2.0.0
+	 * @param payload The payload sent by this provider's {@link Josh} instance.
+	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+	 */
+	public abstract everyByData<CustomValue = Value>(payload: EveryByDataPayload<CustomValue>): Awaited<EveryByDataPayload<CustomValue>>;
+
+	/**
+	 * @since 2.0.0
+	 * @param payload The payload sent by this provider's {@link Josh} instance.
+	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+	 */
+	public abstract everyByHook<CustomValue = Value>(payload: EveryByHookPayload<CustomValue>): Awaited<EveryByHookPayload<CustomValue>>;
 
 	/**
 	 * @since 2.0.0

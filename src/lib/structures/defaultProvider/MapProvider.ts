@@ -5,6 +5,8 @@ import type {
 	DecPayload,
 	DeletePayload,
 	EnsurePayload,
+	EveryByDataPayload,
+	EveryByHookPayload,
 	FilterByDataPayload,
 	FilterByHookPayload,
 	FindByDataPayload,
@@ -147,6 +149,36 @@ export class MapProvider<Value = unknown> extends JoshProvider<Value> {
 		if (!this.cache.has(key)) this.cache.set(key, payload.defaultValue);
 
 		Reflect.set(payload, 'data', this.cache.get(key));
+
+		return payload;
+	}
+
+	public everyByData<CustomValue = Value>(payload: EveryByDataPayload<CustomValue>): EveryByDataPayload<CustomValue> {
+		const { path, inputData } = payload;
+
+		for (const key of this.keys({ method: Method.Keys, data: [] }).data) {
+			const { data } = this.get<CustomValue>({ method: Method.Get, key, path });
+
+			if (data !== undefined) continue;
+			if (inputData === data) continue;
+
+			payload.data = false;
+		}
+
+		return payload;
+	}
+
+	public async everyByHook<CustomValue = Value>(payload: EveryByHookPayload<CustomValue>): Promise<EveryByHookPayload<CustomValue>> {
+		const { path, inputHook } = payload;
+
+		for (const key of this.keys({ method: Method.Keys, data: [] }).data) {
+			const { data } = this.get<CustomValue>({ method: Method.Get, key, path });
+
+			if (data !== undefined) continue;
+			if (await inputHook(data!)) continue;
+
+			payload.data = false;
+		}
 
 		return payload;
 	}
