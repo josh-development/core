@@ -1,22 +1,22 @@
-import { Payload, SomeByDataPayload, SomeByHookPayload, SomePayload } from '../../payloads';
+import { Payload, SomeByHookPayload, SomeByValuePayload, SomePayload } from '../../payloads';
 import { Method } from '../../types';
 
 /**
- * Checks whether the given payload is a {@link SomeByDataPayload}
+ * Validates whether the given payload is {@link SomeByHookPayload}
  * @since 2.0.0
- * @param payload The payload to check
- * @returns Whether the check is `true` or `false`
+ * @param payload The payload to validate.
+ * @returns Validation boolean.
  */
-export function isSomeByDataPayload<Value = unknown>(payload: SomePayload<Value>): payload is SomeByDataPayload<Value> {
-	return payload.type === Payload.Type.Data && payload.method === Method.Some;
+export function isSomeByHookPayload<HookValue>(payload: SomePayload<HookValue>): payload is SomeByHookPayload<HookValue> {
+	return payload.method === Method.Some && payload.type === Payload.Type.Hook;
 }
 
 /**
- * Checks whether the given payload is a {@link SomeByHookPayload}
+ * Validates whether the given payload is {@link SomeByValuePayload}
  * @since 2.0.0
- * @param payload The payload to check
- * @returns Whether the check is `true` or `false`
+ * @param payload The payload to validate.
+ * @returns Validation boolean.
  */
-export function isSomeByHookPayload<Value = unknown>(payload: SomePayload<Value>): payload is SomeByHookPayload<Value> {
-	return payload.type === Payload.Type.Hook && payload.method === Method.Some;
+export function isSomeByValuePayload<HookValue>(payload: SomePayload<HookValue>): payload is SomeByValuePayload {
+	return payload.method === Method.Some && payload.type === Payload.Type.Value;
 }

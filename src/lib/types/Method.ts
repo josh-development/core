@@ -1,6 +1,8 @@
 export enum Method {
 	AutoKey = 'autoKey',
 
+	Clear = 'clear',
+
 	Dec = 'dec',
 
 	Delete = 'delete',
@@ -23,11 +25,11 @@ export enum Method {
 
 	Inc = 'inc',
 
-	Init = 'init',
-
 	Keys = 'keys',
 
 	Map = 'map',
+
+	Partition = 'partition',
 
 	Push = 'push',
 

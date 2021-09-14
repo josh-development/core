@@ -1,22 +1,22 @@
-import { FilterByDataPayload, FilterByHookPayload, FilterPayload, Payload } from '../../payloads';
+import { FilterByHookPayload, FilterByValuePayload, FilterPayload, Payload } from '../../payloads';
 import { Method } from '../../types';
 
 /**
- * Checks whether the given payload is a {@link FilterByDataPayload}
+ * Validates whether the given payload is {@link FilterByHookPayload}
  * @since 2.0.0
- * @param payload The payload to check
- * @returns Whether the check is `true` or `false`
+ * @param payload The payload to validate.
+ * @returns Validation boolean.
  */
-export function isFilterByDataPayload<Value = unknown>(payload: FilterPayload<Value>): payload is FilterByDataPayload<Value> {
-	return payload.type === Payload.Type.Data && payload.method === Method.Filter;
+export function isFilterByHookPayload<DataValue>(payload: FilterPayload<DataValue>): payload is FilterByHookPayload<DataValue> {
+	return payload.method === Method.Filter && payload.type === Payload.Type.Hook;
 }
 
 /**
- * Checks whether the given payload is a {@link FilterByHookPayload}
+ * Validates whether the given payload is {@link FilterByValuePayload}
  * @since 2.0.0
- * @param payload The payload to check
- * @returns Whether the check is `true` or `false`
+ * @param payload The payload to validate.
+ * @returns Validation boolean.
  */
-export function isFilterByHookPayload<Value = unknown>(payload: FilterPayload<Value>): payload is FilterByHookPayload<Value> {
-	return payload.type === Payload.Type.Hook && payload.method === Method.Filter;
+export function isFilterByValuePayload<DataValue>(payload: FilterPayload<DataValue>): payload is FilterByValuePayload<DataValue> {
+	return payload.method === Method.Filter && payload.type === Payload.Type.Value;
 }

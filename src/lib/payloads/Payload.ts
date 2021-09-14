@@ -1,5 +1,5 @@
 import type { JoshProviderError } from '../errors';
-import type { Method, Trigger } from '../types';
+import type { Method, StringArray, Trigger } from '../types';
 
 /**
  * The base payload to use for most Josh structures.
@@ -7,7 +7,7 @@ import type { Method, Trigger } from '../types';
  */
 export interface Payload {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method;
@@ -41,19 +41,19 @@ export namespace Payload {
 		 * The path for this extension.
 		 * @since 2.0.0
 		 */
-		path?: string[];
+		path: StringArray;
 	}
 
 	/**
 	 * The data extension for {@link Payload}.
 	 * @since 2.0.0
 	 */
-	export interface Data<Value = unknown> {
+	export interface Data<DataValue> {
 		/**
 		 * The data for this extension.
 		 * @since 2.0.0
 		 */
-		data: Value;
+		data: DataValue;
 	}
 
 	/**
@@ -61,19 +61,7 @@ export namespace Payload {
 	 * @see {@link Data}
 	 * @since 2.0.0
 	 */
-	export type OptionalData<Value = unknown> = Partial<Data<Value>>;
-
-	/**
-	 * The byData extension for {@link Payload}.
-	 * @since 2.0.0
-	 */
-	export interface ByData {
-		/**
-		 * The type for this extension.
-		 * @since 2.0.0
-		 */
-		type: Type.Data;
-	}
+	export type OptionalData<DataValue> = Partial<Data<DataValue>>;
 
 	/**
 	 * The byHook extension for {@link Payload}
@@ -99,16 +87,25 @@ export namespace Payload {
 	}
 
 	/**
+	 * The byValue extension for {@link Payload}.
+	 * @since 2.0.0
+	 */
+	export interface ByValue {
+		/**
+		 * The type for this extension.
+		 * @since 2.0.0
+		 */
+		type: Type.Value;
+	}
+
+	/**
 	 * The type enum for {@link Payload}.
+	 * @see {@link ByHook}
+	 * @see {@link ByPath}
+	 * @see {@link ByValue}
 	 * @since 2.0.0
 	 */
 	export enum Type {
-		/**
-		 * The data type.
-		 * @since 2.0.0
-		 */
-		Data = 'DATA',
-
 		/**
 		 * The hook type.
 		 * @since 2.0.0
@@ -119,6 +116,12 @@ export namespace Payload {
 		 * The path type.
 		 * @since 2.0.0
 		 */
-		Path = 'PATH'
+		Path = 'PATH',
+
+		/**
+		 * The value type.
+		 * @since 2.0.0
+		 */
+		Value = 'VALUE'
 	}
 }

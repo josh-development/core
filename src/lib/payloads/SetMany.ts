@@ -1,4 +1,4 @@
-import type { KeyPathArray, Method } from '../types';
+import type { Method, StringArray } from '../types';
 import type { Payload } from './Payload';
 
 /**
@@ -6,16 +6,22 @@ import type { Payload } from './Payload';
  * @see {@link Payload}
  * @since 2.0.0
  */
-export interface SetManyPayload extends Payload {
+export interface SetManyPayload<Value> extends Payload {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.SetMany;
 
 	/**
-	 * The key/paths for this payload.
+	 * The keys to set.
 	 * @since 2.0.0
 	 */
-	keyPaths: KeyPathArray[];
+	keys: StringArray;
+
+	/**
+	 * The value to set at each key.
+	 * @since 2.0.0
+	 */
+	value: Value;
 }

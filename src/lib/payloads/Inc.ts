@@ -8,9 +8,9 @@ import type { Payload } from './Payload';
  * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
-export interface IncPayload extends Payload, Payload.KeyPath, Payload.OptionalData<number> {
+export interface IncPayload extends Payload, Payload.KeyPath {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.Inc;

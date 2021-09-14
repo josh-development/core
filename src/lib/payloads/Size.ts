@@ -9,7 +9,7 @@ import type { Payload } from './Payload';
  */
 export interface SizePayload extends Payload, Payload.Data<number> {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.Size;

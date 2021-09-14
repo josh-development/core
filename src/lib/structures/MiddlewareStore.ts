@@ -7,18 +7,22 @@ import { Middleware } from './Middleware';
  * The store to contain {@link Middleware} pieces.
  * @since 2.0.0
  */
-export class MiddlewareStore<Value = unknown> extends Store<Middleware> {
+export class MiddlewareStore<StoredValue = unknown> extends Store<Middleware> {
 	/**
 	 * The {@link Josh} instance for this store.
 	 */
-	public instance: Josh<Value>;
+	public instance: Josh<StoredValue>;
 
-	public constructor(options: MiddlewareStoreOptions<Value>) {
+	public constructor(options: MiddlewareStoreOptions<StoredValue>) {
 		super(Middleware as any, { name: 'middlewares' });
 
 		const { instance } = options;
 
 		this.instance = instance;
+	}
+
+	public array(): Middleware[] {
+		return Array.from(this.values());
 	}
 
 	/**
@@ -30,11 +34,11 @@ export class MiddlewareStore<Value = unknown> extends Store<Middleware> {
 	 */
 	public filterByCondition(method: Method, trigger: Trigger): Middleware[] {
 		const middlewares = this.array().filter(
-			(middleware) => middleware.use && middleware.conditions.some((c) => c.methods!.includes(method) && c.trigger === trigger)
+			(middleware) => middleware.use && middleware.conditions.some((c) => c.methods.includes(method) && c.trigger === trigger)
 		);
 
-		const withPositions = middlewares.filter((middleware) => Boolean(middleware.position));
-		const withoutPositions = middlewares.filter((middleware) => !middleware.position);
+		const withPositions = middlewares.filter((middleware) => (middleware.position === undefined ? false : true));
+		const withoutPositions = middlewares.filter((middleware) => (middleware.position === undefined ? true : false));
 
 		return [...withPositions.sort((a, b) => a.position! - b.position!), ...withoutPositions];
 	}
@@ -44,10 +48,10 @@ export class MiddlewareStore<Value = unknown> extends Store<Middleware> {
  * The options for {@link MiddlewareStore}
  * @since 2.0.0
  */
-export interface MiddlewareStoreOptions<Value = unknown> {
+export interface MiddlewareStoreOptions<StoredValue = unknown> {
 	/**
 	 * The {@link Josh} instance for this store.
 	 * @since 2.0.0
 	 */
-	instance: Josh<Value>;
+	instance: Josh<StoredValue>;
 }

@@ -7,10 +7,16 @@ import type { Payload } from './Payload';
  * @see {@link Payload.KeyPath}
  * @since 2.0.0
  */
-export interface SetPayload extends Payload, Payload.KeyPath {
+export interface SetPayload<Value> extends Payload, Payload.KeyPath {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.Set;
+
+	/**
+	 * The value to set.
+	 * @since 2.0.0
+	 */
+	value: Value;
 }

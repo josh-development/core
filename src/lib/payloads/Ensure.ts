@@ -7,22 +7,22 @@ import type { Payload } from './Payload';
  * @see {@link Payload.Data}
  * @since 2.0.0
  */
-export interface EnsurePayload<Value = unknown> extends Payload, Payload.Data<Value> {
+export interface EnsurePayload<StoredValue> extends Payload, Payload.Data<StoredValue> {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.Ensure;
 
 	/**
-	 * The key for this payload.
+	 * The key to get or set.
 	 * @since 2.0.0
 	 */
 	key: string;
 
 	/**
-	 * The default value for this payload.
+	 * The default value to store if {@link EnsurePayload.key} doesn't exist.
 	 * @since 2.0.0
 	 */
-	defaultValue: Value;
+	defaultValue: StoredValue;
 }

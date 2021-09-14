@@ -7,7 +7,7 @@ import type { Payload } from './Payload';
  * @see {@link Payload.Data}
  * @since 2.0.0
  */
-export interface ValuesPayload<Value = unknown> extends Payload, Payload.Data<Value[]> {
+export interface ValuesPayload<DataValue> extends Payload, Payload.Data<DataValue[]> {
 	/**
 	 * The method for this payload
 	 * @since 2.0.0

@@ -1,3 +1,5 @@
-export type KeyPathArray = [string, string[]];
+import type { StringArray } from './StringArray';
 
-export type KeyPath = KeyPathArray | string;
+export type KeyPathArray = [string, StringArray | undefined];
+
+export type KeyPath = string | KeyPathArray;

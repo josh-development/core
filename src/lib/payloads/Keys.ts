@@ -1,4 +1,4 @@
-import type { Method } from '../types';
+import type { Method, StringArray } from '../types';
 import type { Payload } from './Payload';
 
 /**
@@ -7,9 +7,9 @@ import type { Payload } from './Payload';
  * @see {@link Payload.Data}
  * @since 2.0.0
  */
-export interface KeysPayload extends Payload, Payload.Data<string[]> {
+export interface KeysPayload extends Payload, Payload.Data<StringArray> {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.Keys;

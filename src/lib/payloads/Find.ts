@@ -1,5 +1,5 @@
-import type { Awaited } from '@sapphire/utilities';
-import type { Method } from '../types';
+import type { Awaited, Primitive } from '@sapphire/utilities';
+import type { Method, StringArray } from '../types';
 import type { Payload } from './Payload';
 
 /**
@@ -8,9 +8,9 @@ import type { Payload } from './Payload';
  * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
-export interface FindPayload<Value = unknown> extends Payload, Payload.OptionalData<Value> {
+export interface FindPayload<DataValue> extends Payload, Payload.OptionalData<DataValue> {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.Find;
@@ -19,52 +19,25 @@ export interface FindPayload<Value = unknown> extends Payload, Payload.OptionalD
 	 * The type for this payload.
 	 * @since 2.0.0
 	 */
-	type: Payload.Type;
+	type: Payload.Type.Hook | Payload.Type.Value;
 
 	/**
-	 * The input data for this payload.
+	 * The hook to check equality.
 	 * @since 2.0.0
 	 */
-	inputData?: Value;
+	hook?: FindHook<DataValue>;
 
 	/**
-	 * The input hook for this payload.
+	 * The value to check equality.
 	 * @since 2.0.0
 	 */
-	inputHook?: FindHook<Value>;
+	value?: Primitive;
 
 	/**
-	 * The path for this payload.
+	 * A path to the value to check equality.
 	 * @since 2.0.0
 	 */
-	path?: string[];
-}
-
-/**
- * The data payload for {@link Method.Find}
- * @see {@link Payload}
- * @see {@link Payload.ByData}
- * @see {@link Payload.OptionalData}
- * @since 2.0.0
- */
-export interface FindByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.OptionalData<Value> {
-	/**
-	 * The method for this payload
-	 * @since 2.0.0
-	 */
-	method: Method.Find;
-
-	/**
-	 * The input data for this payload.
-	 * @since 2.0.0
-	 */
-	inputData: Value;
-
-	/**
-	 * The path for this payload.
-	 * @since 2.0.0
-	 */
-	path?: string[];
+	path?: StringArray;
 }
 
 /**
@@ -74,7 +47,7 @@ export interface FindByDataPayload<Value = unknown> extends Payload, Payload.ByD
  * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
-export interface FindByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.OptionalData<Value> {
+export interface FindByHookPayload<DataValue> extends Payload, Payload.ByHook, Payload.OptionalData<DataValue> {
 	/**
 	 * The method for this payload
 	 * @since 2.0.0
@@ -82,15 +55,37 @@ export interface FindByHookPayload<Value = unknown> extends Payload, Payload.ByH
 	method: Method.Find;
 
 	/**
-	 * The input hook for this payload.
+	 * The hook to check equality.
 	 * @since 2.0.0
 	 */
-	inputHook: FindHook<Value>;
+	hook: FindHook<DataValue>;
+}
+
+/**
+ * The value payload for {@link Method.Find}
+ * @see {@link Payload}
+ * @see {@link Payload.ByValue}
+ * @see {@link Payload.OptionalData}
+ * @since 2.0.0
+ */
+export interface FindByValuePayload<DataValue> extends Payload, Payload.ByValue, Payload.OptionalData<DataValue> {
+	/**
+	 * The method for this payload
+	 * @since 2.0.0
+	 */
+	method: Method.Find;
 
 	/**
-	 * The path for this payload.
+	 * The value to check equality.
+	 * @since 2.0.0
 	 */
-	path?: string[];
+	value: Primitive;
+
+	/**
+	 * A path to the value for equality.
+	 * @since 2.0.0
+	 */
+	path: StringArray;
 }
 
 /**

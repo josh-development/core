@@ -7,9 +7,9 @@ import type { Payload } from './Payload';
  * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
-export interface RandomPayload<Value = unknown> extends Payload, Payload.OptionalData<Value> {
+export interface RandomPayload<DataValue> extends Payload, Payload.OptionalData<DataValue> {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.Random;

@@ -1,50 +1,46 @@
 import { getRootData } from '@sapphire/pieces';
-import { isFunction } from '@sapphire/utilities';
+import { isFunction, isPrimitive, Primitive } from '@sapphire/utilities';
 import { join } from 'path';
 import type { AutoEnsureContext } from '../../middlewares/CoreAutoEnsure';
 import { JoshError } from '../errors';
 import {
 	AutoKeyPayload,
+	ClearPayload,
 	DecPayload,
 	DeletePayload,
 	EnsurePayload,
-	EveryByDataPayload,
-	EveryByHookPayload,
 	EveryHook,
-	FilterByDataPayload,
-	FilterByHookPayload,
+	EveryPayload,
 	FilterHook,
-	FindByDataPayload,
-	FindByHookPayload,
+	FilterPayload,
 	FindHook,
+	FindPayload,
 	GetAllPayload,
 	GetManyPayload,
 	GetPayload,
 	HasPayload,
 	IncPayload,
 	KeysPayload,
-	MapByHookPayload,
-	MapByPathPayload,
 	MapHook,
+	MapPayload,
+	PartitionHook,
+	PartitionPayload,
 	Payload,
 	PushPayload,
 	RandomKeyPayload,
 	RandomPayload,
-	RemoveByDataPayload,
-	RemoveByHookPayload,
 	RemoveHook,
+	RemovePayload,
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
-	SomeByDataPayload,
-	SomeByHookPayload,
 	SomeHook,
-	UpdateByDataPayload,
-	UpdateByHookPayload,
+	SomePayload,
 	UpdateHook,
+	UpdatePayload,
 	ValuesPayload
 } from '../payloads';
-import { BuiltInMiddleware, KeyPath, KeyPathArray, Method, Trigger } from '../types';
+import { BuiltInMiddleware, KeyPath, KeyPathArray, Method, StringArray, Trigger } from '../types';
 import { MapProvider } from './defaultProvider';
 import { JoshProvider } from './JoshProvider';
 import type { Middleware } from './Middleware';
@@ -96,7 +92,7 @@ import { MiddlewareStore } from './MiddlewareStore';
  *   // More options...
  * });
  */
-export class Josh<Value = unknown> {
+export class Josh<StoredValue = unknown> {
 	/**
 	 * This Josh's name. Used for middleware and/or provider information.
 	 * @since 2.0.0
@@ -107,7 +103,7 @@ export class Josh<Value = unknown> {
 	 * This Josh's options. Used throughout the instance.
 	 * @since 2.0.0
 	 */
-	public options: Josh.Options<Value>;
+	public options: Josh.Options<StoredValue>;
 
 	/**
 	 * The middleware store.
@@ -115,16 +111,16 @@ export class Josh<Value = unknown> {
 	 * NOTE: Do not use this unless you know what your doing.
 	 * @since 2.0.0
 	 */
-	public middlewares: MiddlewareStore;
+	public middlewares: MiddlewareStore<StoredValue>;
 
 	/**
 	 * This Josh's provider instance.
 	 *
 	 * NOTE: Do not use this unless you know what your doing.
 	 */
-	public provider: JoshProvider<Value>;
+	public provider: JoshProvider<StoredValue>;
 
-	public constructor(options: Josh.Options<Value>) {
+	public constructor(options: Josh.Options<StoredValue>) {
 		const { name, provider, middlewareDirectory } = options;
 
 		this.options = options;
@@ -133,7 +129,7 @@ export class Josh<Value = unknown> {
 			throw new JoshError({ identifier: Josh.Identifiers.MissingName, message: 'The "name" option is required to initiate a Josh instance.' });
 
 		this.name = name;
-		this.provider = provider ?? new MapProvider<Value>();
+		this.provider = provider ?? new MapProvider<StoredValue>();
 
 		if (!(this.provider instanceof JoshProvider))
 			throw new JoshError({
@@ -141,7 +137,7 @@ export class Josh<Value = unknown> {
 				message: 'The "provider" option must extend the exported "JoshProvider" class.'
 			});
 
-		this.middlewares = new MiddlewareStore({ instance: this })
+		this.middlewares = new MiddlewareStore<StoredValue>({ instance: this })
 			.registerPath(middlewareDirectory ?? join(getRootData().root, 'middlewares', this.name))
 			.registerPath(join(__dirname, '..', '..', 'middlewares'));
 	}
@@ -161,18 +157,35 @@ export class Josh<Value = unknown> {
 	public async autoKey(): Promise<string> {
 		let payload: AutoKeyPayload = { method: Method.AutoKey, trigger: Trigger.PreProvider, data: '' };
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.AutoKey, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.AutoKey](payload);
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.AutoKey)) payload = await middleware[Method.AutoKey](payload);
 
-		payload = await this.provider.autoKey(payload);
+		payload = await this.provider[Method.AutoKey](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
-		const postMiddlewares = this.middlewares.filterByCondition(Method.AutoKey, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.AutoKey](payload);
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPostMiddlewares(Method.AutoKey)) payload = await middleware[Method.AutoKey](payload);
 
 		return payload.data;
+	}
+
+	public async clear(): Promise<this> {
+		let payload: ClearPayload = { method: Method.Clear, trigger: Trigger.PreProvider };
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Clear)) payload = await middleware[Method.Clear](payload);
+
+		payload = await this.provider[Method.Clear](payload);
+		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPostMiddlewares(Method.Clear)) payload = await middleware[Method.Clear](payload);
+
+		return this;
 	}
 
 	/**
@@ -195,19 +208,15 @@ export class Josh<Value = unknown> {
 		let payload: DecPayload = { method: Method.Dec, trigger: Trigger.PreProvider, key, path };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Dec)) payload = await middleware[Method.Dec](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Dec, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Dec](payload);
-
-		payload = await this.provider.dec(payload);
+		payload = await this.provider[Method.Dec](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Dec, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Dec](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Dec)) payload = await middleware[Method.Dec](payload);
 
 		return this;
 	}
@@ -241,19 +250,15 @@ export class Josh<Value = unknown> {
 		let payload: DeletePayload = { method: Method.Delete, trigger: Trigger.PreProvider, key, path };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Delete)) payload = await middleware[Method.Delete](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Delete, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Delete](payload);
-
-		payload = await this.provider.delete(payload);
+		payload = await this.provider[Method.Delete](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Delete, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Delete](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Delete)) payload = await middleware[Method.Delete](payload);
 
 		return this;
 	}
@@ -277,289 +282,200 @@ export class Josh<Value = unknown> {
 	 * await josh.ensure('key', 'defaultValue'); // 'value'
 	 * ```
 	 */
-	public async ensure<CustomValue = Value>(key: string, defaultValue: CustomValue): Promise<CustomValue> {
-		let payload: EnsurePayload<CustomValue> = { method: Method.Ensure, trigger: Trigger.PreProvider, key, data: defaultValue, defaultValue };
+	public async ensure(key: string, defaultValue: StoredValue): Promise<StoredValue> {
+		let payload: EnsurePayload<StoredValue> = { method: Method.Ensure, trigger: Trigger.PreProvider, key, defaultValue, data: defaultValue };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Ensure)) payload = await middleware[Method.Ensure](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Ensure, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Ensure](payload);
-
-		payload = await this.provider.ensure(payload);
+		payload = await this.provider[Method.Ensure](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Ensure, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Ensure](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Ensure)) payload = await middleware[Method.Ensure](payload);
 
 		return payload.data;
 	}
 
-	public async every<CustomValue = Value>(path: string[], value: CustomValue): Promise<boolean>;
-	public async every<CustomValue = Value>(hook: EveryHook<CustomValue>, path?: string[]): Promise<boolean>;
-	public async every<CustomValue = Value>(pathOrHook: string[] | EveryHook<CustomValue>, pathOrValue?: string[] | CustomValue): Promise<boolean> {
-		if (Array.isArray(pathOrHook)) {
-			if (pathOrValue === undefined)
-				throw new JoshError({
-					identifier: Josh.Identifiers.EveryMissingValue,
-					message: 'The "value" parameter is required when using every by data.'
-				});
-
-			let payload: EveryByDataPayload<CustomValue> = {
-				method: Method.Every,
-				trigger: Trigger.PreProvider,
-				type: Payload.Type.Data,
-				path: pathOrHook,
-				inputData: pathOrValue as CustomValue,
-				data: true
-			};
-
-			for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-			const preMiddlewares = this.middlewares.filterByCondition(Method.Every, Trigger.PreProvider);
-			for (const middleware of preMiddlewares) payload = await middleware[Method.Every](payload);
-
-			payload = await this.provider.everyByData(payload);
-			payload.trigger = Trigger.PostProvider;
-
-			if (payload.error) throw payload.error;
-
-			for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-			const postMiddlewares = this.middlewares.filterByCondition(Method.Every, Trigger.PostProvider);
-			for (const middleware of postMiddlewares) payload = await middleware[Method.Every](payload);
-
-			return payload.data;
+	public async every(path: StringArray, value: Primitive): Promise<boolean>;
+	public async every(hook: EveryHook<StoredValue>): Promise<boolean>;
+	public async every(pathOrHook: StringArray | EveryHook<StoredValue>, value?: Primitive): Promise<boolean> {
+		if (!isFunction(pathOrHook)) {
+			if (value === undefined)
+				throw new JoshError({ identifier: Josh.Identifiers.EveryMissingValue, message: 'The "value" parameter was not found.' });
+			if (!isPrimitive(value))
+				throw new JoshError({ identifier: Josh.Identifiers.EveryInvalidValue, message: 'The "value" parameter must be a primitive type.' });
 		}
 
-		if (pathOrValue !== undefined && !Array.isArray(pathOrValue))
-			throw new JoshError({ identifier: Josh.Identifiers.EveryInvalidPath, message: 'The path parameter must be an array of strings.' });
-
-		let payload: EveryByHookPayload<CustomValue> = {
+		let payload: EveryPayload<StoredValue> = {
 			method: Method.Every,
 			trigger: Trigger.PreProvider,
-			type: Payload.Type.Hook,
-			path: pathOrValue as string[] | undefined,
-			inputHook: pathOrHook,
+			type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value,
 			data: true
 		};
 
+		if (isFunction(pathOrHook)) payload.hook = pathOrHook;
+		else {
+			payload.path = pathOrHook;
+			payload.value;
+		}
+
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Every)) payload = await middleware[Method.Every](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Every, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Every](payload);
-
-		payload = await this.provider.everyByHook(payload);
+		payload = await this.provider[Method.Every](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Every, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Every](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Every)) payload = await middleware[Method.Every](payload);
 
 		return payload.data;
 	}
 
 	/**
-	 * Filter data using a path and value.
+	 * Filter stored values using a path and value.
 	 * @since 2.0.0
-	 * @param path The path array to check on stored data.
-	 * @param value The value to check against the data at path.
+	 * @param path A path to the value for equality check.
+	 * @param value The value to check equality.
 	 * @param returnBulkType The return bulk type. Defaults to {@link Bulk.Object}
 	 * @returns The bulk data.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', { path: 'value' });
+	 *
+	 * await josh.filter(['path'], 'value'); // { key: { path: 'value' } }
+	 * // Using a return bulk type.
+	 * await josh.filter(['path'], 'value', Bulk.OneDimensionalArray); // [{ path: 'value' }]
+	 * ```
 	 */
-	public async filter<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
-		path: string[],
-		value: CustomValue,
-		returnBulkType?: K
-	): Promise<ReturnBulk<CustomValue>[K]>;
-
-	/** Filter data using a function and optional path.
-	 * @since 2.0.0
-	 * @param hook The function to run on stored data.
-	 * @param path The optional path array to get on stored data and pass to the function.
-	 * @param returnBulkType The return bulk type. Defaults to {@link Bulk.Object}
-	 * @returns The bulk data.
-	 */
-	public async filter<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
-		hook: FilterHook<CustomValue>,
-		path?: string[],
-		returnBulkType?: K
-	): Promise<ReturnBulk<CustomValue>[K]>;
+	public async filter<BulkType extends keyof ReturnBulk<StoredValue>>(
+		path: StringArray,
+		value: Primitive,
+		returnBulkType?: BulkType
+	): Promise<ReturnBulk<StoredValue>[BulkType]>;
 
 	/**
-	 * Filter data using a path and value or function and optional path.
-	 * @param pathOrHook The path array or function.
-	 * @param pathOrValue The value or path array.
+	 * Filter stored data using a hook function.
+	 * @since 2.0.0
+	 * @param hook The hook function to check equality.
+	 * @param _value Unused.
 	 * @param returnBulkType The return bulk type. Defaults to {@link Bulk.Object}
 	 * @returns The bulk data.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', 'value');
+	 *
+	 * await josh.filter((value) => value === 'value'); // { key: { path: 'value' } }
+	 * // Using a return bulk type.
+	 * await josh.filter((value) => value === 'value', undefined, Bulk.TwoDimensionalArray); // [['key', 'value']]
+	 * ```
 	 */
-	public async filter<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
-		pathOrHook: string[] | FilterHook<CustomValue>,
-		pathOrValue?: string[] | CustomValue,
-		returnBulkType?: K
-	): Promise<ReturnBulk<CustomValue>[K]> {
-		if (Array.isArray(pathOrHook)) {
-			if (pathOrValue === undefined)
-				throw new JoshError({
-					identifier: Josh.Identifiers.FilterMissingValue,
-					message: 'The "value" parameter is required when filtering by data.'
-				});
+	public async filter<BulkType extends keyof ReturnBulk<StoredValue>>(
+		hook: FilterHook<StoredValue>,
+		_value: undefined,
+		returnBulkType?: BulkType
+	): Promise<ReturnBulk<StoredValue>[BulkType]>;
 
-			let payload: FilterByDataPayload<CustomValue> = {
-				method: Method.Filter,
-				trigger: Trigger.PreProvider,
-				type: Payload.Type.Data,
-				path: pathOrHook,
-				inputData: pathOrValue as CustomValue,
-				data: {}
-			};
-
-			for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-			const preMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PreProvider);
-			for (const middleware of preMiddlewares) payload = await middleware[Method.Filter](payload);
-
-			payload = await this.provider.filterByData(payload);
-			payload.trigger = Trigger.PostProvider;
-
-			if (payload.error) throw payload.error;
-
-			for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-			const postMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PostProvider);
-			for (const middleware of postMiddlewares) payload = await middleware[Method.Filter](payload);
-
-			return this.convertBulkData(payload.data, returnBulkType);
+	public async filter<BulkType extends keyof ReturnBulk<StoredValue>>(
+		pathOrHook: StringArray | FilterHook<StoredValue>,
+		value?: Primitive,
+		returnBulkType?: BulkType
+	): Promise<ReturnBulk<StoredValue>[BulkType]> {
+		if (!isFunction(pathOrHook)) {
+			if (value === undefined)
+				throw new JoshError({ identifier: Josh.Identifiers.FilterMissingValue, message: 'The "value" parameter was not found.' });
+			if (!isPrimitive(value))
+				throw new JoshError({ identifier: Josh.Identifiers.FilterInvalidValue, message: 'The "value" parameter must be a primitive type.' });
 		}
 
-		if (pathOrValue !== undefined && !Array.isArray(pathOrValue))
-			throw new JoshError({ identifier: Josh.Identifiers.FilterInvalidPath, message: 'The "path" parameter must be an array of strings.' });
-
-		let payload: FilterByHookPayload<CustomValue> = {
+		let payload: FilterPayload<StoredValue> = {
 			method: Method.Filter,
 			trigger: Trigger.PreProvider,
-			type: Payload.Type.Hook,
-			path: pathOrValue as string[] | undefined,
-			inputHook: pathOrHook,
+			type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value,
 			data: {}
 		};
 
+		if (isFunction(pathOrHook)) payload.hook = pathOrHook;
+		else {
+			payload.path = pathOrHook;
+			payload.value = value;
+		}
+
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Filter)) payload = await middleware[Method.Filter](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Filter](payload);
-
-		payload = await this.provider.filterByHook(payload);
+		payload = await this.provider[Method.Filter](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Filter, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Filter](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Filter)) payload = await middleware[Method.Filter](payload);
 
 		return this.convertBulkData(payload.data, returnBulkType);
 	}
 
 	/**
-	 * Find data using a path and value.
+	 * Find a stored value using a path and value.
 	 * @since 2.0.0
-	 * @param path The path array to check on stored data.
-	 * @param value The value to check against the data at path.
-	 * @returns The data found or `null`.
+	 * @param path A path to the value for equality check.
+	 * @param value The value to check equality.
+	 * @returns The found value or null.
 	 */
-	public async find<CustomValue = Value>(path: string[], value: CustomValue): Promise<CustomValue>;
+	public async find(path: StringArray, value: Primitive): Promise<StoredValue | null>;
 
 	/**
-	 * Find data using a function and optional path.
+	 * Find a stored value using a hook function.
 	 * @since 2.0.0
-	 * @param hook The function to run on stored data.
-	 * @param path The optional path array to get on stored data and pass to the function.
-	 * @returns The data found or `null`.
+	 * @param hook The hook to check equality.
+	 * @returns The found value or null.
 	 */
-	public async find<CustomValue = Value>(hook: FindHook<CustomValue>, path?: string[]): Promise<CustomValue | null>;
-
-	/**
-	 * Find data using a path and value or function and optional path.
-	 * @param pathOrHook The path array or function.
-	 * @param pathOrValue The value or path array.
-	 * @returns The data found or `null`.
-	 */
-	public async find<CustomValue = Value>(
-		pathOrHook: string[] | FindHook<CustomValue>,
-		pathOrValue?: string[] | CustomValue
-	): Promise<CustomValue | null> {
-		if (Array.isArray(pathOrHook)) {
-			if (pathOrValue === undefined)
-				throw new JoshError({ identifier: Josh.Identifiers.FindMissingValue, message: 'The "value" parameter is required when finding by data.' });
-
-			let payload: FindByDataPayload<CustomValue> = {
-				method: Method.Find,
-				trigger: Trigger.PreProvider,
-				type: Payload.Type.Data,
-				path: pathOrHook,
-				inputData: pathOrValue as CustomValue
-			};
-
-			for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-			const preMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PreProvider);
-			for (const middleware of preMiddlewares) payload = await middleware[Method.Find](payload);
-
-			payload = await this.provider.findByData(payload);
-			payload.trigger = Trigger.PostProvider;
-
-			if (payload.error) throw payload.error;
-
-			for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-			const postMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PostProvider);
-			for (const middleware of postMiddlewares) payload = await middleware[Method.Find](payload);
-
-			return payload.data ?? null;
+	public async find(hook: FindHook<StoredValue>): Promise<StoredValue | null>;
+	public async find(pathOrHook: StringArray | FindHook<StoredValue>, value?: Primitive): Promise<StoredValue | null> {
+		if (!isFunction(pathOrHook)) {
+			if (value === undefined)
+				throw new JoshError({ identifier: Josh.Identifiers.FindMissingValue, message: 'The "value" parameter was not found.' });
+			if (!isPrimitive(value))
+				throw new JoshError({ identifier: Josh.Identifiers.FindInvalidValue, message: 'The "value" parameter must be a primitive type.' });
 		}
 
-		if (pathOrValue !== undefined && !Array.isArray(pathOrValue))
-			throw new JoshError({ identifier: Josh.Identifiers.FindInvalidPath, message: 'The "path" parameter must be an array of strings.' });
-
-		let payload: FindByHookPayload<CustomValue> = {
+		let payload: FindPayload<StoredValue> = {
 			method: Method.Find,
 			trigger: Trigger.PreProvider,
-			type: Payload.Type.Hook,
-			path: pathOrValue as string[] | undefined,
-			inputHook: pathOrHook
+			type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value
 		};
 
+		if (isFunction(pathOrHook)) payload.hook = pathOrHook;
+		else {
+			payload.path = pathOrHook;
+			payload.value = value;
+		}
+
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Find)) payload = await middleware[Method.Find](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Find](payload);
-
-		payload = await this.provider.findByHook(payload);
+		payload = await this.provider[Method.Find](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Find, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Find](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Find)) payload = await middleware[Method.Find](payload);
 
 		return payload.data ?? null;
 	}
 
 	/**
-	 * Get data at a specific key/path.
+	 * Get a value using a key.
 	 * @since 2.0.0
-	 * @param keyPath The key/path to get data from.
-	 * @returns The data found or `null`.
+	 * @param key A key at which a value is.
+	 * @returns The value gotten or null.
 	 *
 	 * @example
 	 * ```typescript
@@ -567,6 +483,14 @@ export class Josh<Value = unknown> {
 	 *
 	 * await josh.get('key'); // 'value'
 	 * ```
+	 */
+	public async get(key: string): Promise<StoredValue | null>;
+
+	/**
+	 * Get a value using a key and/or path.
+	 * @since 2.0.0
+	 * @param keyPath A key and/or path at which a value is.
+	 * @returns The value gotten or null.
 	 *
 	 * @example
 	 * ```typescript
@@ -575,14 +499,13 @@ export class Josh<Value = unknown> {
 	 * await josh.get(['key', ['path']]); // 'value'
 	 * ```
 	 */
-	public async get<CustomValue = Value>(keyPath: KeyPath): Promise<CustomValue | null> {
+	public async get<Value = StoredValue>(keyPath: KeyPathArray): Promise<Value | null>;
+	public async get<Value = StoredValue>(keyPath: KeyPath): Promise<Value | null> {
 		const [key, path] = this.getKeyPath(keyPath);
-		let payload: GetPayload<CustomValue> = { method: Method.Get, trigger: Trigger.PreProvider, key, path };
+		let payload: GetPayload<Value> = { method: Method.Get, trigger: Trigger.PreProvider, key, path };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Get, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Get](payload);
+		for (const middleware of this.getPreMiddlewares(Method.Get)) payload = await middleware[Method.Get](payload);
 
 		payload = await this.provider.get(payload);
 		payload.trigger = Trigger.PostProvider;
@@ -590,15 +513,13 @@ export class Josh<Value = unknown> {
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Get, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Get](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Get)) payload = await middleware[Method.Get](payload);
 
 		return payload.data ?? null;
 	}
 
 	/**
-	 * Get all data.
+	 * Get all stored values.
 	 * @since 2.0.0
 	 * @param returnBulkType The return bulk type. Defaults to {@link Bulk.Object}
 	 * @returns The bulk data.
@@ -621,15 +542,13 @@ export class Josh<Value = unknown> {
 	 * await josh.getAll(Bulk.TwoDimensionalArray); // [['key', { path: 'value' }]]
 	 * ```
 	 */
-	public async getAll<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
-		returnBulkType?: K
-	): Promise<ReturnBulk<CustomValue>[K]> {
-		let payload: GetAllPayload<CustomValue> = { method: Method.GetAll, trigger: Trigger.PreProvider, data: {} };
+	public async getAll<BulkType extends keyof ReturnBulk<StoredValue> = Bulk.Object>(
+		returnBulkType?: BulkType
+	): Promise<ReturnBulk<StoredValue>[BulkType]> {
+		let payload: GetAllPayload<StoredValue> = { method: Method.GetAll, trigger: Trigger.PreProvider, data: {} };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const preMiddlewares = this.middlewares.filterByCondition(Method.GetAll, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.GetAll](payload);
+		for (const middleware of this.getPreMiddlewares(Method.GetAll)) payload = await middleware[Method.GetAll](payload);
 
 		payload = await this.provider.getAll(payload);
 		payload.trigger = Trigger.PostProvider;
@@ -637,17 +556,15 @@ export class Josh<Value = unknown> {
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.GetAll, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.GetAll](payload);
+		for (const middleware of this.getPostMiddlewares(Method.GetAll)) payload = await middleware[Method.GetAll](payload);
 
 		return this.convertBulkData(payload.data, returnBulkType);
 	}
 
 	/**
-	 * Get data at many key/paths.
+	 * Get stored values at multiple keys.
 	 * @since 2.0.0
-	 * @param keyPaths The key/paths to get from.
+	 * @param keys An array of keys to get values from.
 	 * @param returnBulkType The return bulk type. Defaults to {@link Bulk.Object}
 	 * @returns The bulk data.
 	 *
@@ -655,52 +572,52 @@ export class Josh<Value = unknown> {
 	 * ```typescript
 	 * await josh.set('key', 'value');
 	 *
-	 * await josh.getMany([['key', []]]); // { key: 'value' };
+	 * await this.getMany(['key']); // { key: 'value' }
 	 * // Using a return bulk type.
-	 * await josh.getMany([['key', []]], Bulk.OneDimensionalArray); // ['value']
-	 * ```
-	 *
-	 * @example
-	 * ```typescript
-	 * await josh.set('key', { path: 'value' });
-	 *
-	 * await josh.getMany([['key', ['path']]]); // { key: 'value' }
-	 * // Using a return bulk type.
-	 * await josh.getMany([['key', ['path]]], Bulk.TwoDimensionalArray); // [['key', 'value']]
+	 * await this.getMany(['key'], Bulk.OneDimensionalArray); // ['value']
 	 * ```
 	 */
-	public async getMany<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
-		keyPaths: KeyPathArray[],
-		returnBulkType?: K
-	): Promise<ReturnBulk<CustomValue | null>[K]> {
-		let payload: GetManyPayload<CustomValue> = { method: Method.GetMany, trigger: Trigger.PreProvider, keyPaths, data: {} };
+	public async getMany<BulkType extends keyof ReturnBulk<StoredValue | null>>(
+		keys: StringArray,
+		returnBulkType?: BulkType
+	): Promise<ReturnBulk<StoredValue | null>[BulkType]> {
+		let payload: GetManyPayload<StoredValue> = { method: Method.GetMany, trigger: Trigger.PreProvider, keys, data: {} };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.GetMany)) payload = await middleware[Method.GetMany](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.GetMany, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.GetMany](payload);
-
-		payload = await this.provider.getMany(payload);
+		payload = await this.provider[Method.GetMany](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.GetMany, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.GetMany](payload);
+		for (const middleware of this.getPostMiddlewares(Method.GetMany)) payload = await middleware[Method.GetMany](payload);
 
 		return this.convertBulkData(payload.data, returnBulkType);
 	}
 
+	/**
+	 * Check if a key and/or path exists.
+	 * @since 2.0.0
+	 * @param keyPath A key and/or path to the value to check for.
+	 * @returns Validation boolean.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.has('key'); // false
+	 *
+	 * await josh.set('key', 'value');
+	 *
+	 * await josh.has('key'); // true
+	 * ```
+	 */
 	public async has(keyPath: KeyPath): Promise<boolean> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: HasPayload = { method: Method.Has, trigger: Trigger.PreProvider, key, path, data: false };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Has, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Has](payload);
+		for (const middleware of this.getPreMiddlewares(Method.Has)) payload = await middleware[Method.Has](payload);
 
 		payload = await this.provider.has(payload);
 		payload.trigger = Trigger.PostProvider;
@@ -708,9 +625,7 @@ export class Josh<Value = unknown> {
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Has, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Has](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Has)) payload = await middleware[Method.Has](payload);
 
 		return payload.data;
 	}
@@ -718,7 +633,7 @@ export class Josh<Value = unknown> {
 	/**
 	 * Increment an integer by `1`.
 	 * @since 2.0.0
-	 * @param keyPath The key/path to the integer for incrementing.
+	 * @param keyPath The key and/or path to an integer value for incrementing.
 	 * @returns The {@link Josh} instance.
 	 *
 	 * @example
@@ -735,9 +650,7 @@ export class Josh<Value = unknown> {
 		let payload: IncPayload = { method: Method.Inc, trigger: Trigger.PreProvider, key, path };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Inc, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Inc](payload);
+		for (const middleware of this.getPreMiddlewares(Method.Inc)) payload = await middleware[Method.Inc](payload);
 
 		payload = await this.provider.inc(payload);
 		payload.trigger = Trigger.PostProvider;
@@ -745,17 +658,15 @@ export class Josh<Value = unknown> {
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Inc, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Inc](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Inc)) payload = await middleware[Method.Inc](payload);
 
 		return this;
 	}
 
 	/**
-	 * Get an array of keys.
+	 * Returns all stored value keys.
 	 * @since 2.0.0
-	 * @returns The array of string keys.
+	 * @returns The array of stored value keys.
 	 *
 	 * @example
 	 * ```typescript
@@ -768,9 +679,7 @@ export class Josh<Value = unknown> {
 		let payload: KeysPayload = { method: Method.Keys, trigger: Trigger.PreProvider, data: [] };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Keys, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Keys](payload);
+		for (const middleware of this.getPreMiddlewares(Method.Keys)) payload = await middleware[Method.Keys](payload);
 
 		payload = await this.provider.keys(payload);
 		payload.trigger = Trigger.PostProvider;
@@ -778,89 +687,155 @@ export class Josh<Value = unknown> {
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Keys, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Keys](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Keys)) payload = await middleware[Method.Keys](payload);
 
 		return payload.data;
 	}
 
 	/**
-	 * Map all stored data to an array.
+	 * Map stored values by path or hook function.
 	 * @since 2.0.0
-	 * @param pathOrHook A path array or hook function.
-	 * @returns The mapped data.
+	 * @param pathOrHook The path or hook to map by.
+	 * @returns The mapped values.
 	 *
 	 * @example
 	 * ```typescript
-	 * await josh.setMany([['key', []], ['anotherKey', []]], { path: 'value' });
+	 * await josh.set('key', { path: 'value' });
 	 *
-	 * await josh.map((data) => data.path); // ['value', 'value']
+	 * await josh.map(['path']); // ['value']
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', 'value');
+	 *
+	 * await josh.map((value) => value.toUpperCase()); // ['VALUE']
 	 * ```
 	 */
-	public async map<CustomValue = Value>(pathOrHook: string[] | MapHook<CustomValue>): Promise<CustomValue[]> {
-		if (isFunction(pathOrHook)) {
-			let payload: MapByHookPayload<CustomValue> = { method: Method.Map, type: Payload.Type.Hook, hook: pathOrHook, data: [] };
+	public async map<Value = StoredValue>(pathOrHook: StringArray | MapHook<Value, StoredValue>): Promise<Value[]> {
+		let payload: MapPayload<Value, StoredValue> = {
+			method: Method.Map,
+			trigger: Trigger.PreProvider,
+			type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Path,
+			data: []
+		};
 
-			for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-			const preMiddlewares = this.middlewares.filterByCondition(Method.Map, Trigger.PreProvider);
-			for (const middleware of preMiddlewares) payload = await middleware[Method.Map](payload);
-
-			payload = await this.provider.mapByHook(payload);
-			payload.trigger = Trigger.PostProvider;
-
-			for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-			const postMiddlewares = this.middlewares.filterByCondition(Method.Map, Trigger.PostProvider);
-			for (const middleware of postMiddlewares) payload = await middleware[Method.Map](payload);
-
-			return payload.data;
-		}
-
-		let payload: MapByPathPayload<CustomValue> = { method: Method.Map, type: Payload.Type.Path, path: pathOrHook, data: [] };
+		if (isFunction(pathOrHook)) payload.hook = pathOrHook;
+		else payload.path = pathOrHook;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Map)) payload = await middleware[Method.Map](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Map, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Map](payload);
-
-		payload = await this.provider.mapByPath(payload);
-		payload.trigger = Trigger.PostProvider;
-
-		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Map, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Map](payload);
-
-		return payload.data;
-	}
-
-	/**
-	 * Push a value to an array at a specific key/value.
-	 * @since 2.0.0
-	 * @param keyPath The key/path to the array for pushing.
-	 * @param value The value to push to the array.
-	 * @returns The {@link Josh} instance.
-	 */
-	public async push<CustomValue = Value>(keyPath: KeyPath, value: CustomValue): Promise<this> {
-		const [key, path] = this.getKeyPath(keyPath);
-		let payload: PushPayload = { method: Method.Push, trigger: Trigger.PreProvider, key, path };
-
-		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Push, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Push](payload);
-
-		payload = await this.provider.push(payload, value);
+		payload = await this.provider[Method.Map](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPostMiddlewares(Method.Map)) payload = await middleware[Method.Map](payload);
 
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Push, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Push](payload);
+		return payload.data;
+	}
+
+	/**
+	 * Filter stored values and get both truthy and falsy results.
+	 * @since 2.0.0
+	 * @param hook The hook function to check equality.
+	 * @param _value Unused.
+	 * @param returnBulkType The return bulk type, Defaults to {@link Bulk.Object}
+	 * @returns A partition of filtered bulk data. First bulk data is the truthy filter and the second bulk data is the falsy filter.
+	 */
+	public async partition<BulkType extends keyof ReturnBulk<StoredValue>>(
+		hook: PartitionHook<StoredValue>,
+		_value: undefined,
+		returnBulkType: BulkType
+	): Promise<[ReturnBulk<StoredValue>[BulkType], ReturnBulk<StoredValue>[BulkType]]>;
+
+	/**
+	 * Filter stored values and get both truthy and falsy results.
+	 * @since 2.0.0
+	 * @param path A path to the value for equality check.
+	 * @param value The value to check equality.
+	 * @param returnBulkType The return bulk type. Defaults to {@link Bulk.Object}
+	 * @returns A partition of filtered bulk data. First bulk data is the truthy filter and the second bulk data is the falsy filter.
+	 */
+	public async partition<BulkType extends keyof ReturnBulk<StoredValue>>(
+		path: StringArray,
+		value: Primitive,
+		returnBulkType: BulkType
+	): Promise<[ReturnBulk<StoredValue>[BulkType], ReturnBulk<StoredValue>[BulkType]]>;
+
+	public async partition<BulkType extends keyof ReturnBulk<StoredValue>>(
+		pathOrHook: StringArray | PartitionHook<StoredValue>,
+		value?: Primitive,
+		returnBulkType?: BulkType
+	): Promise<[ReturnBulk<StoredValue>[BulkType], ReturnBulk<StoredValue>[BulkType]]> {
+		if (!isFunction(pathOrHook)) {
+			if (value === undefined)
+				throw new JoshError({ identifier: Josh.Identifiers.PartitionMissingValue, message: 'The "value" parameter was not found.' });
+			if (!isPrimitive(value))
+				throw new JoshError({ identifier: Josh.Identifiers.PartitionInvalidValue, message: 'The "value" parameter must be a primitive type.' });
+		}
+
+		let payload: PartitionPayload<StoredValue> = {
+			method: Method.Partition,
+			trigger: Trigger.PreProvider,
+			type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value,
+			data: { truthy: {}, falsy: {} }
+		};
+
+		if (isFunction(pathOrHook)) payload.hook = pathOrHook;
+		else {
+			payload.path = pathOrHook;
+			payload.value = value;
+		}
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Partition)) payload = await middleware[Method.Partition](payload);
+
+		payload = await this.provider[Method.Partition](payload);
+		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPostMiddlewares(Method.Partition)) payload = await middleware[Method.Partition](payload);
+
+		const { truthy, falsy } = payload.data;
+
+		return [this.convertBulkData(truthy, returnBulkType), this.convertBulkData(falsy, returnBulkType)];
+	}
+
+	/**
+	 * Push a value to an array.
+	 * @since 2.0.0
+	 * @param keyPath A key and/or path to the array.
+	 * @param value The value to push.
+	 * @returns The {@link Josh} instance.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', []);
+	 *
+	 * await josh.push('key', 'value');
+	 *
+	 * await josh.get('key'); // ['value']
+	 * ```
+	 */
+	public async push<Value = StoredValue>(keyPath: KeyPath, value: Value): Promise<this> {
+		const [key, path] = this.getKeyPath(keyPath);
+		let payload: PushPayload<Value> = { method: Method.Push, trigger: Trigger.PreProvider, key, path, value };
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Push)) payload = await middleware[Method.Push](payload);
+
+		payload = await this.provider[Method.Push](payload);
+		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPostMiddlewares(Method.Push)) payload = await middleware[Method.Push](payload);
 
 		return this;
 	}
@@ -870,23 +845,19 @@ export class Josh<Value = unknown> {
 	 * @since 2.0.0
 	 * @returns The random data or `null`.
 	 */
-	public async random<CustomValue = Value>(): Promise<CustomValue | null> {
-		let payload: RandomPayload<CustomValue> = { method: Method.Random, trigger: Trigger.PreProvider };
+	public async random(): Promise<StoredValue | null> {
+		let payload: RandomPayload<StoredValue> = { method: Method.Random, trigger: Trigger.PreProvider };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Random)) payload = await middleware[Method.Random](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Random, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Random](payload);
-
-		payload = await this.provider.random(payload);
+		payload = await this.provider[Method.Random](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Random, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Random](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Random)) payload = await middleware[Method.Random](payload);
 
 		return payload.data ?? null;
 	}
@@ -900,9 +871,7 @@ export class Josh<Value = unknown> {
 		let payload: RandomKeyPayload = { method: Method.RandomKey, trigger: Trigger.PreProvider };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const preMiddlewares = this.middlewares.filterByCondition(Method.RandomKey, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.RandomKey](payload);
+		for (const middleware of this.getPreMiddlewares(Method.RandomKey)) payload = await middleware[Method.RandomKey](payload);
 
 		payload = await this.provider.randomKey(payload);
 		payload.trigger = Trigger.PostProvider;
@@ -910,89 +879,62 @@ export class Josh<Value = unknown> {
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.RandomKey, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.RandomKey](payload);
+		for (const middleware of this.getPostMiddlewares(Method.RandomKey)) payload = await middleware[Method.RandomKey](payload);
 
 		return payload.data ?? null;
 	}
 
-	public async remove<CustomValue = Value>(keyPath: KeyPath, inputDataOrHook: CustomValue | RemoveHook<CustomValue>): Promise<this> {
+	public async remove(keyPath: KeyPath, value: Primitive): Promise<this>;
+	public async remove<Value = StoredValue>(keyPath: KeyPath, hook: RemoveHook<Value>): Promise<this>;
+	public async remove<Value = StoredValue>(keyPath: KeyPath, valueOrHook: Primitive | RemoveHook<Value>): Promise<this> {
 		const [key, path] = this.getKeyPath(keyPath);
 
-		if (isFunction(inputDataOrHook)) {
-			let payload: RemoveByHookPayload<CustomValue> = { method: Method.Remove, type: Payload.Type.Hook, key, path, inputHook: inputDataOrHook };
-
-			for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-			const preMiddlewares = this.middlewares.filterByCondition(Method.Remove, Trigger.PreProvider);
-			for (const middleware of preMiddlewares) payload = await middleware[Method.Remove](payload);
-
-			payload = await this.provider.removeByHook(payload);
-			payload.trigger = Trigger.PostProvider;
-
-			if (payload.error) throw payload.error;
-
-			for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-			const postMiddlewares = this.middlewares.filterByCondition(Method.Remove, Trigger.PostProvider);
-			for (const middleware of postMiddlewares) payload = await middleware[Method.Remove](payload);
-
-			return this;
+		if (!isFunction(valueOrHook)) {
+			if (!isPrimitive(valueOrHook))
+				throw new JoshError({ identifier: Josh.Identifiers.RemoveInvalidValue, message: 'The "value" parameter was not of a primitive type.' });
 		}
 
-		let payload: RemoveByDataPayload<CustomValue> = { method: Method.Remove, type: Payload.Type.Data, key, path, inputData: inputDataOrHook };
+		let payload: RemovePayload<Value> = {
+			method: Method.Remove,
+			trigger: Trigger.PreProvider,
+			type: isFunction(valueOrHook) ? Payload.Type.Hook : Payload.Type.Value,
+			key,
+			path
+		};
+
+		if (isFunction(valueOrHook)) payload.hook = valueOrHook;
+		else payload.value = valueOrHook;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Remove)) payload = await middleware[Method.Remove](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Remove, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Remove](payload);
-
-		payload = await this.provider.removeByData(payload);
+		payload = await this.provider[Method.Remove](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Remove, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Remove](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Remove)) payload = await middleware[Method.Remove](payload);
 
 		return this;
 	}
 
-	/**
-	 * Set data at a specific key/path.
-	 * @since 2.0.0
-	 * @param keyPath The key/path to the data for setting.
-	 * @param value The value to set at the key/path.
-	 * @returns The {@link Josh} instance.
-	 *
-	 * @example
-	 * ```typescript
-	 * await josh.set('key', 'value');
-	 *
-	 * await josh.get('key'); // 'value';
-	 * ```
-	 */
-	public async set<CustomValue = Value>(keyPath: KeyPath, value: CustomValue): Promise<this> {
+	public async set(key: string, value: StoredValue): Promise<this>;
+	public async set<Value = StoredValue>(keyPath: KeyPathArray, value: Value): Promise<this>;
+	public async set<Value = StoredValue>(keyPath: KeyPath, value: Value): Promise<this> {
 		const [key, path] = this.getKeyPath(keyPath);
-		let payload: SetPayload = { method: Method.Set, trigger: Trigger.PreProvider, key, path };
+		let payload: SetPayload<Value> = { method: Method.Set, trigger: Trigger.PreProvider, key, path, value };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Set)) payload = await middleware[Method.Set](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Set, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Set](payload);
-
-		payload = await this.provider.set(payload, value);
+		payload = await this.provider[Method.Set](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Set, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Set](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Set)) payload = await middleware[Method.Set](payload);
 
 		return this;
 	}
@@ -1011,23 +953,19 @@ export class Josh<Value = unknown> {
 	 * await josh.getMany([['key', []]]); // { key: 'value' }
 	 * ```
 	 */
-	public async setMany<CustomValue = Value>(keyPaths: [string, string[]][], value: CustomValue): Promise<this> {
-		let payload: SetManyPayload = { method: Method.SetMany, trigger: Trigger.PreProvider, keyPaths };
+	public async setMany(keys: StringArray, value: StoredValue): Promise<this> {
+		let payload: SetManyPayload<StoredValue> = { method: Method.SetMany, trigger: Trigger.PreProvider, keys, value };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.SetMany)) payload = await middleware[Method.SetMany](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.SetMany, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.SetMany](payload);
-
-		payload = await this.provider.setMany(payload, value);
+		payload = await this.provider[Method.SetMany](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.SetMany, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.SetMany](payload);
+		for (const middleware of this.getPostMiddlewares(Method.SetMany)) payload = await middleware[Method.SetMany](payload);
 
 		return this;
 	}
@@ -1046,189 +984,103 @@ export class Josh<Value = unknown> {
 		let payload: SizePayload = { method: Method.Size, trigger: Trigger.PreProvider, data: 0 };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Size)) payload = await middleware[Method.Size](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Size, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Size](payload);
-
-		payload = await this.provider.size(payload);
+		payload = await this.provider[Method.Size](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Size, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Size](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Size)) payload = await middleware[Method.Size](payload);
 
 		return payload.data;
 	}
 
 	/**
-	 * Check if data matches with a path and value.
+	 * Verify if a path's value matches a value.
 	 * @since 2.0.0
-	 * @param path The path array to check on stored data.
-	 * @param value The value to check against the data at path.
-	 * @returns Whether the data check is `true` or `false`.
+	 * @param path A path to the value for equality check.
+	 * @param value The value to check equality.
 	 */
-	public async some<CustomValue = Value>(path: string[], value: CustomValue): Promise<boolean>;
+	public async some(path: StringArray, value: Primitive): Promise<boolean>;
 
 	/**
-	 * Check if data matches with a function and optional path.
+	 * Verify if a stored value matches with a hook function,
 	 * @since 2.0.0
-	 * @param hook  The function to run on stored data.
-	 * @param path The optional path array to get on stored data and pass to the function.
-	 * @returns Whether the data check is `true` or `false`.
+	 * @param hook The hook to check equality.
 	 */
-	public async some<CustomValue = Value>(hook: SomeHook<CustomValue>, path?: string[]): Promise<boolean>;
-
-	/**
-	 * Check if data matches with a path and value or function and optional path.
-	 * @since 2.0.0
-	 * @param pathOrHook The path array or function.
-	 * @param pathOrValue The value or path array.
-	 * @returns Whether the data check is `true` or `false`.
-	 */
-	public async some<CustomValue = Value>(pathOrHook: string[] | SomeHook<CustomValue>, pathOrValue?: string[] | CustomValue): Promise<boolean> {
-		if (Array.isArray(pathOrHook)) {
-			if (pathOrValue === undefined)
-				throw new JoshError({ identifier: Josh.Identifiers.SomeMissingValue, message: 'The "value" parameter is required when finding by data.' });
-
-			let payload: SomeByDataPayload<CustomValue> = {
-				method: Method.Some,
-				trigger: Trigger.PreProvider,
-				type: Payload.Type.Data,
-				path: pathOrHook,
-				inputData: pathOrValue as CustomValue,
-				data: false
-			};
-
-			for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-			const preMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PreProvider);
-			for (const middleware of preMiddlewares) payload = await middleware[Method.Some](payload);
-
-			payload = await this.provider.someByData(payload);
-			payload.trigger = Trigger.PostProvider;
-
-			if (payload.error) throw payload.error;
-
-			for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-			const postMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PostProvider);
-			for (const middleware of postMiddlewares) payload = await middleware[Method.Some](payload);
-
-			return payload.data;
+	public async some(hook: SomeHook<StoredValue>): Promise<boolean>;
+	public async some(pathOrHook: StringArray | SomeHook<StoredValue>, value?: Primitive): Promise<boolean> {
+		if (!isFunction(pathOrHook)) {
+			if (value === undefined)
+				throw new JoshError({ identifier: Josh.Identifiers.SomeMissingValue, message: 'The "value" parameter was not found.' });
+			if (!isPrimitive(value))
+				throw new JoshError({ identifier: Josh.Identifiers.SomeInvalidValue, message: 'The "value" parameter must be a primitive type.' });
 		}
 
-		if (pathOrValue !== undefined && !Array.isArray(pathOrValue))
-			throw new JoshError({ identifier: Josh.Identifiers.SomeInvalidPath, message: 'The "path" parameter must be an array of strings.' });
-
-		let payload: SomeByHookPayload<CustomValue> = {
+		let payload: SomePayload<StoredValue> = {
 			method: Method.Some,
 			trigger: Trigger.PreProvider,
-			type: Payload.Type.Hook,
-			path: pathOrValue as string[] | undefined,
-			inputHook: pathOrHook,
+			type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value,
 			data: false
 		};
 
+		if (isFunction(pathOrHook)) payload.hook = pathOrHook;
+		else {
+			payload.path = pathOrHook;
+			payload.value = value;
+		}
+
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Some)) payload = await middleware[Method.Some](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Some](payload);
-
-		payload = await this.provider.someByHook(payload);
+		payload = await this.provider[Method.Some](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Some, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Some](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Some)) payload = await middleware[Method.Some](payload);
 
 		return payload.data;
 	}
 
 	/**
-	 * Update data at a specific key/path.
-	 * @since 2.0.0
-	 * @param keyPath The key/path to data for updating.
-	 * @param inputDataOrHook The input, either a value or a function.
-	 * @returns The updated value or `null` if the data doesn't exist.
+	 * Update a stored value using a hook function.
+	 * @param keyPath The key and/or path to the stored value for updating.
+	 * @param hook The hook to update the stored value.
+	 * @returns The updated value or null.
 	 *
 	 * @example
 	 * ```typescript
 	 * await josh.set('key', 'value');
 	 *
-	 * await josh.update('key', 'anotherValue'); // 'anotherValue'
-	 * ```
-	 *
-	 * @example
-	 * ```typescript
-	 * await josh.set('key', { path: 'value' })
-	 *
-	 * await josh.update('key', (data) => {
-	 *   data.anotherPath = 'anotherValue';
-	 *
-	 *   return data;
-	 * }); // { path: 'value', anotherPath: 'anotherValue' }
+	 * await josh.update('key', (value) => value.toUpperCase()); // 'VALUE'
 	 * ```
 	 */
-	public async update<CustomValue = Value>(keyPath: KeyPath, inputDataOrHook: CustomValue | UpdateHook<CustomValue>): Promise<CustomValue | null> {
+	public async update<HookValue = StoredValue, Value = HookValue>(keyPath: KeyPath, hook: UpdateHook<HookValue, Value>): Promise<StoredValue | null> {
 		const [key, path] = this.getKeyPath(keyPath);
-
-		if (isFunction(inputDataOrHook)) {
-			let payload: UpdateByHookPayload<CustomValue> = {
-				method: Method.Update,
-				key,
-				path,
-				type: Payload.Type.Hook,
-				inputHook: inputDataOrHook
-			};
-
-			for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-			const preMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PreProvider);
-			for (const middleware of preMiddlewares) payload = await middleware[Method.Update](payload);
-
-			payload = await this.provider.updateByHook(payload);
-			payload.trigger = Trigger.PostProvider;
-
-			if (payload.error) throw payload.error;
-
-			for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-			const postMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PostProvider);
-			for (const middleware of postMiddlewares) payload = await middleware[Method.Update](payload);
-
-			return payload.data ?? null;
-		}
-
-		let payload: UpdateByDataPayload<CustomValue> = { method: Method.Update, key, path, type: Payload.Type.Data, inputData: inputDataOrHook };
+		let payload: UpdatePayload<StoredValue, HookValue, Value> = { method: Method.Update, trigger: Trigger.PreProvider, key, path, hook };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Update)) payload = await middleware[Method.Update](payload);
 
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Update](payload);
-
-		payload = await this.provider.updateByData(payload);
+		payload = await this.provider[Method.Update](payload);
 		payload.trigger = Trigger.PostProvider;
 
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Update, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Update](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Update)) payload = await middleware[Method.Update](payload);
 
 		return payload.data ?? null;
 	}
 
 	/**
-	 * Get all data values.
+	 * Get all stored values.
 	 * @since 2.0.0
-	 * @returns An array of data values.
+	 * @returns An array of stored values.
 	 *
 	 * @example
 	 * ```typescript
@@ -1238,13 +1090,11 @@ export class Josh<Value = unknown> {
 	 * await josh.values(); // ['value', 'anotherValue']
 	 * ```
 	 */
-	public async values<CustomValue = Value>(): Promise<CustomValue[]> {
-		let payload: ValuesPayload<CustomValue> = { method: Method.Values, trigger: Trigger.PreProvider, data: [] };
+	public async values(): Promise<StoredValue[]> {
+		let payload: ValuesPayload<StoredValue> = { method: Method.Values, trigger: Trigger.PreProvider, data: [] };
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const preMiddlewares = this.middlewares.filterByCondition(Method.Values, Trigger.PreProvider);
-		for (const middleware of preMiddlewares) payload = await middleware[Method.Values](payload);
+		for (const middleware of this.getPreMiddlewares(Method.Values)) payload = await middleware[Method.Values](payload);
 
 		payload = await this.provider.values(payload);
 		payload.trigger = Trigger.PostProvider;
@@ -1252,9 +1102,7 @@ export class Josh<Value = unknown> {
 		if (payload.error) throw payload.error;
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
-
-		const postMiddlewares = this.middlewares.filterByCondition(Method.Values, Trigger.PostProvider);
-		for (const middleware of postMiddlewares) payload = await middleware[Method.Values](payload);
+		for (const middleware of this.getPostMiddlewares(Method.Values)) payload = await middleware[Method.Values](payload);
 
 		return payload.data;
 	}
@@ -1303,10 +1151,10 @@ export class Josh<Value = unknown> {
 	 * @param returnBulkType The return bulk type. Defaults to {@link Bulk.Object}
 	 * @returns The bulk data.
 	 */
-	private convertBulkData<CustomValue = Value, K extends keyof ReturnBulk<CustomValue> = Bulk.Object>(
-		data: ReturnBulk<CustomValue>[Bulk.Object],
+	private convertBulkData<Value = StoredValue, K extends keyof ReturnBulk<Value> = Bulk.Object>(
+		data: ReturnBulk<Value>[Bulk.Object],
 		returnBulkType?: K
-	): ReturnBulk<CustomValue>[K] {
+	): ReturnBulk<Value>[K] {
 		switch (returnBulkType) {
 			case Bulk.Object:
 				return data;
@@ -1326,16 +1174,32 @@ export class Josh<Value = unknown> {
 	}
 
 	/**
-	 * A private method for extracting the key/path from a {@link KeyPath} type.
+	 * Simple utility function to extract from a key/path.
 	 * @since 2.0.0
-	 * @private
-	 * @param keyPath The key/path to extract from.
-	 * @returns The extracted key/path data.
+	 * @param keyPath The {@link KeyPath} to extract
+	 * @returns The extract key/path
 	 */
-	private getKeyPath(keyPath: KeyPath): [string, string[] | undefined] {
-		if (typeof keyPath === 'string') return [keyPath, undefined];
+	private getKeyPath(keyPath: KeyPath): [string, StringArray] {
+		return typeof keyPath === 'string' ? [keyPath, []] : [keyPath[0], keyPath[1] ?? []];
+	}
 
-		return keyPath;
+	/**
+	 * Filters pre-provider middlewares by a method.
+	 * @since 2.0.0
+	 * @param method The method to filter by.
+	 * @returns The filtered middlewares.
+	 */
+	private getPreMiddlewares(method: Method): Middleware[] {
+		return this.middlewares.filterByCondition(method, Trigger.PreProvider);
+	}
+
+	/**
+	 * Filters post-provider middlewares by a method.
+	 * @param method The method to filter by.
+	 * @returns The filtered middlewares.
+	 */
+	private getPostMiddlewares(method: Method): Middleware[] {
+		return this.middlewares.filterByCondition(method, Trigger.PostProvider);
 	}
 
 	/**
@@ -1363,7 +1227,7 @@ export namespace Josh {
 	 * The options for {@link Josh}.
 	 * @since 2.0.0
 	 */
-	export interface Options<Value = unknown> {
+	export interface Options<StoredValue = unknown> {
 		/**
 		 * The name for the Josh instance.
 		 * @since 2.0.0
@@ -1374,7 +1238,7 @@ export namespace Josh {
 		 * The provider instance.
 		 * @since 2.0.0
 		 */
-		provider?: JoshProvider<Value>;
+		provider?: JoshProvider<StoredValue>;
 
 		/**
 		 * The middleware directory.
@@ -1386,29 +1250,35 @@ export namespace Josh {
 		 * The middleware context data.
 		 * @since 2.0.0
 		 */
-		middlewareContextData?: MiddlewareContextData<Value>;
+		middlewareContextData?: MiddlewareContextData<StoredValue>;
 	}
 
 	export enum Identifiers {
-		EveryInvalidPath = 'everyInvalidPath',
+		EveryInvalidValue = 'everyInvalidValue',
 
 		EveryMissingValue = 'everyMissingValue',
 
-		FilterInvalidPath = 'filterInvalidPath',
+		FilterInvalidValue = 'filterInvalidValue',
 
 		FilterMissingValue = 'filterMissingValue',
 
-		FindInvalidPath = 'findInvalidPath',
+		FindInvalidValue = 'findInvalidValue',
 
 		FindMissingValue = 'findMissingValue',
-
-		MissingName = 'missingName',
 
 		InvalidProvider = 'invalidProvider',
 
 		MiddlewareNotFound = 'middlewareNotFound',
 
-		SomeInvalidPath = 'someInvalidPath',
+		MissingName = 'missingName',
+
+		PartitionInvalidValue = 'partitionInvalidValue',
+
+		PartitionMissingValue = 'partitionMissingValue',
+
+		RemoveInvalidValue = 'removeInvalidValue',
+
+		SomeInvalidValue = 'someInvalidValue',
 
 		SomeMissingValue = 'someMissingValue'
 	}

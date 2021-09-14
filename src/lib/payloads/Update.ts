@@ -9,78 +9,25 @@ import type { Payload } from './Payload';
  * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
-export interface UpdatePayload<Value = unknown> extends Payload, Payload.KeyPath, Payload.OptionalData<Value> {
+export interface UpdatePayload<DataValue, HookValue = DataValue, Value = DataValue>
+	extends Payload,
+		Payload.KeyPath,
+		Payload.OptionalData<DataValue> {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.Update;
 
 	/**
-	 * The type for this payload.
+	 * The hook to update stored value.
 	 * @since 2.0.0
 	 */
-	type: Payload.Type.Data | Payload.Type.Hook;
-
-	/**
-	 * The input data for this payload.
-	 * @since 2.0.0
-	 */
-	inputData?: Value;
-
-	/**
-	 * The input hook for this payload.
-	 * @since 2.0.0
-	 */
-	inputHook?: UpdateHook<Value>;
-}
-
-/**
- * The data payload for {@link Method.Update}
- * @see {@link Payload}
- * @see {@link Payload.ByData}
- * @see {@link Payload.KeyPath}
- * @see {@link Payload.OptionalData}
- * @since 2.0.0
- */
-export interface UpdateByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.KeyPath, Payload.OptionalData<Value> {
-	/**
-	 * The method for this payload.
-	 * @since 2.0.0
-	 */
-	method: Method.Update;
-
-	/**
-	 * The input data for this payload.
-	 * @since 2.0.0
-	 */
-	inputData: Value;
-}
-
-/**
- * The hook payload for {@link Method.Update}
- * @see {@link Payload}
- * @see {@link Payload.ByHook}
- * @see {@link Payload.KeyPath}
- * @see {@link Payload.OptionalData}
- * @since 2.0.0
- */
-export interface UpdateByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.KeyPath, Payload.OptionalData<Value> {
-	/**
-	 * The method for this payload.
-	 * @since 2.0.0
-	 */
-	method: Method.Update;
-
-	/**
-	 * The input hook for this payload.
-	 * @since 2.0.0
-	 */
-	inputHook: UpdateHook<Value>;
+	hook: UpdateHook<HookValue, Value>;
 }
 
 /**
  * The hook for {@link UpdateByHookPayload}
  * @since 2.0.0
  */
-export type UpdateHook<Value = unknown> = (currentData: Value) => Awaited<Value>;
+export type UpdateHook<HookValue, Value> = (value: HookValue) => Awaited<Value>;

@@ -1,5 +1,5 @@
 import type { Awaited } from '@sapphire/utilities';
-import type { Method } from '../types';
+import type { Method, StringArray } from '../types';
 import type { Payload } from './Payload';
 
 /**
@@ -8,9 +8,9 @@ import type { Payload } from './Payload';
  * @see {@link Payload.Data}
  * @since 2.0.0
  */
-export interface MapPayload<Value = unknown> extends Payload, Payload.Data<Value[]> {
+export interface MapPayload<DataValue, HookValue = DataValue> extends Payload, Payload.Data<DataValue[]> {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 *  @since 2.0.0
 	 */
 	method: Method.Map;
@@ -19,39 +19,19 @@ export interface MapPayload<Value = unknown> extends Payload, Payload.Data<Value
 	 *  The type for this payload.
 	 *  @since 2.0.0
 	 */
-	type: Payload.Type.Path | Payload.Type.Hook;
+	type: Payload.Type.Hook | Payload.Type.Path;
 
 	/**
-	 * The path for this payload.
+	 * The hook to map by.
 	 *  @since 2.0.0
 	 */
-	path?: string[];
+	hook?: MapHook<DataValue, HookValue>;
 
 	/**
-	 * The hook for this payload.
+	 * The path to map by.
 	 *  @since 2.0.0
-	 */ hook?: MapHook<Value>;
-}
-
-/**
- *  The path payload for {@link Method.Map}
- *  @see {@link Payload}
- *  @see {@link Payload.ByPath}
- *  @see {@link Payload.Data}
- *  @since 2.0.0
- */
-export interface MapByPathPayload<Value = unknown> extends Payload, Payload.ByPath, Payload.Data<Value[]> {
-	/**
-	 * The method for this payload.
-	 * @since 2.0.0
 	 */
-	method: Method.Map;
-
-	/**
-	 *  The path for this payload.
-	 * @since 2.0.0
-	 */
-	path: string[];
+	path?: StringArray;
 }
 
 /**
@@ -61,22 +41,43 @@ export interface MapByPathPayload<Value = unknown> extends Payload, Payload.ByPa
  * @see {@link Payload.Data}
  * @since 2.0.0
  */
-export interface MapByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.Data<Value[]> {
+export interface MapByHookPayload<DataValue, HookValue = DataValue> extends Payload, Payload.ByHook, Payload.Data<DataValue[]> {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.Map;
 
 	/**
-	 * The hook for this payload.
+	 * The hook to map by.
 	 * @since 2.0.0
 	 */
-	hook: MapHook<Value>;
+	hook: MapHook<DataValue, HookValue>;
+}
+
+/**
+ *  The path payload for {@link Method.Map}
+ *  @see {@link Payload}
+ *  @see {@link Payload.ByPath}
+ *  @see {@link Payload.Data}
+ *  @since 2.0.0
+ */
+export interface MapByPathPayload<DataValue> extends Payload, Payload.ByPath, Payload.Data<DataValue[]> {
+	/**
+	 * The method this payload is for.
+	 * @since 2.0.0
+	 */
+	method: Method.Map;
+
+	/**
+	 *  The path to map by.
+	 * @since 2.0.0
+	 */
+	path: StringArray;
 }
 
 /**
  * The hook for {@link MapByHookPayload}
  * @since 2.0.0
  */
-export type MapHook<Value = unknown> = (data: Value) => Awaited<Value>;
+export type MapHook<Value, HookValue = Value> = (data: HookValue) => Awaited<Value>;

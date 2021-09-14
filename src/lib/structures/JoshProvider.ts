@@ -2,15 +2,19 @@ import type { Awaited } from '@sapphire/utilities';
 import type { JoshProviderError } from '../errors';
 import type {
 	AutoKeyPayload,
+	ClearPayload,
 	DecPayload,
 	DeletePayload,
 	EnsurePayload,
-	EveryByDataPayload,
 	EveryByHookPayload,
-	FilterByDataPayload,
+	EveryByValuePayload,
+	EveryPayload,
 	FilterByHookPayload,
-	FindByDataPayload,
+	FilterByValuePayload,
+	FilterPayload,
 	FindByHookPayload,
+	FindByValuePayload,
+	FindPayload,
 	GetAllPayload,
 	GetManyPayload,
 	GetPayload,
@@ -19,20 +23,26 @@ import type {
 	KeysPayload,
 	MapByHookPayload,
 	MapByPathPayload,
+	MapPayload,
+	PartitionByHookPayload,
+	PartitionByValuePayload,
+	PartitionPayload,
 	PushPayload,
 	RandomKeyPayload,
 	RandomPayload,
-	RemoveByDataPayload,
 	RemoveByHookPayload,
+	RemoveByValuePayload,
+	RemovePayload,
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
-	SomeByDataPayload,
 	SomeByHookPayload,
-	UpdateByDataPayload,
-	UpdateByHookPayload,
+	SomeByValuePayload,
+	SomePayload,
+	UpdatePayload,
 	ValuesPayload
 } from '../payloads';
+import type { Method } from '../types';
 import type { Josh } from './Josh';
 
 /**
@@ -50,7 +60,7 @@ import type { Josh } from './Josh';
  * }
  * ```
  */
-export abstract class JoshProvider<Value = unknown> {
+export abstract class JoshProvider<StoredValue = unknown> {
 	/**
 	 * The name for this provider.
 	 * @since 2.0.0
@@ -61,7 +71,7 @@ export abstract class JoshProvider<Value = unknown> {
 	 * The {@link Josh} instance for this provider.
 	 * @since 2.0.0
 	 */
-	public instance?: Josh<Value>;
+	public instance?: Josh<StoredValue>;
 
 	/**
 	 * The options for this provider.
@@ -89,7 +99,7 @@ export abstract class JoshProvider<Value = unknown> {
 	 * }
 	 * ```
 	 */
-	public async init(context: JoshProvider.Context<Value>): Promise<JoshProvider.Context<Value>> {
+	public async init(context: JoshProvider.Context<StoredValue>): Promise<JoshProvider.Context<StoredValue>> {
 		const { name, instance } = context;
 
 		this.name = name;
@@ -103,217 +113,240 @@ export abstract class JoshProvider<Value = unknown> {
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract autoKey(payload: AutoKeyPayload): Awaited<AutoKeyPayload>;
+	public abstract [Method.AutoKey](payload: AutoKeyPayload): Awaited<AutoKeyPayload>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract dec(payload: DecPayload): Awaited<DecPayload>;
+	public abstract [Method.Clear](payload: ClearPayload): Awaited<ClearPayload>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract delete(payload: DeletePayload): Awaited<DeletePayload>;
+	public abstract [Method.Dec](payload: DecPayload): Awaited<DecPayload>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract ensure<CustomValue = Value>(payload: EnsurePayload<CustomValue>): Awaited<EnsurePayload<CustomValue>>;
+	public abstract [Method.Delete](payload: DeletePayload): Awaited<DeletePayload>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract everyByData<CustomValue = Value>(payload: EveryByDataPayload<CustomValue>): Awaited<EveryByDataPayload<CustomValue>>;
+	public abstract [Method.Ensure](payload: EnsurePayload<StoredValue>): Awaited<EnsurePayload<StoredValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract everyByHook<CustomValue = Value>(payload: EveryByHookPayload<CustomValue>): Awaited<EveryByHookPayload<CustomValue>>;
+	public abstract [Method.Every]<HookValue>(payload: EveryByHookPayload<HookValue>): Awaited<EveryByHookPayload<HookValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract filterByData<CustomValue = Value>(payload: FilterByDataPayload<CustomValue>): Awaited<FilterByDataPayload<CustomValue>>;
+	public abstract [Method.Every]<Value>(payload: EveryByValuePayload): Awaited<EveryByValuePayload>;
+	public abstract [Method.Every]<HookValue>(payload: EveryPayload<HookValue>): Awaited<EveryPayload<HookValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract filterByHook<CustomValue = Value>(payload: FilterByHookPayload<CustomValue>): Awaited<FilterByHookPayload<CustomValue>>;
+	public abstract [Method.Filter](payload: FilterByHookPayload<StoredValue>): Awaited<FilterByHookPayload<StoredValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract findByData<CustomValue = Value>(payload: FindByDataPayload<CustomValue>): Awaited<FindByDataPayload<CustomValue>>;
+	public abstract [Method.Filter](payload: FilterByValuePayload<StoredValue>): Awaited<FilterByValuePayload<StoredValue>>;
+	public abstract [Method.Filter](payload: FilterPayload<StoredValue>): Awaited<FilterPayload<StoredValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract findByHook<CustomValue = Value>(payload: FindByHookPayload<CustomValue>): Awaited<FindByHookPayload<CustomValue>>;
+	public abstract [Method.Find](payload: FindByHookPayload<StoredValue>): Awaited<FindByHookPayload<StoredValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract get<CustomValue = Value>(payload: GetPayload<CustomValue>): Awaited<GetPayload<CustomValue>>;
+	public abstract [Method.Find](payload: FindByValuePayload<StoredValue>): Awaited<FindByValuePayload<StoredValue>>;
+	public abstract [Method.Find](payload: FindPayload<StoredValue>): Awaited<FindPayload<StoredValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract getAll<CustomValue = Value>(payload: GetAllPayload<CustomValue>): Awaited<GetAllPayload<CustomValue>>;
+	public abstract [Method.Get]<DataValue>(payload: GetPayload<DataValue>): Awaited<GetPayload<DataValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract getMany<CustomValue = Value>(payload: GetManyPayload<CustomValue>): Awaited<GetManyPayload<CustomValue>>;
+	public abstract [Method.GetAll](payload: GetAllPayload<StoredValue>): Awaited<GetAllPayload<StoredValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract has(payload: HasPayload): Awaited<HasPayload>;
+	public abstract [Method.GetMany](payload: GetManyPayload<StoredValue>): Awaited<GetManyPayload<StoredValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract inc(payload: IncPayload): Awaited<IncPayload>;
+	public abstract [Method.Has](payload: HasPayload): Awaited<HasPayload>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract keys(payload: KeysPayload): Awaited<KeysPayload>;
+	public abstract [Method.Inc](payload: IncPayload): Awaited<IncPayload>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract mapByPath<CustomValue = Value>(payload: MapByPathPayload<CustomValue>): Awaited<MapByPathPayload<CustomValue>>;
+	public abstract [Method.Keys](payload: KeysPayload): Awaited<KeysPayload>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract mapByHook<CustomValue = Value>(payload: MapByHookPayload<CustomValue>): Awaited<MapByHookPayload<CustomValue>>;
+	public abstract [Method.Map]<Value, HookValue>(payload: MapByHookPayload<Value, HookValue>): Awaited<MapByHookPayload<Value, HookValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract push<CustomValue = Value>(payload: PushPayload, value: CustomValue): Awaited<PushPayload>;
+	public abstract [Method.Map]<Value = StoredValue>(payload: MapByPathPayload<Value>): Awaited<MapByPathPayload<Value>>;
+	public abstract [Method.Map]<Value = StoredValue, HookValue = Value>(payload: MapPayload<Value, HookValue>): Awaited<MapPayload<Value, HookValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract random<CustomValue = Value>(payload: RandomPayload<CustomValue>): Awaited<RandomPayload<CustomValue>>;
+	public abstract [Method.Partition](payload: PartitionByHookPayload<StoredValue>): Awaited<PartitionByHookPayload<StoredValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract randomKey(payload: RandomKeyPayload): Awaited<RandomKeyPayload>;
+	public abstract [Method.Partition](payload: PartitionByValuePayload<StoredValue>): Awaited<PartitionByValuePayload<StoredValue>>;
+	public abstract [Method.Partition](payload: PartitionPayload<StoredValue>): Awaited<PartitionPayload<StoredValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract removeByData<CustomValue = Value>(payload: RemoveByDataPayload<CustomValue>): Awaited<RemoveByDataPayload<CustomValue>>;
+	public abstract [Method.Push]<Value>(payload: PushPayload<Value>): Awaited<PushPayload<Value>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract removeByHook<CustomValue = Value>(payload: RemoveByHookPayload<CustomValue>): Awaited<RemoveByHookPayload<CustomValue>>;
+	public abstract [Method.Random](payload: RandomPayload<StoredValue>): Awaited<RandomPayload<StoredValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract set<CustomValue = Value>(payload: SetPayload, value: CustomValue): Awaited<SetPayload>;
+	public abstract [Method.RandomKey](payload: RandomKeyPayload): Awaited<RandomKeyPayload>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract setMany<CustomValue = Value>(payload: SetManyPayload, value: CustomValue): Awaited<SetManyPayload>;
+	public abstract [Method.Remove]<HookValue>(payload: RemoveByHookPayload<HookValue>): Awaited<RemoveByHookPayload<HookValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract size(payload: SizePayload): Awaited<SizePayload>;
+	public abstract [Method.Remove]<Value>(payload: RemoveByValuePayload): Awaited<RemoveByValuePayload>;
+	public abstract [Method.Remove]<HookValue>(payload: RemovePayload<HookValue>): Awaited<RemovePayload<HookValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract someByData<CustomValue = Value>(payload: SomeByDataPayload<CustomValue>): Awaited<SomeByDataPayload<CustomValue>>;
+	public abstract [Method.Set]<Value = StoredValue>(payload: SetPayload<Value>): Awaited<SetPayload<Value>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract someByHook<CustomValue = Value>(payload: SomeByHookPayload<CustomValue>): Awaited<SomeByHookPayload<CustomValue>>;
+	public abstract [Method.SetMany](payload: SetManyPayload<StoredValue>): Awaited<SetManyPayload<StoredValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract updateByData<CustomValue = Value>(payload: UpdateByDataPayload<CustomValue>): Awaited<UpdateByDataPayload<CustomValue>>;
+	public abstract [Method.Size](payload: SizePayload): Awaited<SizePayload>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract updateByHook<CustomValue = Value>(payload: UpdateByHookPayload<CustomValue>): Awaited<UpdateByHookPayload<CustomValue>>;
+	public abstract [Method.Some]<HookValue>(payload: SomeByHookPayload<HookValue>): Awaited<SomeByHookPayload<HookValue>>;
 
 	/**
 	 * @since 2.0.0
 	 * @param payload The payload sent by this provider's {@link Josh} instance.
 	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
 	 */
-	public abstract values<CustomValue = Value>(payload: ValuesPayload<CustomValue>): Awaited<ValuesPayload<CustomValue>>;
+	public abstract [Method.Some]<Value>(payload: SomeByValuePayload): Awaited<SomeByValuePayload>;
+	public abstract [Method.Some]<HookValue>(payload: SomePayload<HookValue>): Awaited<SomePayload<HookValue>>;
+
+	/**
+	 * @since 2.0.0
+	 * @param payload The payload sent by this provider's {@link Josh} instance.
+	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+	 */
+	public abstract [Method.Update]<Value, HookValue>(
+		payload: UpdatePayload<StoredValue, Value, HookValue>
+	): Awaited<UpdatePayload<StoredValue, Value, HookValue>>;
+
+	/**
+	 * @since 2.0.0
+	 * @param payload The payload sent by this provider's {@link Josh} instance.
+	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+	 */
+	public abstract [Method.Values](payload: ValuesPayload<StoredValue>): Awaited<ValuesPayload<StoredValue>>;
 }
 
 export namespace JoshProvider {

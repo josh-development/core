@@ -7,9 +7,9 @@ import type { Payload } from './Payload';
  * @see {@link Payload.Data}
  * @since 2.0.0
  */
-export interface GetAllPayload<Value = unknown> extends Payload, Payload.Data<Record<string, Value>> {
+export interface GetAllPayload<DataValue> extends Payload, Payload.Data<Record<string, DataValue>> {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.GetAll;

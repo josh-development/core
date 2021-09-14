@@ -1,5 +1,5 @@
-import type { Awaited } from '@sapphire/utilities';
-import type { Method } from '../types';
+import type { Awaited, Primitive } from '@sapphire/utilities';
+import type { Method, StringArray } from '../types';
 import type { Payload } from './Payload';
 
 /**
@@ -8,9 +8,9 @@ import type { Payload } from './Payload';
  * @see {@link Payload.Data}
  * @since 2.0.0
  */
-export interface SomePayload<Value = unknown> extends Payload, Payload.Data<boolean> {
+export interface SomePayload<HookValue> extends Payload, Payload.Data<boolean> {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.Some;
@@ -19,52 +19,25 @@ export interface SomePayload<Value = unknown> extends Payload, Payload.Data<bool
 	 * The type for this payload.
 	 * @since 2.0.0
 	 */
-	type: Payload.Type.Data | Payload.Type.Hook;
+	type: Payload.Type.Hook | Payload.Type.Value;
 
 	/**
-	 * The input data for this payload.
+	 * The hook to check equality.
 	 * @since 2.0.0
 	 */
-	inputData?: Value;
+	hook?: SomeHook<HookValue>;
 
 	/**
-	 * The input hook for this payload.
+	 * The value to check equality.
 	 * @since 2.0.0
 	 */
-	inputHook?: SomeHook<Value>;
+	value?: Primitive;
 
 	/**
-	 * The path for this payload.
+	 * A path to the value to check equality.
 	 * @since 2.0.0
 	 */
-	path?: string[];
-}
-
-/**
- * The data payload for {@link Method.Some}
- * @see {@link Payload}
- * @see {@link Payload.ByData}
- * @see {@link Payload.Data}
- * @since 2.0.0
- */
-export interface SomeByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.Data<boolean> {
-	/**
-	 * The method for this payload.
-	 * @since 2.0.0
-	 */
-	method: Method.Some;
-
-	/**
-	 * The input data for this payload.
-	 * @since 2.0.0
-	 */
-	inputData: Value;
-
-	/**
-	 * The path for this payload.
-	 * @since 2.0.0
-	 */
-	path?: string[];
+	path?: StringArray;
 }
 
 /**
@@ -74,9 +47,9 @@ export interface SomeByDataPayload<Value = unknown> extends Payload, Payload.ByD
  * @see {@link Payload.Data}
  * @since 2.0.0
  */
-export interface SomeByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.Data<boolean> {
+export interface SomeByHookPayload<HookValue> extends Payload, Payload.ByHook, Payload.Data<boolean> {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.Some;
@@ -85,17 +58,38 @@ export interface SomeByHookPayload<Value = unknown> extends Payload, Payload.ByH
 	 * The input hook for this payload.
 	 * @since 2.0.0
 	 */
-	inputHook: SomeHook<Value>;
+	hook: SomeHook<HookValue>;
+}
 
+/**
+ * The data payload for {@link Method.Some}
+ * @see {@link Payload}
+ * @see {@link Payload.ByValue}
+ * @see {@link Payload.Data}
+ * @since 2.0.0
+ */
+export interface SomeByValuePayload extends Payload, Payload.ByValue, Payload.Data<boolean> {
 	/**
-	 * The path for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
-	path?: string[];
+	method: Method.Some;
+
+	/**
+	 * The input data for this payload.
+	 * @since 2.0.0
+	 */
+	value: Primitive;
+
+	/**
+	 * A path to the value to check equality.
+	 * @since 2.0.0
+	 */
+	path: StringArray;
 }
 
 /**
  * The hook for {@link SomeByHookPayload}
  * @since 2.0.0
  */
-export type SomeHook<Value = unknown> = (data: Value) => Awaited<boolean>;
+export type SomeHook<Value> = (value: Value) => Awaited<boolean>;

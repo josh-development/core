@@ -3,17 +3,17 @@ import type { Method, StringArray } from '../types';
 import type { Payload } from './Payload';
 
 /**
- * The union payload for {@link Method.Every}
+ * The union payload for {@link Method.Partition}
  * @see {@link Payload}
  * @see {@link Payload.Data}
  * @since 2.0.0
  */
-export interface EveryPayload<HookValue> extends Payload, Payload.Data<boolean> {
+export interface PartitionPayload<DataValue> extends Payload, Payload.Data<PartitionData<DataValue>> {
 	/**
 	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
-	method: Method.Every;
+	method: Method.Partition;
 
 	/**
 	 * The type for this payload.
@@ -25,7 +25,7 @@ export interface EveryPayload<HookValue> extends Payload, Payload.Data<boolean> 
 	 * The hook to check equality.
 	 * @since 2.0.0
 	 */
-	hook?: EveryHook<HookValue>;
+	hook?: PartitionHook<DataValue>;
 
 	/**
 	 * The value to check equality.
@@ -41,39 +41,39 @@ export interface EveryPayload<HookValue> extends Payload, Payload.Data<boolean> 
 }
 
 /**
- * The hook payload for {@link Method.Every}
+ * The hook payload for {@link Method.Partition}
  * @see {@link Payload}
  * @see {@link Payload.ByHook}
  * @see {@link Payload.Data}
  * @since 2.0.0
  */
-export interface EveryByHookPayload<HookValue> extends Payload, Payload.ByHook, Payload.Data<boolean> {
+export interface PartitionByHookPayload<DataValue> extends Payload, Payload.ByHook, Payload.Data<PartitionData<DataValue>> {
 	/**
 	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
-	method: Method.Every;
+	method: Method.Partition;
 
 	/**
-	 * The hook to check equality.
+	 * The hook for this payload
 	 * @since 2.0.0
 	 */
-	hook: EveryHook<HookValue>;
+	hook: PartitionHook<DataValue>;
 }
 
 /**
- * The value payload for {@link Method.Every}
+ * The value payload for {@link Method.Partition}
  * @see {@link Payload}
  * @see {@link Payload.ByValue}
  * @see {@link Payload.Data}
  * @since 2.0.0
  */
-export interface EveryByValuePayload extends Payload, Payload.ByValue, Payload.Data<boolean> {
+export interface PartitionByValuePayload<DataValue> extends Payload, Payload.ByValue, Payload.Data<PartitionData<DataValue>> {
 	/**
 	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
-	method: Method.Every;
+	method: Method.Partition;
 
 	/**
 	 * The value to check equality.
@@ -89,7 +89,17 @@ export interface EveryByValuePayload extends Payload, Payload.ByValue, Payload.D
 }
 
 /**
- * The hook for {@link EveryByHookPayload}
+ * The data for {@link PartitionPayload}
  * @since 2.0.0
  */
-export type EveryHook<Value> = (value: Value) => Awaited<boolean>;
+export interface PartitionData<DataValue> {
+	truthy: Record<string, DataValue>;
+
+	falsy: Record<string, DataValue>;
+}
+
+/**
+ * The hook for {@link PartitionByHookPayload}
+ * @since 2.0.0
+ */
+export type PartitionHook<HookValue> = (value: HookValue) => Awaited<boolean>;

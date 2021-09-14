@@ -1,4 +1,4 @@
-import type { Awaited } from '@sapphire/utilities';
+import type { Awaited, Primitive } from '@sapphire/utilities';
 import type { Method } from '../types';
 import type { Payload } from './Payload';
 
@@ -8,9 +8,9 @@ import type { Payload } from './Payload';
  * @see {@link Payload.KeyPath}
  * @since 2.0.0
  */
-export interface RemovePayload<Value = unknown> extends Payload, Payload.KeyPath {
+export interface RemovePayload<HookValue> extends Payload, Payload.KeyPath {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.Remove;
@@ -19,46 +19,19 @@ export interface RemovePayload<Value = unknown> extends Payload, Payload.KeyPath
 	 * The type for this payload.
 	 * @since 2.0.0
 	 */
-	type: Payload.Type.Data | Payload.Type.Hook;
+	type: Payload.Type.Hook | Payload.Type.Value;
 
 	/**
-	 * The input data for this payload.
+	 * The hook to check equality.
 	 * @since 2.0.0
 	 */
-	inputData?: Value;
+	hook?: RemoveHook<HookValue>;
 
 	/**
-	 * The input hook for this payload.
+	 * The value to check equality.
 	 * @since 2.0.0
 	 */
-	inputHook?: RemoveHook<Value>;
-}
-
-/**
- * The data payload for {@link Method.Remove}
- * @see {@link Payload}
- * @see {@link Payload.ByData}
- * @see {@link Payload.KeyPath}
- * @since 2.0.0
- */
-export interface RemoveByDataPayload<Value = unknown> extends Payload, Payload.ByData, Payload.KeyPath {
-	/**
-	 * The method for this payload.
-	 * @since 2.0.0
-	 */
-	method: Method.Remove;
-
-	/**
-	 * The type for this payload.
-	 * @since 2.0.0
-	 */
-	type: Payload.Type.Data;
-
-	/**
-	 * The input data for this payload.
-	 * @since 2.0.0
-	 */
-	inputData: Value;
+	value?: Primitive;
 }
 
 /**
@@ -67,9 +40,9 @@ export interface RemoveByDataPayload<Value = unknown> extends Payload, Payload.B
  * @see {@link Payload.ByHook}
  * @see {@link Payload.KeyPath}
  */
-export interface RemoveByHookPayload<Value = unknown> extends Payload, Payload.ByHook, Payload.KeyPath {
+export interface RemoveByHookPayload<HookValue> extends Payload, Payload.ByHook, Payload.KeyPath {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.Remove;
@@ -81,14 +54,41 @@ export interface RemoveByHookPayload<Value = unknown> extends Payload, Payload.B
 	type: Payload.Type.Hook;
 
 	/**
-	 * The input hook for this payload.
+	 * The hook to check equality.
 	 * @since 2.0.0
 	 */
-	inputHook: RemoveHook<Value>;
+	hook: RemoveHook<HookValue>;
+}
+
+/**
+ * The data payload for {@link Method.Remove}
+ * @see {@link Payload}
+ * @see {@link Payload.ByValue}
+ * @see {@link Payload.KeyPath}
+ * @since 2.0.0
+ */
+export interface RemoveByValuePayload extends Payload, Payload.ByValue, Payload.KeyPath {
+	/**
+	 * The method this payload is for.
+	 * @since 2.0.0
+	 */
+	method: Method.Remove;
+
+	/**
+	 * The type for this payload.
+	 * @since 2.0.0
+	 */
+	type: Payload.Type.Value;
+
+	/**
+	 * The value to check equality.
+	 * @since 2.0.0
+	 */
+	value: Primitive;
 }
 
 /**
  * The hook for {@link RemoveByHookPayload}
  * @since 2.0.0
  */
-export type RemoveHook<Value = unknown> = (data: Value) => Awaited<boolean>;
+export type RemoveHook<Value> = (value: Value) => Awaited<boolean>;

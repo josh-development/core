@@ -3,17 +3,18 @@ import type { Awaited } from '@sapphire/utilities';
 import { JoshError } from '../errors/JoshError';
 import type {
 	AutoKeyPayload,
+	ClearPayload,
 	DecPayload,
 	DeletePayload,
 	EnsurePayload,
-	EveryByDataPayload,
 	EveryByHookPayload,
+	EveryByValuePayload,
 	EveryPayload,
-	FilterByDataPayload,
 	FilterByHookPayload,
+	FilterByValuePayload,
 	FilterPayload,
-	FindByDataPayload,
 	FindByHookPayload,
+	FindByValuePayload,
 	FindPayload,
 	GetAllPayload,
 	GetManyPayload,
@@ -24,21 +25,22 @@ import type {
 	MapByHookPayload,
 	MapByPathPayload,
 	MapPayload,
+	PartitionByHookPayload,
+	PartitionByValuePayload,
+	PartitionPayload,
 	Payload,
 	PushPayload,
 	RandomKeyPayload,
 	RandomPayload,
-	RemoveByDataPayload,
 	RemoveByHookPayload,
+	RemoveByValuePayload,
 	RemovePayload,
 	SetManyPayload,
 	SetPayload,
 	SizePayload,
-	SomeByDataPayload,
 	SomeByHookPayload,
+	SomeByValuePayload,
 	SomePayload,
-	UpdateByDataPayload,
-	UpdateByHookPayload,
 	UpdatePayload,
 	ValuesPayload
 } from '../payloads';
@@ -61,7 +63,7 @@ import type { MiddlewareStore } from './MiddlewareStore';
  * }
  * ```
  */
-export abstract class Middleware<Context extends Middleware.Context = Middleware.Context> extends Piece {
+export class Middleware<Context extends Middleware.Context = Middleware.Context> extends Piece {
 	/**
 	 * The store for this middleware.
 	 * @since 2.0.0
@@ -107,6 +109,10 @@ export abstract class Middleware<Context extends Middleware.Context = Middleware
 		return payload;
 	}
 
+	public [Method.Clear](payload: ClearPayload): Awaited<ClearPayload> {
+		return payload;
+	}
+
 	public [Method.Dec](payload: DecPayload): Awaited<DecPayload> {
 		return payload;
 	}
@@ -115,37 +121,40 @@ export abstract class Middleware<Context extends Middleware.Context = Middleware
 		return payload;
 	}
 
-	public [Method.Ensure]<Value = unknown>(payload: EnsurePayload<Value>): Awaited<EnsurePayload<Value>> {
+	public [Method.Ensure]<StoredValue>(payload: EnsurePayload<StoredValue>): Awaited<EnsurePayload<StoredValue>> {
 		return payload;
 	}
 
-	public [Method.Every]<Value = unknown>(payload: EveryByDataPayload<Value>): Awaited<EveryByDataPayload<Value>>;
-	public [Method.Every]<Value = unknown>(payload: EveryByHookPayload<Value>): Awaited<EveryByHookPayload<Value>>;
-	public [Method.Every]<Value = unknown>(payload: EveryPayload<Value>): Awaited<EveryPayload<Value>> {
+	public [Method.Every]<HookValue>(payload: EveryByHookPayload<HookValue>): Awaited<EveryByHookPayload<HookValue>>;
+	public [Method.Every](payload: EveryByValuePayload): Awaited<EveryByValuePayload>;
+	public [Method.Every]<HookValue>(payload: EveryPayload<HookValue>): Awaited<EveryPayload<HookValue>>;
+	public [Method.Every]<HookValue>(payload: EveryPayload<HookValue>): Awaited<EveryPayload<HookValue>> {
 		return payload;
 	}
 
-	public [Method.Filter]<Value = unknown>(payload: FilterByDataPayload<Value>): Awaited<FilterByDataPayload<Value>>;
-	public [Method.Filter]<Value = unknown>(payload: FilterByHookPayload<Value>): Awaited<FilterByHookPayload<Value>>;
-	public [Method.Filter]<Value = unknown>(payload: FilterPayload<Value>): Awaited<FilterPayload<Value>> {
+	public [Method.Filter]<StoredValue>(payload: FilterByHookPayload<StoredValue>): Awaited<FilterByHookPayload<StoredValue>>;
+	public [Method.Filter]<StoredValue>(payload: FilterByValuePayload<StoredValue>): Awaited<FilterByValuePayload<StoredValue>>;
+	public [Method.Filter]<StoredValue>(payload: FilterPayload<StoredValue>): Awaited<FilterPayload<StoredValue>>;
+	public [Method.Filter]<StoredValue>(payload: FilterPayload<StoredValue>): Awaited<FilterPayload<StoredValue>> {
 		return payload;
 	}
 
-	public [Method.Find]<Value = unknown>(payload: FindByDataPayload<Value>): Awaited<FindByDataPayload<Value>>;
-	public [Method.Find]<Value = unknown>(payload: FindByHookPayload<Value>): Awaited<FindByHookPayload<Value>>;
-	public [Method.Find]<Value = unknown>(payload: FindPayload<Value>): Awaited<FindPayload<Value>> {
+	public [Method.Find]<StoredValue>(payload: FindByHookPayload<StoredValue>): Awaited<FindByHookPayload<StoredValue>>;
+	public [Method.Find]<StoredValue>(payload: FindByValuePayload<StoredValue>): Awaited<FindByValuePayload<StoredValue>>;
+	public [Method.Find]<StoredValue>(payload: FindPayload<StoredValue>): Awaited<FindPayload<StoredValue>>;
+	public [Method.Find]<StoredValue>(payload: FindPayload<StoredValue>): Awaited<FindPayload<StoredValue>> {
 		return payload;
 	}
 
-	public [Method.Get]<Value = unknown>(payload: GetPayload<Value>): Awaited<GetPayload<Value>> {
+	public [Method.Get]<DataValue>(payload: GetPayload<DataValue>): Awaited<GetPayload<DataValue>> {
 		return payload;
 	}
 
-	public [Method.GetAll]<Value = unknown>(payload: GetAllPayload<Value>): Awaited<GetAllPayload<Value>> {
+	public [Method.GetAll]<DataValue>(payload: GetAllPayload<DataValue>): Awaited<GetAllPayload<DataValue>> {
 		return payload;
 	}
 
-	public [Method.GetMany]<Value = unknown>(payload: GetManyPayload<Value>): Awaited<GetManyPayload<Value>> {
+	public [Method.GetMany]<DataValue>(payload: GetManyPayload<DataValue>): Awaited<GetManyPayload<DataValue>> {
 		return payload;
 	}
 
@@ -161,17 +170,25 @@ export abstract class Middleware<Context extends Middleware.Context = Middleware
 		return payload;
 	}
 
-	public [Method.Map]<Value = unknown>(payload: MapByPathPayload<Value>): Awaited<MapByPathPayload<Value>>;
-	public [Method.Map]<Value = unknown>(payload: MapByHookPayload<Value>): Awaited<MapByHookPayload<Value>>;
-	public [Method.Map]<Value = unknown>(payload: MapPayload<Value>): Awaited<MapPayload<Value>> {
+	public [Method.Map]<Value, HookValue>(payload: MapByHookPayload<Value, HookValue>): Awaited<MapByHookPayload<Value, HookValue>>;
+	public [Method.Map]<Value>(payload: MapByPathPayload<Value>): Awaited<MapByPathPayload<Value>>;
+	public [Method.Map]<Value, HookValue>(payload: MapPayload<Value, HookValue>): Awaited<MapPayload<Value, HookValue>>;
+	public [Method.Map]<Value, HookValue>(payload: MapPayload<Value, HookValue>): Awaited<MapPayload<Value, HookValue>> {
 		return payload;
 	}
 
-	public [Method.Push](payload: PushPayload): Awaited<PushPayload> {
+	public [Method.Partition]<StoredValue>(payload: PartitionByHookPayload<StoredValue>): Awaited<PartitionByHookPayload<StoredValue>>;
+	public [Method.Partition]<StoredValue>(payload: PartitionByValuePayload<StoredValue>): Awaited<PartitionByValuePayload<StoredValue>>;
+	public [Method.Partition]<StoredValue>(payload: PartitionPayload<StoredValue>): Awaited<PartitionPayload<StoredValue>>;
+	public [Method.Partition]<StoredValue>(payload: PartitionPayload<StoredValue>): Awaited<PartitionPayload<StoredValue>> {
 		return payload;
 	}
 
-	public [Method.Random]<Value = unknown>(payload: RandomPayload<Value>): Awaited<RandomPayload<Value>> {
+	public [Method.Push]<Value>(payload: PushPayload<Value>): Awaited<PushPayload<Value>> {
+		return payload;
+	}
+
+	public [Method.Random]<StoredValue>(payload: RandomPayload<StoredValue>): Awaited<RandomPayload<StoredValue>> {
 		return payload;
 	}
 
@@ -179,17 +196,18 @@ export abstract class Middleware<Context extends Middleware.Context = Middleware
 		return payload;
 	}
 
-	public [Method.Remove]<Value = unknown>(payload: RemoveByDataPayload<Value>): Awaited<RemoveByDataPayload<Value>>;
-	public [Method.Remove]<Value = unknown>(payload: RemoveByHookPayload<Value>): Awaited<RemoveByHookPayload<Value>>;
-	public [Method.Remove]<Value = unknown>(payload: RemovePayload<Value>): Awaited<RemovePayload<Value>> {
+	public [Method.Remove]<HookValue>(payload: RemoveByHookPayload<HookValue>): Awaited<RemoveByHookPayload<HookValue>>;
+	public [Method.Remove](payload: RemoveByValuePayload): Awaited<RemoveByValuePayload>;
+	public [Method.Remove]<HookValue>(payload: RemovePayload<HookValue>): Awaited<RemovePayload<HookValue>>;
+	public [Method.Remove]<HookValue>(payload: RemovePayload<HookValue>): Awaited<RemovePayload<HookValue>> {
 		return payload;
 	}
 
-	public [Method.Set](payload: SetPayload): Awaited<SetPayload> {
+	public [Method.Set]<Value>(payload: SetPayload<Value>): Awaited<SetPayload<Value>> {
 		return payload;
 	}
 
-	public [Method.SetMany](payload: SetManyPayload): Awaited<SetManyPayload> {
+	public [Method.SetMany]<StoredValue>(payload: SetManyPayload<StoredValue>): Awaited<SetManyPayload<StoredValue>> {
 		return payload;
 	}
 
@@ -197,19 +215,20 @@ export abstract class Middleware<Context extends Middleware.Context = Middleware
 		return payload;
 	}
 
-	public [Method.Some]<Value = unknown>(payload: SomeByDataPayload<Value>): Awaited<SomeByDataPayload<Value>>;
-	public [Method.Some]<Value = unknown>(payload: SomeByHookPayload<Value>): Awaited<SomeByHookPayload<Value>>;
-	public [Method.Some]<Value = unknown>(payload: SomePayload<Value>): Awaited<SomePayload<Value>> {
+	public [Method.Some]<HookValue>(payload: SomeByHookPayload<HookValue>): Awaited<SomeByHookPayload<HookValue>>;
+	public [Method.Some]<Value>(payload: SomeByValuePayload): Awaited<SomeByValuePayload>;
+	public [Method.Some]<HookValue>(payload: SomePayload<HookValue>): Awaited<SomePayload<HookValue>>;
+	public [Method.Some]<HookValue>(payload: SomePayload<HookValue>): Awaited<SomePayload<HookValue>> {
 		return payload;
 	}
 
-	public [Method.Update]<Value = unknown>(payload: UpdateByDataPayload<Value>): Awaited<UpdateByDataPayload<Value>>;
-	public [Method.Update]<Value = unknown>(payload: UpdateByHookPayload<Value>): Awaited<UpdateByHookPayload<Value>>;
-	public [Method.Update]<Value = unknown>(payload: UpdatePayload<Value>): Awaited<UpdatePayload<Value>> {
+	public [Method.Update]<StoredValue, Value, HookValue>(
+		payload: UpdatePayload<StoredValue, Value, HookValue>
+	): Awaited<UpdatePayload<StoredValue, Value, HookValue>> {
 		return payload;
 	}
 
-	public [Method.Values]<Value = unknown>(payload: ValuesPayload<Value>): Awaited<ValuesPayload<Value>> {
+	public [Method.Values]<StoredValue>(payload: ValuesPayload<StoredValue>): Awaited<ValuesPayload<StoredValue>> {
 		return payload;
 	}
 
@@ -217,7 +236,7 @@ export abstract class Middleware<Context extends Middleware.Context = Middleware
 		return payload;
 	}
 
-	public toJSON(): Record<string, any> {
+	public toJSON() {
 		return { ...super.toJSON(), position: this.position, conditions: this.conditions, use: this.use };
 	}
 

@@ -9,7 +9,7 @@ import type { Payload } from './Payload';
  */
 export interface RandomKeyPayload extends Payload, Payload.OptionalData<string> {
 	/**
-	 * The method for this payload.
+	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.RandomKey;
