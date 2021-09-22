@@ -13,6 +13,7 @@ export * from './Has';
 export * from './Inc';
 export * from './Keys';
 export * from './Map';
+export * from './Math';
 export * from './Partition';
 export * from './Payload';
 export * from './Push';

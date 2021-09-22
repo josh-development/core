@@ -29,6 +29,8 @@ export enum Method {
 
 	Map = 'map',
 
+	Math = 'math',
+
 	Partition = 'partition',
 
 	Push = 'push',

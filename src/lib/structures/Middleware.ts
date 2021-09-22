@@ -25,6 +25,7 @@ import type {
 	MapByHookPayload,
 	MapByPathPayload,
 	MapPayload,
+	MathPayload,
 	PartitionByHookPayload,
 	PartitionByValuePayload,
 	PartitionPayload,
@@ -174,6 +175,10 @@ export class Middleware<Context extends Middleware.Context = Middleware.Context>
 	public [Method.Map]<Value>(payload: MapByPathPayload<Value>): Awaited<MapByPathPayload<Value>>;
 	public [Method.Map]<Value, HookValue>(payload: MapPayload<Value, HookValue>): Awaited<MapPayload<Value, HookValue>>;
 	public [Method.Map]<Value, HookValue>(payload: MapPayload<Value, HookValue>): Awaited<MapPayload<Value, HookValue>> {
+		return payload;
+	}
+
+	public [Method.Math](payload: MathPayload): Awaited<MathPayload> {
 		return payload;
 	}
 

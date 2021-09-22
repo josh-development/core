@@ -1,17 +1,18 @@
+import { ApplyOptions } from '../lib/decorators/ApplyOptions';
 import type {
 	DecPayload,
 	GetManyPayload,
 	GetPayload,
 	IncPayload,
+	MathPayload,
 	PushPayload,
 	RemoveByHookPayload,
 	RemoveByValuePayload,
 	RemovePayload,
+	SetManyPayload,
 	SetPayload,
 	UpdatePayload
-} from '..';
-import { ApplyOptions } from '../lib/decorators/ApplyOptions';
-import type { SetManyPayload } from '../lib/payloads/SetMany';
+} from '../lib/payloads';
 import { Middleware } from '../lib/structures/Middleware';
 import { BuiltInMiddleware, Method, Trigger } from '../lib/types';
 
@@ -94,6 +95,19 @@ export class CoreMiddleware extends Middleware<AutoEnsureContext> {
 	}
 
 	public async [Method.Push]<Value>(payload: PushPayload<Value>): Promise<PushPayload<Value>> {
+		const context = this.getContext();
+
+		if (!context) return payload;
+
+		const { defaultValue } = context;
+		const { key } = payload;
+
+		await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
+
+		return payload;
+	}
+
+	public async [Method.Math](payload: MathPayload): Promise<MathPayload> {
 		const context = this.getContext();
 
 		if (!context) return payload;

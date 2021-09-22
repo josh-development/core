@@ -1,5 +1,5 @@
 import { deleteFromObject, getFromObject, hasFromObject, setToObject } from '@realware/utilities';
-import { isPrimitive } from '@sapphire/utilities';
+import { isNumber, isPrimitive } from '@sapphire/utilities';
 import type {
 	AutoKeyPayload,
 	ClearPayload,
@@ -24,6 +24,7 @@ import type {
 	MapByHookPayload,
 	MapByPathPayload,
 	MapPayload,
+	MathPayload,
 	PartitionByHookPayload,
 	PartitionByValuePayload,
 	PartitionPayload,
@@ -42,7 +43,7 @@ import type {
 	UpdatePayload,
 	ValuesPayload
 } from '../../payloads';
-import { Method } from '../../types';
+import { MathOperator, Method } from '../../types';
 import {
 	isEveryByHookPayload,
 	isEveryByValuePayload,
@@ -359,6 +360,61 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 		return payload;
 	}
 
+	public [Method.Math](payload: MathPayload): MathPayload {
+		const { key, path, operator, operand } = payload;
+		let { data } = this.get<number>({ method: Method.Get, key, path });
+
+		if (data === undefined) {
+			payload.error = new MapProviderError({
+				identifier: MapProvider.Identifiers.MathMissingData,
+				message: path.length === 0 ? `The data at "${key}" does not exist.` : `The data at "${key}.${path.join('.')}" does not exist.`,
+				method: Method.Math
+			});
+
+			return payload;
+		}
+
+		if (!isNumber(data)) {
+			payload.error = new MapProviderError({
+				identifier: MapProvider.Identifiers.MathInvalidType,
+				message: path.length === 0 ? `The data at "${key}" must be a number.` : `The data at "${key}.${path.join('.')}" must be a number.`,
+				method: Method.Math
+			});
+
+			return payload;
+		}
+
+		switch (operator) {
+			case MathOperator.Addition:
+				data += operand;
+				break;
+
+			case MathOperator.Subtraction:
+				data -= operand;
+				break;
+
+			case MathOperator.Multiplication:
+				data *= operand;
+				break;
+
+			case MathOperator.Division:
+				data /= operand;
+				break;
+
+			case MathOperator.Remainder:
+				data %= operand;
+				break;
+
+			case MathOperator.Exponent:
+				data **= operand;
+				break;
+		}
+
+		this.set({ method: Method.Set, key, path, value: data });
+
+		return payload;
+	}
+
 	public async [Method.Partition](payload: PartitionByHookPayload<StoredValue>): Promise<PartitionByHookPayload<StoredValue>>;
 	public async [Method.Partition](payload: PartitionByValuePayload<StoredValue>): Promise<PartitionByValuePayload<StoredValue>>;
 	public async [Method.Partition](payload: PartitionPayload<StoredValue>): Promise<PartitionPayload<StoredValue>> {
@@ -595,6 +651,10 @@ export namespace MapProvider {
 		IncInvalidType = 'incInvalidType',
 
 		IncMissingData = 'incMissingData',
+
+		MathInvalidType = 'mathInvalidType',
+
+		MathMissingData = 'mathMissingData',
 
 		PartitionInvalidValue = 'partitionInvalidValue',
 

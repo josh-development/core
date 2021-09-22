@@ -23,6 +23,7 @@ import {
 	KeysPayload,
 	MapHook,
 	MapPayload,
+	MathPayload,
 	PartitionHook,
 	PartitionPayload,
 	Payload,
@@ -40,7 +41,7 @@ import {
 	UpdatePayload,
 	ValuesPayload
 } from '../payloads';
-import { BuiltInMiddleware, KeyPath, KeyPathArray, Method, StringArray, Trigger } from '../types';
+import { BuiltInMiddleware, KeyPath, KeyPathArray, MathOperator, Method, StringArray, Trigger } from '../types';
 import { MapProvider } from './defaultProvider';
 import { JoshProvider } from './JoshProvider';
 import type { Middleware } from './Middleware';
@@ -735,6 +736,24 @@ export class Josh<StoredValue = unknown> {
 		for (const middleware of this.getPostMiddlewares(Method.Map)) payload = await middleware[Method.Map](payload);
 
 		return payload.data;
+	}
+
+	public async math(keyPath: KeyPath, operator: MathOperator, operand: number): Promise<this> {
+		const [key, path] = this.getKeyPath(keyPath);
+		let payload: MathPayload = { method: Method.Math, trigger: Trigger.PreProvider, key, path, operator, operand };
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPreMiddlewares(Method.Math)) payload = await middleware[Method.Math](payload);
+
+		payload = await this.provider[Method.Math](payload);
+		payload.trigger = Trigger.PostProvider;
+
+		if (payload.error) throw payload.error;
+
+		for (const middleware of this.middlewares.array()) await middleware.run(payload);
+		for (const middleware of this.getPostMiddlewares(Method.Math)) payload = await middleware[Method.Math](payload);
+
+		return this;
 	}
 
 	/**

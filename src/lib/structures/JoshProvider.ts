@@ -24,6 +24,7 @@ import type {
 	MapByHookPayload,
 	MapByPathPayload,
 	MapPayload,
+	MathPayload,
 	PartitionByHookPayload,
 	PartitionByValuePayload,
 	PartitionPayload,
@@ -244,6 +245,13 @@ export abstract class JoshProvider<StoredValue = unknown> {
 	 */
 	public abstract [Method.Map]<Value = StoredValue>(payload: MapByPathPayload<Value>): Awaited<MapByPathPayload<Value>>;
 	public abstract [Method.Map]<Value = StoredValue, HookValue = Value>(payload: MapPayload<Value, HookValue>): Awaited<MapPayload<Value, HookValue>>;
+
+	/**
+	 * @since 2.0.0
+	 * @param payload The payload sent by this provider's {@link Josh} instance.
+	 * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+	 */
+	public abstract [Method.Math](payload: MathPayload): Awaited<MathPayload>;
 
 	/**
 	 * @since 2.0.0

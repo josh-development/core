@@ -1,4 +1,4 @@
-import { MapProvider, MapProviderError, Method, Payload } from '../../../../src';
+import { MapProvider, MapProviderError, MathOperator, Method, Payload } from '../../../../src';
 
 describe('MapProvider', () => {
 	describe('is a class', () => {
@@ -879,6 +879,82 @@ describe('MapProvider', () => {
 					expect(path).toEqual(['path']);
 					expect(data).toEqual(['value']);
 				});
+			});
+		});
+
+		describe('with math method', () => {
+			test('GIVEN provider w/o data THEN returns payload w/ error', () => {
+				const payload = provider.math({ method: Method.Math, key: 'test:math', path: [], operator: MathOperator.Addition, operand: 1 });
+
+				expect(typeof payload).toBe('object');
+
+				const { method, trigger, error, key, path, operator, operand } = payload;
+
+				expect(method).toBe(Method.Math);
+				expect(trigger).toBeUndefined();
+				expect(error).toBeInstanceOf(MapProviderError);
+				expect(error?.identifier).toBe(MapProvider.Identifiers.MathMissingData);
+				expect(key).toBe('test:math');
+				expect(path).toEqual([]);
+				expect(operator).toBe(MathOperator.Addition);
+				expect(operand).toBe(1);
+			});
+
+			test('GIVEN provider w/o data at path THEN returns payload w/ error', () => {
+				provider.set({ method: Method.Set, key: 'test:math', path: [], value: 0 });
+
+				const payload = provider.math({ method: Method.Math, key: 'test:math', path: ['path'], operator: MathOperator.Addition, operand: 1 });
+
+				expect(typeof payload).toBe('object');
+
+				const { method, trigger, error, key, path, operator, operand } = payload;
+
+				expect(method).toBe(Method.Math);
+				expect(trigger).toBeUndefined();
+				expect(error).toBeInstanceOf(MapProviderError);
+				expect(error?.identifier).toBe(MapProvider.Identifiers.MathMissingData);
+				expect(key).toBe('test:math');
+				expect(path).toEqual(['path']);
+				expect(operator).toBe(MathOperator.Addition);
+				expect(operand).toBe(1);
+			});
+
+			test('GIVEN provider w/ invalid type at key THEN returns payload w/ error', () => {
+				provider.set({ method: Method.Set, key: 'test:math', path: [], value: 'value' });
+
+				const payload = provider.math({ method: Method.Math, key: 'test:math', path: [], operator: MathOperator.Addition, operand: 1 });
+
+				expect(typeof payload).toBe('object');
+
+				const { method, trigger, error, key, path, operator, operand } = payload;
+
+				expect(method).toBe(Method.Math);
+				expect(trigger).toBeUndefined();
+				expect(error).toBeInstanceOf(MapProviderError);
+				expect(error?.identifier).toBe(MapProvider.Identifiers.MathInvalidType);
+				expect(key).toBe('test:math');
+				expect(path).toEqual([]);
+				expect(operator).toBe(MathOperator.Addition);
+				expect(operand).toBe(1);
+			});
+
+			test('GIVEN provider w/ invalid type at path THEN returns payload w/ error', () => {
+				provider.set({ method: Method.Set, key: 'test:math', path: ['path'], value: 'value' });
+
+				const payload = provider.math({ method: Method.Math, key: 'test:math', path: ['path'], operator: MathOperator.Addition, operand: 1 });
+
+				expect(typeof payload).toBe('object');
+
+				const { method, trigger, error, key, path, operator, operand } = payload;
+
+				expect(method).toBe(Method.Math);
+				expect(trigger).toBeUndefined();
+				expect(error).toBeInstanceOf(MapProviderError);
+				expect(error?.identifier).toBe(MapProvider.Identifiers.MathInvalidType);
+				expect(key).toBe('test:math');
+				expect(path).toEqual(['path']);
+				expect(operator).toBe(MathOperator.Addition);
+				expect(operand).toBe(1);
 			});
 		});
 
