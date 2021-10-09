@@ -2,11 +2,11 @@
 	"name": "@joshdb/core",
 	"version": "2.0.0",
 	"description": "JavaScript Object Storage Helper",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
 	"author": "Evelyne Lachance <eslachance@gmail.com> (https://evie.codes/)",
 	"license": "Apache-2.0",
 	"private": false,
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
 	"scripts": {
 		"lint": "eslint src tests scripts --ext mjs,ts --fix",
 		"format": "prettier --write {src,tests,scripts}/**/*.{mjs,ts}",
