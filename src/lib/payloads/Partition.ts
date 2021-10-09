@@ -1,4 +1,4 @@
-import type { Awaited, Primitive } from '@sapphire/utilities';
+import type { Awaitable, Primitive } from '@sapphire/utilities';
 import type { Method, StringArray } from '../types';
 import type { Payload } from './Payload';
 
@@ -102,4 +102,4 @@ export interface PartitionData<DataValue> {
  * The hook for {@link PartitionByHookPayload}
  * @since 2.0.0
  */
-export type PartitionHook<HookValue> = (value: HookValue) => Awaited<boolean>;
+export type PartitionHook<HookValue> = (value: HookValue) => Awaitable<boolean>;

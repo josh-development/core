@@ -1,4 +1,4 @@
-import type { Awaited } from '@sapphire/utilities';
+import type { Awaitable } from '@sapphire/utilities';
 import type { Method, StringArray } from '../types';
 import type { Payload } from './Payload';
 
@@ -80,4 +80,4 @@ export interface MapByPathPayload<DataValue> extends Payload, Payload.ByPath, Pa
  * The hook for {@link MapByHookPayload}
  * @since 2.0.0
  */
-export type MapHook<Value, HookValue = Value> = (data: HookValue) => Awaited<Value>;
+export type MapHook<Value, HookValue = Value> = (data: HookValue) => Awaitable<Value>;

@@ -1,4 +1,5 @@
 import { Store } from '@sapphire/pieces';
+import type { Constructor } from '@sapphire/utilities';
 import type { Method, Trigger } from '../types';
 import type { Josh } from './Josh';
 import { Middleware } from './Middleware';
@@ -14,7 +15,7 @@ export class MiddlewareStore<StoredValue = unknown> extends Store<Middleware> {
 	public instance: Josh<StoredValue>;
 
 	public constructor(options: MiddlewareStoreOptions<StoredValue>) {
-		super(Middleware as any, { name: 'middlewares' });
+		super(Middleware as Constructor<Middleware>, { name: 'middlewares' });
 
 		const { instance } = options;
 

@@ -1,4 +1,4 @@
-import type { Awaited } from '@sapphire/utilities';
+import type { Awaitable } from '@sapphire/utilities';
 import type { Method } from '../types';
 import type { Payload } from './Payload';
 
@@ -30,4 +30,4 @@ export interface UpdatePayload<DataValue, HookValue = DataValue, Value = DataVal
  * The hook for {@link UpdateByHookPayload}
  * @since 2.0.0
  */
-export type UpdateHook<HookValue, Value> = (value: HookValue) => Awaited<Value>;
+export type UpdateHook<HookValue, Value> = (value: HookValue) => Awaitable<Value>;

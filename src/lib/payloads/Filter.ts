@@ -1,4 +1,4 @@
-import type { Awaited, Primitive } from '@sapphire/utilities';
+import type { Awaitable, Primitive } from '@sapphire/utilities';
 import type { Method, StringArray } from '../types';
 import type { Payload } from './Payload';
 
@@ -92,4 +92,4 @@ export interface FilterByValuePayload<DataValue> extends Payload, Payload.ByValu
  * The hook for {@link FilterByHookPayload}
  * @since 2.0.0
  */
-export type FilterHook<HookValue> = (value: HookValue) => Awaited<boolean>;
+export type FilterHook<HookValue> = (value: HookValue) => Awaitable<boolean>;

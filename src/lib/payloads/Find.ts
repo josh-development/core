@@ -1,4 +1,4 @@
-import type { Awaited, Primitive } from '@sapphire/utilities';
+import type { Awaitable, Primitive } from '@sapphire/utilities';
 import type { Method, StringArray } from '../types';
 import type { Payload } from './Payload';
 
@@ -92,4 +92,4 @@ export interface FindByValuePayload<DataValue> extends Payload, Payload.ByValue,
  * The hook for {@link FindByHookPayload}
  * @since 2.0.0
  */
-export type FindHook<Value = unknown> = (data: Value) => Awaited<boolean>;
+export type FindHook<Value = unknown> = (data: Value) => Awaitable<boolean>;

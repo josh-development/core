@@ -1,4 +1,4 @@
-import type { Awaited, Primitive } from '@sapphire/utilities';
+import type { Awaitable, Primitive } from '@sapphire/utilities';
 import type { Method } from '../types';
 import type { Payload } from './Payload';
 
@@ -91,4 +91,4 @@ export interface RemoveByValuePayload extends Payload, Payload.ByValue, Payload.
  * The hook for {@link RemoveByHookPayload}
  * @since 2.0.0
  */
-export type RemoveHook<Value> = (value: Value) => Awaited<boolean>;
+export type RemoveHook<Value> = (value: Value) => Awaitable<boolean>;

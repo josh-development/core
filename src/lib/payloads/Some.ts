@@ -1,4 +1,4 @@
-import type { Awaited, Primitive } from '@sapphire/utilities';
+import type { Awaitable, Primitive } from '@sapphire/utilities';
 import type { Method, StringArray } from '../types';
 import type { Payload } from './Payload';
 
@@ -92,4 +92,4 @@ export interface SomeByValuePayload extends Payload, Payload.ByValue, Payload.Da
  * The hook for {@link SomeByHookPayload}
  * @since 2.0.0
  */
-export type SomeHook<Value> = (value: Value) => Awaited<boolean>;
+export type SomeHook<Value> = (value: Value) => Awaitable<boolean>;
