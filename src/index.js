@@ -7,6 +7,7 @@ const {
   isObject,
   cloneDeep,
 } = require('lodash');
+const serialize = require('serialize-javascript');
 
 // Custom error codes with stack support.
 const Err = require('./error.js');
@@ -700,14 +701,14 @@ class Josh {
       exportDate: Date.now(),
       keys: [],
     };
-    // console.log(Object.keys(data));
     for (const key of Object.keys(data)) {
       const keydata = this.deserializer
         ? await this.deserializer(data[key], key)
         : data[key];
       output.keys.push({ key, value: keydata });
     }
-    return serialise(
+    // serialize-javascript's serializer!
+    return serialize(
       output,
       null,
       2,
