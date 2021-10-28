@@ -18,7 +18,7 @@
 		"watch": "tsc -b src -w",
 		"commit": "git-cz --disable-emoji",
 		"prepublishOnly": "rollup-type-bundler",
-		"prepare": "husky install .github/husky"
+		"prepare": "husky install .husky"
 	},
 	"dependencies": {
 		"@realware/utilities": "^2.0.2",
