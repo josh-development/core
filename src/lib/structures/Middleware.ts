@@ -1,4 +1,4 @@
-import { Piece, PieceContext, PieceOptions } from '@sapphire/pieces';
+import { Piece, PieceContext, PieceJSON, PieceOptions } from '@sapphire/pieces';
 import type { Awaitable } from '@sapphire/utilities';
 import { JoshError } from '../errors/JoshError';
 import type {
@@ -241,7 +241,7 @@ export class Middleware<Context extends Middleware.Context = Middleware.Context>
 		return payload;
 	}
 
-	public toJSON() {
+	public toJSON(): Middleware.JSON {
 		return { ...super.toJSON(), position: this.position, conditions: this.conditions, use: this.use };
 	}
 
@@ -317,8 +317,29 @@ export namespace Middleware {
 
 		/**
 		 * The trigger for this condition.
+		 * @since 2.0.0
 		 */
 		trigger: Trigger;
+	}
+
+	export interface JSON extends PieceJSON {
+		/**
+		 * The position of this middleware.
+		 * @since 2.0.0
+		 */
+		position?: number;
+
+		/**
+		 * The conditions for this middleware.
+		 * @since 2.0.0
+		 */
+		conditions: Condition[];
+
+		/**
+		 * Whether to use this middleware or not.
+		 * @since 2.0.0
+		 */
+		use: boolean;
 	}
 
 	export enum Identifiers {
