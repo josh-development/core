@@ -4,6 +4,7 @@ export function createProxy<T extends object>(target: T, handler: Omit<ProxyHand
 		...handler,
 		get: (target, property) => {
 			const value = Reflect.get(target, property);
+
 			return typeof value === 'function' ? (...args: readonly unknown[]) => value.apply(target, args) : value;
 		}
 	});

@@ -239,6 +239,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 				if (!foundValue) continue;
 
 				payload.data = value;
+
 				break;
 			}
 		}
@@ -387,26 +388,32 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 		switch (operator) {
 			case MathOperator.Addition:
 				data += operand;
+
 				break;
 
 			case MathOperator.Subtraction:
 				data -= operand;
+
 				break;
 
 			case MathOperator.Multiplication:
 				data *= operand;
+
 				break;
 
 			case MathOperator.Division:
 				data /= operand;
+
 				break;
 
 			case MathOperator.Remainder:
 				data %= operand;
+
 				break;
 
 			case MathOperator.Exponent:
 				data **= operand;
+
 				break;
 		}
 
@@ -599,6 +606,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 				if (!someValue) continue;
 
 				payload.data = true;
+
 				break;
 			}
 		}
