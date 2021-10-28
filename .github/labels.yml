@@ -10,8 +10,8 @@
 - name: 'Bug: Fixed'
   description: Issues that report bugs and have been fixed.
   color: 00fa9a
-- name: 'Bug: Fixed in master'
-  description: Issues that report bugs from stable, but that are fixed in master.
+- name: 'Bug: Fixed in main'
+  description: Issues that report bugs from stable, but that are fixed in main.
   color: b3e88c
 - name: 'Bug: Pending Response'
   description: Issues that report bugs and are pending of a response from the author.
@@ -19,6 +19,9 @@
 - name: 'Bug: Unverified'
   description: Issues that report unverified bugs. Pending for inspection.
   color: f9d0c4
+- name: 'hacktoberfest-accepted'
+  description: Issues and PRs related to Hacktoberfest.
+  color: EE4700
 - name: 'Meta: Bike-Shedding'
   description: Issues and PRs that nit pick
   color: f9253a
