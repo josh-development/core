@@ -3,10 +3,6 @@
 	"rules": {
 		"@typescript-eslint/no-namespace": "off",
 		"@typescript-eslint/class-literal-property-style": "off",
-		"lines-around-comment": [
-			"error",
-			{ "beforeBlockComment": true, "beforeLineComment": true, "allowClassStart": true, "allowNamespaceStart": true }
-		],
 		"padding-line-between-statements": [
 			"error",
 			{ "blankLine": "always", "prev": "*", "next": "return" },
