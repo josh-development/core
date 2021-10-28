@@ -2,6 +2,33 @@
 	"extends": "@sapphire",
 	"rules": {
 		"@typescript-eslint/no-namespace": "off",
-		"@typescript-eslint/class-literal-property-style": "off"
+		"@typescript-eslint/class-literal-property-style": "off",
+		"lines-around-comment": [
+			"error",
+			{ "beforeBlockComment": true, "beforeLineComment": true, "allowClassStart": true, "allowNamespaceStart": true }
+		],
+		"padding-line-between-statements": [
+			"error",
+			{ "blankLine": "always", "prev": "*", "next": "return" },
+
+			{ "blankLine": "always", "prev": ["const", "let", "var"], "next": "*" },
+			{ "blankLine": "any", "prev": ["const", "let", "var"], "next": ["const", "let", "var"] },
+
+			{ "blankLine": "always", "prev": "directive", "next": "*" },
+			{ "blankLine": "any", "prev": "directive", "next": "directive" },
+
+			{ "blankLine": "always", "prev": ["case", "default"], "next": "*" },
+
+			{ "blankLine": "always", "prev": "block-like", "next": "*" },
+
+			{ "blankLine": "always", "prev": "for", "next": "*" },
+			{ "blankLine": "any", "prev": "for", "next": "for" },
+
+			{ "blankLine": "always", "prev": "if", "next": "*" },
+			{ "blankLine": "any", "prev": "if", "next": "if" },
+
+			{ "blankLine": "always", "prev": "expression", "next": "*" },
+			{ "blankLine": "any", "prev": "expression", "next": "expression" }
+		]
 	}
 }
