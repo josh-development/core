@@ -130,7 +130,7 @@ export class Josh<StoredValue = unknown> {
 			throw new JoshError({ identifier: Josh.Identifiers.MissingName, message: 'The "name" option is required to initiate a Josh instance.' });
 
 		this.name = name;
-		this.provider = provider ?? new MapProvider<StoredValue>();
+		this.provider = provider ?? new MapProvider<StoredValue>({});
 
 		if (!(this.provider instanceof JoshProvider))
 			throw new JoshError({
