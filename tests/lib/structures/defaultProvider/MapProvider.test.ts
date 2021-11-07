@@ -12,7 +12,7 @@ describe('MapProvider', () => {
 	});
 
 	describe('can manipulate provider data', () => {
-		const provider = new MapProvider();
+		const provider = new MapProvider({});
 
 		beforeEach(() => {
 			provider.clear({ method: Method.Clear });
