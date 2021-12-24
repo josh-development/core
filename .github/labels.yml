@@ -153,6 +153,9 @@
 - name: 'Type: Performance'
   description: Issues and PRs related to the performance of the api's interface.
   color: 1d76db
+- name: 'Type: Provider'
+  description: Issues and PRs related to providers.
+  color: 1d76db
 - name: 'Type: Proposal'
   description: Issues that request a new feature or a change in the api's interface.
   color: ffffff
