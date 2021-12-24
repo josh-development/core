@@ -180,7 +180,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 		if (isEveryByValuePayload(payload)) {
 			const { path, value } = payload;
 
-			for (const key of this.keys({ method: Method.Keys, data: [] }).data) {
+			for (const key of this.cache.keys()) {
 				const { data } = this.get({ method: Method.Get, key, path });
 
 				if (value === data) continue;
@@ -233,7 +233,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 		if (isFindByHookPayload(payload)) {
 			const { hook } = payload;
 
-			for (const value of this.values({ method: Method.Values, data: [] }).data) {
+			for (const value of this.cache.values()) {
 				const foundValue = await hook(value);
 
 				if (!foundValue) continue;
