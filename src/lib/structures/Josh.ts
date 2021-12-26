@@ -42,7 +42,7 @@ import {
 	ValuesPayload
 } from '../payloads';
 import { BuiltInMiddleware, KeyPath, KeyPathArray, MathOperator, Method, StringArray, Trigger } from '../types';
-import { MapProvider } from './defaultProvider';
+import { MapProvider } from './default-provider';
 import { JoshProvider } from './JoshProvider';
 import type { Middleware } from './Middleware';
 import { MiddlewareStore } from './MiddlewareStore';
