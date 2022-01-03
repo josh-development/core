@@ -21,7 +21,7 @@
 		"build": "tsc -b src && rollup -c scripts/rollup.bundle.ts && gen-esm-wrapper dist/index.js dist/index.mjs",
 		"watch": "tsc -b src -w",
 		"commit": "git-cz --disable-emoji",
-		"prepublishOnly": "rollup-type-bundler",
+		"prepublishOnly": "rollup-type-bundler && gen-esm-wrapper dist/index.js dist/index.mjs",
 		"prepare": "husky install"
 	},
 	"dependencies": {
