@@ -398,4 +398,32 @@ export namespace JoshProvider {
 		 */
 		error?: JoshProviderError;
 	}
+
+	export enum Identifiers {
+		DecMissingData = 'decMissingData',
+
+		DecInvalidType = 'decInvalidType',
+
+		FilterInvalidValue = 'filterInvalidValue',
+
+		FindInvalidValue = 'findInvalidValue',
+
+		IncInvalidType = 'incInvalidType',
+
+		IncMissingData = 'incMissingData',
+
+		MathInvalidType = 'mathInvalidType',
+
+		MathMissingData = 'mathMissingData',
+
+		PartitionInvalidValue = 'partitionInvalidValue',
+
+		PushInvalidType = 'pushInvalidType',
+
+		PushMissingData = 'pushMissingData',
+
+		RemoveInvalidType = 'removeInvalidType',
+
+		RemoveMissingData = 'removeMissingData'
+	}
 }
