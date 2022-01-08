@@ -45,6 +45,8 @@ import type {
 	ValuesPayload
 } from '../payloads';
 import { Method } from '../types';
+import type { Josh } from './Josh';
+import type { JoshProvider } from './JoshProvider';
 import type { MiddlewareStore } from './MiddlewareStore';
 
 /**
@@ -79,7 +81,7 @@ export class Middleware<StoredValue = unknown> {
 	 * The store for this middleware.
 	 * @since 2.0.0
 	 */
-	public store?: MiddlewareStore;
+	public store?: MiddlewareStore<StoredValue>;
 
 	/**
 	 * The name of this middleware.
@@ -113,7 +115,7 @@ export class Middleware<StoredValue = unknown> {
 	 * @param store The store to set to `this`.
 	 * @returns Returns the current Middleware class.
 	 */
-	public init(store: MiddlewareStore): this {
+	public init(store: MiddlewareStore<StoredValue>): this {
 		this.store = store;
 
 		return this;
@@ -267,7 +269,7 @@ export class Middleware<StoredValue = unknown> {
 	 * The Josh instance this middleware is currently running on.
 	 * @since 2.0.0
 	 */
-	protected get instance(): MiddlewareStore['instance'] {
+	protected get instance(): Josh<StoredValue> {
 		if (this.store === undefined)
 			throw new JoshError({
 				identifier: Middleware.Identifiers.StoreNotFound,
@@ -281,7 +283,7 @@ export class Middleware<StoredValue = unknown> {
 	 * The provider that is used with the current Josh.
 	 * @since 2.0.0
 	 */
-	protected get provider(): MiddlewareStore['instance']['provider'] {
+	protected get provider(): JoshProvider<StoredValue> {
 		return this.instance.provider;
 	}
 }

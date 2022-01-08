@@ -1,4 +1,4 @@
-import { isFunction, isPrimitive, Primitive } from '@sapphire/utilities';
+import { Awaitable, isFunction, isPrimitive, Primitive } from '@sapphire/utilities';
 import type { CoreMiddleware as AutoEnsureMiddleware } from '../../middlewares/CoreAutoEnsure';
 import { JoshError } from '../errors';
 import {
@@ -42,7 +42,7 @@ import {
 import { BuiltInMiddleware, KeyPath, KeyPathArray, MathOperator, Method, StringArray, Trigger } from '../types';
 import { MapProvider } from './default-provider';
 import { JoshProvider } from './JoshProvider';
-import type { Middleware } from './Middleware';
+import { Middleware } from './Middleware';
 import { MiddlewareStore } from './MiddlewareStore';
 
 /**
@@ -156,13 +156,46 @@ export class Josh<StoredValue = unknown> {
 	}
 
 	/**
-	 * Adds a middleware instance to this Josh.
+	 * Adds a middleware by providing options and a hook.
 	 * @since 2.0.0
-	 * @param instance The instance to add.
-	 * @returns This Josh class.
+	 * @param options The options for this middleware instance.
+	 * @param hook The hook to run for the payload.
 	 */
-	public use(instance: Middleware): this {
-		this.middlewares.set(instance.name, instance);
+	public use<P extends Payload>(options: Josh.UseMiddlewareOptions, hook: (payload: P) => Awaitable<P>): this;
+
+	/**
+	 * Adds a middleware by providing a {@link Middleware} instance.
+	 * @since 2.0.0
+	 * @param instance The middleware instance.
+	 */
+	public use(instance: Middleware<StoredValue>): this;
+
+	/**
+	 * Adds a middleware by either providing options and a hook or a {@link Middleware} instance.
+	 * @since 2.0.0
+	 * @param optionsOrInstance The options or an instance.
+	 * @param hook The hook for the middleware. Optional if providing an instance.
+	 * @returns This Josh instance.
+	 */
+	public use<P extends Payload>(optionsOrInstance: Josh.UseMiddlewareOptions | Middleware<StoredValue>, hook?: (payload: P) => Awaitable<P>): this {
+		if (optionsOrInstance instanceof Middleware) this.middlewares.set(optionsOrInstance.name, optionsOrInstance);
+		else {
+			if (hook === undefined)
+				throw new JoshError({
+					identifier: Josh.Identifiers.UseMiddlewareHookNotFound,
+					message: 'The "hook" parameter for middleware was not found.'
+				});
+
+			const { name, position, trigger, method } = optionsOrInstance;
+			const options: Middleware.Options = { name, position, conditions: { pre: [], post: [] } };
+			const middleware = this.middlewares.get(options.name) ?? new Middleware<StoredValue>(options).init(this.middlewares);
+
+			if (trigger !== undefined && method !== undefined) options.conditions[trigger === Trigger.PreProvider ? 'pre' : 'post'].push(method);
+
+			Object.defineProperty(middleware, method === undefined ? 'run' : method, { value: hook });
+
+			this.middlewares.set(middleware.name, middleware);
+		}
 
 		return this;
 	}
@@ -1232,6 +1265,36 @@ export namespace Josh {
 		};
 	}
 
+	/**
+	 * The options for the {@link Josh.use} method.
+	 * @since 2.0.0
+	 */
+	export interface UseMiddlewareOptions {
+		/**
+		 * The name for the middleware.
+		 * @since 2.0.0
+		 */
+		name: string;
+
+		/**
+		 * The position for the middleware.
+		 * @since 2.0.0
+		 */
+		position?: number;
+
+		/**
+		 * The trigger for the middleware hook.
+		 * @since 2.0.0
+		 */
+		trigger?: Trigger;
+
+		/**
+		 * The trigger for the middleware hook.
+		 * @since 2.0.0
+		 */
+		method?: Method;
+	}
+
 	export enum Identifiers {
 		EveryInvalidValue = 'everyInvalidValue',
 
@@ -1259,7 +1322,9 @@ export namespace Josh {
 
 		SomeInvalidValue = 'someInvalidValue',
 
-		SomeMissingValue = 'someMissingValue'
+		SomeMissingValue = 'someMissingValue',
+
+		UseMiddlewareHookNotFound = 'useMiddlewareHookNotFound'
 	}
 }
 
