@@ -1,58 +1,76 @@
-import { Store } from '@sapphire/pieces';
-import type { Constructor } from '@sapphire/utilities';
-import type { Method, Trigger } from '../types';
+import { Method, Trigger } from '../types';
 import type { Josh } from './Josh';
-import { Middleware } from './Middleware';
+import type { Middleware } from './Middleware';
 
 /**
- * The store to contain {@link Middleware} pieces.
+ * The store to contain {@link Middleware} classes.
  * @since 2.0.0
  */
-export class MiddlewareStore<StoredValue = unknown> extends Store<Middleware> {
+export class MiddlewareStore<StoredValue = unknown> extends Map<string, Middleware<StoredValue>> {
 	/**
-	 * The {@link Josh} instance for this store.
+	 * The link {@link Josh} instance for this store.
+	 * @since 2.0.0
 	 */
 	public instance: Josh<StoredValue>;
 
-	public constructor(options: MiddlewareStoreOptions<StoredValue>) {
-		super(Middleware as Constructor<Middleware>, { name: 'middlewares' });
+	public constructor(options: MiddlewareStore.Options<StoredValue>) {
+		super();
 
 		const { instance } = options;
 
 		this.instance = instance;
 	}
 
-	public array(): Middleware[] {
+	/**
+	 * Gets an array of middlewares.
+	 * @since 2.0.0
+	 * @returns The array of middlewares.
+	 */
+	public array(): Middleware<StoredValue>[] {
 		return Array.from(this.values());
+	}
+
+	/**
+	 * Get pre provider middlewares by method.
+	 * @since 2.0.0
+	 * @param method The method to filter by.
+	 * @returns The middlewares after filtered.
+	 */
+	public getPreMiddlewares(method: Method): Middleware<StoredValue>[] {
+		return this.filterByCondition(method, Trigger.PreProvider);
+	}
+
+	/**
+	 * Get post provider middlewares by method.
+	 * @since 2.0.0
+	 * @param method The method to filter by.
+	 * @returns The middlewares after filtered.
+	 */
+	public getPostMiddlewares(method: Method): Middleware<StoredValue>[] {
+		return this.filterByCondition(method, Trigger.PostProvider);
 	}
 
 	/**
 	 * Filter middlewares by their conditions.
 	 * @since 2.0.0
-	 * @param method The method to filter by.
-	 * @param trigger The trigger to filter by.
-	 * @returns An array of middleware's in which the method and trigger matched.
+	 * @param method
+	 * @param trigger
+	 * @returns
 	 */
-	public filterByCondition(method: Method, trigger: Trigger): Middleware[] {
-		const middlewares = this.array().filter(
-			(middleware) => middleware.use && middleware.conditions.some((c) => c.methods.includes(method) && c.trigger === trigger)
+	private filterByCondition(method: Method, trigger: Trigger): Middleware<StoredValue>[] {
+		const middlewares = this.array().filter((middleware) =>
+			trigger === Trigger.PreProvider ? middleware.conditions.pre.includes(method) : middleware.conditions.post.includes(method)
 		);
 
-		const withPositions = middlewares.filter((middleware) => (middleware.position === undefined ? false : true));
-		const withoutPositions = middlewares.filter((middleware) => (middleware.position === undefined ? true : false));
+		const withPositions = middlewares.filter((middleware) => middleware.position !== undefined);
+		const withoutPositions = middlewares.filter((middleware) => middleware.position !== undefined);
 
 		return [...withPositions.sort((a, b) => a.position! - b.position!), ...withoutPositions];
 	}
 }
 
-/**
- * The options for {@link MiddlewareStore}
- * @since 2.0.0
- */
-export interface MiddlewareStoreOptions<StoredValue = unknown> {
-	/**
-	 * The {@link Josh} instance for this store.
-	 * @since 2.0.0
-	 */
-	instance: Josh<StoredValue>;
+export namespace MiddlewareStore {
+	export interface Options<StoredValue = unknown> {
+		instance: Josh<StoredValue>;
+	}
 }

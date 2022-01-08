@@ -1,6 +1,5 @@
-import { Piece, PieceContext, PieceJSON, PieceOptions } from '@sapphire/pieces';
 import type { Awaitable } from '@sapphire/utilities';
-import { JoshError } from '../errors/JoshError';
+import { JoshError } from '../errors';
 import type {
 	AutoKeyPayload,
 	ClearPayload,
@@ -45,17 +44,17 @@ import type {
 	UpdatePayload,
 	ValuesPayload
 } from '../payloads';
-import { Method, Trigger } from '../types';
+import { Method } from '../types';
 import type { MiddlewareStore } from './MiddlewareStore';
 
 /**
- * The base class piece for creating middlewares. Extend this piece to create a middleware.
+ * The base class for creating middlewares. Extend this class to create a middleware.
  * @see {@link Middleware.Options} for all available options for middlewares.
  * @since 2.0.0
  *
  * @example
  * ```typescript
- * (at)ApplyOptions<MiddlewareOptions>({
+ * (at)ApplyOptions<Middleware.Options>({
  *   name: 'middleware',
  *   // More options...
  * })
@@ -63,47 +62,61 @@ import type { MiddlewareStore } from './MiddlewareStore';
  *   // Make method implementations...
  * }
  * ```
+ *
+ * ```typescript
+ * export class CoreMiddleware extends Middleware {
+ *   public constructor() {
+ *     super({
+ *       name: 'middleware'
+ *     })
+ *   }
+ * }
+ * ```
  */
-export class Middleware<Context extends Middleware.Context = Middleware.Context> extends Piece {
+
+export class Middleware<StoredValue = unknown> {
 	/**
 	 * The store for this middleware.
 	 * @since 2.0.0
 	 */
-	public declare store: MiddlewareStore;
+	public store?: MiddlewareStore;
 
 	/**
-	 * The position of this middleware.
+	 * The name of this middleware.
+	 * @since 2.0.0
+	 */
+	public name: string;
+
+	/**
+	 * The position this middleware runs at.
 	 * @since 2.0.0
 	 */
 	public readonly position?: number;
 
 	/**
-	 * The conditions of this middleware.
+	 * The conditions this middleware to run.
 	 * @since 2.0.0
 	 */
-	public readonly conditions: Middleware.Condition[];
+	public readonly conditions: Middleware.Conditions;
 
-	/**
-	 * Whether to use this middleware or not.
-	 * @since 2.0.0
-	 * @default true
-	 */
-	public use: boolean;
+	public constructor(options: Middleware.Options) {
+		const { name, position, conditions } = options;
 
-	public constructor(context: PieceContext, options: Middleware.Options = {}) {
-		super(context, options);
-
-		const { position, conditions, use } = options;
-
-		if (!conditions)
-			throw new JoshError({
-				identifier: Middleware.Identifiers.MissingConditions,
-				message: 'The "conditions" property is a required Middleware option.'
-			});
-
+		this.name = name;
 		this.position = position;
 		this.conditions = conditions;
-		this.use = use ?? true;
+	}
+
+	/**
+	 * Initiates this class with it's store.
+	 * @since 2.0.0
+	 * @param store The store to set to `this`.
+	 * @returns Returns the current Middleware class.
+	 */
+	public init(store: MiddlewareStore): this {
+		this.store = store;
+
+		return this;
 	}
 
 	public [Method.AutoKey](payload: AutoKeyPayload): Awaitable<AutoKeyPayload> {
@@ -241,34 +254,34 @@ export class Middleware<Context extends Middleware.Context = Middleware.Context>
 		return payload;
 	}
 
+	/**
+	 * Adds the options of this class to an object.
+	 * @since 2.0.0
+	 * @returns The options for this middleware as an object.
+	 */
 	public toJSON(): Middleware.JSON {
-		return { ...super.toJSON(), position: this.position, conditions: this.conditions, use: this.use };
+		return { name: this.name, position: this.position, conditions: this.conditions };
 	}
 
 	/**
-	 * Retrieve this middleware'es context data from the Josh instance.
-	 * @since 2.0.0
-	 * @returns The context or `undefined`
-	 */
-	protected getContext<C extends Middleware.Context = Context>(): C | undefined {
-		const contextData = this.instance.options.middlewareContextData ?? {};
-
-		return Reflect.get(contextData, this.name);
-	}
-
-	/**
-	 * Get this middleware's Josh instance.
+	 * The Josh instance this middleware is currently running on.
 	 * @since 2.0.0
 	 */
-	protected get instance() {
+	protected get instance(): MiddlewareStore['instance'] {
+		if (this.store === undefined)
+			throw new JoshError({
+				identifier: Middleware.Identifiers.StoreNotFound,
+				message: 'The "store" property is undefined. This usually means this middleware has not been initiated.'
+			});
+
 		return this.store.instance;
 	}
 
 	/**
-	 * Get this middleware's provider instance.
+	 * The provider that is used with the current Josh.
 	 * @since 2.0.0
 	 */
-	protected get provider() {
+	protected get provider(): MiddlewareStore['instance']['provider'] {
 		return this.instance.provider;
 	}
 }
@@ -278,7 +291,13 @@ export namespace Middleware {
 	 * The options for {@link Middleware}
 	 * @since 2.0.0
 	 */
-	export interface Options extends PieceOptions {
+	export interface Options {
+		/**
+		 * The name of this middleware.
+		 * @since 2.0.0
+		 */
+		name: string;
+
 		/**
 		 * The position at which this middleware runs at.
 		 * @since 2.0.0
@@ -289,40 +308,38 @@ export namespace Middleware {
 		 * The conditions for this middleware to run on.
 		 * @since 2.0.0
 		 */
-		conditions?: Condition[];
-
-		/**
-		 * Whether this middleware is enabled or not.
-		 * @since 2.0.0
-		 */
-		use?: boolean;
+		conditions: Conditions;
 	}
 
 	/**
-	 * The middleware context base interface.
+	 * The conditions to run this middleware on.
 	 * @since 2.0.0
 	 */
-	export interface Context {}
-
-	/**
-	 * A middleware condition to run on.
-	 * @since 2.0.0
-	 */
-	export interface Condition {
+	export interface Conditions {
 		/**
-		 * The methods for this condition.
+		 * The `pre` provider method conditions to run at.
 		 * @since 2.0.0
 		 */
-		methods: Method[];
+		pre: Method[];
 
 		/**
-		 * The trigger for this condition.
+		 * The `post` provider method conditions to run at.
 		 * @since 2.0.0
 		 */
-		trigger: Trigger;
+		post: Method[];
 	}
 
-	export interface JSON extends PieceJSON {
+	/**
+	 * The options in an object for {@link Middleware}
+	 * @since 2.0.0
+	 */
+	export interface JSON {
+		/**
+		 * The name of this middleware.
+		 * @since 2.0.0
+		 */
+		name: string;
+
 		/**
 		 * The position of this middleware.
 		 * @since 2.0.0
@@ -333,16 +350,10 @@ export namespace Middleware {
 		 * The conditions for this middleware.
 		 * @since 2.0.0
 		 */
-		conditions: Condition[];
-
-		/**
-		 * Whether to use this middleware or not.
-		 * @since 2.0.0
-		 */
-		use: boolean;
+		conditions: Conditions;
 	}
 
 	export enum Identifiers {
-		MissingConditions = 'missingConditions'
+		StoreNotFound = 'storeNotFound'
 	}
 }

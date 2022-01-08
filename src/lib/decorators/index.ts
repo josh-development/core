@@ -1,1 +1,1 @@
-export * from './ApplyOptions';
+export * from './ApplyMiddlewareOptions';
