@@ -403,7 +403,7 @@ export namespace JoshProvider {
 		new (options: Options): JoshProvider<StoredValue>;
 	}
 
-	export enum Identifiers {
+	export enum CommonIdentifiers {
 		DecMissingData = 'decMissingData',
 
 		DecInvalidType = 'decInvalidType',
