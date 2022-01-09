@@ -1,4 +1,4 @@
-import { MapProvider, MapProviderError, MathOperator, Method, Payload } from '../../../../src';
+import { JoshProvider, MapProvider, MapProviderError, MathOperator, Method, Payload } from '../../../../src';
 
 describe('MapProvider', () => {
 	describe('is a class', () => {
@@ -90,7 +90,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Dec);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.DecMissingData);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.DecMissingData);
 				expect(key).toBe('test:dec');
 				expect(path).toEqual([]);
 			});
@@ -105,7 +105,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Dec);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.DecMissingData);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.DecMissingData);
 				expect(key).toBe('test:dec');
 				expect(path).toEqual(['path']);
 			});
@@ -122,7 +122,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Dec);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.DecInvalidType);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.DecInvalidType);
 				expect(key).toBe('test:dec');
 				expect(path).toEqual([]);
 			});
@@ -139,7 +139,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Dec);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.DecInvalidType);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.DecInvalidType);
 				expect(key).toBe('test:dec');
 				expect(path).toEqual(['path']);
 			});
@@ -683,7 +683,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Inc);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.IncMissingData);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.IncMissingData);
 				expect(key).toBe('test:inc');
 				expect(path).toEqual([]);
 			});
@@ -698,7 +698,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Inc);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.IncMissingData);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.IncMissingData);
 				expect(key).toBe('test:inc');
 				expect(path).toEqual(['path']);
 			});
@@ -715,7 +715,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Inc);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.IncInvalidType);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.IncInvalidType);
 				expect(key).toBe('test:inc');
 				expect(path).toEqual([]);
 			});
@@ -732,7 +732,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Inc);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.IncInvalidType);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.IncInvalidType);
 				expect(key).toBe('test:inc');
 				expect(path).toEqual(['path']);
 			});
@@ -893,7 +893,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Math);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.MathMissingData);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.MathMissingData);
 				expect(key).toBe('test:math');
 				expect(path).toEqual([]);
 				expect(operator).toBe(MathOperator.Addition);
@@ -912,7 +912,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Math);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.MathMissingData);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.MathMissingData);
 				expect(key).toBe('test:math');
 				expect(path).toEqual(['path']);
 				expect(operator).toBe(MathOperator.Addition);
@@ -931,7 +931,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Math);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.MathInvalidType);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.MathInvalidType);
 				expect(key).toBe('test:math');
 				expect(path).toEqual([]);
 				expect(operator).toBe(MathOperator.Addition);
@@ -950,7 +950,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Math);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.MathInvalidType);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.MathInvalidType);
 				expect(key).toBe('test:math');
 				expect(path).toEqual(['path']);
 				expect(operator).toBe(MathOperator.Addition);
@@ -1115,7 +1115,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Push);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.PushMissingData);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.PushMissingData);
 				expect(key).toBe('test:push');
 				expect(path).toEqual([]);
 				expect(value).toBe('value');
@@ -1133,7 +1133,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Push);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.PushMissingData);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.PushMissingData);
 				expect(key).toBe('test:push');
 				expect(path).toEqual(['path']);
 				expect(value).toBe('value');
@@ -1151,7 +1151,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Push);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.PushInvalidType);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.PushInvalidType);
 				expect(key).toBe('test:push');
 				expect(path).toEqual([]);
 				expect(value).toBe('value');
@@ -1169,7 +1169,7 @@ describe('MapProvider', () => {
 				expect(method).toBe(Method.Push);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeInstanceOf(MapProviderError);
-				expect(error?.identifier).toBe(MapProvider.Identifiers.PushInvalidType);
+				expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.PushInvalidType);
 				expect(key).toBe('test:push');
 				expect(path).toEqual(['path']);
 				expect(value).toBe('value');
@@ -1288,7 +1288,7 @@ describe('MapProvider', () => {
 					expect(method).toBe(Method.Remove);
 					expect(trigger).toBeUndefined();
 					expect(error).toBeInstanceOf(MapProviderError);
-					expect(error?.identifier).toBe(MapProvider.Identifiers.RemoveMissingData);
+					expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.RemoveMissingData);
 					expect(type).toBe(Payload.Type.Hook);
 					expect(key).toBe('test:remove');
 					expect(path).toEqual([]);
@@ -1313,7 +1313,7 @@ describe('MapProvider', () => {
 					expect(method).toBe(Method.Remove);
 					expect(trigger).toBeUndefined();
 					expect(error).toBeInstanceOf(MapProviderError);
-					expect(error?.identifier).toBe(MapProvider.Identifiers.RemoveInvalidType);
+					expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.RemoveInvalidType);
 					expect(type).toBe(Payload.Type.Hook);
 					expect(key).toBe('test:remove');
 					expect(path).toEqual([]);
@@ -1364,7 +1364,7 @@ describe('MapProvider', () => {
 					expect(method).toBe(Method.Remove);
 					expect(trigger).toBeUndefined();
 					expect(error).toBeInstanceOf(MapProviderError);
-					expect(error?.identifier).toBe(MapProvider.Identifiers.RemoveMissingData);
+					expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.RemoveMissingData);
 					expect(type).toBe(Payload.Type.Value);
 					expect(key).toBe('test:remove');
 					expect(path).toEqual([]);
@@ -1383,7 +1383,7 @@ describe('MapProvider', () => {
 					expect(method).toBe(Method.Remove);
 					expect(trigger).toBeUndefined();
 					expect(error).toBeInstanceOf(MapProviderError);
-					expect(error?.identifier).toBe(MapProvider.Identifiers.RemoveInvalidType);
+					expect(error?.identifier).toBe(JoshProvider.CommonIdentifiers.RemoveInvalidType);
 					expect(type).toBe(Payload.Type.Value);
 					expect(key).toBe('test:remove');
 					expect(path).toEqual([]);
