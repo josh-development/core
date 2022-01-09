@@ -399,6 +399,10 @@ export namespace JoshProvider {
 		error?: JoshProviderError;
 	}
 
+	export interface Constructor<StoredValue = unknown> {
+		new (options: Options): JoshProvider<StoredValue>;
+	}
+
 	export enum Identifiers {
 		DecMissingData = 'decMissingData',
 
