@@ -54,7 +54,7 @@ jobs:
         run: yarn test --coverage
 
   Building:
-    name: Compile source code
+    name: Compile Source Code
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
