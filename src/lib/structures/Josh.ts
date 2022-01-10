@@ -66,30 +66,6 @@ import { MiddlewareStore } from './MiddlewareStore';
  *   // More options...
  * });
  * ```
- *
- * @example
- * ```typescript
- * // Automatically scan from a specific directory.
- * // The main file is at `/hom/me/project/index.js`
- * // and all your pieces are at `/home/me/project/middlewares`
- * // NOTE: Do not use this option unless you know what you're doing.
- * const josh = new Josh({
- *   middlewareDirectory: join(__dirname, 'middlewares'),
- *   // More options
- * });
- * ```
- *
- * @example
- * ```typescript
- * // Using middleware context
- * const josh = new Josh({
- *   middlewareContextData: {
- *     [BuiltInMiddleware.AutoEnsure]: {
- *       defaultValue: 'value'
- *     }
- *   },
- *   // More options...
- * });
  */
 export class Josh<StoredValue = unknown> {
 	/**
