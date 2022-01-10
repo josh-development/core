@@ -79,6 +79,6 @@ jobs:
           git commit -m "build: tsc build for ${GITHUB_SHA}" || true
           git push origin $TARGET_BRANCH
         env:
-          GITHUB_TOKEN: ${{ secrets.NOVA_TOKEN }}
-          GITHUB_ACTOR: RealShadowNova
-          GITHUB_EMAIL: real.shadow.nova@gmail.com
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: "github-actions[bot]"
+          GITHUB_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
