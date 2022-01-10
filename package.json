@@ -16,7 +16,7 @@
 	},
 	"scripts": {
 		"clean": "rimraf dist node_modules/.cache",
-		"lint": "eslint src tests scripts --ext mjs,ts --fix",
+		"lint": "eslint src tests --ext mjs,ts --fix",
 		"format": "prettier --write {src,tests,scripts}/**/*.{mjs,ts}",
 		"test": "jest --verbose",
 		"update": "yarn upgrade-interactive --latest",
