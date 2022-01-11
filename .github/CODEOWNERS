@@ -1,3 +1,6 @@
-/scripts/ @RealShadowNova
+/.github/ @RealShadowNova
+/.husky/ @RealShadowNova
+/.vscode/ @RealShadowNova
+/docs/ @RealShadowNova
 /src/ @RealShadowNova
 /tests/ @RealShadowNova
