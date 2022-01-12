@@ -1,6 +1,9 @@
 import { Awaitable, isFunction, isPrimitive, Primitive } from '@sapphire/utilities';
+import { writeFile } from 'fs/promises';
+import { emitWarning } from 'process';
 import type { CoreMiddleware as AutoEnsureMiddleware } from '../../middlewares/CoreAutoEnsure';
 import { JoshError } from '../errors';
+import { convertLegacyExportJSON, isNodeEnvironment } from '../functions';
 import {
 	AutoKeyPayload,
 	ClearPayload,
@@ -40,6 +43,7 @@ import {
 	ValuesPayload
 } from '../payloads';
 import { BuiltInMiddleware, KeyPath, KeyPathJSON, MathOperator, Method, Path, StringArray, Trigger } from '../types';
+import { isLegacyExportJSON } from '../validators';
 import { MapProvider } from './default-provider';
 import { JoshProvider } from './JoshProvider';
 import { Middleware } from './Middleware';
@@ -1553,6 +1557,53 @@ export class Josh<StoredValue = unknown> {
 		return payload.data;
 	}
 
+	public async import(options: Josh.ImportOptions<StoredValue>): Promise<this> {
+		let { json, overwrite, clear } = options;
+
+		if (isLegacyExportJSON(json)) {
+			emitWarning(
+				new JoshError({
+					identifier: Josh.Identifiers.LegacyDeprecation,
+					message: 'You have imported data from a deprecated legacy format. This will be removed in the next semver major version.'
+				})
+			);
+
+			json = convertLegacyExportJSON(json);
+		}
+
+		if (clear) await this.provider[Method.Clear]({ method: Method.Clear });
+
+		if (overwrite)
+			await this.provider[Method.SetMany]({
+				method: Method.SetMany,
+				data: json.entries.map(([key, value]) => [{ key, path: [] }, value])
+			});
+		else
+			for (const [key, value] of json.entries) {
+				const { data } = await this.provider[Method.Has]({ method: Method.Has, key, path: [], data: true });
+
+				if (data) continue;
+
+				await this.provider[Method.Set]({ method: Method.Set, key, path: [], value });
+			}
+
+		return this;
+	}
+
+	/**
+	 * Exports all data from the provider.
+	 * @since 2.0.0
+	 * @returns The exported data json object.
+	 */
+	public async export(path?: string): Promise<Josh.ExportJSON<StoredValue>> {
+		const entries = Object.entries(await this.provider[Method.GetAll]({ method: Method.GetAll, data: {} }));
+		const json: Josh.ExportJSON<StoredValue> = { name: this.name, version: Josh.version, exportedTimestamp: Date.now(), entries };
+
+		if (path !== undefined && isNodeEnvironment()) await writeFile(path, JSON.stringify(json));
+
+		return json;
+	}
+
 	/** A private method for converting bulk data.
 	 * @since 2.0.0
 	 * @private
@@ -1673,6 +1724,33 @@ export namespace Josh {
 		method?: Method;
 	}
 
+	export interface ExportJSON<StoredValue = unknown> {
+		name: string;
+
+		version: string;
+
+		exportedTimestamp: number;
+
+		entries: [string, StoredValue][];
+	}
+
+	export interface LegacyExportJSON<StoredValue = unknown> {
+		name: string;
+
+		version: string;
+
+		exportDate: number;
+
+		keys: { key: string; value: StoredValue }[];
+	}
+
+	export interface ImportOptions<StoredValue = unknown> {
+		json: ExportJSON<StoredValue> | LegacyExportJSON<StoredValue>;
+
+		overwrite?: boolean;
+
+		clear?: boolean;
+	}
 	export interface SetManyOptions<Value = unknown> extends KeyPathJSON {
 		value: Value;
 	}
@@ -1691,6 +1769,8 @@ export namespace Josh {
 		FindMissingValue = 'findMissingValue',
 
 		InvalidProvider = 'invalidProvider',
+
+		LegacyDeprecation = 'legacyDeprecation',
 
 		MiddlewareNotFound = 'middlewareNotFound',
 

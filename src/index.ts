@@ -1,5 +1,6 @@
 export * from './lib/decorators';
 export * from './lib/errors';
+export * from './lib/functions';
 export * from './lib/payloads';
 export * from './lib/structures/default-provider';
 export * from './lib/structures/Josh';
