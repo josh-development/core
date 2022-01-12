@@ -137,7 +137,7 @@ export class Middleware<StoredValue = unknown> {
 		return payload;
 	}
 
-	public [Method.Ensure]<StoredValue>(payload: EnsurePayload<StoredValue>): Awaitable<EnsurePayload<StoredValue>> {
+	public [Method.Ensure](payload: EnsurePayload<StoredValue>): Awaitable<EnsurePayload<StoredValue>> {
 		return payload;
 	}
 
@@ -148,17 +148,17 @@ export class Middleware<StoredValue = unknown> {
 		return payload;
 	}
 
-	public [Method.Filter]<StoredValue>(payload: FilterByHookPayload<StoredValue>): Awaitable<FilterByHookPayload<StoredValue>>;
-	public [Method.Filter]<StoredValue>(payload: FilterByValuePayload<StoredValue>): Awaitable<FilterByValuePayload<StoredValue>>;
-	public [Method.Filter]<StoredValue>(payload: FilterPayload<StoredValue>): Awaitable<FilterPayload<StoredValue>>;
-	public [Method.Filter]<StoredValue>(payload: FilterPayload<StoredValue>): Awaitable<FilterPayload<StoredValue>> {
+	public [Method.Filter](payload: FilterByHookPayload<StoredValue>): Awaitable<FilterByHookPayload<StoredValue>>;
+	public [Method.Filter](payload: FilterByValuePayload<StoredValue>): Awaitable<FilterByValuePayload<StoredValue>>;
+	public [Method.Filter](payload: FilterPayload<StoredValue>): Awaitable<FilterPayload<StoredValue>>;
+	public [Method.Filter](payload: FilterPayload<StoredValue>): Awaitable<FilterPayload<StoredValue>> {
 		return payload;
 	}
 
-	public [Method.Find]<StoredValue>(payload: FindByHookPayload<StoredValue>): Awaitable<FindByHookPayload<StoredValue>>;
-	public [Method.Find]<StoredValue>(payload: FindByValuePayload<StoredValue>): Awaitable<FindByValuePayload<StoredValue>>;
-	public [Method.Find]<StoredValue>(payload: FindPayload<StoredValue>): Awaitable<FindPayload<StoredValue>>;
-	public [Method.Find]<StoredValue>(payload: FindPayload<StoredValue>): Awaitable<FindPayload<StoredValue>> {
+	public [Method.Find](payload: FindByHookPayload<StoredValue>): Awaitable<FindByHookPayload<StoredValue>>;
+	public [Method.Find](payload: FindByValuePayload<StoredValue>): Awaitable<FindByValuePayload<StoredValue>>;
+	public [Method.Find](payload: FindPayload<StoredValue>): Awaitable<FindPayload<StoredValue>>;
+	public [Method.Find](payload: FindPayload<StoredValue>): Awaitable<FindPayload<StoredValue>> {
 		return payload;
 	}
 
@@ -197,10 +197,10 @@ export class Middleware<StoredValue = unknown> {
 		return payload;
 	}
 
-	public [Method.Partition]<StoredValue>(payload: PartitionByHookPayload<StoredValue>): Awaitable<PartitionByHookPayload<StoredValue>>;
-	public [Method.Partition]<StoredValue>(payload: PartitionByValuePayload<StoredValue>): Awaitable<PartitionByValuePayload<StoredValue>>;
-	public [Method.Partition]<StoredValue>(payload: PartitionPayload<StoredValue>): Awaitable<PartitionPayload<StoredValue>>;
-	public [Method.Partition]<StoredValue>(payload: PartitionPayload<StoredValue>): Awaitable<PartitionPayload<StoredValue>> {
+	public [Method.Partition](payload: PartitionByHookPayload<StoredValue>): Awaitable<PartitionByHookPayload<StoredValue>>;
+	public [Method.Partition](payload: PartitionByValuePayload<StoredValue>): Awaitable<PartitionByValuePayload<StoredValue>>;
+	public [Method.Partition](payload: PartitionPayload<StoredValue>): Awaitable<PartitionPayload<StoredValue>>;
+	public [Method.Partition](payload: PartitionPayload<StoredValue>): Awaitable<PartitionPayload<StoredValue>> {
 		return payload;
 	}
 
@@ -208,7 +208,7 @@ export class Middleware<StoredValue = unknown> {
 		return payload;
 	}
 
-	public [Method.Random]<StoredValue>(payload: RandomPayload<StoredValue>): Awaitable<RandomPayload<StoredValue>> {
+	public [Method.Random](payload: RandomPayload<StoredValue>): Awaitable<RandomPayload<StoredValue>> {
 		return payload;
 	}
 
@@ -227,7 +227,7 @@ export class Middleware<StoredValue = unknown> {
 		return payload;
 	}
 
-	public [Method.SetMany]<StoredValue>(payload: SetManyPayload<StoredValue>): Awaitable<SetManyPayload<StoredValue>> {
+	public [Method.SetMany]<Value = StoredValue>(payload: SetManyPayload<Value>): Awaitable<SetManyPayload<Value>> {
 		return payload;
 	}
 
@@ -248,7 +248,7 @@ export class Middleware<StoredValue = unknown> {
 		return payload;
 	}
 
-	public [Method.Values]<StoredValue>(payload: ValuesPayload<StoredValue>): Awaitable<ValuesPayload<StoredValue>> {
+	public [Method.Values](payload: ValuesPayload<StoredValue>): Awaitable<ValuesPayload<StoredValue>> {
 		return payload;
 	}
 

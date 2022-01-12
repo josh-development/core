@@ -1,5 +1,11 @@
 import type { StringArray } from './StringArray';
 
-export type KeyPathArray = [string, StringArray | undefined];
+export type KeyPath = string | KeyPathJSON;
 
-export type KeyPath = string | KeyPathArray;
+export type Path = string | StringArray;
+
+export interface KeyPathJSON {
+	key: string;
+
+	path?: Path;
+}

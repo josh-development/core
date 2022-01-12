@@ -22,7 +22,11 @@ export default {
 			file: './dist/index.umd.js',
 			format: 'umd',
 			name: 'JoshCore',
-			sourcemap: true
+			sourcemap: true,
+			globals: {
+				'@sapphire/utilities': 'SapphireUtilities',
+				'@realware/utilities': 'RealwareUtilities'
+			}
 		}
 	],
 	plugins: [cleaner({ targets: ['./dist'] }), typescript({ tsconfig: resolve(process.cwd(), 'src', 'tsconfig.json') }), versionInjector()]

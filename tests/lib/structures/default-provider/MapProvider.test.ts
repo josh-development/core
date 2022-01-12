@@ -304,7 +304,13 @@ describe('MapProvider', () => {
 				});
 
 				test('GIVEN provider w/ data THEN returns payload(true)', async () => {
-					provider.setMany({ method: Method.SetMany, keys: ['firstKey', 'secondKey'], value: 'value' });
+					provider.setMany({
+						method: Method.SetMany,
+						data: [
+							[{ key: 'firstKey', path: [] }, 'value'],
+							[{ key: 'secondKey', path: [] }, 'value']
+						]
+					});
 
 					const payload = await provider.every({ method: Method.Every, type: Payload.Type.Hook, hook: (value) => value === 'value', data: true });
 
@@ -337,7 +343,13 @@ describe('MapProvider', () => {
 				});
 
 				test('GIVEN provider w/ data THEN returns payload(true)', async () => {
-					provider.setMany({ method: Method.SetMany, keys: ['firstKey', 'secondKey'], value: { path: 'value' } });
+					provider.setMany({
+						method: Method.SetMany,
+						data: [
+							[{ key: 'firstKey', path: ['path'] }, 'value'],
+							[{ key: 'secondKey', path: ['path'] }, 'value']
+						]
+					});
 
 					const payload = await provider.every({ method: Method.Every, type: Payload.Type.Value, path: ['path'], value: 'value', data: true });
 
@@ -1472,17 +1484,16 @@ describe('MapProvider', () => {
 
 				expect(hasBefore.data).toBe(false);
 
-				const payload = provider.setMany({ method: Method.SetMany, keys: ['test:setMany'], value: 'value' });
+				const payload = provider.setMany({ method: Method.SetMany, data: [[{ key: 'test:setMany', path: [] }, 'value']] });
 
 				expect(typeof payload).toBe('object');
 
-				const { method, trigger, error, keys, value } = payload;
+				const { method, trigger, error, data } = payload;
 
 				expect(method).toBe(Method.SetMany);
 				expect(trigger).toBeUndefined();
 				expect(error).toBeUndefined();
-				expect(keys).toEqual(['test:setMany']);
-				expect(value).toBe('value');
+				expect(data).toEqual([[{ key: 'test:setMany', path: [] }, 'value']]);
 			});
 		});
 

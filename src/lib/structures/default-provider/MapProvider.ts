@@ -580,10 +580,10 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 		return payload;
 	}
 
-	public [Method.SetMany](payload: SetManyPayload<StoredValue>): SetManyPayload<StoredValue> {
-		const { keys, value } = payload;
+	public [Method.SetMany]<Value = StoredValue>(payload: SetManyPayload<Value>): SetManyPayload<Value> {
+		const { data } = payload;
 
-		for (const key of keys) this.cache.set(key, value);
+		for (const [{ key, path }, value] of data) this.set({ method: Method.Set, key, path, value });
 
 		return payload;
 	}

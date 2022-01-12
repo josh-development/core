@@ -6,22 +6,30 @@ import type { Payload } from './Payload';
  * @see {@link Payload}
  * @since 2.0.0
  */
-export interface SetManyPayload<Value> extends Payload {
+export interface SetManyPayload<Value> extends Payload, Payload.Data<[SetManyPayload.KeyPath, Value][]> {
 	/**
 	 * The method this payload is for.
 	 * @since 2.0.0
 	 */
 	method: Method.SetMany;
+}
 
+export namespace SetManyPayload {
 	/**
-	 * The keys to set.
+	 * The key/path data for {@link SetManyPayload}.
 	 * @since 2.0.0
 	 */
-	keys: StringArray;
+	export interface KeyPath {
+		/**
+		 * The key to set.
+		 * @since 2.0.0
+		 */
+		key: string;
 
-	/**
-	 * The value to set at each key.
-	 * @since 2.0.0
-	 */
-	value: Value;
+		/**
+		 * The path to set at.
+		 * @since 2.0.0
+		 */
+		path: StringArray;
+	}
 }

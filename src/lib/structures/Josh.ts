@@ -39,7 +39,7 @@ import {
 	UpdatePayload,
 	ValuesPayload
 } from '../payloads';
-import { BuiltInMiddleware, KeyPath, KeyPathArray, MathOperator, Method, StringArray, Trigger } from '../types';
+import { BuiltInMiddleware, KeyPath, KeyPathJSON, MathOperator, Method, Path, StringArray, Trigger } from '../types';
 import { MapProvider } from './default-provider';
 import { JoshProvider } from './JoshProvider';
 import { Middleware } from './Middleware';
@@ -82,6 +82,8 @@ export class Josh<StoredValue = unknown> {
 
 	/**
 	 * This Josh's middlewares.
+	 *
+	 * NOTE: Do not use this unless you know what your doing.
 	 * @since 2.0.0
 	 */
 	public middlewares: MiddlewareStore<StoredValue>;
@@ -116,7 +118,7 @@ export class Josh<StoredValue = unknown> {
 	/**
 	 * The initialization method for Josh.
 	 * @since 2.0.0
-	 * @returns The {@link Josh} instance
+	 * @returns The {@link Josh} instance.
 	 *
 	 * @example
 	 * ```typescript
@@ -136,6 +138,12 @@ export class Josh<StoredValue = unknown> {
 	 * @since 2.0.0
 	 * @param options The options for this middleware instance.
 	 * @param hook The hook to run for the payload.
+	 * @returns The {@link Josh} instance.
+	 *
+	 * @example
+	 * ```typescript
+	 * josh.use({ name: 'my-middleware' }, (payload) => payload);
+	 * ```
 	 */
 	public use<P extends Payload>(options: Josh.UseMiddlewareOptions, hook: (payload: P) => Awaitable<P>): this;
 
@@ -143,16 +151,14 @@ export class Josh<StoredValue = unknown> {
 	 * Adds a middleware by providing a {@link Middleware} instance.
 	 * @since 2.0.0
 	 * @param instance The middleware instance.
+	 * @returns The {@link Josh} instance.
+	 *
+	 * @example
+	 * ```typescript
+	 * josh.use(new MyMiddleware());
+	 * ```
 	 */
 	public use(instance: Middleware<StoredValue>): this;
-
-	/**
-	 * Adds a middleware by either providing options and a hook or a {@link Middleware} instance.
-	 * @since 2.0.0
-	 * @param optionsOrInstance The options or an instance.
-	 * @param hook The hook for the middleware. Optional if providing an instance.
-	 * @returns This Josh instance.
-	 */
 	public use<P extends Payload>(optionsOrInstance: Josh.UseMiddlewareOptions | Middleware<StoredValue>, hook?: (payload: P) => Awaitable<P>): this {
 		if (optionsOrInstance instanceof Middleware) this.middlewares.set(optionsOrInstance.name, optionsOrInstance);
 		else {
@@ -205,6 +211,20 @@ export class Josh<StoredValue = unknown> {
 		return payload.data;
 	}
 
+	/**
+	 * Clears all stored values from the provider.
+	 * @since 2.0.0
+	 * @returns The {@link Josh} instance.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', 'value');
+	 *
+	 * await josh.clear();
+	 *
+	 * await josh.get('key'); // null
+	 * ```
+	 */
 	public async clear(): Promise<this> {
 		let payload: ClearPayload = { method: Method.Clear, trigger: Trigger.PreProvider };
 
@@ -232,9 +252,45 @@ export class Josh<StoredValue = unknown> {
 	 * ```typescript
 	 * await josh.set('key', 1);
 	 *
-	 * await josh.dec('key');
+	 * await josh.inc('key');
 	 *
 	 * await josh.get('key'); // 0
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', 1);
+	 *
+	 * await josh.inc({ key: 'key' });
+	 *
+	 * await josh.get('key'); // 0
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key.path', 1);
+	 *
+	 * await josh.inc('key.path');
+	 *
+	 * await josh.get('key.path'); // 0
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key.path', 1);
+	 *
+	 * await josh.inc({ key: 'key', path: 'path' });
+	 *
+	 * await josh.get('key.path'); // 0
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key.path', 1);
+	 *
+	 * await josh.inc({ key: 'key', path: ['path'] });
+	 *
+	 * await josh.get('key.path'); // 0
 	 * ```
 	 */
 	public async dec(keyPath: KeyPath): Promise<this> {
@@ -272,9 +328,36 @@ export class Josh<StoredValue = unknown> {
 	 *
 	 * @example
 	 * ```typescript
-	 * await josh.set('key', { key: 'value' });
+	 * await josh.set('key', 'value');
 	 *
-	 * await josh.delete(['key', ['key']]);
+	 * await josh.delete({ key: 'key' });
+	 *
+	 * await josh.get('key'); // null
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', { path: 'value' });
+	 *
+	 * await josh.delete('key.path');
+	 *
+	 * await josh.get('key'); // {}
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', { path: 'value' });
+	 *
+	 * await josh.delete({ key: 'key', path: 'path' });
+	 *
+	 * await josh.get('key'); // {}
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', { path: 'value' });
+	 *
+	 * await josh.delete({ key: 'key', path: ['path'] });
 	 *
 	 * await josh.get('key'); // {}
 	 * ```
@@ -333,9 +416,68 @@ export class Josh<StoredValue = unknown> {
 		return payload.data;
 	}
 
-	public async every(path: StringArray, value: Primitive): Promise<boolean>;
+	/**
+	 * Checks every stored value at a path against the given value. Identical behavior to [Array#every](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every).
+	 * @since 2.0.0
+	 * @param path The path at which the stored value is at.
+	 * @param value The primitive value to check against the stored value.
+	 * @returns A boolean of whether every value matched.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.every('path', 'value'); // true
+	 * await josh.every(['path'], 'value'); // true
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', { path: 'value' });
+	 * await josh.set('key2', { path: 'value2' });
+	 *
+	 * await josh.every('path', 'value'); // false
+	 * await josh.every(['path'], 'value'); // false
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', { path: 'value' });
+	 * await josh.set('key2', { path: 'value' });
+	 *
+	 * await josh.every('path', 'value'); // true
+	 * await josh.evert(['path'], 'value') // true
+	 * ```
+	 */
+	public async every(path: Path, value: Primitive): Promise<boolean>;
+
+	/**
+	 * Checks every stored value with a function. Identical Behavior to [Array#every](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every).
+	 * @since 2.0.0
+	 * @param hook The hook function to check against stored values.
+	 * @returns A boolean of whether every hook function returns true.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.every((value) => value === 'value'); // true
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', 'value');
+	 * await josh.set('key2', 'value2');
+	 *
+	 * await josh.every((value) => value === 'value'); // false
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', 'value');
+	 * await josh.set('key2', 'value');
+	 *
+	 * await josh.every((value) => value === 'value'); // true
+	 * ```
+	 */
 	public async every(hook: EveryHook<StoredValue>): Promise<boolean>;
-	public async every(pathOrHook: StringArray | EveryHook<StoredValue>, value?: Primitive): Promise<boolean> {
+	public async every(pathOrHook: Path | EveryHook<StoredValue>, value?: Primitive): Promise<boolean> {
 		if (!isFunction(pathOrHook)) {
 			if (value === undefined)
 				throw new JoshError({ identifier: Josh.Identifiers.EveryMissingValue, message: 'The "value" parameter was not found.' });
@@ -352,7 +494,7 @@ export class Josh<StoredValue = unknown> {
 
 		if (isFunction(pathOrHook)) payload.hook = pathOrHook;
 		else {
-			payload.path = pathOrHook;
+			payload.path = this.getPath(pathOrHook);
 			payload.value;
 		}
 
@@ -382,13 +524,12 @@ export class Josh<StoredValue = unknown> {
 	 * ```typescript
 	 * await josh.set('key', { path: 'value' });
 	 *
-	 * await josh.filter(['path'], 'value'); // { key: { path: 'value' } }
-	 * // Using a return bulk type.
+	 * await josh.filter('path', 'value'); // { key: { path: 'value' } }
 	 * await josh.filter(['path'], 'value', Bulk.OneDimensionalArray); // [{ path: 'value' }]
 	 * ```
 	 */
 	public async filter<BulkType extends keyof ReturnBulk<StoredValue>>(
-		path: StringArray,
+		path: Path,
 		value: Primitive,
 		returnBulkType?: BulkType
 	): Promise<ReturnBulk<StoredValue>[BulkType]>;
@@ -406,7 +547,6 @@ export class Josh<StoredValue = unknown> {
 	 * await josh.set('key', 'value');
 	 *
 	 * await josh.filter((value) => value === 'value'); // { key: { path: 'value' } }
-	 * // Using a return bulk type.
 	 * await josh.filter((value) => value === 'value', undefined, Bulk.TwoDimensionalArray); // [['key', 'value']]
 	 * ```
 	 */
@@ -417,7 +557,7 @@ export class Josh<StoredValue = unknown> {
 	): Promise<ReturnBulk<StoredValue>[BulkType]>;
 
 	public async filter<BulkType extends keyof ReturnBulk<StoredValue>>(
-		pathOrHook: StringArray | FilterHook<StoredValue>,
+		pathOrHook: Path | FilterHook<StoredValue>,
 		value?: Primitive,
 		returnBulkType?: BulkType
 	): Promise<ReturnBulk<StoredValue>[BulkType]> {
@@ -437,7 +577,7 @@ export class Josh<StoredValue = unknown> {
 
 		if (isFunction(pathOrHook)) payload.hook = pathOrHook;
 		else {
-			payload.path = pathOrHook;
+			payload.path = this.getPath(pathOrHook);
 			payload.value = value;
 		}
 
@@ -461,17 +601,41 @@ export class Josh<StoredValue = unknown> {
 	 * @param path A path to the value for equality check.
 	 * @param value The value to check equality.
 	 * @returns The found value or null.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.find('path', 'value'); // null
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', { path: 'value' });
+	 *
+	 * await josh.find('path', 'value'); // { path: 'value' }
+	 * ```
 	 */
-	public async find(path: StringArray, value: Primitive): Promise<StoredValue | null>;
+	public async find(path: Path, value: Primitive): Promise<StoredValue | null>;
 
 	/**
 	 * Find a stored value using a hook function.
 	 * @since 2.0.0
 	 * @param hook The hook to check equality.
 	 * @returns The found value or null.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.find((value) => value === 'value'); // null
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', 'value');
+	 *
+	 * await josh.find((value) => value === 'value'); // 'value'
+	 * ```
 	 */
 	public async find(hook: FindHook<StoredValue>): Promise<StoredValue | null>;
-	public async find(pathOrHook: StringArray | FindHook<StoredValue>, value?: Primitive): Promise<StoredValue | null> {
+	public async find(pathOrHook: Path | FindHook<StoredValue>, value?: Primitive): Promise<StoredValue | null> {
 		if (!isFunction(pathOrHook)) {
 			if (value === undefined)
 				throw new JoshError({ identifier: Josh.Identifiers.FindMissingValue, message: 'The "value" parameter was not found.' });
@@ -487,7 +651,7 @@ export class Josh<StoredValue = unknown> {
 
 		if (isFunction(pathOrHook)) payload.hook = pathOrHook;
 		else {
-			payload.path = pathOrHook;
+			payload.path = this.getPath(pathOrHook);
 			payload.value = value;
 		}
 
@@ -530,10 +694,19 @@ export class Josh<StoredValue = unknown> {
 	 * ```typescript
 	 * await josh.set('key', { path: 'value' });
 	 *
-	 * await josh.get(['key', ['path']]); // 'value'
+	 * await josh.get('key'); // { path: 'value' }
+	 * await josh.get({ key: 'key' }); // { path: 'value' }
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', { path: 'value' });
+	 *
+	 * await josh.get('key.path'); // 'value'
+	 * await josh.get({ key: 'key', path: 'path' }); // 'value'
+	 * await josh.get({ key: 'key', path: ['path'] }); //'value'
 	 * ```
 	 */
-	public async get<Value = StoredValue>(keyPath: KeyPathArray): Promise<Value | null>;
 	public async get<Value = StoredValue>(keyPath: KeyPath): Promise<Value | null> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: GetPayload<Value> = { method: Method.Get, trigger: Trigger.PreProvider, key, path };
@@ -563,7 +736,6 @@ export class Josh<StoredValue = unknown> {
 	 * await josh.set('key', 'value');
 	 *
 	 * await josh.getAll(); // { key: 'value' }
-	 * // Using a return bulk type.
 	 * await josh.getAll(Bulk.OneDimensionalArray); // ['value']
 	 * ```
 	 *
@@ -572,7 +744,6 @@ export class Josh<StoredValue = unknown> {
 	 * await josh.set('key', { path: 'value' });
 	 *
 	 * await josh.getAll(); // { key: { path: 'value' } }
-	 * // Using a return bulk type.
 	 * await josh.getAll(Bulk.TwoDimensionalArray); // [['key', { path: 'value' }]]
 	 * ```
 	 */
@@ -607,7 +778,6 @@ export class Josh<StoredValue = unknown> {
 	 * await josh.set('key', 'value');
 	 *
 	 * await this.getMany(['key']); // { key: 'value' }
-	 * // Using a return bulk type.
 	 * await this.getMany(['key'], Bulk.OneDimensionalArray); // ['value']
 	 * ```
 	 */
@@ -635,15 +805,30 @@ export class Josh<StoredValue = unknown> {
 	 * Check if a key and/or path exists.
 	 * @since 2.0.0
 	 * @param keyPath A key and/or path to the value to check for.
-	 * @returns Validation boolean.
+	 * @returns Whether the value exists.
 	 *
 	 * @example
 	 * ```typescript
 	 * await josh.has('key'); // false
+	 * await josh.has({ key: 'key' }) // false
 	 *
 	 * await josh.set('key', 'value');
 	 *
 	 * await josh.has('key'); // true
+	 * await josh.has({ key: 'key' }) // true
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.has('key.path'); // false
+	 * await josh.has({ key: 'key', path: 'path' }); // false
+	 * await josh.has({ key: 'key', path: ['path'] }) // false
+	 *
+	 * await josh.set('key', { path: 'value' });
+	 *
+	 * await josh.has('key.path'); // true
+	 * await josh.has({ key: 'key', path: 'path' }); // true
+	 * await josh.has({ key: 'key', path: ['path'] }) // true
 	 * ```
 	 */
 	public async has(keyPath: KeyPath): Promise<boolean> {
@@ -677,6 +862,42 @@ export class Josh<StoredValue = unknown> {
 	 * await josh.inc('key');
 	 *
 	 * await josh.get('key'); // 1
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', 0);
+	 *
+	 * await josh.inc({ key: 'key' });
+	 *
+	 * await josh.get('key'); // 1
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key.path', 0);
+	 *
+	 * await josh.inc('key.path');
+	 *
+	 * await josh.get('key.path'); // 1
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key.path', 0);
+	 *
+	 * await josh.inc({ key: 'key', path: 'path' });
+	 *
+	 * await josh.get('key.path'); // 1
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key.path', 0);
+	 *
+	 * await josh.inc({ key: 'key', path: ['path'] });
+	 *
+	 * await josh.get('key.path'); // 1
 	 * ```
 	 */
 	public async inc(keyPath: KeyPath): Promise<this> {
@@ -736,7 +957,14 @@ export class Josh<StoredValue = unknown> {
 	 * ```typescript
 	 * await josh.set('key', { path: 'value' });
 	 *
-	 * await josh.map(['path']); // ['value']
+	 * await josh.map('path'); // ['value']
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', { path: 'value' });
+	 *
+	 * await josh.map(['path']); // 'value'
 	 * ```
 	 *
 	 * @example
@@ -746,7 +974,7 @@ export class Josh<StoredValue = unknown> {
 	 * await josh.map((value) => value.toUpperCase()); // ['VALUE']
 	 * ```
 	 */
-	public async map<Value = StoredValue>(pathOrHook: StringArray | MapHook<Value, StoredValue>): Promise<Value[]> {
+	public async map<Value = StoredValue>(pathOrHook: Path | MapHook<Value, StoredValue>): Promise<Value[]> {
 		let payload: MapPayload<Value, StoredValue> = {
 			method: Method.Map,
 			trigger: Trigger.PreProvider,
@@ -755,7 +983,7 @@ export class Josh<StoredValue = unknown> {
 		};
 
 		if (isFunction(pathOrHook)) payload.hook = pathOrHook;
-		else payload.path = pathOrHook;
+		else payload.path = this.getPath(pathOrHook);
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 		for (const middleware of this.middlewares.getPreMiddlewares(Method.Map)) payload = await middleware[Method.Map](payload);
@@ -771,6 +999,50 @@ export class Josh<StoredValue = unknown> {
 		return payload.data;
 	}
 
+	/**
+	 * Executes math operations on a value with an operand at a specified key and/or path.
+	 * @since 2.0.0
+	 * @param keyPath The key and/or path the value is at.
+	 * @param operator The operator that will be used on the operand and value.
+	 * @param operand The operand to apply to the value.
+	 * @returns The {@link Josh} instance.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', 0);
+	 *
+	 * await josh.math('key', MathOperator.Addition, 1);
+	 *
+	 * await josh.get('key'); // 1
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', 1);
+	 *
+	 * await josh.math('key', MathOperator.Subtraction, 1);
+	 *
+	 * await josh.get('key'); // 0
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', 1);
+	 *
+	 * await josh.math('key', MathOperator.Multiplication, 2);
+	 *
+	 * await josh.get('key'); // 2
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', 2);
+	 *
+	 * await josh.math('key' MathOperator.Division, 2);
+	 *
+	 * await josh.get('key'); 1
+	 * ```
+	 */
 	public async math(keyPath: KeyPath, operator: MathOperator, operand: number): Promise<this> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: MathPayload = { method: Method.Math, trigger: Trigger.PreProvider, key, path, operator, operand };
@@ -796,6 +1068,14 @@ export class Josh<StoredValue = unknown> {
 	 * @param _value Unused.
 	 * @param returnBulkType The return bulk type, Defaults to {@link Bulk.Object}
 	 * @returns A partition of filtered bulk data. First bulk data is the truthy filter and the second bulk data is the falsy filter.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', true);
+	 * await josh.set('key2', false);
+	 *
+	 * await josh.partition((value) => value); // [{ key: true }, { key2: false }]
+	 * ```
 	 */
 	public async partition<BulkType extends keyof ReturnBulk<StoredValue>>(
 		hook: PartitionHook<StoredValue>,
@@ -810,15 +1090,23 @@ export class Josh<StoredValue = unknown> {
 	 * @param value The value to check equality.
 	 * @param returnBulkType The return bulk type. Defaults to {@link Bulk.Object}
 	 * @returns A partition of filtered bulk data. First bulk data is the truthy filter and the second bulk data is the falsy filter.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', { path: true });
+	 * await josh.set('key2', { path: false });
+	 *
+	 * await josh.partition('path'); // [{ key: true }, { key2: false }]
+	 * ```
 	 */
 	public async partition<BulkType extends keyof ReturnBulk<StoredValue>>(
-		path: StringArray,
+		path: Path,
 		value: Primitive,
 		returnBulkType: BulkType
 	): Promise<[ReturnBulk<StoredValue>[BulkType], ReturnBulk<StoredValue>[BulkType]]>;
 
 	public async partition<BulkType extends keyof ReturnBulk<StoredValue>>(
-		pathOrHook: StringArray | PartitionHook<StoredValue>,
+		pathOrHook: Path | PartitionHook<StoredValue>,
 		value?: Primitive,
 		returnBulkType?: BulkType
 	): Promise<[ReturnBulk<StoredValue>[BulkType], ReturnBulk<StoredValue>[BulkType]]> {
@@ -838,7 +1126,7 @@ export class Josh<StoredValue = unknown> {
 
 		if (isFunction(pathOrHook)) payload.hook = pathOrHook;
 		else {
-			payload.path = pathOrHook;
+			payload.path = this.getPath(pathOrHook);
 			payload.value = value;
 		}
 
@@ -870,8 +1158,20 @@ export class Josh<StoredValue = unknown> {
 	 * await josh.set('key', []);
 	 *
 	 * await josh.push('key', 'value');
+	 * await josh.push({ key: 'key' }, 'value');
 	 *
 	 * await josh.get('key'); // ['value']
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', { path: [] });
+	 *
+	 * await josh.push('key.path', 'value');
+	 * await josh.push({ key: 'key', path: 'path' }, 'value');
+	 * await josh.push({ key: 'key', path: ['path'] }, 'value');
+	 *
+	 * await josh.get('key.path'); // ['value']
 	 * ```
 	 */
 	public async push<Value = StoredValue>(keyPath: KeyPath, value: Value): Promise<this> {
@@ -896,6 +1196,18 @@ export class Josh<StoredValue = unknown> {
 	 * Get a random value.
 	 * @since 2.0.0
 	 * @returns The random data or `null`.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.random(); // null
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', 'value');
+	 *
+	 * await josh.random(); // 'value'
+	 * ```
 	 */
 	public async random(): Promise<StoredValue | null> {
 		let payload: RandomPayload<StoredValue> = { method: Method.Random, trigger: Trigger.PreProvider };
@@ -918,6 +1230,18 @@ export class Josh<StoredValue = unknown> {
 	 * Get a random key.
 	 * @since 2.0.0
 	 * @returns The random key or `null`.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.randomKey(); // null
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', 'value');
+	 *
+	 * await josh.randomKey(); // null
+	 * ```
 	 */
 	public async randomKey(): Promise<string | null> {
 		let payload: RandomKeyPayload = { method: Method.RandomKey, trigger: Trigger.PreProvider };
@@ -936,7 +1260,40 @@ export class Josh<StoredValue = unknown> {
 		return payload.data ?? null;
 	}
 
+	/**
+	 * Removes an element from an array at a key and/or path that matches the given value.
+	 * @since 2.0.0
+	 * @param keyPath The key and/or path to the array to remove an element.
+	 * @param value The value to match to an element in the array.
+	 * @returns The {@link Josh} instance.
+	 *
+	 * @example
+	 * ```typescript
+	 * await provider.set('key', ['value']);
+	 *
+	 * await provider.remove('key', 'value');
+	 *
+	 * await provider.get('key'); // []
+	 * ```
+	 */
 	public async remove(keyPath: KeyPath, value: Primitive): Promise<this>;
+
+	/**
+	 * Removes an element from an array at a key and/or path that are validated by a hook function.
+	 * @since 2.0.0
+	 * @param keyPath The key and/or path to the array to remove an element.
+	 * @param hook The hook function to validate elements in the array.
+	 * @returns The {@link Josh} instance.
+	 *
+	 * @example
+	 * ```typescript
+	 * await provider.set('key', ['value']);
+	 *
+	 * await provider.remove('key', (value) => value === 'value');
+	 *
+	 * await provider.get('key'); // []
+	 * ```
+	 */
 	public async remove<Value = StoredValue>(keyPath: KeyPath, hook: RemoveHook<Value>): Promise<this>;
 	public async remove<Value = StoredValue>(keyPath: KeyPath, valueOrHook: Primitive | RemoveHook<Value>): Promise<this> {
 		const [key, path] = this.getKeyPath(keyPath);
@@ -971,8 +1328,26 @@ export class Josh<StoredValue = unknown> {
 		return this;
 	}
 
-	public async set(key: string, value: StoredValue): Promise<this>;
-	public async set<Value = StoredValue>(keyPath: KeyPathArray, value: Value): Promise<this>;
+	/**
+	 * Sets a value using a key and/or path.
+	 * @since 2.0.0
+	 * @param keyPath The key and/or path to set the value to.
+	 * @param value The value to set at the key and/or path.
+	 * @returns The {@link Josh} instance.
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key', { path: 'value' });
+	 * await josh.set({ key: 'key' });
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await josh.set('key.path');
+	 * await josh.set({ key: 'key', path: 'path' });
+	 * await josh.set({ key: 'key', path: ['path'] });
+	 * ```
+	 */
 	public async set<Value = StoredValue>(keyPath: KeyPath, value: Value): Promise<this> {
 		const [key, path] = this.getKeyPath(keyPath);
 		let payload: SetPayload<Value> = { method: Method.Set, trigger: Trigger.PreProvider, key, path, value };
@@ -991,22 +1366,16 @@ export class Josh<StoredValue = unknown> {
 		return this;
 	}
 
-	/**
-	 * Set data at many key/paths.
-	 * @since 2.0.0
-	 * @param keyPaths The key/paths to the data for setting.
-	 * @param value The value to set at the key/paths.
-	 * @returns The {@link Josh} instance.
-	 *
-	 * @example
-	 * ```typescript
-	 * await josh.setMany([['key', []]], 'value');
-	 *
-	 * await josh.getMany([['key', []]]); // { key: 'value' }
-	 * ```
-	 */
-	public async setMany(keys: StringArray, value: StoredValue): Promise<this> {
-		let payload: SetManyPayload<StoredValue> = { method: Method.SetMany, trigger: Trigger.PreProvider, keys, value };
+	public async setMany<Value = StoredValue>(entries: [KeyPath, Value][]): Promise<this> {
+		let payload: SetManyPayload<Value> = {
+			method: Method.SetMany,
+			trigger: Trigger.PreProvider,
+			data: entries.map(([keyPath, value]) => {
+				const [key, path] = this.getKeyPath(keyPath);
+
+				return [{ key, path: this.getPath(path) }, value];
+			})
+		};
 
 		for (const middleware of this.middlewares.array()) await middleware.run(payload);
 		for (const middleware of this.middlewares.getPreMiddlewares(Method.SetMany)) payload = await middleware[Method.SetMany](payload);
@@ -1054,16 +1423,41 @@ export class Josh<StoredValue = unknown> {
 	 * @since 2.0.0
 	 * @param path A path to the value for equality check.
 	 * @param value The value to check equality.
+	 *
+	 * @example
+	 * ```typescript
+	 * await provider.some('path', 'value'); // false
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await provider.set('key.path', 'value');
+	 *
+	 * await provider.some('path', 'value'); // true
+	 * ```
+	 *
 	 */
-	public async some(path: StringArray, value: Primitive): Promise<boolean>;
+	public async some(path: Path, value: Primitive): Promise<boolean>;
 
 	/**
 	 * Verify if a stored value matches with a hook function,
 	 * @since 2.0.0
 	 * @param hook The hook to check equality.
+	 *
+	 * @example
+	 * ```typescript
+	 * await provider.some((value) => value === 'value'); // false
+	 * ```
+	 *
+	 * @example
+	 * ```typescript
+	 * await provider.set('key.path', 'value');
+	 *
+	 * await provider.some('path', 'value'); // true
+	 * ```
 	 */
 	public async some(hook: SomeHook<StoredValue>): Promise<boolean>;
-	public async some(pathOrHook: StringArray | SomeHook<StoredValue>, value?: Primitive): Promise<boolean> {
+	public async some(pathOrHook: Path | SomeHook<StoredValue>, value?: Primitive): Promise<boolean> {
 		if (!isFunction(pathOrHook)) {
 			if (value === undefined)
 				throw new JoshError({ identifier: Josh.Identifiers.SomeMissingValue, message: 'The "value" parameter was not found.' });
@@ -1080,7 +1474,7 @@ export class Josh<StoredValue = unknown> {
 
 		if (isFunction(pathOrHook)) payload.hook = pathOrHook;
 		else {
-			payload.path = pathOrHook;
+			payload.path = this.getPath(pathOrHook);
 			payload.value = value;
 		}
 
@@ -1188,14 +1582,16 @@ export class Josh<StoredValue = unknown> {
 		}
 	}
 
-	/**
-	 * Simple utility function to extract from a key/path.
-	 * @since 2.0.0
-	 * @param keyPath The {@link KeyPath} to extract
-	 * @returns The extract key/path
-	 */
 	private getKeyPath(keyPath: KeyPath): [string, StringArray] {
-		return typeof keyPath === 'string' ? [keyPath, []] : [keyPath[0], keyPath[1] ?? []];
+		if (typeof keyPath === 'object') return [keyPath.key, this.getPath(keyPath.path ?? [])];
+
+		const [key, ...path] = keyPath.split('.');
+
+		return [key, path];
+	}
+
+	private getPath(path: Path): StringArray {
+		return typeof path === 'string' ? path.split('.') : path;
 	}
 
 	/**
@@ -1269,6 +1665,10 @@ export namespace Josh {
 		 * @since 2.0.0
 		 */
 		method?: Method;
+	}
+
+	export interface SetManyOptions<Value = unknown> extends KeyPathJSON {
+		value: Value;
 	}
 
 	export enum Identifiers {
