@@ -8,5 +8,3 @@ export * from './lib/structures/Middleware';
 export * from './lib/structures/MiddlewareStore';
 export * from './lib/types';
 export * from './lib/validators';
-
-export const version = '[VI]{version}[/VI]';

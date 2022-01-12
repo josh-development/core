@@ -1595,6 +1595,12 @@ export class Josh<StoredValue = unknown> {
 	}
 
 	/**
+	 * The current version of {@link Josh}
+	 * @since 2.0.0
+	 */
+	public static version = '[VI]{version}[/VI]';
+
+	/**
 	 * A static method to create multiple instances of {@link Josh}.
 	 * @since 2.0.0
 	 * @param names The names to give each instance of {@link Josh}
