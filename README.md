@@ -1,33 +1,33 @@
 <div align="center">
 
-# JOSH [![Discord](https://discordapp.com/api/guilds/298508738623438848/embed.png)](https://discord.gg/N7ZKH3P)
+![Josh Logo](https://evie.codes/josh-light.png)
 
-[![NPM Version](https://img.shields.io/npm/v/@joshdb/core.svg?maxAge=3600)](https://www.npmjs.com/package/@joshdb/core)
-[![NPM Downloads](https://img.shields.io/npm/dt/@joshdb/core.svg?maxAge=3600)](https://www.npmjs.com/package/@joshdb/core)
-[![Patreon](https://img.shields.io/badge/donate-patreon-F96854.svg)](https://www.patreon.com/eviecodes)
+# JOSH
 
-[![NPM Install Info](https://nodei.co/npm/@joshdb/core.png?downloads=true&stars=true)](https://nodei.co/npm/@joshdb/core/)
+**JavaScript Object Storage Helper**
 
-[![JOSH Logo](https://evie.codes/josh-light.png)](https://www.npmjs.com/package/@joshdb/core)
+[![GitHub](https://img.shields.io/github/license/RealShadowNova/joshdb-core)](https://github.com/RealShadowNova/joshdb-core/blob/main/LICENSE.md)
+[![npm](https://img.shields.io/npm/v/@joshdb/core?color=crimson&logo=npm&style=flat-square)](https://www.npmjs.com/package/@joshdb/core)
 
-JOSH is the JavaScript Object Storage Helper - a simple, effective, and efficient database wrapper.
+[![Support Server](https://discord.com/api/guilds/298508738623438848/embed.png?style=banner2)](https://discord.gg/N7ZKH3P)
 
 </div>
 
-## Documentation
+---
 
-- [Installation](https://josh.evie.dev/install)
-- [Basic Setup](https://josh.evie.dev/usage)
-- [API Reference](https://josh.evie.dev/api)
-- [Examples](https://josh.evie.dev/examples)
+## Description
 
-## Support
+A simple, effective, and efficient database wrapper.
 
-Support for JOSH is offered in my [**<Evie.Codes>**](https://discord.gg/N7ZKH3P) Discord server.
+## Features
+
+- Written in TypeScript
+- Offers CommonJS and ESM bundles
+- Fully tested
 
 ## Installation
 
-```bash
+```sh
 # With NPM
 npm install @joshdb/core
 # Or with Yarn
@@ -36,15 +36,14 @@ yarn add @joshdb/core
 
 ## FAQ
 
-### Who the hell is JOSH?
+### What is Josh?
 
-I'm sure you meant _what_ the hell is JOSH, and it's quite simply the easiest storage system you'll ever encounter. JOSH will help you store any JSON-based data simply, effectively, into any popular database back-end.
+Josh is quite simply the easiest storage system you'll ever encounter. Josh makes it simple to store any JSON-based data effectively into any popular database back-end using providers.
 
-### Why use JOSH?
+### Why use Josh?
 
-The best reason to use JOSH is quite simply to get a project up and running as quickly as possible with as little effort as possible when it comes to the database interaction layer. It does this by removing the complexity of setting up and ORM or learning a database language, while still giving you all the power it can muster.
+Josh makes it extremely easy and simple to get a project up and running as quickly as possible with very little effort when it comes to the database interaction layer. It does this by removed the complexity of setting up and ORM or learning a database language, while still giving you all the power.
 
-### When NOT to use JOSH?
+### When NOT to use Josh?
 
-If you think you can do better, if you already know database interactions or ORMs, or you don't trust database wrappers made by other people...
-Well in any of those cases I don't even know why your on this page, go on now, `git out --of:here` and go make some good applications, you don't need this!
+If you think you can do better, if you already know database interactions or ORMs, or you don't trust database wrappers made by other people... Well, in any of those cases I don't even know why you're on this page, go on now, `git out --of:here` and go make some good applications, you don't need this!
