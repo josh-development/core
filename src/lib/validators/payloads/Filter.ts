@@ -8,7 +8,7 @@ import { Method } from '../../types';
  * @returns Validation boolean.
  */
 export function isFilterByHookPayload<DataValue>(payload: FilterPayload<DataValue>): payload is FilterByHookPayload<DataValue> {
-	return payload.method === Method.Filter && payload.type === Payload.Type.Hook;
+  return payload.method === Method.Filter && payload.type === Payload.Type.Hook;
 }
 
 /**
@@ -18,5 +18,5 @@ export function isFilterByHookPayload<DataValue>(payload: FilterPayload<DataValu
  * @returns Validation boolean.
  */
 export function isFilterByValuePayload<DataValue>(payload: FilterPayload<DataValue>): payload is FilterByValuePayload<DataValue> {
-	return payload.method === Method.Filter && payload.type === Payload.Type.Value;
+  return payload.method === Method.Filter && payload.type === Payload.Type.Value;
 }

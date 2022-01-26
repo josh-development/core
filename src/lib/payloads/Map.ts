@@ -9,29 +9,29 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface MapPayload<DataValue, HookValue = DataValue> extends Payload, Payload.Data<DataValue[]> {
-	/**
-	 * The method this payload is for.
-	 *  @since 2.0.0
-	 */
-	method: Method.Map;
+  /**
+   * The method this payload is for.
+   *  @since 2.0.0
+   */
+  method: Method.Map;
 
-	/**
-	 *  The type for this payload.
-	 *  @since 2.0.0
-	 */
-	type: Payload.Type.Hook | Payload.Type.Path;
+  /**
+   *  The type for this payload.
+   *  @since 2.0.0
+   */
+  type: Payload.Type.Hook | Payload.Type.Path;
 
-	/**
-	 * The hook to map by.
-	 *  @since 2.0.0
-	 */
-	hook?: MapHook<DataValue, HookValue>;
+  /**
+   * The hook to map by.
+   *  @since 2.0.0
+   */
+  hook?: MapHook<DataValue, HookValue>;
 
-	/**
-	 * The path to map by.
-	 *  @since 2.0.0
-	 */
-	path?: StringArray;
+  /**
+   * The path to map by.
+   *  @since 2.0.0
+   */
+  path?: StringArray;
 }
 
 /**
@@ -42,17 +42,17 @@ export interface MapPayload<DataValue, HookValue = DataValue> extends Payload, P
  * @since 2.0.0
  */
 export interface MapByHookPayload<DataValue, HookValue = DataValue> extends Payload, Payload.ByHook, Payload.Data<DataValue[]> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Map;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Map;
 
-	/**
-	 * The hook to map by.
-	 * @since 2.0.0
-	 */
-	hook: MapHook<DataValue, HookValue>;
+  /**
+   * The hook to map by.
+   * @since 2.0.0
+   */
+  hook: MapHook<DataValue, HookValue>;
 }
 
 /**
@@ -63,17 +63,17 @@ export interface MapByHookPayload<DataValue, HookValue = DataValue> extends Payl
  *  @since 2.0.0
  */
 export interface MapByPathPayload<DataValue> extends Payload, Payload.ByPath, Payload.Data<DataValue[]> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Map;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Map;
 
-	/**
-	 *  The path to map by.
-	 * @since 2.0.0
-	 */
-	path: StringArray;
+  /**
+   *  The path to map by.
+   * @since 2.0.0
+   */
+  path: StringArray;
 }
 
 /**

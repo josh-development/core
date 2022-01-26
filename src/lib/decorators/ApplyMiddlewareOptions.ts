@@ -19,9 +19,9 @@ import { createProxy } from './utils/createProxy';
  * export class CoreMiddleware extends Middleware {}
  * ``` */
 export function ApplyMiddlewareOptions(options: Middleware.Options): ClassDecorator {
-	return createClassDecorator((target: Ctor<ConstructorParameters<typeof Middleware>, Middleware>) =>
-		createProxy(target, {
-			construct: (ctor) => new ctor(options)
-		})
-	);
+  return createClassDecorator((target: Ctor<ConstructorParameters<typeof Middleware>, Middleware>) =>
+    createProxy(target, {
+      construct: (ctor) => new ctor(options)
+    })
+  );
 }

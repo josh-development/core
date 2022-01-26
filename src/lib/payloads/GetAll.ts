@@ -8,9 +8,9 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface GetAllPayload<DataValue> extends Payload, Payload.Data<Record<string, DataValue>> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.GetAll;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.GetAll;
 }

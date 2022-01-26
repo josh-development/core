@@ -8,9 +8,9 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface DeletePayload extends Payload, Payload.KeyPath {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Delete;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Delete;
 }

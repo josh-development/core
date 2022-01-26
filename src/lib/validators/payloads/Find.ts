@@ -8,7 +8,7 @@ import { Method } from '../../types';
  * @returns Validation boolean.
  */
 export function isFindByHookPayload<DataValue>(payload: FindPayload<DataValue>): payload is FindByHookPayload<DataValue> {
-	return payload.method === Method.Find && payload.type === Payload.Type.Hook;
+  return payload.method === Method.Find && payload.type === Payload.Type.Hook;
 }
 
 /**
@@ -18,5 +18,5 @@ export function isFindByHookPayload<DataValue>(payload: FindPayload<DataValue>):
  * @returns Validation boolean.
  */
 export function isFindByValuePayload<DataValue>(payload: FindPayload<DataValue>): payload is FindByValuePayload<DataValue> {
-	return payload.method === Method.Find && payload.type === Payload.Type.Value;
+  return payload.method === Method.Find && payload.type === Payload.Type.Value;
 }

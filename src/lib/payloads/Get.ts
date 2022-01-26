@@ -9,9 +9,9 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface GetPayload<DataValue> extends Payload, Payload.KeyPath, Payload.OptionalData<DataValue> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Get;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Get;
 }

@@ -1,3 +1,3 @@
 export enum BuiltInMiddleware {
-	AutoEnsure = 'autoEnsure'
+  AutoEnsure = 'autoEnsure'
 }

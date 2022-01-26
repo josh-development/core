@@ -9,9 +9,9 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface DecPayload extends Payload, Payload.KeyPath {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Dec;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Dec;
 }

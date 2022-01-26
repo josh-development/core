@@ -8,15 +8,15 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface GetManyPayload<DataValue> extends Payload, Payload.Data<Record<string, DataValue | null>> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.GetMany;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.GetMany;
 
-	/**
-	 * The keys to get.
-	 * @since 2.0.0
-	 */
-	keys: StringArray;
+  /**
+   * The keys to get.
+   * @since 2.0.0
+   */
+  keys: StringArray;
 }

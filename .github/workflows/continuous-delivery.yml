@@ -80,5 +80,5 @@ jobs:
           git push origin $TARGET_BRANCH
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_ACTOR: "github-actions[bot]"
-          GITHUB_EMAIL: "41898282+github-actions[bot]@users.noreply.github.com"
+          GITHUB_ACTOR: 'github-actions[bot]'
+          GITHUB_EMAIL: '41898282+github-actions[bot]@users.noreply.github.com'

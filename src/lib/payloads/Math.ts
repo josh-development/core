@@ -8,21 +8,21 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface MathPayload extends Payload, Payload.KeyPath {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Math;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Math;
 
-	/**
-	 * The operator to apply to the operands.
-	 * @since 2.0.0
-	 */
-	operator: MathOperator;
+  /**
+   * The operator to apply to the operands.
+   * @since 2.0.0
+   */
+  operator: MathOperator;
 
-	/**
-	 * The operand to apply to the operator.
-	 * @since 2.0.0
-	 */
-	operand: number;
+  /**
+   * The operand to apply to the operator.
+   * @since 2.0.0
+   */
+  operand: number;
 }

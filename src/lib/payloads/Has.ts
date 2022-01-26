@@ -9,9 +9,9 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface HasPayload extends Payload, Payload.KeyPath, Payload.Data<boolean> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Has;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Has;
 }

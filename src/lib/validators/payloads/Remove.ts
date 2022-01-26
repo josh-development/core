@@ -8,7 +8,7 @@ import { Method } from '../../types';
  * @returns Validation boolean.
  */
 export function isRemoveByHookPayload<HookValue>(payload: RemovePayload<HookValue>): payload is RemoveByHookPayload<HookValue> {
-	return payload.method === Method.Remove && payload.type === Payload.Type.Hook;
+  return payload.method === Method.Remove && payload.type === Payload.Type.Hook;
 }
 
 /**
@@ -18,5 +18,5 @@ export function isRemoveByHookPayload<HookValue>(payload: RemovePayload<HookValu
  * @returns Validation boolean.
  */
 export function isRemoveByValuePayload<HookValue>(payload: RemovePayload<HookValue>): payload is RemoveByValuePayload {
-	return payload.method === Method.Remove && payload.type === Payload.Type.Value;
+  return payload.method === Method.Remove && payload.type === Payload.Type.Value;
 }

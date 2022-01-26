@@ -9,35 +9,35 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface FilterPayload<DataValue> extends Payload, Payload.Data<Record<string, DataValue>> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Filter;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Filter;
 
-	/**
-	 * The type for this payload.
-	 * @since 2.0.0
-	 */
-	type: Payload.Type.Hook | Payload.Type.Value;
+  /**
+   * The type for this payload.
+   * @since 2.0.0
+   */
+  type: Payload.Type.Hook | Payload.Type.Value;
 
-	/**
-	 * The hook to check equality.
-	 * @since 2.0.0
-	 */
-	hook?: FilterHook<DataValue>;
+  /**
+   * The hook to check equality.
+   * @since 2.0.0
+   */
+  hook?: FilterHook<DataValue>;
 
-	/**
-	 * The value to check equality.
-	 * @since 2.0.0
-	 */
-	value?: Primitive;
+  /**
+   * The value to check equality.
+   * @since 2.0.0
+   */
+  value?: Primitive;
 
-	/**
-	 * A path to the value for equality check.
-	 * @since 2.0.0
-	 */
-	path?: StringArray;
+  /**
+   * A path to the value for equality check.
+   * @since 2.0.0
+   */
+  path?: StringArray;
 }
 
 /**
@@ -48,17 +48,17 @@ export interface FilterPayload<DataValue> extends Payload, Payload.Data<Record<s
  * @since 2.0.0
  */
 export interface FilterByHookPayload<DataValue> extends Payload, Payload.ByHook, Payload.Data<Record<string, DataValue>> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Filter;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Filter;
 
-	/**
-	 * The hook for this payload.
-	 * @since 2.0.0
-	 */
-	hook: FilterHook<DataValue>;
+  /**
+   * The hook for this payload.
+   * @since 2.0.0
+   */
+  hook: FilterHook<DataValue>;
 }
 
 /**
@@ -69,23 +69,23 @@ export interface FilterByHookPayload<DataValue> extends Payload, Payload.ByHook,
  * @since 2.0.0
  */
 export interface FilterByValuePayload<DataValue> extends Payload, Payload.ByValue, Payload.Data<Record<string, DataValue>> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Filter;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Filter;
 
-	/**
-	 * The value to check equality.
-	 * @since 2.0.0
-	 */
-	value: Primitive;
+  /**
+   * The value to check equality.
+   * @since 2.0.0
+   */
+  value: Primitive;
 
-	/**
-	 * A path to the value for equality check.
-	 * @since 2.0.0
-	 */
-	path: StringArray;
+  /**
+   * A path to the value for equality check.
+   * @since 2.0.0
+   */
+  path: StringArray;
 }
 
 /**

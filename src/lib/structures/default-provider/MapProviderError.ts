@@ -5,10 +5,10 @@ import { JoshProviderError } from '../../errors';
  * @since 2.0.0
  */
 export class MapProviderError extends JoshProviderError {
-	/**
-	 * The name for this error.
-	 */
-	public get name() {
-		return 'MapProviderError';
-	}
+  /**
+   * The name for this error.
+   */
+  public get name() {
+    return 'MapProviderError';
+  }
 }

@@ -9,35 +9,35 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface SomePayload<HookValue> extends Payload, Payload.Data<boolean> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Some;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Some;
 
-	/**
-	 * The type for this payload.
-	 * @since 2.0.0
-	 */
-	type: Payload.Type.Hook | Payload.Type.Value;
+  /**
+   * The type for this payload.
+   * @since 2.0.0
+   */
+  type: Payload.Type.Hook | Payload.Type.Value;
 
-	/**
-	 * The hook to check equality.
-	 * @since 2.0.0
-	 */
-	hook?: SomeHook<HookValue>;
+  /**
+   * The hook to check equality.
+   * @since 2.0.0
+   */
+  hook?: SomeHook<HookValue>;
 
-	/**
-	 * The value to check equality.
-	 * @since 2.0.0
-	 */
-	value?: Primitive;
+  /**
+   * The value to check equality.
+   * @since 2.0.0
+   */
+  value?: Primitive;
 
-	/**
-	 * A path to the value to check equality.
-	 * @since 2.0.0
-	 */
-	path?: StringArray;
+  /**
+   * A path to the value to check equality.
+   * @since 2.0.0
+   */
+  path?: StringArray;
 }
 
 /**
@@ -48,17 +48,17 @@ export interface SomePayload<HookValue> extends Payload, Payload.Data<boolean> {
  * @since 2.0.0
  */
 export interface SomeByHookPayload<HookValue> extends Payload, Payload.ByHook, Payload.Data<boolean> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Some;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Some;
 
-	/**
-	 * The input hook for this payload.
-	 * @since 2.0.0
-	 */
-	hook: SomeHook<HookValue>;
+  /**
+   * The input hook for this payload.
+   * @since 2.0.0
+   */
+  hook: SomeHook<HookValue>;
 }
 
 /**
@@ -69,23 +69,23 @@ export interface SomeByHookPayload<HookValue> extends Payload, Payload.ByHook, P
  * @since 2.0.0
  */
 export interface SomeByValuePayload extends Payload, Payload.ByValue, Payload.Data<boolean> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Some;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Some;
 
-	/**
-	 * The input data for this payload.
-	 * @since 2.0.0
-	 */
-	value: Primitive;
+  /**
+   * The input data for this payload.
+   * @since 2.0.0
+   */
+  value: Primitive;
 
-	/**
-	 * A path to the value to check equality.
-	 * @since 2.0.0
-	 */
-	path: StringArray;
+  /**
+   * A path to the value to check equality.
+   * @since 2.0.0
+   */
+  path: StringArray;
 }
 
 /**

@@ -1,55 +1,55 @@
 export enum Method {
-	AutoKey = 'autoKey',
+  AutoKey = 'autoKey',
 
-	Clear = 'clear',
+  Clear = 'clear',
 
-	Dec = 'dec',
+  Dec = 'dec',
 
-	Delete = 'delete',
+  Delete = 'delete',
 
-	Ensure = 'ensure',
+  Ensure = 'ensure',
 
-	Every = 'every',
+  Every = 'every',
 
-	Filter = 'filter',
+  Filter = 'filter',
 
-	Find = 'find',
+  Find = 'find',
 
-	Get = 'get',
+  Get = 'get',
 
-	GetAll = 'getAll',
+  GetAll = 'getAll',
 
-	GetMany = 'getMany',
+  GetMany = 'getMany',
 
-	Has = 'has',
+  Has = 'has',
 
-	Inc = 'inc',
+  Inc = 'inc',
 
-	Keys = 'keys',
+  Keys = 'keys',
 
-	Map = 'map',
+  Map = 'map',
 
-	Math = 'math',
+  Math = 'math',
 
-	Partition = 'partition',
+  Partition = 'partition',
 
-	Push = 'push',
+  Push = 'push',
 
-	Random = 'random',
+  Random = 'random',
 
-	RandomKey = 'randomKey',
+  RandomKey = 'randomKey',
 
-	Remove = 'remove',
+  Remove = 'remove',
 
-	Set = 'set',
+  Set = 'set',
 
-	SetMany = 'setMany',
+  SetMany = 'setMany',
 
-	Size = 'size',
+  Size = 'size',
 
-	Some = 'some',
+  Some = 'some',
 
-	Update = 'update',
+  Update = 'update',
 
-	Values = 'values'
+  Values = 'values'
 }

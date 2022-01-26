@@ -32,9 +32,9 @@ Below is a very simple example of a middleware class file which uses the `run` m
 const { Middleware } = require('@joshdb/core');
 
 module.exports = class extends Middleware {
-	run(payload) {
-		console.log(payload);
-	}
+  run(payload) {
+    console.log(payload);
+  }
 };
 ```
 

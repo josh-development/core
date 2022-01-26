@@ -8,9 +8,9 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface ValuesPayload<DataValue> extends Payload, Payload.Data<DataValue[]> {
-	/**
-	 * The method for this payload
-	 * @since 2.0.0
-	 */
-	method: Method.Values;
+  /**
+   * The method for this payload
+   * @since 2.0.0
+   */
+  method: Method.Values;
 }

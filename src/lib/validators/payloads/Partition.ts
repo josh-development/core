@@ -8,7 +8,7 @@ import { Method } from '../../types';
  * @returns Validation boolean.
  */
 export function isPartitionByHookPayload<DataValue>(payload: PartitionPayload<DataValue>): payload is PartitionByHookPayload<DataValue> {
-	return payload.method === Method.Partition && payload.type === Payload.Type.Hook;
+  return payload.method === Method.Partition && payload.type === Payload.Type.Hook;
 }
 
 /**
@@ -18,5 +18,5 @@ export function isPartitionByHookPayload<DataValue>(payload: PartitionPayload<Da
  * @returns Validation boolean.
  */
 export function isPartitionByValuePayload<DataValue>(payload: PartitionPayload<DataValue>): payload is PartitionByValuePayload<DataValue> {
-	return payload.method === Method.Partition && payload.type === Payload.Type.Value;
+  return payload.method === Method.Partition && payload.type === Payload.Type.Value;
 }

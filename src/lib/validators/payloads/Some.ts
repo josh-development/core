@@ -8,7 +8,7 @@ import { Method } from '../../types';
  * @returns Validation boolean.
  */
 export function isSomeByHookPayload<HookValue>(payload: SomePayload<HookValue>): payload is SomeByHookPayload<HookValue> {
-	return payload.method === Method.Some && payload.type === Payload.Type.Hook;
+  return payload.method === Method.Some && payload.type === Payload.Type.Hook;
 }
 
 /**
@@ -18,5 +18,5 @@ export function isSomeByHookPayload<HookValue>(payload: SomePayload<HookValue>):
  * @returns Validation boolean.
  */
 export function isSomeByValuePayload<HookValue>(payload: SomePayload<HookValue>): payload is SomeByValuePayload {
-	return payload.method === Method.Some && payload.type === Payload.Type.Value;
+  return payload.method === Method.Some && payload.type === Payload.Type.Value;
 }

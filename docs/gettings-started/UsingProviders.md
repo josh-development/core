@@ -14,8 +14,8 @@ In The example below we will use the default in-memory provider which using the 
 const { Josh, MapProvider } = require('@joshdb/core');
 
 const josh = new Josh({
-	name: 'name',
-	provider: new MapProvider()
+  name: 'name',
+  provider: new MapProvider()
 });
 ```
 
@@ -27,10 +27,10 @@ Below is an example of how that might look.
 
 ```javascript
 const josh = new Josh({
-	name: 'name',
-	provider: new Provider({
-		optionOne: 'optionOne',
-		optionTwo: 'optionTwo'
-	})
+  name: 'name',
+  provider: new Provider({
+    optionOne: 'optionOne',
+    optionTwo: 'optionTwo'
+  })
 });
 ```

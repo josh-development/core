@@ -8,7 +8,7 @@ import { Method } from '../../types';
  * @returns Validation boolean.
  */
 export function isEveryByHookPayload<HookValue>(payload: EveryPayload<HookValue>): payload is EveryByHookPayload<HookValue> {
-	return payload.method === Method.Every && payload.type === Payload.Type.Hook;
+  return payload.method === Method.Every && payload.type === Payload.Type.Hook;
 }
 
 /**
@@ -18,5 +18,5 @@ export function isEveryByHookPayload<HookValue>(payload: EveryPayload<HookValue>
  * @returns Validation boolean.
  */
 export function isEveryByValuePayload<HookPayload>(payload: EveryPayload<HookPayload>): payload is EveryByValuePayload {
-	return payload.method === Method.Every && payload.type === Payload.Type.Value;
+  return payload.method === Method.Every && payload.type === Payload.Type.Value;
 }

@@ -10,20 +10,20 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface UpdatePayload<DataValue, HookValue = DataValue, Value = DataValue>
-	extends Payload,
-		Payload.KeyPath,
-		Payload.OptionalData<DataValue> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Update;
+  extends Payload,
+    Payload.KeyPath,
+    Payload.OptionalData<DataValue> {
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Update;
 
-	/**
-	 * The hook to update stored value.
-	 * @since 2.0.0
-	 */
-	hook: UpdateHook<HookValue, Value>;
+  /**
+   * The hook to update stored value.
+   * @since 2.0.0
+   */
+  hook: UpdateHook<HookValue, Value>;
 }
 
 /**

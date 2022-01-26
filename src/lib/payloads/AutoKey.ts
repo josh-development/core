@@ -9,9 +9,9 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface AutoKeyPayload extends Payload, Payload.Data<string> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.AutoKey;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.AutoKey;
 }

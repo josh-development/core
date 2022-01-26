@@ -1,5 +1,5 @@
 export enum Trigger {
-	PreProvider,
+  PreProvider,
 
-	PostProvider
+  PostProvider
 }

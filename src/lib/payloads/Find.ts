@@ -9,35 +9,35 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface FindPayload<DataValue> extends Payload, Payload.OptionalData<DataValue> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Find;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Find;
 
-	/**
-	 * The type for this payload.
-	 * @since 2.0.0
-	 */
-	type: Payload.Type.Hook | Payload.Type.Value;
+  /**
+   * The type for this payload.
+   * @since 2.0.0
+   */
+  type: Payload.Type.Hook | Payload.Type.Value;
 
-	/**
-	 * The hook to check equality.
-	 * @since 2.0.0
-	 */
-	hook?: FindHook<DataValue>;
+  /**
+   * The hook to check equality.
+   * @since 2.0.0
+   */
+  hook?: FindHook<DataValue>;
 
-	/**
-	 * The value to check equality.
-	 * @since 2.0.0
-	 */
-	value?: Primitive;
+  /**
+   * The value to check equality.
+   * @since 2.0.0
+   */
+  value?: Primitive;
 
-	/**
-	 * A path to the value to check equality.
-	 * @since 2.0.0
-	 */
-	path?: StringArray;
+  /**
+   * A path to the value to check equality.
+   * @since 2.0.0
+   */
+  path?: StringArray;
 }
 
 /**
@@ -48,17 +48,17 @@ export interface FindPayload<DataValue> extends Payload, Payload.OptionalData<Da
  * @since 2.0.0
  */
 export interface FindByHookPayload<DataValue> extends Payload, Payload.ByHook, Payload.OptionalData<DataValue> {
-	/**
-	 * The method for this payload
-	 * @since 2.0.0
-	 */
-	method: Method.Find;
+  /**
+   * The method for this payload
+   * @since 2.0.0
+   */
+  method: Method.Find;
 
-	/**
-	 * The hook to check equality.
-	 * @since 2.0.0
-	 */
-	hook: FindHook<DataValue>;
+  /**
+   * The hook to check equality.
+   * @since 2.0.0
+   */
+  hook: FindHook<DataValue>;
 }
 
 /**
@@ -69,23 +69,23 @@ export interface FindByHookPayload<DataValue> extends Payload, Payload.ByHook, P
  * @since 2.0.0
  */
 export interface FindByValuePayload<DataValue> extends Payload, Payload.ByValue, Payload.OptionalData<DataValue> {
-	/**
-	 * The method for this payload
-	 * @since 2.0.0
-	 */
-	method: Method.Find;
+  /**
+   * The method for this payload
+   * @since 2.0.0
+   */
+  method: Method.Find;
 
-	/**
-	 * The value to check equality.
-	 * @since 2.0.0
-	 */
-	value: Primitive;
+  /**
+   * The value to check equality.
+   * @since 2.0.0
+   */
+  value: Primitive;
 
-	/**
-	 * A path to the value for equality.
-	 * @since 2.0.0
-	 */
-	path: StringArray;
+  /**
+   * A path to the value for equality.
+   * @since 2.0.0
+   */
+  path: StringArray;
 }
 
 /**

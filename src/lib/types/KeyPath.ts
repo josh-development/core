@@ -5,7 +5,7 @@ export type KeyPath = string | KeyPathJSON;
 export type Path = string | StringArray;
 
 export interface KeyPathJSON {
-	key: string;
+  key: string;
 
-	path?: Path;
+  path?: Path;
 }

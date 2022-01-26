@@ -8,9 +8,9 @@ import { Method } from '../../types';
  * @returns Validation boolean.
  */
 export function isMapByHookPayload<DataValue, HookValue>(
-	payload: MapPayload<DataValue, HookValue>
+  payload: MapPayload<DataValue, HookValue>
 ): payload is MapByHookPayload<DataValue, HookValue> {
-	return payload.method === Method.Map && payload.type === Payload.Type.Hook;
+  return payload.method === Method.Map && payload.type === Payload.Type.Hook;
 }
 
 /**
@@ -20,5 +20,5 @@ export function isMapByHookPayload<DataValue, HookValue>(
  * @returns Validation boolean.
  */
 export function isMapByPathPayload<DataValue, HookValue>(payload: MapPayload<DataValue, HookValue>): payload is MapByPathPayload<DataValue> {
-	return payload.method === Method.Map && payload.type === Payload.Type.Path;
+  return payload.method === Method.Map && payload.type === Payload.Type.Path;
 }

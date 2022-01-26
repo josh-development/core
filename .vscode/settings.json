@@ -1,14 +1,14 @@
 {
-	"eslint.validate": ["typescript"],
-	"editor.tabSize": 2,
-	"editor.useTabStops": true,
-	"editor.insertSpaces": false,
-	"editor.detectIndentation": false,
-	"files.eol": "\n",
-	"editor.codeActionsOnSave": {
-		"source.fixAll": true,
-		"source.fixAll.eslint": true,
-		"source.organizeImports": true
-	},
-	"typescript.tsdk": "node_modules\\typescript\\lib"
+  "eslint.validate": ["typescript"],
+  "editor.tabSize": 2,
+  "editor.useTabStops": true,
+  "editor.insertSpaces": false,
+  "editor.detectIndentation": false,
+  "files.eol": "\n",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.fixAll.eslint": true,
+    "source.organizeImports": true
+  },
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }

@@ -8,9 +8,9 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface ClearPayload extends Payload {
-	/**
-	 * The method.this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Clear;
+  /**
+   * The method.this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Clear;
 }

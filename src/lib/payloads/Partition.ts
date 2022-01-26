@@ -9,35 +9,35 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface PartitionPayload<DataValue> extends Payload, Payload.Data<PartitionData<DataValue>> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Partition;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Partition;
 
-	/**
-	 * The type for this payload.
-	 * @since 2.0.0
-	 */
-	type: Payload.Type.Hook | Payload.Type.Value;
+  /**
+   * The type for this payload.
+   * @since 2.0.0
+   */
+  type: Payload.Type.Hook | Payload.Type.Value;
 
-	/**
-	 * The hook to check equality.
-	 * @since 2.0.0
-	 */
-	hook?: PartitionHook<DataValue>;
+  /**
+   * The hook to check equality.
+   * @since 2.0.0
+   */
+  hook?: PartitionHook<DataValue>;
 
-	/**
-	 * The value to check equality.
-	 * @since 2.0.0
-	 */
-	value?: Primitive;
+  /**
+   * The value to check equality.
+   * @since 2.0.0
+   */
+  value?: Primitive;
 
-	/**
-	 * A path to the value for equality check.
-	 * @since 2.0.0
-	 */
-	path?: StringArray;
+  /**
+   * A path to the value for equality check.
+   * @since 2.0.0
+   */
+  path?: StringArray;
 }
 
 /**
@@ -48,17 +48,17 @@ export interface PartitionPayload<DataValue> extends Payload, Payload.Data<Parti
  * @since 2.0.0
  */
 export interface PartitionByHookPayload<DataValue> extends Payload, Payload.ByHook, Payload.Data<PartitionData<DataValue>> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Partition;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Partition;
 
-	/**
-	 * The hook for this payload
-	 * @since 2.0.0
-	 */
-	hook: PartitionHook<DataValue>;
+  /**
+   * The hook for this payload
+   * @since 2.0.0
+   */
+  hook: PartitionHook<DataValue>;
 }
 
 /**
@@ -69,23 +69,23 @@ export interface PartitionByHookPayload<DataValue> extends Payload, Payload.ByHo
  * @since 2.0.0
  */
 export interface PartitionByValuePayload<DataValue> extends Payload, Payload.ByValue, Payload.Data<PartitionData<DataValue>> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Partition;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Partition;
 
-	/**
-	 * The value to check equality.
-	 * @since 2.0.0
-	 */
-	value: Primitive;
+  /**
+   * The value to check equality.
+   * @since 2.0.0
+   */
+  value: Primitive;
 
-	/**
-	 * A path to the value for equality check.
-	 * @since 2.0.0
-	 */
-	path: StringArray;
+  /**
+   * A path to the value for equality check.
+   * @since 2.0.0
+   */
+  path: StringArray;
 }
 
 /**
@@ -93,9 +93,9 @@ export interface PartitionByValuePayload<DataValue> extends Payload, Payload.ByV
  * @since 2.0.0
  */
 export interface PartitionData<DataValue> {
-	truthy: Record<string, DataValue>;
+  truthy: Record<string, DataValue>;
 
-	falsy: Record<string, DataValue>;
+  falsy: Record<string, DataValue>;
 }
 
 /**

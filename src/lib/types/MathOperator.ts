@@ -1,13 +1,13 @@
 export enum MathOperator {
-	Addition = 'addition',
+  Addition = 'addition',
 
-	Subtraction = 'subtraction',
+  Subtraction = 'subtraction',
 
-	Multiplication = 'multiplication',
+  Multiplication = 'multiplication',
 
-	Division = 'division',
+  Division = 'division',
 
-	Remainder = 'remainder',
+  Remainder = 'remainder',
 
-	Exponent = 'exponent'
+  Exponent = 'exponent'
 }

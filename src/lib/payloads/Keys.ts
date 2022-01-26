@@ -8,9 +8,9 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface KeysPayload extends Payload, Payload.Data<StringArray> {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Keys;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Keys;
 }

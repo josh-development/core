@@ -9,29 +9,29 @@ import type { Payload } from './Payload';
  * @since 2.0.0
  */
 export interface RemovePayload<HookValue> extends Payload, Payload.KeyPath {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Remove;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Remove;
 
-	/**
-	 * The type for this payload.
-	 * @since 2.0.0
-	 */
-	type: Payload.Type.Hook | Payload.Type.Value;
+  /**
+   * The type for this payload.
+   * @since 2.0.0
+   */
+  type: Payload.Type.Hook | Payload.Type.Value;
 
-	/**
-	 * The hook to check equality.
-	 * @since 2.0.0
-	 */
-	hook?: RemoveHook<HookValue>;
+  /**
+   * The hook to check equality.
+   * @since 2.0.0
+   */
+  hook?: RemoveHook<HookValue>;
 
-	/**
-	 * The value to check equality.
-	 * @since 2.0.0
-	 */
-	value?: Primitive;
+  /**
+   * The value to check equality.
+   * @since 2.0.0
+   */
+  value?: Primitive;
 }
 
 /**
@@ -41,23 +41,23 @@ export interface RemovePayload<HookValue> extends Payload, Payload.KeyPath {
  * @see {@link Payload.KeyPath}
  */
 export interface RemoveByHookPayload<HookValue> extends Payload, Payload.ByHook, Payload.KeyPath {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Remove;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Remove;
 
-	/**
-	 * The type for this payload.
-	 * @since 2.0.0
-	 */
-	type: Payload.Type.Hook;
+  /**
+   * The type for this payload.
+   * @since 2.0.0
+   */
+  type: Payload.Type.Hook;
 
-	/**
-	 * The hook to check equality.
-	 * @since 2.0.0
-	 */
-	hook: RemoveHook<HookValue>;
+  /**
+   * The hook to check equality.
+   * @since 2.0.0
+   */
+  hook: RemoveHook<HookValue>;
 }
 
 /**
@@ -68,23 +68,23 @@ export interface RemoveByHookPayload<HookValue> extends Payload, Payload.ByHook,
  * @since 2.0.0
  */
 export interface RemoveByValuePayload extends Payload, Payload.ByValue, Payload.KeyPath {
-	/**
-	 * The method this payload is for.
-	 * @since 2.0.0
-	 */
-	method: Method.Remove;
+  /**
+   * The method this payload is for.
+   * @since 2.0.0
+   */
+  method: Method.Remove;
 
-	/**
-	 * The type for this payload.
-	 * @since 2.0.0
-	 */
-	type: Payload.Type.Value;
+  /**
+   * The type for this payload.
+   * @since 2.0.0
+   */
+  type: Payload.Type.Value;
 
-	/**
-	 * The value to check equality.
-	 * @since 2.0.0
-	 */
-	value: Primitive;
+  /**
+   * The value to check equality.
+   * @since 2.0.0
+   */
+  value: Primitive;
 }
 
 /**
