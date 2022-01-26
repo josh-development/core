@@ -59,7 +59,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/josh-development/core"
+    "url": "git+https://github.com/josh-development/core.git"
   },
   "files": [
     "dist",

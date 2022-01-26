@@ -55,7 +55,7 @@ import { MiddlewareStore } from './MiddlewareStore';
  * @since 2.0.0
  *
  * @example
- * ```typescript
+ * ```javascript
  * const josh = new Josh({
  *   name: 'name',
  *   // More options...
@@ -63,9 +63,10 @@ import { MiddlewareStore } from './MiddlewareStore';
  * ```
  *
  * @example
- * ```typescript
+ * ```javascript
  * // Using a provider.
  * const josh = new Josh({
+ *   name: 'name',
  *   provider: new Provider(),
  *   // More options...
  * });
@@ -125,7 +126,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The {@link Josh} instance.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.init();
    * ```
    */
@@ -145,7 +146,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The {@link Josh} instance.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * josh.use({ name: 'my-middleware' }, (payload) => payload);
    * ```
    */
@@ -158,7 +159,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The {@link Josh} instance.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * josh.use(new MyMiddleware());
    * ```
    */
@@ -192,7 +193,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The newly generated automatic key.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * const key = await josh.autoKey();
    *
    * await josh.set(key, 'value');
@@ -217,11 +218,13 @@ export class Josh<StoredValue = unknown> {
 
   /**
    * Clears all stored values from the provider.
+   *
+   * NOTE: This deletes **all** data and cannot be reversed.
    * @since 2.0.0
    * @returns The {@link Josh} instance.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.clear();
@@ -253,7 +256,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The {@link Josh} instance.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 1);
    *
    * await josh.inc('key');
@@ -262,7 +265,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 1);
    *
    * await josh.inc({ key: 'key' });
@@ -271,7 +274,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key.path', 1);
    *
    * await josh.inc('key.path');
@@ -280,7 +283,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key.path', 1);
    *
    * await josh.inc({ key: 'key', path: 'path' });
@@ -289,7 +292,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key.path', 1);
    *
    * await josh.inc({ key: 'key', path: ['path'] });
@@ -322,7 +325,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The {@link Josh} instance.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.delete('key');
@@ -331,7 +334,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.delete({ key: 'key' });
@@ -340,7 +343,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: 'value' });
    *
    * await josh.delete('key.path');
@@ -349,7 +352,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: 'value' });
    *
    * await josh.delete({ key: 'key', path: 'path' });
@@ -358,7 +361,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: 'value' });
    *
    * await josh.delete({ key: 'key', path: ['path'] });
@@ -392,12 +395,12 @@ export class Josh<StoredValue = unknown> {
    * @returns The value gotten from the key.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.ensure('key', 'defaultValue'); // 'defaultValue'
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.ensure('key', 'defaultValue'); // 'value'
@@ -428,13 +431,13 @@ export class Josh<StoredValue = unknown> {
    * @returns A boolean of whether every value matched.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.every('path', 'value'); // true
    * await josh.every(['path'], 'value'); // true
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: 'value' });
    * await josh.set('key2', { path: 'value2' });
    *
@@ -443,7 +446,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: 'value' });
    * await josh.set('key2', { path: 'value' });
    *
@@ -460,12 +463,12 @@ export class Josh<StoredValue = unknown> {
    * @returns A boolean of whether every hook function returns true.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.every((value) => value === 'value'); // true
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    * await josh.set('key2', 'value2');
    *
@@ -473,7 +476,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    * await josh.set('key2', 'value');
    *
@@ -525,7 +528,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The bulk data.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: 'value' });
    *
    * await josh.filter('path', 'value'); // { key: { path: 'value' } }
@@ -547,7 +550,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The bulk data.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.filter((value) => value === 'value'); // { key: { path: 'value' } }
@@ -607,12 +610,12 @@ export class Josh<StoredValue = unknown> {
    * @returns The found value or null.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.find('path', 'value'); // null
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: 'value' });
    *
    * await josh.find('path', 'value'); // { path: 'value' }
@@ -627,12 +630,12 @@ export class Josh<StoredValue = unknown> {
    * @returns The found value or null.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.find((value) => value === 'value'); // null
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.find((value) => value === 'value'); // 'value'
@@ -680,7 +683,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The value gotten or null.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.get('key'); // 'value'
@@ -695,7 +698,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The value gotten or null.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: 'value' });
    *
    * await josh.get('key'); // { path: 'value' }
@@ -703,7 +706,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: 'value' });
    *
    * await josh.get('key.path'); // 'value'
@@ -736,7 +739,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The bulk data.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.getAll(); // { key: 'value' }
@@ -744,7 +747,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: 'value' });
    *
    * await josh.getAll(); // { key: { path: 'value' } }
@@ -778,7 +781,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The bulk data.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    *
    * await this.getMany(['key']); // { key: 'value' }
@@ -812,7 +815,7 @@ export class Josh<StoredValue = unknown> {
    * @returns Whether the value exists.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.has('key'); // false
    * await josh.has({ key: 'key' }) // false
    *
@@ -823,7 +826,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.has('key.path'); // false
    * await josh.has({ key: 'key', path: 'path' }); // false
    * await josh.has({ key: 'key', path: ['path'] }) // false
@@ -860,7 +863,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The {@link Josh} instance.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 0);
    *
    * await josh.inc('key');
@@ -869,7 +872,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 0);
    *
    * await josh.inc({ key: 'key' });
@@ -878,7 +881,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key.path', 0);
    *
    * await josh.inc('key.path');
@@ -887,7 +890,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key.path', 0);
    *
    * await josh.inc({ key: 'key', path: 'path' });
@@ -896,7 +899,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key.path', 0);
    *
    * await josh.inc({ key: 'key', path: ['path'] });
@@ -928,7 +931,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The array of stored value keys.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.keys(); // ['key']
@@ -958,21 +961,21 @@ export class Josh<StoredValue = unknown> {
    * @returns The mapped values.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: 'value' });
    *
    * await josh.map('path'); // ['value']
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: 'value' });
    *
    * await josh.map(['path']); // 'value'
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.map((value) => value.toUpperCase()); // ['VALUE']
@@ -1012,7 +1015,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The {@link Josh} instance.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 0);
    *
    * await josh.math('key', MathOperator.Addition, 1);
@@ -1021,7 +1024,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 1);
    *
    * await josh.math('key', MathOperator.Subtraction, 1);
@@ -1030,7 +1033,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 1);
    *
    * await josh.math('key', MathOperator.Multiplication, 2);
@@ -1039,7 +1042,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 2);
    *
    * await josh.math('key' MathOperator.Division, 2);
@@ -1074,7 +1077,7 @@ export class Josh<StoredValue = unknown> {
    * @returns A partition of filtered bulk data. First bulk data is the truthy filter and the second bulk data is the falsy filter.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', true);
    * await josh.set('key2', false);
    *
@@ -1096,7 +1099,7 @@ export class Josh<StoredValue = unknown> {
    * @returns A partition of filtered bulk data. First bulk data is the truthy filter and the second bulk data is the falsy filter.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: true });
    * await josh.set('key2', { path: false });
    *
@@ -1158,7 +1161,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The {@link Josh} instance.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', []);
    *
    * await josh.push('key', 'value');
@@ -1168,7 +1171,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: [] });
    *
    * await josh.push('key.path', 'value');
@@ -1202,12 +1205,12 @@ export class Josh<StoredValue = unknown> {
    * @returns The random data or `null`.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.random(); // null
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.random(); // 'value'
@@ -1236,12 +1239,12 @@ export class Josh<StoredValue = unknown> {
    * @returns The random key or `null`.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.randomKey(); // null
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.randomKey(); // null
@@ -1272,7 +1275,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The {@link Josh} instance.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await provider.set('key', ['value']);
    *
    * await provider.remove('key', 'value');
@@ -1290,7 +1293,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The {@link Josh} instance.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await provider.set('key', ['value']);
    *
    * await provider.remove('key', (value) => value === 'value');
@@ -1340,13 +1343,13 @@ export class Josh<StoredValue = unknown> {
    * @returns The {@link Josh} instance.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', { path: 'value' });
    * await josh.set({ key: 'key' });
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key.path');
    * await josh.set({ key: 'key', path: 'path' });
    * await josh.set({ key: 'key', path: ['path'] });
@@ -1401,7 +1404,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The number amount.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.size(); // 0
    * ```
    */
@@ -1429,12 +1432,12 @@ export class Josh<StoredValue = unknown> {
    * @param value The value to check equality.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await provider.some('path', 'value'); // false
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await provider.set('key.path', 'value');
    *
    * await provider.some('path', 'value'); // true
@@ -1449,12 +1452,12 @@ export class Josh<StoredValue = unknown> {
    * @param hook The hook to check equality.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await provider.some((value) => value === 'value'); // false
    * ```
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await provider.set('key.path', 'value');
    *
    * await provider.some('path', 'value'); // true
@@ -1503,7 +1506,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The updated value or null.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.update('key', (value) => value.toUpperCase()); // 'VALUE'
@@ -1533,7 +1536,7 @@ export class Josh<StoredValue = unknown> {
    * @returns An array of stored values.
    *
    * @example
-   * ```typescript
+   * ```javascript
    * await josh.set('key', 'value');
    * await josh.set('anotherKey', 'anotherValue');
    *

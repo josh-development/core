@@ -10,8 +10,40 @@ Providers can be installed separately from Josh using Yarn or NPM. You can also 
 
 In The example below we will use the default in-memory provider which using the native [`Map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) class.
 
+### CommonJS
+
 ```javascript
 const { Josh, MapProvider } = require('@joshdb/core');
+
+const josh = new Josh({
+  name: 'name',
+  provider: new MapProvider()
+});
+```
+
+### ESM
+
+```javascript
+import { Josh, MapProvider } from '@joshdb/core';
+
+const josh = new Josh({
+  name: 'name',
+  provider: new MapProvider()
+});
+```
+
+### TypeScript
+
+You can use [generics](https://www.typescriptlang.org/docs/handbook/2/generics.html) to define what type your `Josh` instance uses.
+
+```typescript
+import { Josh, MapProvider } from '@joshdb/core';
+
+interface User {
+  name: string;
+
+  email: string;
+}
 
 const josh = new Josh({
   name: 'name',
