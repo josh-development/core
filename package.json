@@ -2,7 +2,12 @@
 	"name": "@joshdb/core",
 	"version": "2.0.0",
 	"description": "JavaScript Object Storage Helper",
-	"author": "Evelyne Lachance <eslachance@gmail.com> (https://evie.codes/)",
+	"author": "Évelyne Lachance <eslachance@gmail.com> (https://evie.codes/)",
+	"contributors": [
+		"RealShadowNova <real.shadow.nova@gmail.com>",
+		"DanCodes <dan@dancodes.online> (https://dancodes.online/)",
+		"Wilson (https://wilson.antti.codes/)"
+	],
 	"license": "Apache-2.0",
 	"private": false,
 	"main": "dist/index.js",
