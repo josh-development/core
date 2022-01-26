@@ -1,8 +1,8 @@
 {
   "eslint.validate": ["typescript"],
   "editor.tabSize": 2,
-  "editor.useTabStops": true,
-  "editor.insertSpaces": false,
+  "editor.useTabStops": false,
+  "editor.insertSpaces": true,
   "editor.detectIndentation": false,
   "files.eol": "\n",
   "editor.codeActionsOnSave": {
