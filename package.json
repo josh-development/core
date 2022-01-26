@@ -54,7 +54,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/eslachance/josh"
+		"url": "git+https://github.com/josh-development/core"
 	},
 	"files": [
 		"dist",
@@ -66,9 +66,9 @@
 	},
 	"keywords": [],
 	"bugs": {
-		"url": "https://github.com/eslachance/josh/issues"
+		"url": "https://github.com/josh-development/core/issues"
 	},
-	"homepage": "https://github.com/eslachance/josh",
+	"homepage": "https://github.com/josh-development/core",
 	"publishConfig": {
 		"access": "public"
 	},
