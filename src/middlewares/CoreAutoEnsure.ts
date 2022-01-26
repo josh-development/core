@@ -128,7 +128,7 @@ export class CoreMiddleware extends Middleware {
 
     const { defaultValue } = this.context;
 
-    for (const key of payload.keys) await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
+    for (const [{ key }] of payload.data) await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
 
     return payload;
   }
