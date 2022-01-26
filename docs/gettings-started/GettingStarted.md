@@ -1,17 +1,17 @@
 # Getting Started with `@joshdb/core`
 
-## Installing [`@joshdb/core`](https://github.com/RealShadowNova/joshdb-core/tree/build)
+## Installing [`@joshdb/core`](https://github.com/josh-development/core/tree/build)
 
 **When using `NPM`**
 
 ```sh
-npm install RealShadowNova/joshdb-core#build
+npm i @joshdb/core@next
 ```
 
 **When using `Yarn`**
 
 ```sh
-yarn add RealShadowNova/joshdb-core#build
+yarn add @joshdb/core@next
 ```
 
 Note: Josh requires you to have Node.js v16.0.0 or higher.
@@ -32,7 +32,7 @@ const { Josh } = require('@joshdb/core');
 import { Josh } from '@joshdb/core';
 ```
 
-You can initiate an instance very simply. Below will create an in-memory storage using the [`MapProvider`](https://github.com/RealShadowNova/joshdb-core/blob/main/src/lib/structures/defaultProvider/MapProvider.ts)
+You can initiate an instance very simply. Below will create an in-memory storage using the [`MapProvider`](https://github.com/josh-development/core/blob/main/src/lib/structures/defaultProvider/MapProvider.ts)
 
 ```javascript
 const josh = new Josh({ name: 'name' });

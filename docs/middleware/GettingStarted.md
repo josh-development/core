@@ -2,7 +2,7 @@
 
 ## What is middleware?
 
-Middleware are simply a class that has methods to run before and after providers receive payloads from **Josh**. They make it possible to implement things like [`AutoEnsure`](https://github.com/RealShadowNova/joshdb-core/blob/main/src/middlewares/CoreAutoEnsure.ts).
+Middleware are simply a class that has methods to run before and after providers receive payloads from **Josh**. They make it possible to implement things like [`AutoEnsure`](https://github.com/josh-development/core/blob/main/src/middlewares/CoreAutoEnsure.ts).
 
 ## File Structure
 

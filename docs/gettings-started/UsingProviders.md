@@ -6,7 +6,7 @@ A provider is simply a layer between **Josh** and a database (or wherever data i
 
 ## Basic Usage
 
-Providers can be installed separately from Josh using Yarn or NPM. You can also create your own provider by extending the exported [`JoshProvider`](https://github.com/RealShadowNova/joshdb-core/blob/main/src/lib/structures/JoshProvider.ts) class.
+Providers can be installed separately from Josh using Yarn or NPM. You can also create your own provider by extending the exported [`JoshProvider`](https://github.com/josh-development/core/blob/main/src/lib/structures/JoshProvider.ts) class.
 
 In The example below we will use the default in-memory provider which using the native [`Map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) class.
 

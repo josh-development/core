@@ -6,7 +6,7 @@
 
 **JavaScript Object Storage Helper**
 
-[![GitHub](https://img.shields.io/github/license/RealShadowNova/joshdb-core)](https://github.com/RealShadowNova/joshdb-core/blob/main/LICENSE.md)
+[![GitHub](https://img.shields.io/github/license/josh-development/core)](https://github.com/josh-development/core/blob/main/LICENSE.md)
 [![npm](https://img.shields.io/npm/v/@joshdb/core?color=crimson&logo=npm&style=flat-square)](https://www.npmjs.com/package/@joshdb/core)
 
 [![Support Server](https://discord.com/api/guilds/298508738623438848/embed.png?style=banner2)](https://discord.gg/N7ZKH3P)
@@ -29,9 +29,9 @@ A simple, effective, and efficient database wrapper.
 
 ```sh
 # With NPM
-npm install @joshdb/core
+npm install @joshdb/core@next
 # Or with Yarn
-yarn add @joshdb/core
+yarn add @joshdb/core@next
 ```
 
 ## FAQ
