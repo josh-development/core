@@ -355,6 +355,12 @@ export namespace Middleware {
     conditions: Conditions;
   }
 
+  /**
+   * The context data to use for middleware.
+   * @since 2.0.0
+   */
+  export interface ContextData {}
+
   export enum Identifiers {
     StoreNotFound = 'storeNotFound'
   }

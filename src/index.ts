@@ -9,3 +9,4 @@ export * from './lib/structures/Middleware';
 export * from './lib/structures/MiddlewareStore';
 export * from './lib/types';
 export * from './lib/validators';
+export * from './middlewares/CoreAutoEnsure';

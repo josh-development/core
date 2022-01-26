@@ -1,7 +1,7 @@
 import { Awaitable, isFunction, isPrimitive, Primitive } from '@sapphire/utilities';
 import { writeFile } from 'fs/promises';
 import { emitWarning } from 'process';
-import type { CoreMiddleware as AutoEnsureMiddleware } from '../../middlewares/CoreAutoEnsure';
+import type { CoreAutoEnsure } from '../../middlewares/CoreAutoEnsure';
 import { JoshError } from '../errors';
 import { convertLegacyExportJSON, isNodeEnvironment } from '../functions';
 import {
@@ -1693,7 +1693,7 @@ export namespace Josh {
     provider?: JoshProvider<StoredValue>;
 
     middlewareContextData?: {
-      [BuiltInMiddleware.AutoEnsure]: AutoEnsureMiddleware.ContextData;
+      [BuiltInMiddleware.AutoEnsure]: CoreAutoEnsure.ContextData;
     };
   }
 

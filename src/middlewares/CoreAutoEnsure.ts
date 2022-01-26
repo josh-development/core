@@ -24,7 +24,7 @@ import { BuiltInMiddleware, Method } from '../lib/types';
     post: [Method.Get, Method.GetMany, Method.Update]
   }
 })
-export class CoreMiddleware extends Middleware {
+export class CoreAutoEnsure extends Middleware {
   public async [Method.Dec](payload: DecPayload): Promise<DecPayload> {
     if (!this.context) return payload;
 
@@ -146,13 +146,13 @@ export class CoreMiddleware extends Middleware {
     return payload;
   }
 
-  private get context(): CoreMiddleware.ContextData | undefined {
+  private get context(): CoreAutoEnsure.ContextData | undefined {
     return this.instance.options.middlewareContextData?.[BuiltInMiddleware.AutoEnsure];
   }
 }
 
-export namespace CoreMiddleware {
-  export interface ContextData<Value = unknown> {
+export namespace CoreAutoEnsure {
+  export interface ContextData<Value = unknown> extends Middleware.ContextData {
     defaultValue: Value;
   }
 }
