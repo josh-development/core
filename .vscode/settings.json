@@ -4,11 +4,14 @@
   "editor.useTabStops": false,
   "editor.insertSpaces": true,
   "editor.detectIndentation": false,
-  "files.eol": "\n",
   "editor.codeActionsOnSave": {
     "source.fixAll": true,
     "source.fixAll.eslint": true,
     "source.organizeImports": true
   },
-  "typescript.tsdk": "node_modules\\typescript\\lib"
+  "files.eol": "\n",
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "cSpell.maxNumberOfProblems": 8,
+  "cSpell.numSuggestions": 24,
+  "cSpell.words": ["joshdb", "Évelyne", "Lachance", "Hendry", "typedoc", "realware", "commitlint", "favware", "tsbuildinfo"]
 }
