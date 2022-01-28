@@ -18,5 +18,5 @@ indent_size = 2
 indent_style = space
 
 [*.{md,rmd,mkd,mkdn,mdwn,mdown,markdown,litcoffee}]
-tab_width = 4
+tab_width = 2
 trim_trailing_whitespace = false
