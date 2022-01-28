@@ -1,37 +1,90 @@
 {
   "name": "@joshdb/core",
-  "version": "1.2.7",
-  "description": "Javascript Object Storage Helper",
-  "main": "src/index.js",
+  "version": "2.0.0",
+  "description": "JavaScript Object Storage Helper",
+  "author": "Évelyne Lachance <eslachance@gmail.com> (https://evie.codes/)",
+  "contributors": [
+    "Hezekiah Hendry <real.shadow.nova@gmail.com>",
+    "DanCodes <dan@dancodes.online> (https://dancodes.online/)",
+    "Wilson (https://wilson.antti.codes/)"
+  ],
+  "license": "Apache-2.0",
+  "private": false,
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "browser": "dist/index.umd.js",
+  "unpkg": "dist/index.umd.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.js"
+  },
   "scripts": {
-    "test": "jest",
-    "docs": "node ./docs/build.js"
+    "clean": "rimraf dist node_modules/.cache",
+    "docs": "typedoc",
+    "lint": "eslint src tests --ext ts --fix",
+    "format": "prettier --write {src,tests}/**/*.ts",
+    "test": "jest --verbose",
+    "update": "yarn upgrade-interactive --latest",
+    "build": "rollup -c rollup.bundle.ts",
+    "watch": "tsc -b src -w",
+    "prepublishOnly": "rollup-type-bundler",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "@realware/utilities": "^2.0.2",
+    "@sapphire/utilities": "^3.2.1"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^16.1.0",
+    "@commitlint/config-conventional": "^16.0.0",
+    "@favware/rollup-type-bundler": "^1.0.7",
+    "@sapphire/eslint-config": "^4.0.11",
+    "@sapphire/ts-config": "^3.1.8",
+    "@types/jest": "^27.0.2",
+    "@types/node": "^17.0.10",
+    "eslint": "~8.6.0",
+    "husky": "^7.0.4",
+    "jest": "^27.4.7",
+    "jest-circus": "^27.4.6",
+    "lint-staged": "^12.3.1",
+    "prettier": "^2.4.1",
+    "pretty-quick": "^3.1.1",
+    "rollup": "^2.66.0",
+    "rollup-plugin-cleaner": "^1.0.0",
+    "rollup-plugin-typescript2": "^0.31.1",
+    "rollup-plugin-version-injector": "^1.3.3",
+    "ts-jest": "^27.1.3",
+    "ts-node": "^10.4.0",
+    "typedoc": "^0.22.11",
+    "typescript": "^4.5.5"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eslachance/josh.git"
+    "url": "git+https://github.com/josh-development/core.git"
   },
-  "author": "Evelyne Lachance <eslachance@gmail.com> (https://evie.codes/)",
-  "license": "Apache-2.0",
+  "files": [
+    "dist",
+    "!dist/*.tsbuildinfo"
+  ],
+  "engines": {
+    "node": ">=16",
+    "npm": ">=6"
+  },
+  "keywords": [],
   "bugs": {
-    "url": "https://github.com/eslachance/josh/issues"
+    "url": "https://github.com/josh-development/core/issues"
   },
-  "homepage": "https://github.com/eslachance/josh#readme",
-  "dependencies": {
-    "lodash": "^4.17.20",
-    "serialize-javascript": "^6.0.0"
+  "homepage": "https://github.com/josh-development/core",
+  "publishConfig": {
+    "access": "public"
   },
-  "devDependencies": {
-    "eslint": "6.8.0",
-    "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "jest": "^26.2.2",
-    "jsdoc-to-markdown": "^6.0.1",
-    "limax": "^2.1.0"
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
-  "types": "./typings/index.d.ts"
+  "lint-staged": {
+    "*.ts": "eslint --fix --ext ts"
+  }
 }

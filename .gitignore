@@ -1,11 +1,29 @@
-.hgignore
-node_modules
-.c9
-.DS_Store
-Thumbs.db
-data/
-config.json
-.vscode
-data/
-out/
-config-*.json
+# Ignore a blachole and the folder for development
+node_modules/
+.vs/
+
+# Ignore tsc dist folder
+dist/
+
+# Ignore JavaScript files
+**/*.js
+**/*.mjs
+**/*.js.map
+**/*.d.ts
+!src/**/*.d.ts
+**/*.tsbuildinfo
+!jest.config.ts
+!scripts/*.mjs
+
+# Ignore heapsnapshot and log files
+*.heapsnapshot
+*.log
+
+# Ignore package locks
+package-lock.json
+
+# Ignore the GH cli downloaded by workflows
+gh
+
+# Ignore auto-generated documentation
+docs/api.json
