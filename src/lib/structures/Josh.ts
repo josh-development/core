@@ -4,6 +4,7 @@ import { emitWarning } from 'process';
 import type { CoreAutoEnsure } from '../../middlewares/CoreAutoEnsure';
 import { JoshError } from '../errors';
 import { convertLegacyExportJSON, isNodeEnvironment } from '../functions';
+import { isLegacyExportJSON } from '../functions/validators';
 import {
   AutoKeyPayload,
   ClearPayload,
@@ -43,7 +44,6 @@ import {
   ValuesPayload
 } from '../payloads';
 import { BuiltInMiddleware, KeyPath, KeyPathJSON, MathOperator, Method, Path, StringArray, Trigger } from '../types';
-import { isLegacyExportJSON } from '../validators';
 import { MapProvider } from './default-provider';
 import { JoshProvider } from './JoshProvider';
 import { Middleware } from './Middleware';
@@ -1373,7 +1373,7 @@ export class Josh<StoredValue = unknown> {
     return this;
   }
 
-  public async setMany<Value = StoredValue>(entries: [KeyPath, Value][]): Promise<this> {
+  public async setMany<Value = StoredValue>(entries: [KeyPath, Value][], overwrite = true): Promise<this> {
     let payload: SetManyPayload<Value> = {
       method: Method.SetMany,
       trigger: Trigger.PreProvider,
@@ -1381,7 +1381,8 @@ export class Josh<StoredValue = unknown> {
         const [key, path] = this.getKeyPath(keyPath);
 
         return [{ key, path: this.getPath(path) }, value];
-      })
+      }),
+      overwrite
     };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1576,19 +1577,11 @@ export class Josh<StoredValue = unknown> {
 
     if (clear) await this.provider[Method.Clear]({ method: Method.Clear });
 
-    if (overwrite)
-      await this.provider[Method.SetMany]({
-        method: Method.SetMany,
-        data: json.entries.map(([key, value]) => [{ key, path: [] }, value])
-      });
-    else
-      for (const [key, value] of json.entries) {
-        const { data } = await this.provider[Method.Has]({ method: Method.Has, key, path: [], data: true });
-
-        if (data) continue;
-
-        await this.provider[Method.Set]({ method: Method.Set, key, path: [], value });
-      }
+    await this.provider[Method.SetMany]({
+      method: Method.SetMany,
+      data: json.entries.map(([key, value]) => [{ key, path: [] }, value]),
+      overwrite: overwrite ?? false
+    });
 
     return this;
   }
@@ -1728,33 +1721,81 @@ export namespace Josh {
   }
 
   export interface ExportJSON<StoredValue = unknown> {
+    /**
+     * The name of exported data.
+     * @since 2.0.0
+     */
     name: string;
 
+    /**
+     * The version of Josh used to export the data.
+     * @since 2.0.0
+     */
     version: string;
 
+    /**
+     * The timestamp of when the data was exported.
+     * @since 2.0.0
+     */
     exportedTimestamp: number;
 
+    /**
+     * The exported data entries.
+     * @since 2.0.0
+     */
     entries: [string, StoredValue][];
   }
 
   export interface LegacyExportJSON<StoredValue = unknown> {
+    /**
+     * The name of exported data.
+     * @since 2.0.0
+     */
     name: string;
 
+    /**
+     * The version of Josh or Enmap used to export the data.
+     * @since 2.0.0
+     */
     version: string;
 
+    /**
+     * The timestamp of when the data was exported.
+     * @since 2.0.0
+     */
     exportDate: number;
 
+    /**
+     * The exported data.
+     * @since 2.0.0
+     */
     keys: { key: string; value: StoredValue }[];
   }
 
   export interface ImportOptions<StoredValue = unknown> {
+    /**
+     * The data to import.
+     * @since 2.0.0
+     */
     json: ExportJSON<StoredValue> | LegacyExportJSON<StoredValue>;
 
+    /**
+     * Whether to overwrite existing data.
+     * @since 2.0.0
+     */
     overwrite?: boolean;
 
+    /**
+     * Whether to clear all data before importing.
+     * @since 2.0.0
+     */
     clear?: boolean;
   }
   export interface SetManyOptions<Value = unknown> extends KeyPathJSON {
+    /**
+     * The value to set.
+     * @since 2.0.0
+     */
     value: Value;
   }
 

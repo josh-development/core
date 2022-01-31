@@ -24,10 +24,13 @@ export default {
       name: 'JoshCore',
       sourcemap: true,
       globals: {
+        '@realware/utilities': 'RealwareUtilities',
         '@sapphire/utilities': 'SapphireUtilities',
-        '@realware/utilities': 'RealwareUtilities'
+        'fs/promises': 'FSPromises',
+        process: 'Process'
       }
     }
   ],
+  external: ['@sapphire/utilities', '@realware/utilities', 'fs/promises', 'process'],
   plugins: [cleaner({ targets: ['./dist'] }), typescript({ tsconfig: resolve(process.cwd(), 'src', 'tsconfig.json') }), versionInjector()]
 };

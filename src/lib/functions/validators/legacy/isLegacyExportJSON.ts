@@ -1,4 +1,4 @@
-import type { Josh } from '../../structures/Josh';
+import type { Josh } from '../../../structures/Josh';
 
 export function isLegacyExportJSON<StoredValue>(
   json: Josh.ExportJSON<StoredValue> | Josh.LegacyExportJSON<StoredValue>

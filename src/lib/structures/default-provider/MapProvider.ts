@@ -1,5 +1,21 @@
 import { deleteFromObject, getFromObject, hasFromObject, setToObject } from '@realware/utilities';
 import { isNumber, isPrimitive } from '@sapphire/utilities';
+import {
+  isEveryByHookPayload,
+  isEveryByValuePayload,
+  isFilterByHookPayload,
+  isFilterByValuePayload,
+  isFindByHookPayload,
+  isFindByValuePayload,
+  isMapByHookPayload,
+  isMapByPathPayload,
+  isPartitionByHookPayload,
+  isPartitionByValuePayload,
+  isRemoveByHookPayload,
+  isRemoveByValuePayload,
+  isSomeByHookPayload,
+  isSomeByValuePayload
+} from '../../functions/validators';
 import type {
   AutoKeyPayload,
   ClearPayload,
@@ -44,22 +60,6 @@ import type {
   ValuesPayload
 } from '../../payloads';
 import { MathOperator, Method } from '../../types';
-import {
-  isEveryByHookPayload,
-  isEveryByValuePayload,
-  isFilterByHookPayload,
-  isFilterByValuePayload,
-  isFindByHookPayload,
-  isFindByValuePayload,
-  isMapByHookPayload,
-  isMapByPathPayload,
-  isPartitionByHookPayload,
-  isPartitionByValuePayload,
-  isRemoveByHookPayload,
-  isRemoveByValuePayload,
-  isSomeByHookPayload,
-  isSomeByValuePayload
-} from '../../validators';
 import { JoshProvider } from '../JoshProvider';
 import { MapProviderError } from './MapProviderError';
 
@@ -581,9 +581,11 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   }
 
   public [Method.SetMany]<Value = StoredValue>(payload: SetManyPayload<Value>): SetManyPayload<Value> {
-    const { data } = payload;
+    const { data, overwrite } = payload;
 
-    for (const [{ key, path }, value] of data) this.set({ method: Method.Set, key, path, value });
+    for (const [{ key, path }, value] of data)
+      if (overwrite) this.set({ method: Method.Set, key, path, value });
+      else if (!this.has({ method: Method.Has, key, path, data: false }).data) this.set({ method: Method.Set, key, path, value });
 
     return payload;
   }

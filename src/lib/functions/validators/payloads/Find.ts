@@ -1,5 +1,5 @@
-import { FindByHookPayload, FindByValuePayload, FindPayload, Payload } from '../../payloads';
-import { Method } from '../../types';
+import { FindByHookPayload, FindByValuePayload, FindPayload, Payload } from '../../../payloads';
+import { Method } from '../../../types';
 
 /**
  * Validates whether the given payload is {@link FindByHookPayload}

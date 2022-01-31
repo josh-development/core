@@ -1,5 +1,5 @@
-import { PartitionByHookPayload, PartitionByValuePayload, PartitionPayload, Payload } from '../../payloads';
-import { Method } from '../../types';
+import { PartitionByHookPayload, PartitionByValuePayload, PartitionPayload, Payload } from '../../../payloads';
+import { Method } from '../../../types';
 
 /**
  * Validates whether the given payload is {@link PartitionByHookPayload}

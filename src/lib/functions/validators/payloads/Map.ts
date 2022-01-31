@@ -1,5 +1,5 @@
-import { MapByHookPayload, MapByPathPayload, MapPayload, Payload } from '../../payloads';
-import { Method } from '../../types';
+import { MapByHookPayload, MapByPathPayload, MapPayload, Payload } from '../../../payloads';
+import { Method } from '../../../types';
 
 /**
  * Validates whether the given payload is {@link MapByHookPayload}

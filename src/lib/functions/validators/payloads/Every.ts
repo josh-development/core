@@ -1,5 +1,5 @@
-import { EveryByHookPayload, EveryByValuePayload, EveryPayload, Payload } from '../../payloads';
-import { Method } from '../../types';
+import { EveryByHookPayload, EveryByValuePayload, EveryPayload, Payload } from '../../../payloads';
+import { Method } from '../../../types';
 
 /**
  * Validates whether the given payload is {@link EveryByHookPayload}

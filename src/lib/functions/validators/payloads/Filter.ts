@@ -1,5 +1,5 @@
-import { FilterByHookPayload, FilterByValuePayload, FilterPayload, Payload } from '../../payloads';
-import { Method } from '../../types';
+import { FilterByHookPayload, FilterByValuePayload, FilterPayload, Payload } from '../../../payloads';
+import { Method } from '../../../types';
 
 /**
  * Validates whether the given payload is {@link FilterByHookPayload}

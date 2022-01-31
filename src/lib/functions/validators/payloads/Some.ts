@@ -1,5 +1,5 @@
-import { Payload, SomeByHookPayload, SomeByValuePayload, SomePayload } from '../../payloads';
-import { Method } from '../../types';
+import { Payload, SomeByHookPayload, SomeByValuePayload, SomePayload } from '../../../payloads';
+import { Method } from '../../../types';
 
 /**
  * Validates whether the given payload is {@link SomeByHookPayload}

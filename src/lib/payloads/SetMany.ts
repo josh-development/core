@@ -12,6 +12,12 @@ export interface SetManyPayload<Value> extends Payload, Payload.Data<[SetManyPay
    * @since 2.0.0
    */
   method: Method.SetMany;
+
+  /**
+   * Whether to overwrite existing data.
+   * @since 2.0.0
+   */
+  overwrite: boolean;
 }
 
 export namespace SetManyPayload {

@@ -1,5 +1,5 @@
-import { Payload, RemoveByHookPayload, RemoveByValuePayload, RemovePayload } from '../../payloads';
-import { Method } from '../../types';
+import { Payload, RemoveByHookPayload, RemoveByValuePayload, RemovePayload } from '../../../payloads';
+import { Method } from '../../../types';
 
 /**
  * Validates whether the given payload is {@link RemoveByHookPayload}

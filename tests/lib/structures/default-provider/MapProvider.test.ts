@@ -309,7 +309,8 @@ describe('MapProvider', () => {
             data: [
               [{ key: 'firstKey', path: [] }, 'value'],
               [{ key: 'secondKey', path: [] }, 'value']
-            ]
+            ],
+            overwrite: true
           });
 
           const payload = await provider.every({ method: Method.Every, type: Payload.Type.Hook, hook: (value) => value === 'value', data: true });
@@ -348,7 +349,8 @@ describe('MapProvider', () => {
             data: [
               [{ key: 'firstKey', path: ['path'] }, 'value'],
               [{ key: 'secondKey', path: ['path'] }, 'value']
-            ]
+            ],
+            overwrite: true
           });
 
           const payload = await provider.every({ method: Method.Every, type: Payload.Type.Value, path: ['path'], value: 'value', data: true });
@@ -1484,7 +1486,7 @@ describe('MapProvider', () => {
 
         expect(hasBefore.data).toBe(false);
 
-        const payload = provider.setMany({ method: Method.SetMany, data: [[{ key: 'test:setMany', path: [] }, 'value']] });
+        const payload = provider.setMany({ method: Method.SetMany, data: [[{ key: 'test:setMany', path: [] }, 'value']], overwrite: true });
 
         expect(typeof payload).toBe('object');
 
