@@ -489,17 +489,52 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   }
 
   public [Method.Random](payload: RandomPayload<StoredValue>): RandomPayload<StoredValue> {
-    const values = Array.from(this.cache.values());
+    const { count, duplicates } = payload;
 
-    Reflect.set(payload, 'data', values[Math.floor(Math.random() * values.length)]);
+    if (this.cache.size === 0) return payload;
+    if (this.cache.size < count) {
+      payload.error = new MapProviderError({
+        identifier: JoshProvider.CommonIdentifiers.RandomInvalidCount,
+        message: `The count of values to be selected must be less than or equal to the number of values in the map.`,
+        method: Method.Random
+      });
+
+      return payload;
+    }
+
+    payload.data = [];
+
+    const data: [string, StoredValue][] = [];
+    const entries = Array.from(this.cache.entries());
+
+    for (let i = 0; i < count; i++)
+      data.push(duplicates ? entries[Math.floor(Math.random() & entries.length)] : this.randomEntriesWithoutDuplicates(data));
+
+    payload.data = data.map(([, value]) => value);
 
     return payload;
   }
 
   public [Method.RandomKey](payload: RandomKeyPayload): RandomKeyPayload {
+    const { count, duplicates } = payload;
+
+    if (this.cache.size === 0) return payload;
+    if (this.cache.size < count) {
+      payload.error = new MapProviderError({
+        identifier: JoshProvider.CommonIdentifiers.RandomKeyInvalidCount,
+        message: `The count of keys to be selected must be less than or equal to the number of keys in the map.`,
+        method: Method.RandomKey
+      });
+
+      return payload;
+    }
+
+    payload.data = [];
+
     const keys = Array.from(this.cache.keys());
 
-    payload.data = keys[Math.floor(Math.random() * keys.length)];
+    for (let i = 0; i < count; i++)
+      payload.data.push(duplicates ? keys[Math.floor(Math.random() * keys.length)] : this.randomKeyWithoutDuplicates(payload.data));
 
     return payload;
   }
@@ -645,5 +680,25 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     Reflect.set(payload, 'data', Array.from(this.cache.values()));
 
     return payload;
+  }
+
+  private randomEntriesWithoutDuplicates(data: [string, StoredValue][]): [string, StoredValue] {
+    const entries = Array.from(this.cache.entries());
+    const entry = entries[Math.floor(Math.random() * entries.length)];
+
+    if (data.length === 0) return entry;
+    if (isPrimitive(entry[1]) && data.some(([key, value]) => entry[0] === key && entry[1] === value))
+      return this.randomEntriesWithoutDuplicates(data);
+
+    return entry;
+  }
+
+  private randomKeyWithoutDuplicates(data: string[]): string {
+    const keys = Array.from(this.cache.keys());
+    const key = keys[Math.floor(Math.random() * keys.length)];
+
+    if (data.includes(key)) return this.randomKeyWithoutDuplicates(data);
+
+    return key;
   }
 }

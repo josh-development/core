@@ -426,6 +426,10 @@ export namespace JoshProvider {
 
     PushMissingData = 'pushMissingData',
 
+    RandomInvalidCount = 'randomInvalidCount',
+
+    RandomKeyInvalidCount = 'randomKeyInvalidCount',
+
     RemoveInvalidType = 'removeInvalidType',
 
     RemoveMissingData = 'removeMissingData'

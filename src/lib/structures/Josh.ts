@@ -1200,24 +1200,13 @@ export class Josh<StoredValue = unknown> {
   }
 
   /**
-   * Get a random value.
-   * @since 2.0.0
-   * @returns The random data or `null`.
-   *
-   * @example
-   * ```javascript
-   * await josh.random(); // null
-   * ```
-   *
-   * @example
-   * ```javascript
-   * await josh.set('key', 'value');
-   *
-   * await josh.random(); // 'value'
-   * ```
+   * Gets random value(s).
+   * @param options The options for getting random values.
+   * @returns The random value(s) or null.
    */
-  public async random(): Promise<StoredValue | null> {
-    let payload: RandomPayload<StoredValue> = { method: Method.Random, trigger: Trigger.PreProvider };
+  public async random(options?: Josh.RandomOptions): Promise<StoredValue[] | null> {
+    const { count = 1, duplicates = true } = options ?? {};
+    let payload: RandomPayload<StoredValue> = { method: Method.Random, trigger: Trigger.PreProvider, count, duplicates };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Random)) payload = await middleware[Method.Random](payload);
@@ -1235,6 +1224,8 @@ export class Josh<StoredValue = unknown> {
 
   /**
    * Get a random key.
+   *
+   * NOTE: `options.duplicates` only makes checks on primitive value types.
    * @since 2.0.0
    * @returns The random key or `null`.
    *
@@ -1250,8 +1241,9 @@ export class Josh<StoredValue = unknown> {
    * await josh.randomKey(); // null
    * ```
    */
-  public async randomKey(): Promise<string | null> {
-    let payload: RandomKeyPayload = { method: Method.RandomKey, trigger: Trigger.PreProvider };
+  public async randomKey(options: RandomKeyPayload): Promise<string[] | null> {
+    const { count = 1, duplicates = true } = options;
+    let payload: RandomKeyPayload = { method: Method.RandomKey, trigger: Trigger.PreProvider, count, duplicates };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.RandomKey)) payload = await middleware[Method.RandomKey](payload);
@@ -1797,6 +1789,20 @@ export namespace Josh {
      * @since 2.0.0
      */
     value: Value;
+  }
+
+  export interface RandomOptions {
+    /**
+     * The amount of values to get.
+     * @since 2.0.0
+     */
+    count?: number;
+
+    /**
+     * Whether to allow duplicates.
+     * @since 2.0.0
+     */
+    duplicates?: boolean;
   }
 
   export enum Identifiers {

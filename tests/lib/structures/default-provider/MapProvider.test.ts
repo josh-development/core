@@ -1226,7 +1226,7 @@ describe('MapProvider', () => {
 
     describe('with random method', () => {
       test('GIVEN provider w/o data THEN returns payload w/o data from random', () => {
-        const payload = provider.random({ method: Method.Random });
+        const payload = provider.random({ method: Method.Random, count: 1, duplicates: true });
 
         expect(typeof payload).toBe('object');
 
@@ -1241,7 +1241,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ data THEN returns payload w/ data from random', () => {
         provider.set({ method: Method.Set, key: 'test:random', path: [], value: 'value' });
 
-        const payload = provider.random({ method: Method.Random });
+        const payload = provider.random({ method: Method.Random, count: 1, duplicates: true });
 
         expect(typeof payload).toBe('object');
 
@@ -1250,13 +1250,13 @@ describe('MapProvider', () => {
         expect(method).toBe(Method.Random);
         expect(trigger).toBeUndefined();
         expect(error).toBeUndefined();
-        expect(data).toBe('value');
+        expect(data).toEqual(['value']);
       });
     });
 
     describe('with randomKey', () => {
       test('GIVEN provider w/o data THEN returns payload w/o data from randomKey', () => {
-        const payload = provider.randomKey({ method: Method.RandomKey });
+        const payload = provider.randomKey({ method: Method.RandomKey, count: 1, duplicates: true });
 
         expect(typeof payload).toBe('object');
 
@@ -1271,7 +1271,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ data THEN returns payload w/ data from randomKey', () => {
         provider.set({ method: Method.Set, key: 'test:randomKey', path: [], value: 'value' });
 
-        const payload = provider.randomKey({ method: Method.RandomKey });
+        const payload = provider.randomKey({ method: Method.RandomKey, count: 1, duplicates: true });
 
         expect(typeof payload).toBe('object');
 
@@ -1280,7 +1280,7 @@ describe('MapProvider', () => {
         expect(method).toBe(Method.RandomKey);
         expect(trigger).toBeUndefined();
         expect(error).toBeUndefined();
-        expect(data).toBe('test:randomKey');
+        expect(data).toEqual(['test:randomKey']);
       });
     });
 
