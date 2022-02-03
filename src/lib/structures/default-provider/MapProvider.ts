@@ -697,6 +697,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     const keys = Array.from(this.cache.keys());
     const key = keys[Math.floor(Math.random() * keys.length)];
 
+    if (data.length === 0) return key;
     if (data.includes(key)) return this.randomKeyWithoutDuplicates(data);
 
     return key;
