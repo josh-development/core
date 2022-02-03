@@ -44,7 +44,6 @@
     "@sapphire/ts-config": "^3.2.0",
     "@types/jest": "^27.0.2",
     "@types/node": "^17.0.13",
-    "cz-conventional-changelog": "^3.3.0",
     "eslint": "~8.6.0",
     "husky": "^7.0.4",
     "jest": "^27.4.7",
