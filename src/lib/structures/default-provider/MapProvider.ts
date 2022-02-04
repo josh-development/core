@@ -242,12 +242,12 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     if (isFindByHookPayload(payload)) {
       const { hook } = payload;
 
-      for (const value of this.cache.values()) {
+      for (const [key, value] of this.cache.entries()) {
         const foundValue = await hook(value);
 
         if (!foundValue) continue;
 
-        payload.data = value;
+        payload.data = [key, value];
 
         break;
       }
@@ -266,9 +266,9 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
         return payload;
       }
 
-      for (const storedValue of this.cache.values()) {
+      for (const [key, storedValue] of this.cache.entries()) {
         if (payload.data !== undefined) break;
-        if (value === (path.length === 0 ? storedValue : getFromObject(storedValue, path))) payload.data = storedValue;
+        if (value === (path.length === 0 ? storedValue : getFromObject(storedValue, path))) payload.data = [key, storedValue];
       }
     }
 

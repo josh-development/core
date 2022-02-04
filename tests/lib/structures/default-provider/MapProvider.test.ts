@@ -490,7 +490,7 @@ describe('MapProvider', () => {
           expect(trigger).toBeUndefined();
           expect(error).toBeUndefined();
           expect(typeof hook).toBe('function');
-          expect(data).toBe('value');
+          expect(data).toEqual(['test:find', 'value']);
         });
       });
 
@@ -524,7 +524,7 @@ describe('MapProvider', () => {
           expect(error).toBeUndefined();
           expect(path).toEqual(['path']);
           expect(value).toBe('value');
-          expect(data).toEqual({ path: 'value' });
+          expect(data).toEqual(['test:find', { path: 'value' }]);
         });
       });
     });

@@ -639,7 +639,7 @@ export class Josh<StoredValue = unknown> {
    * await josh.find('path', 'value'); // { path: 'value' }
    * ```
    */
-  public async find(path: Path, value: Primitive): Promise<StoredValue | null>;
+  public async find(path: Path, value: Primitive): Promise<[string, StoredValue] | [null, null]>;
 
   /**
    * Find a stored value using a hook function.
@@ -659,8 +659,8 @@ export class Josh<StoredValue = unknown> {
    * await josh.find((value) => value === 'value'); // 'value'
    * ```
    */
-  public async find(hook: FindHook<StoredValue>): Promise<StoredValue | null>;
-  public async find(pathOrHook: Path | FindHook<StoredValue>, value?: Primitive): Promise<StoredValue | null> {
+  public async find(hook: FindHook<StoredValue>): Promise<[string, StoredValue] | [null, null]>;
+  public async find(pathOrHook: Path | FindHook<StoredValue>, value?: Primitive): Promise<[string, StoredValue] | [null, null]> {
     if (!isFunction(pathOrHook)) {
       if (value === undefined)
         throw new JoshError({ identifier: Josh.Identifiers.FindMissingValue, message: 'The "value" parameter was not found.' });
@@ -691,7 +691,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Find)) payload = await middleware[Method.Find](payload);
 
-    return payload.data ?? null;
+    return payload.data ?? [null, null];
   }
 
   /**

@@ -8,7 +8,7 @@ import type { Payload } from './Payload';
  * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
-export interface FindPayload<DataValue> extends Payload, Payload.OptionalData<DataValue> {
+export interface FindPayload<DataValue> extends Payload, Payload.OptionalData<[string, DataValue]> {
   /**
    * The method this payload is for.
    * @since 2.0.0
@@ -47,7 +47,7 @@ export interface FindPayload<DataValue> extends Payload, Payload.OptionalData<Da
  * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
-export interface FindByHookPayload<DataValue> extends Payload, Payload.ByHook, Payload.OptionalData<DataValue> {
+export interface FindByHookPayload<DataValue> extends Payload, Payload.ByHook, Payload.OptionalData<[string, DataValue]> {
   /**
    * The method for this payload
    * @since 2.0.0
@@ -68,7 +68,7 @@ export interface FindByHookPayload<DataValue> extends Payload, Payload.ByHook, P
  * @see {@link Payload.OptionalData}
  * @since 2.0.0
  */
-export interface FindByValuePayload<DataValue> extends Payload, Payload.ByValue, Payload.OptionalData<DataValue> {
+export interface FindByValuePayload<DataValue> extends Payload, Payload.ByValue, Payload.OptionalData<[string, DataValue]> {
   /**
    * The method for this payload
    * @since 2.0.0
