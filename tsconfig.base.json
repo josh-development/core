@@ -4,6 +4,7 @@
     "importHelpers": true,
     "noEmitHelpers": true,
     "target": "ES2021",
-    "module": "ESNext"
+    "module": "ESNext",
+    "types": ["vite/client"]
   }
 }
