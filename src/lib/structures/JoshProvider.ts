@@ -4,6 +4,7 @@ import type {
   AutoKeyPayload,
   ClearPayload,
   DecPayload,
+  DeleteManyPayload,
   DeletePayload,
   EnsurePayload,
   EveryByHookPayload,
@@ -136,6 +137,13 @@ export abstract class JoshProvider<StoredValue = unknown> {
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
    */
   public abstract [Method.Delete](payload: DeletePayload): Awaitable<DeletePayload>;
+
+  /**
+   * @since 2.0.0
+   * @param payload The payload sent by this provider's {@link Josh} instance.
+   * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+   */
+  public abstract [Method.DeleteMany](payload: DeleteManyPayload): Awaitable<DeleteManyPayload>;
 
   /**
    * @since 2.0.0

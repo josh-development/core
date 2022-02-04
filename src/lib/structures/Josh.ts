@@ -9,6 +9,7 @@ import {
   AutoKeyPayload,
   ClearPayload,
   DecPayload,
+  DeleteManyPayload,
   DeletePayload,
   EnsurePayload,
   EveryHook,
@@ -383,6 +384,23 @@ export class Josh<StoredValue = unknown> {
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Delete)) payload = await middleware[Method.Delete](payload);
+
+    return this;
+  }
+
+  public async deleteMany(keys: StringArray): Promise<this> {
+    let payload: DeleteManyPayload = { method: Method.DeleteMany, trigger: Trigger.PreProvider, keys };
+
+    for (const middleware of this.middlewares.array()) await middleware.run(payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.DeleteMany)) payload = await middleware[Method.DeleteMany](payload);
+
+    payload = await this.provider[Method.DeleteMany](payload);
+    payload.trigger = Trigger.PostProvider;
+
+    if (payload.error) throw payload.error;
+
+    for (const middleware of this.middlewares.array()) await middleware.run(payload);
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.DeleteMany)) payload = await middleware[Method.DeleteMany](payload);
 
     return this;
   }

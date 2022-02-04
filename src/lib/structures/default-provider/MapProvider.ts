@@ -20,6 +20,7 @@ import type {
   AutoKeyPayload,
   ClearPayload,
   DecPayload,
+  DeleteManyPayload,
   DeletePayload,
   EnsurePayload,
   EveryByHookPayload,
@@ -142,6 +143,14 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
       return payload;
     }
+
+    return payload;
+  }
+
+  public [Method.DeleteMany](payload: DeleteManyPayload): DeleteManyPayload {
+    const { keys } = payload;
+
+    for (const key of keys) this.cache.delete(key);
 
     return payload;
   }

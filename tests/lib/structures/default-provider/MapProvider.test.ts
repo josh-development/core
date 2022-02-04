@@ -245,6 +245,30 @@ describe('MapProvider', () => {
       });
     });
 
+    describe('with deleteMany method', () => {
+      test('GIVEN provider w/ value at key THEN deletes value at key', () => {
+        provider.set({ method: Method.Set, key: 'test:deleteMany', path: [], value: 'value' });
+
+        const hasBefore = provider.has({ method: Method.Has, key: 'test:deleteMany', path: [], data: false });
+
+        expect(hasBefore.data).toBe(true);
+
+        const payload = provider.deleteMany({ method: Method.DeleteMany, keys: ['test:deleteMany'] });
+
+        expect(typeof payload).toBe('object');
+
+        const { method, trigger, error } = payload;
+
+        expect(method).toBe(Method.DeleteMany);
+        expect(trigger).toBeUndefined();
+        expect(error).toBeUndefined();
+
+        const hasAfter = provider.has({ method: Method.Has, key: 'test:deleteMany', path: [], data: false });
+
+        expect(hasAfter.data).toBe(false);
+      });
+    });
+
     describe('with ensure method', () => {
       test('GIVEN provider w/o data at key THEN returns payload w/ data as defaultValue AND sets default value at key', () => {
         const sizeBefore = provider.size({ method: Method.Size, data: 0 });

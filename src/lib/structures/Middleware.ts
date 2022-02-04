@@ -4,6 +4,7 @@ import type {
   AutoKeyPayload,
   ClearPayload,
   DecPayload,
+  DeleteManyPayload,
   DeletePayload,
   EnsurePayload,
   EveryByHookPayload,
@@ -134,6 +135,10 @@ export class Middleware<StoredValue = unknown> {
   }
 
   public [Method.Delete](payload: DeletePayload): Awaitable<DeletePayload> {
+    return payload;
+  }
+
+  public [Method.DeleteMany](payload: DeleteManyPayload): Awaitable<DeleteManyPayload> {
     return payload;
   }
 

@@ -2,6 +2,7 @@ export * from './AutoKey';
 export * from './Clear';
 export * from './Dec';
 export * from './Delete';
+export * from './DeleteMany';
 export * from './Ensure';
 export * from './Every';
 export * from './Filter';

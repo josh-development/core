@@ -7,6 +7,8 @@ export enum Method {
 
   Delete = 'delete',
 
+  DeleteMany = 'deleteMany',
+
   Ensure = 'ensure',
 
   Every = 'every',
