@@ -66,6 +66,7 @@ import type { MiddlewareStore } from './MiddlewareStore';
  * }
  * ```
  *
+ * @example
  * ```typescript
  * export class CoreMiddleware extends Middleware {
  *   public constructor() {
