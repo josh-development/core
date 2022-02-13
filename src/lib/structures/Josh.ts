@@ -113,10 +113,12 @@ export class Josh<StoredValue = unknown> {
     this.provider = provider ?? new MapProvider<StoredValue>({});
 
     if (!(this.provider instanceof JoshProvider))
-      throw new JoshError({
-        identifier: Josh.Identifiers.InvalidProvider,
-        message: 'The "provider" option must extend the exported "JoshProvider" class.'
-      });
+      emitWarning(
+        new JoshError({
+          identifier: Josh.Identifiers.InvalidProvider,
+          message: 'The "provider" option must extend the exported "JoshProvider" class.'
+        })
+      );
 
     this.middlewares = new MiddlewareStore({ instance: this });
   }

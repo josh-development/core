@@ -5,6 +5,6 @@
     "noEmitHelpers": true,
     "target": "ES2021",
     "module": "ESNext",
-    "types": ["vite/client"]
+    "types": ["vite/client", "jest"]
   }
 }
