@@ -2,7 +2,7 @@ import { Awaitable, isFunction, isPrimitive, Primitive } from '@sapphire/utiliti
 import { writeFile } from 'fs/promises';
 import { emitWarning } from 'process';
 import type { CoreAutoEnsure } from '../../middlewares/CoreAutoEnsure';
-import { JoshError } from '../errors';
+import type { JoshError, JoshErrorOptions } from '../errors';
 import { convertLegacyExportJSON, isNodeEnvironment } from '../functions';
 import { isLegacyExportJSON } from '../functions/validators';
 import {
@@ -45,7 +45,7 @@ import {
   ValuesPayload
 } from '../payloads';
 import { BuiltInMiddleware, KeyPath, KeyPathJSON, MathOperator, Method, Path, StringArray, Trigger } from '../types';
-import { MapProvider } from './default-provider';
+import { MapProvider } from './default-provider/MapProvider';
 import { JoshProvider } from './JoshProvider';
 import { Middleware } from './Middleware';
 import { MiddlewareStore } from './MiddlewareStore';
@@ -106,15 +106,14 @@ export class Josh<StoredValue = unknown> {
 
     this.options = options;
 
-    if (!name)
-      throw new JoshError({ identifier: Josh.Identifiers.MissingName, message: 'The "name" option is required to initiate a Josh instance.' });
+    if (!name) throw this.error({ identifier: Josh.Identifiers.MissingName, message: 'The "name" option is required to initiate a Josh instance.' });
 
     this.name = name;
     this.provider = provider ?? new MapProvider<StoredValue>({});
 
     if (!(this.provider instanceof JoshProvider))
       emitWarning(
-        new JoshError({
+        this.error({
           identifier: Josh.Identifiers.InvalidProvider,
           message: 'The "provider" option must extend the exported "JoshProvider" class.'
         })
@@ -171,7 +170,7 @@ export class Josh<StoredValue = unknown> {
     if (optionsOrInstance instanceof Middleware) this.middlewares.set(optionsOrInstance.name, optionsOrInstance);
     else {
       if (hook === undefined)
-        throw new JoshError({
+        throw this.error({
           identifier: Josh.Identifiers.UseMiddlewareHookNotFound,
           message: 'The "hook" parameter for middleware was not found.'
         });
@@ -506,10 +505,9 @@ export class Josh<StoredValue = unknown> {
   public async every(hook: EveryHook<StoredValue>): Promise<boolean>;
   public async every(pathOrHook: Path | EveryHook<StoredValue>, value?: Primitive): Promise<boolean> {
     if (!isFunction(pathOrHook)) {
-      if (value === undefined)
-        throw new JoshError({ identifier: Josh.Identifiers.EveryMissingValue, message: 'The "value" parameter was not found.' });
+      if (value === undefined) throw this.error({ identifier: Josh.Identifiers.EveryMissingValue, message: 'The "value" parameter was not found.' });
       if (!isPrimitive(value))
-        throw new JoshError({ identifier: Josh.Identifiers.EveryInvalidValue, message: 'The "value" parameter must be a primitive type.' });
+        throw this.error({ identifier: Josh.Identifiers.EveryInvalidValue, message: 'The "value" parameter must be a primitive type.' });
     }
 
     let payload: EveryPayload<StoredValue> = {
@@ -589,10 +587,9 @@ export class Josh<StoredValue = unknown> {
     returnBulkType?: BulkType
   ): Promise<ReturnBulk<StoredValue>[BulkType]> {
     if (!isFunction(pathOrHook)) {
-      if (value === undefined)
-        throw new JoshError({ identifier: Josh.Identifiers.FilterMissingValue, message: 'The "value" parameter was not found.' });
+      if (value === undefined) throw this.error({ identifier: Josh.Identifiers.FilterMissingValue, message: 'The "value" parameter was not found.' });
       if (!isPrimitive(value))
-        throw new JoshError({ identifier: Josh.Identifiers.FilterInvalidValue, message: 'The "value" parameter must be a primitive type.' });
+        throw this.error({ identifier: Josh.Identifiers.FilterInvalidValue, message: 'The "value" parameter must be a primitive type.' });
     }
 
     let payload: FilterPayload<StoredValue> = {
@@ -664,10 +661,9 @@ export class Josh<StoredValue = unknown> {
   public async find(hook: FindHook<StoredValue>): Promise<[string, StoredValue] | [null, null]>;
   public async find(pathOrHook: Path | FindHook<StoredValue>, value?: Primitive): Promise<[string, StoredValue] | [null, null]> {
     if (!isFunction(pathOrHook)) {
-      if (value === undefined)
-        throw new JoshError({ identifier: Josh.Identifiers.FindMissingValue, message: 'The "value" parameter was not found.' });
+      if (value === undefined) throw this.error({ identifier: Josh.Identifiers.FindMissingValue, message: 'The "value" parameter was not found.' });
       if (!isPrimitive(value))
-        throw new JoshError({ identifier: Josh.Identifiers.FindInvalidValue, message: 'The "value" parameter must be a primitive type.' });
+        throw this.error({ identifier: Josh.Identifiers.FindInvalidValue, message: 'The "value" parameter must be a primitive type.' });
     }
 
     let payload: FindPayload<StoredValue> = {
@@ -1139,9 +1135,9 @@ export class Josh<StoredValue = unknown> {
   ): Promise<[ReturnBulk<StoredValue>[BulkType], ReturnBulk<StoredValue>[BulkType]]> {
     if (!isFunction(pathOrHook)) {
       if (value === undefined)
-        throw new JoshError({ identifier: Josh.Identifiers.PartitionMissingValue, message: 'The "value" parameter was not found.' });
+        throw this.error({ identifier: Josh.Identifiers.PartitionMissingValue, message: 'The "value" parameter was not found.' });
       if (!isPrimitive(value))
-        throw new JoshError({ identifier: Josh.Identifiers.PartitionInvalidValue, message: 'The "value" parameter must be a primitive type.' });
+        throw this.error({ identifier: Josh.Identifiers.PartitionInvalidValue, message: 'The "value" parameter must be a primitive type.' });
     }
 
     let payload: PartitionPayload<StoredValue> = {
@@ -1319,7 +1315,7 @@ export class Josh<StoredValue = unknown> {
 
     if (!isFunction(valueOrHook)) {
       if (!isPrimitive(valueOrHook))
-        throw new JoshError({ identifier: Josh.Identifiers.RemoveInvalidValue, message: 'The "value" parameter was not of a primitive type.' });
+        throw this.error({ identifier: Josh.Identifiers.RemoveInvalidValue, message: 'The "value" parameter was not of a primitive type.' });
     }
 
     let payload: RemovePayload<Value> = {
@@ -1479,10 +1475,9 @@ export class Josh<StoredValue = unknown> {
   public async some(hook: SomeHook<StoredValue>): Promise<boolean>;
   public async some(pathOrHook: Path | SomeHook<StoredValue>, value?: Primitive): Promise<boolean> {
     if (!isFunction(pathOrHook)) {
-      if (value === undefined)
-        throw new JoshError({ identifier: Josh.Identifiers.SomeMissingValue, message: 'The "value" parameter was not found.' });
+      if (value === undefined) throw this.error({ identifier: Josh.Identifiers.SomeMissingValue, message: 'The "value" parameter was not found.' });
       if (!isPrimitive(value))
-        throw new JoshError({ identifier: Josh.Identifiers.SomeInvalidValue, message: 'The "value" parameter must be a primitive type.' });
+        throw this.error({ identifier: Josh.Identifiers.SomeInvalidValue, message: 'The "value" parameter must be a primitive type.' });
     }
 
     let payload: SomePayload<StoredValue> = {
@@ -1578,7 +1573,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isLegacyExportJSON(json)) {
       emitWarning(
-        new JoshError({
+        this.error({
           identifier: Josh.Identifiers.LegacyDeprecation,
           message: 'You have imported data from a deprecated legacy format. This will be removed in the next semver major version.'
         })
@@ -1651,6 +1646,10 @@ export class Josh<StoredValue = unknown> {
 
   private getPath(path: Path): StringArray {
     return typeof path === 'string' ? path.split('.') : path;
+  }
+
+  private error(options: JoshErrorOptions): JoshError {
+    return this.error(options);
   }
 
   /**

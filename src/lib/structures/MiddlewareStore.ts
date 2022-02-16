@@ -13,7 +13,7 @@ export class MiddlewareStore<StoredValue = unknown> extends Map<string, Middlewa
    */
   public instance: Josh<StoredValue>;
 
-  public constructor(options: MiddlewareStore.Options<StoredValue>) {
+  public constructor(options: MiddlewareStoreOptions<StoredValue>) {
     super();
 
     const { instance } = options;
@@ -69,8 +69,6 @@ export class MiddlewareStore<StoredValue = unknown> extends Map<string, Middlewa
   }
 }
 
-export namespace MiddlewareStore {
-  export interface Options<StoredValue = unknown> {
-    instance: Josh<StoredValue>;
-  }
+export interface MiddlewareStoreOptions<StoredValue = unknown> {
+  instance: Josh<StoredValue>;
 }

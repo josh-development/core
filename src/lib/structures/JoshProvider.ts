@@ -1,5 +1,5 @@
 import type { Awaitable } from '@sapphire/utilities';
-import type { JoshProviderError } from '../errors';
+import { JoshProviderError, JoshProviderErrorOptions } from '../errors';
 import type {
   AutoKeyPayload,
   ClearPayload,
@@ -365,6 +365,16 @@ export abstract class JoshProvider<StoredValue = unknown> {
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
    */
   public abstract [Method.Values](payload: ValuesPayload<StoredValue>): Awaitable<ValuesPayload<StoredValue>>;
+
+  /**
+   * Creates an Josh provider error.
+   * @since 2.0.0
+   * @param options The options for the error.
+   * @returns The error.
+   */
+  protected error(options: JoshProviderErrorOptions): JoshProviderError {
+    return new JoshProviderError({ ...options, name: options.name ?? this.constructor.name });
+  }
 }
 
 export namespace JoshProvider {

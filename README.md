@@ -34,6 +34,10 @@ npm install @joshdb/core@next
 yarn add @joshdb/core@next
 ```
 
+## Documentation
+
+While the website is still in development and is not running in production you can still read the markdown file guides [here](https://github.com/josh-development/website/tree/main/src/docs)
+
 ## FAQ
 
 ### What is Josh?

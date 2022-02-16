@@ -9,36 +9,36 @@ export class JoshError extends Error {
    */
   public identifier: string;
 
-  public constructor(options: JoshError.Options) {
-    super(options.message);
+  public constructor(options: JoshErrorOptions) {
+    const { name, message, identifier } = options;
 
-    this.identifier = options.identifier;
-  }
+    super(message);
 
-  /**
-   * The name of this error.
-   */
-  public get name() {
-    return 'JoshError';
+    this.name = name ?? 'JoshError';
+    this.identifier = identifier;
   }
 }
 
-export namespace JoshError {
+/**
+ * The options for {@link JoshError}
+ * @since 2.0.0
+ */
+export interface JoshErrorOptions {
   /**
-   * The options for {@link JoshError}
+   * The name for this error.
    * @since 2.0.0
    */
-  export interface Options {
-    /**
-     * The identifier for this error.
-     * @since 2.0.0
-     */
-    identifier: string;
+  name?: string;
 
-    /**
-     * The message for this error.
-     * @since 2.0.0
-     */
-    message?: string;
-  }
+  /**
+   * The identifier for this error.
+   * @since 2.0.0
+   */
+  identifier: string;
+
+  /**
+   * The message for this error.
+   * @since 2.0.0
+   */
+  message?: string;
 }

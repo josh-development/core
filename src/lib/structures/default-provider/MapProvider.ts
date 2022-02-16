@@ -62,7 +62,6 @@ import type {
 } from '../../payloads';
 import { MathOperator, Method } from '../../types';
 import { JoshProvider } from '../JoshProvider';
-import { MapProviderError } from './MapProviderError';
 
 /**
  * A provider that uses the Node.js native [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) class.
@@ -102,7 +101,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     const { data } = this.get({ method: Method.Get, key, path });
 
     if (data === undefined) {
-      payload.error = new MapProviderError({
+      payload.error = this.error({
         identifier: JoshProvider.CommonIdentifiers.DecMissingData,
         message: path.length === 0 ? `The data at "${key}" does not exist.` : `The data at "${key}.${path.join('.')}" does not exist.`,
         method: Method.Dec
@@ -112,7 +111,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     }
 
     if (typeof data !== 'number') {
-      payload.error = new MapProviderError({
+      payload.error = this.error({
         identifier: JoshProvider.CommonIdentifiers.DecInvalidType,
         message:
           path.length === 0 ? `The data at "${key}" must be of type "number".` : `The data at "${key}.${path.join('.')}" must be of type "number".`,
@@ -220,7 +219,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       const { path, value } = payload;
 
       if (!isPrimitive(value)) {
-        payload.error = new MapProviderError({
+        payload.error = this.error({
           identifier: JoshProvider.CommonIdentifiers.FilterInvalidValue,
           message: 'The "value" must be a primitive type.',
           method: Method.Filter
@@ -257,7 +256,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       const { path, value } = payload;
 
       if (!isPrimitive(value)) {
-        payload.error = new MapProviderError({
+        payload.error = this.error({
           identifier: JoshProvider.CommonIdentifiers.FindInvalidValue,
           message: 'The "value" must be of type primitive.',
           method: Method.Find
@@ -314,7 +313,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     const { data } = this.get({ method: Method.Get, key, path });
 
     if (data === undefined) {
-      payload.error = new MapProviderError({
+      payload.error = this.error({
         identifier: JoshProvider.CommonIdentifiers.IncMissingData,
         message: path.length === 0 ? `The data at "${key}" does not exist.` : `The data at "${key}.${path.join('.')}" does not exist.`,
         method: Method.Inc
@@ -324,7 +323,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     }
 
     if (typeof data !== 'number') {
-      payload.error = new MapProviderError({
+      payload.error = this.error({
         identifier: JoshProvider.CommonIdentifiers.IncInvalidType,
         message:
           path.length === 0 ? `The data at "${key}" must be of type "number".` : `The data at "${key}.${path.join('.')}" must be of type "number".`,
@@ -375,7 +374,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     let { data } = this.get<number>({ method: Method.Get, key, path });
 
     if (data === undefined) {
-      payload.error = new MapProviderError({
+      payload.error = this.error({
         identifier: JoshProvider.CommonIdentifiers.MathMissingData,
         message: path.length === 0 ? `The data at "${key}" does not exist.` : `The data at "${key}.${path.join('.')}" does not exist.`,
         method: Method.Math
@@ -385,7 +384,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     }
 
     if (!isNumber(data)) {
-      payload.error = new MapProviderError({
+      payload.error = this.error({
         identifier: JoshProvider.CommonIdentifiers.MathInvalidType,
         message: path.length === 0 ? `The data at "${key}" must be a number.` : `The data at "${key}.${path.join('.')}" must be a number.`,
         method: Method.Math
@@ -449,7 +448,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       const { path, value } = payload;
 
       if (!isPrimitive(value)) {
-        payload.error = new MapProviderError({
+        payload.error = this.error({
           identifier: JoshProvider.CommonIdentifiers.PartitionInvalidValue,
           message: 'The "value" must be a primitive type.',
           method: Method.Partition
@@ -471,7 +470,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     const { data } = this.get({ method: Method.Get, key, path });
 
     if (data === undefined) {
-      payload.error = new MapProviderError({
+      payload.error = this.error({
         identifier: JoshProvider.CommonIdentifiers.PushMissingData,
         message: path.length === 0 ? `The data at "${key}" does not exist.` : `The data at "${key}.${path.join('.')}" does not exist.`,
         method: Method.Push
@@ -481,7 +480,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     }
 
     if (!Array.isArray(data)) {
-      payload.error = new MapProviderError({
+      payload.error = this.error({
         identifier: JoshProvider.CommonIdentifiers.PushInvalidType,
         message: path.length === 0 ? `The data at "${key}" must be an array.` : `The data at "${key}.${path.join('.')}" does not exist.`,
         method: Method.Push
@@ -502,7 +501,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
     if (this.cache.size === 0) return payload;
     if (this.cache.size < count) {
-      payload.error = new MapProviderError({
+      payload.error = this.error({
         identifier: JoshProvider.CommonIdentifiers.RandomInvalidCount,
         message: `The count of values to be selected must be less than or equal to the number of values in the map.`,
         method: Method.Random
@@ -529,7 +528,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
     if (this.cache.size === 0) return payload;
     if (this.cache.size < count) {
-      payload.error = new MapProviderError({
+      payload.error = this.error({
         identifier: JoshProvider.CommonIdentifiers.RandomKeyInvalidCount,
         message: `The count of keys to be selected must be less than or equal to the number of keys in the map.`,
         method: Method.RandomKey
@@ -556,7 +555,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       const { data } = this.get<unknown[]>({ method: Method.Get, key, path });
 
       if (data === undefined) {
-        payload.error = new MapProviderError({
+        payload.error = this.error({
           identifier: JoshProvider.CommonIdentifiers.RemoveMissingData,
           message: path.length === 0 ? `The data at "${key}" does not exist.` : `The data at "${key}.${path.join('.')}" does not exist.`,
           method: Method.Remove
@@ -566,7 +565,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       }
 
       if (!Array.isArray(data)) {
-        payload.error = new MapProviderError({
+        payload.error = this.error({
           identifier: JoshProvider.CommonIdentifiers.RemoveInvalidType,
           message: path.length === 0 ? `The data at "${key}" must be an array.` : `The data at "${key}.${path.join('.')}" must be an array.`,
           method: Method.Remove
@@ -585,7 +584,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       const { data } = this.get({ method: Method.Get, key, path });
 
       if (data === undefined) {
-        payload.error = new MapProviderError({
+        payload.error = this.error({
           identifier: JoshProvider.CommonIdentifiers.RemoveMissingData,
           message: path.length === 0 ? `The data at "${key}" does not exist.` : `The data at "${key}.${path.join('.')}" does not exist.`,
           method: Method.Remove
@@ -595,7 +594,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       }
 
       if (!Array.isArray(data)) {
-        payload.error = new MapProviderError({
+        payload.error = this.error({
           identifier: JoshProvider.CommonIdentifiers.RemoveInvalidType,
           message: path.length === 0 ? `The data at "${key}" must be an array.` : `The data at "${key}.${path.join('.')}" must be an array.`,
           method: Method.Remove
