@@ -1257,8 +1257,8 @@ export class Josh<StoredValue = unknown> {
    * await josh.randomKey(); // null
    * ```
    */
-  public async randomKey(options: RandomKeyPayload): Promise<string[] | null> {
-    const { count = 1, duplicates = true } = options;
+  public async randomKey(options?: Josh.RandomOptions): Promise<string[] | null> {
+    const { count = 1, duplicates = true } = options ?? {};
     let payload: RandomKeyPayload = { method: Method.RandomKey, trigger: Trigger.PreProvider, count, duplicates };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
