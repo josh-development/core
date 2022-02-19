@@ -577,7 +577,7 @@ export class Josh<StoredValue = unknown> {
    */
   public async filter<BulkType extends keyof ReturnBulk<StoredValue>>(
     hook: FilterHook<StoredValue>,
-    _value: undefined,
+    _value?: undefined,
     returnBulkType?: BulkType
   ): Promise<ReturnBulk<StoredValue>[BulkType]>;
 
