@@ -133,7 +133,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async init(): Promise<this> {
-    const context = await this.provider.init({ name: this.name, instance: this });
+    const context = await this.provider.init({ name: this.name, instance: this, version: Josh.version });
 
     if (context.error) throw context.error;
 

@@ -411,6 +411,12 @@ export namespace JoshProvider {
     instance?: Josh<Value>;
 
     /**
+     * The version of the Josh initiating this provider.
+     * @since 2.0.0
+     */
+    version?: string;
+
+    /**
      * The error of this context.
      * @since 2.0.0
      */
