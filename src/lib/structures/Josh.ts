@@ -1697,12 +1697,6 @@ export namespace Josh {
     provider?: JoshProvider<StoredValue>;
 
     /**
-     * Whether or not to use `@joshdb/serialize` for serializing and deserializing data.
-     * @since 2.0.0
-     */
-    disableSerializedData?: boolean;
-
-    /**
      * The middleware context data.
      * @since 2.0.0
      */
