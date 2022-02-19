@@ -1702,6 +1702,10 @@ export namespace Josh {
      */
     disableSerializedData?: boolean;
 
+    /**
+     * The middleware context data.
+     * @since 2.0.0
+     */
     middlewareContextData?: {
       [BuiltInMiddleware.AutoEnsure]: CoreAutoEnsure.ContextData;
     };
