@@ -432,6 +432,8 @@ export namespace JoshProvider {
 
     DecInvalidType = 'decInvalidType',
 
+    EveryInvalidType = 'everyInvalidType',
+
     FilterInvalidValue = 'filterInvalidValue',
 
     FindInvalidValue = 'findInvalidValue',
