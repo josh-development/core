@@ -1102,8 +1102,8 @@ export class Josh<StoredValue = unknown> {
    */
   public async partition<BulkType extends keyof ReturnBulk<StoredValue>>(
     hook: PartitionHook<StoredValue>,
-    _value: undefined,
-    returnBulkType: BulkType
+    _value?: undefined,
+    returnBulkType?: BulkType
   ): Promise<[ReturnBulk<StoredValue>[BulkType], ReturnBulk<StoredValue>[BulkType]]>;
 
   /**
@@ -1125,7 +1125,7 @@ export class Josh<StoredValue = unknown> {
   public async partition<BulkType extends keyof ReturnBulk<StoredValue>>(
     path: Path,
     value: Primitive,
-    returnBulkType: BulkType
+    returnBulkType?: BulkType
   ): Promise<[ReturnBulk<StoredValue>[BulkType], ReturnBulk<StoredValue>[BulkType]]>;
 
   public async partition<BulkType extends keyof ReturnBulk<StoredValue>>(
