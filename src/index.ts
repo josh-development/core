@@ -9,3 +9,4 @@ export * from './lib/structures/JoshProvider';
 export * from './lib/structures/Middleware';
 export * from './lib/structures/MiddlewareStore';
 export * from './lib/types';
+export * as BuiltInMiddleware from './middlewares';
