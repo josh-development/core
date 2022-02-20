@@ -1,7 +1,6 @@
 import { Awaitable, isFunction, isPrimitive, Primitive } from '@sapphire/utilities';
 import { writeFile } from 'fs/promises';
 import { emitWarning } from 'process';
-import type { CoreAutoEnsure } from '../../middlewares/CoreAutoEnsure';
 import type { JoshError, JoshErrorOptions } from '../errors';
 import { convertLegacyExportJSON, isNodeEnvironment } from '../functions';
 import { isLegacyExportJSON } from '../functions/validators';
@@ -44,7 +43,7 @@ import {
   UpdatePayload,
   ValuesPayload
 } from '../payloads';
-import { BuiltInMiddleware, KeyPath, KeyPathJSON, MathOperator, Method, Path, StringArray, Trigger } from '../types';
+import { KeyPath, KeyPathJSON, MathOperator, Method, Path, StringArray, Trigger } from '../types';
 import { MapProvider } from './default-provider/MapProvider';
 import { JoshProvider } from './JoshProvider';
 import { Middleware } from './Middleware';
@@ -101,8 +100,8 @@ export class Josh<StoredValue = unknown> {
    */
   public provider: JoshProvider<StoredValue>;
 
-  public constructor(options: Josh.Options<StoredValue>) {
-    const { name, provider } = options;
+  public constructor(options: Josh.Options<StoredValue> = {}) {
+    const { name, provider, middlewares } = options;
 
     this.options = options;
 
@@ -120,6 +119,9 @@ export class Josh<StoredValue = unknown> {
       );
 
     this.middlewares = new MiddlewareStore({ instance: this });
+
+    if (middlewares !== undefined)
+      for (const middleware of middlewares.filter((middleware) => middleware instanceof Middleware)) this.use(middleware);
   }
 
   /**
@@ -1697,12 +1699,10 @@ export namespace Josh {
     provider?: JoshProvider<StoredValue>;
 
     /**
-     * The middleware context data.
+     * The middlewares to use.
      * @since 2.0.0
      */
-    middlewareContextData?: {
-      [BuiltInMiddleware.AutoEnsure]: CoreAutoEnsure.ContextData;
-    };
+    middlewares?: Middleware<StoredValue>[];
   }
 
   /**

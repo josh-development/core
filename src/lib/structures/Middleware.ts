@@ -103,12 +103,16 @@ export class Middleware<StoredValue = unknown> {
    */
   public readonly conditions: Middleware.Conditions;
 
-  public constructor(options: Middleware.Options) {
+  public context?: Middleware.ContextData;
+
+  public constructor(options: Partial<Middleware.Options> = {}) {
     const { name, position, conditions } = options;
+
+    if (name === undefined) throw new Error('Middleware name is required.');
 
     this.name = name;
     this.position = position;
-    this.conditions = conditions;
+    this.conditions = conditions ?? { pre: [], post: [] };
   }
 
   /**
@@ -119,6 +123,12 @@ export class Middleware<StoredValue = unknown> {
    */
   public init(store: MiddlewareStore<StoredValue>): this {
     this.store = store;
+
+    return this;
+  }
+
+  public setContext(context: Middleware.ContextData): this {
+    this.context = context;
 
     return this;
   }
@@ -358,7 +368,7 @@ export namespace Middleware {
      * The conditions for this middleware.
      * @since 2.0.0
      */
-    conditions: Conditions;
+    conditions?: Conditions;
   }
 
   /**
