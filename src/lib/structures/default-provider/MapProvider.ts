@@ -16,51 +16,7 @@ import {
   isSomeByHookPayload,
   isSomeByValuePayload
 } from '../../functions/validators';
-import type {
-  AutoKeyPayload,
-  ClearPayload,
-  DecPayload,
-  DeleteManyPayload,
-  DeletePayload,
-  EnsurePayload,
-  EveryByHookPayload,
-  EveryByValuePayload,
-  EveryPayload,
-  FilterByHookPayload,
-  FilterByValuePayload,
-  FilterPayload,
-  FindByHookPayload,
-  FindByValuePayload,
-  FindPayload,
-  GetAllPayload,
-  GetManyPayload,
-  GetPayload,
-  HasPayload,
-  IncPayload,
-  KeysPayload,
-  MapByHookPayload,
-  MapByPathPayload,
-  MapPayload,
-  MathPayload,
-  PartitionByHookPayload,
-  PartitionByValuePayload,
-  PartitionPayload,
-  PushPayload,
-  RandomKeyPayload,
-  RandomPayload,
-  RemoveByHookPayload,
-  RemoveByValuePayload,
-  RemovePayload,
-  SetManyPayload,
-  SetPayload,
-  SizePayload,
-  SomeByHookPayload,
-  SomeByValuePayload,
-  SomePayload,
-  UpdatePayload,
-  ValuesPayload
-} from '../../payloads';
-import { MathOperator, Method } from '../../types';
+import { MathOperator, Method, Payloads } from '../../types';
 import { JoshProvider } from '../JoshProvider';
 
 /**
@@ -81,7 +37,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
    */
   private autoKeyCount = 0;
 
-  public [Method.AutoKey](payload: AutoKeyPayload): AutoKeyPayload {
+  public [Method.AutoKey](payload: Payloads.AutoKey): Payloads.AutoKey {
     this.autoKeyCount++;
 
     payload.data = this.autoKeyCount.toString();
@@ -89,14 +45,14 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.Clear](payload: ClearPayload): ClearPayload {
+  public [Method.Clear](payload: Payloads.Clear): Payloads.Clear {
     this.cache.clear();
     this.autoKeyCount = 0;
 
     return payload;
   }
 
-  public [Method.Dec](payload: DecPayload): DecPayload {
+  public [Method.Dec](payload: Payloads.Dec): Payloads.Dec {
     const { key, path } = payload;
     const { data } = this.get({ method: Method.Get, key, path });
 
@@ -126,7 +82,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.Delete](payload: DeletePayload): DeletePayload {
+  public [Method.Delete](payload: Payloads.Delete): Payloads.Delete {
     const { key, path } = payload;
 
     if (path.length === 0) {
@@ -146,7 +102,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.DeleteMany](payload: DeleteManyPayload): DeleteManyPayload {
+  public [Method.DeleteMany](payload: Payloads.DeleteMany): Payloads.DeleteMany {
     const { keys } = payload;
 
     for (const key of keys) this.cache.delete(key);
@@ -154,7 +110,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.Ensure](payload: EnsurePayload<StoredValue>): EnsurePayload<StoredValue> {
+  public [Method.Ensure](payload: Payloads.Ensure<StoredValue>): Payloads.Ensure<StoredValue> {
     const { key } = payload;
 
     if (!this.cache.has(key)) this.cache.set(key, payload.defaultValue);
@@ -164,9 +120,9 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public async [Method.Every](payload: EveryByHookPayload<StoredValue>): Promise<EveryByHookPayload<StoredValue>>;
-  public async [Method.Every](payload: EveryByValuePayload): Promise<EveryByValuePayload>;
-  public async [Method.Every](payload: EveryPayload<StoredValue>): Promise<EveryPayload<StoredValue>> {
+  public async [Method.Every](payload: Payloads.Every.ByHook<StoredValue>): Promise<Payloads.Every.ByHook<StoredValue>>;
+  public async [Method.Every](payload: Payloads.Every.ByValue): Promise<Payloads.Every.ByValue>;
+  public async [Method.Every](payload: Payloads.Every<StoredValue>): Promise<Payloads.Every<StoredValue>> {
     if (this.cache.size === 0) {
       payload.data = false;
 
@@ -200,9 +156,9 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public async [Method.Filter](payload: FilterByHookPayload<StoredValue>): Promise<FilterByHookPayload<StoredValue>>;
-  public async [Method.Filter](payload: FilterByValuePayload<StoredValue>): Promise<FilterByValuePayload<StoredValue>>;
-  public async [Method.Filter](payload: FilterPayload<StoredValue>): Promise<FilterPayload<StoredValue>> {
+  public async [Method.Filter](payload: Payloads.Filter.ByHook<StoredValue>): Promise<Payloads.Filter.ByHook<StoredValue>>;
+  public async [Method.Filter](payload: Payloads.Filter.ByValue<StoredValue>): Promise<Payloads.Filter.ByValue<StoredValue>>;
+  public async [Method.Filter](payload: Payloads.Filter<StoredValue>): Promise<Payloads.Filter<StoredValue>> {
     if (isFilterByHookPayload(payload)) {
       const { hook } = payload;
 
@@ -235,9 +191,9 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public async [Method.Find](payload: FindByHookPayload<StoredValue>): Promise<FindByHookPayload<StoredValue>>;
-  public async [Method.Find](payload: FindByValuePayload<StoredValue>): Promise<FindByValuePayload<StoredValue>>;
-  public async [Method.Find](payload: FindPayload<StoredValue>): Promise<FindPayload<StoredValue>> {
+  public async [Method.Find](payload: Payloads.Find.ByHook<StoredValue>): Promise<Payloads.Find.ByHook<StoredValue>>;
+  public async [Method.Find](payload: Payloads.Find.ByValue<StoredValue>): Promise<Payloads.Find.ByValue<StoredValue>>;
+  public async [Method.Find](payload: Payloads.Find<StoredValue>): Promise<Payloads.Find<StoredValue>> {
     if (isFindByHookPayload(payload)) {
       const { hook } = payload;
 
@@ -274,7 +230,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.Get]<Value = StoredValue>(payload: GetPayload<Value>): GetPayload<Value> {
+  public [Method.Get]<Value = StoredValue>(payload: Payloads.Get<Value>): Payloads.Get<Value> {
     const { key, path } = payload;
 
     Reflect.set(payload, 'data', path.length === 0 ? this.cache.get(key) : getFromObject(this.cache.get(key), path));
@@ -282,13 +238,13 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.GetAll](payload: GetAllPayload<StoredValue>): GetAllPayload<StoredValue> {
+  public [Method.GetAll](payload: Payloads.GetAll<StoredValue>): Payloads.GetAll<StoredValue> {
     for (const [key, value] of this.cache.entries()) payload.data[key] = value;
 
     return payload;
   }
 
-  public [Method.GetMany](payload: GetManyPayload<StoredValue>): GetManyPayload<StoredValue> {
+  public [Method.GetMany](payload: Payloads.GetMany<StoredValue>): Payloads.GetMany<StoredValue> {
     const { keys } = payload;
 
     for (const key of keys) payload.data[key] = this.cache.get(key) ?? null;
@@ -296,7 +252,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.Has](payload: HasPayload): HasPayload {
+  public [Method.Has](payload: Payloads.Has): Payloads.Has {
     const { key, path } = payload;
 
     if (this.cache.has(key)) {
@@ -308,7 +264,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.Inc](payload: IncPayload): IncPayload {
+  public [Method.Inc](payload: Payloads.Inc): Payloads.Inc {
     const { key, path } = payload;
     const { data } = this.get({ method: Method.Get, key, path });
 
@@ -338,24 +294,19 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.Keys](payload: KeysPayload): KeysPayload {
+  public [Method.Keys](payload: Payloads.Keys): Payloads.Keys {
     payload.data = Array.from(this.cache.keys());
 
     return payload;
   }
 
-  public async [Method.Map]<DataValue = StoredValue, HookValue = DataValue>(
-    payload: MapByHookPayload<DataValue, HookValue>
-  ): Promise<MapByHookPayload<DataValue, HookValue>>;
+  public async [Method.Map]<Value = StoredValue>(payload: Payloads.Map.ByHook<StoredValue, Value>): Promise<Payloads.Map.ByHook<StoredValue, Value>>;
 
-  public async [Method.Map]<DataValue = StoredValue>(payload: MapByPathPayload<DataValue>): Promise<MapByPathPayload<DataValue>>;
-  public async [Method.Map]<DataValue = StoredValue, HookValue = DataValue>(
-    payload: MapPayload<DataValue, HookValue>
-  ): Promise<MapPayload<DataValue, HookValue>> {
+  public async [Method.Map]<Value = StoredValue>(payload: Payloads.Map.ByPath<Value>): Promise<Payloads.Map.ByPath<Value>>;
+  public async [Method.Map]<Value = StoredValue>(payload: Payloads.Map<StoredValue, Value>): Promise<Payloads.Map<StoredValue, Value>> {
     if (isMapByHookPayload(payload)) {
       const { hook } = payload;
 
-      // @ts-expect-error 2345
       for (const value of this.cache.values()) payload.data.push(await hook(value));
     }
 
@@ -369,7 +320,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.Math](payload: MathPayload): MathPayload {
+  public [Method.Math](payload: Payloads.Math): Payloads.Math {
     const { key, path, operator, operand } = payload;
     let { data } = this.get<number>({ method: Method.Get, key, path });
 
@@ -430,9 +381,9 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public async [Method.Partition](payload: PartitionByHookPayload<StoredValue>): Promise<PartitionByHookPayload<StoredValue>>;
-  public async [Method.Partition](payload: PartitionByValuePayload<StoredValue>): Promise<PartitionByValuePayload<StoredValue>>;
-  public async [Method.Partition](payload: PartitionPayload<StoredValue>): Promise<PartitionPayload<StoredValue>> {
+  public async [Method.Partition](payload: Payloads.Partition.ByHook<StoredValue>): Promise<Payloads.Partition.ByHook<StoredValue>>;
+  public async [Method.Partition](payload: Payloads.Partition.ByValue<StoredValue>): Promise<Payloads.Partition.ByValue<StoredValue>>;
+  public async [Method.Partition](payload: Payloads.Partition<StoredValue>): Promise<Payloads.Partition<StoredValue>> {
     if (isPartitionByHookPayload(payload)) {
       const { hook } = payload;
 
@@ -465,7 +416,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.Push]<Value = StoredValue>(payload: PushPayload<Value>): PushPayload<Value> {
+  public [Method.Push]<Value = StoredValue>(payload: Payloads.Push<Value>): Payloads.Push<Value> {
     const { key, path, value } = payload;
     const { data } = this.get({ method: Method.Get, key, path });
 
@@ -496,7 +447,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.Random](payload: RandomPayload<StoredValue>): RandomPayload<StoredValue> {
+  public [Method.Random](payload: Payloads.Random<StoredValue>): Payloads.Random<StoredValue> {
     const { count, duplicates } = payload;
 
     if (this.cache.size === 0) return payload;
@@ -510,8 +461,6 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       return payload;
     }
 
-    payload.data = [];
-
     const data: [string, StoredValue][] = [];
     const entries = Array.from(this.cache.entries());
 
@@ -523,7 +472,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.RandomKey](payload: RandomKeyPayload): RandomKeyPayload {
+  public [Method.RandomKey](payload: Payloads.RandomKey): Payloads.RandomKey {
     const { count, duplicates } = payload;
 
     if (this.cache.size === 0) return payload;
@@ -547,9 +496,9 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public async [Method.Remove]<HookValue = StoredValue>(payload: RemoveByHookPayload<HookValue>): Promise<RemoveByHookPayload<HookValue>>;
-  public async [Method.Remove](payload: RemoveByValuePayload): Promise<RemoveByValuePayload>;
-  public async [Method.Remove]<HookValue = StoredValue>(payload: RemovePayload<HookValue>): Promise<RemovePayload<HookValue>> {
+  public async [Method.Remove]<Value = StoredValue>(payload: Payloads.Remove.ByHook<Value>): Promise<Payloads.Remove.ByHook<Value>>;
+  public async [Method.Remove](payload: Payloads.Remove.ByValue): Promise<Payloads.Remove.ByValue>;
+  public async [Method.Remove]<Value = StoredValue>(payload: Payloads.Remove<Value>): Promise<Payloads.Remove<Value>> {
     if (isRemoveByHookPayload(payload)) {
       const { key, path, hook } = payload;
       const { data } = this.get<unknown[]>({ method: Method.Get, key, path });
@@ -609,7 +558,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.Set]<Value = StoredValue>(payload: SetPayload<Value>): SetPayload<Value> {
+  public [Method.Set]<Value = StoredValue>(payload: Payloads.Set<Value>): Payloads.Set<Value> {
     const { key, path, value } = payload;
 
     // @ts-expect-error 2345
@@ -623,7 +572,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.SetMany]<Value = StoredValue>(payload: SetManyPayload<Value>): SetManyPayload<Value> {
+  public [Method.SetMany]<Value = StoredValue>(payload: Payloads.SetMany<Value>): Payloads.SetMany<Value> {
     const { data, overwrite } = payload;
 
     for (const [{ key, path }, value] of data)
@@ -633,15 +582,15 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.Size](payload: SizePayload): SizePayload {
+  public [Method.Size](payload: Payloads.Size): Payloads.Size {
     payload.data = this.cache.size;
 
     return payload;
   }
 
-  public async [Method.Some](payload: SomeByHookPayload<StoredValue>): Promise<SomeByHookPayload<StoredValue>>;
-  public async [Method.Some](payload: SomeByValuePayload): Promise<SomeByValuePayload>;
-  public async [Method.Some](payload: SomePayload<StoredValue>): Promise<SomePayload<StoredValue>> {
+  public async [Method.Some](payload: Payloads.Some.ByHook<StoredValue>): Promise<Payloads.Some.ByHook<StoredValue>>;
+  public async [Method.Some](payload: Payloads.Some.ByValue): Promise<Payloads.Some.ByValue>;
+  public async [Method.Some](payload: Payloads.Some<StoredValue>): Promise<Payloads.Some<StoredValue>> {
     if (isSomeByHookPayload(payload)) {
       const { hook } = payload;
 
@@ -670,11 +619,9 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public async [Method.Update]<HookValue = StoredValue, Value = HookValue>(
-    payload: UpdatePayload<StoredValue, HookValue, Value>
-  ): Promise<UpdatePayload<StoredValue, HookValue, Value>> {
+  public async [Method.Update]<Value = StoredValue>(payload: Payloads.Update<StoredValue, Value>): Promise<Payloads.Update<StoredValue, Value>> {
     const { key, path, hook } = payload;
-    const { data } = this.get<HookValue>({ method: Method.Get, key, path });
+    const { data } = this.get({ method: Method.Get, key, path });
 
     if (data === undefined) return payload;
 
@@ -684,7 +631,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.Values](payload: ValuesPayload<StoredValue>): ValuesPayload<StoredValue> {
+  public [Method.Values](payload: Payloads.Values<StoredValue>): Payloads.Values<StoredValue> {
     Reflect.set(payload, 'data', Array.from(this.cache.values()));
 
     return payload;

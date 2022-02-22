@@ -26,11 +26,10 @@ export default {
       globals: {
         '@realware/utilities': 'RealwareUtilities',
         '@sapphire/utilities': 'SapphireUtilities',
-        'fs/promises': 'FSPromises',
-        process: 'Process'
+        process: 'process'
       }
     }
   ],
-  external: ['@sapphire/utilities', '@realware/utilities', 'fs/promises', 'process'],
+  external: ['@sapphire/utilities', '@realware/utilities', 'process'],
   plugins: [cleaner({ targets: ['./dist'] }), typescript({ tsconfig: resolve(process.cwd(), 'src', 'tsconfig.json') }), versionInjector()]
 };
