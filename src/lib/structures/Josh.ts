@@ -167,7 +167,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.AutoKey)) payload = await middleware[Method.AutoKey](payload);
 
-    payload = await this.provider[Method.AutoKey](payload);
+    if (!this.isPayloadWithData<string>(payload)) payload = await this.provider[Method.AutoKey](payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -393,7 +394,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Ensure)) payload = await middleware[Method.Ensure](payload);
 
-    payload = await this.provider[Method.Ensure](payload);
+    if (!this.isPayloadWithData<StoredValue>(payload)) payload = await this.provider[Method.Ensure](payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -489,7 +491,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Every)) payload = await middleware[Method.Every](payload);
 
-    payload = await this.provider[Method.Every](payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Every](payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -572,7 +575,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Filter)) payload = await middleware[Method.Filter](payload);
 
-    payload = await this.provider[Method.Filter](payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Filter](payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -647,7 +651,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Find)) payload = await middleware[Method.Find](payload);
 
-    payload = await this.provider[Method.Find](payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Find](payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -705,7 +710,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Get)) payload = await middleware[Method.Get](payload);
 
-    payload = await this.provider.get(payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider.get(payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -746,7 +752,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.GetAll)) payload = await middleware[Method.GetAll](payload);
 
-    payload = await this.provider.getAll(payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider.getAll(payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -783,7 +790,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.GetMany)) payload = await middleware[Method.GetMany](payload);
 
-    payload = await this.provider[Method.GetMany](payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.GetMany](payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -833,7 +841,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Has)) payload = await middleware[Method.Has](payload);
 
-    payload = await this.provider.has(payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider.has(payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -933,7 +942,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Keys)) payload = await middleware[Method.Keys](payload);
 
-    payload = await this.provider.keys(payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider.keys(payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -986,7 +996,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Map)) payload = await middleware[Method.Map](payload);
 
-    payload = await this.provider[Method.Map](payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Map](payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -1132,7 +1143,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Partition)) payload = await middleware[Method.Partition](payload);
 
-    payload = await this.provider[Method.Partition](payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Partition](payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -1207,7 +1219,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Random)) payload = await middleware[Method.Random](payload);
 
-    payload = await this.provider[Method.Random](payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Random](payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -1246,7 +1259,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.RandomKey)) payload = await middleware[Method.RandomKey](payload);
 
-    payload = await this.provider.randomKey(payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider.randomKey(payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -1407,7 +1421,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Size)) payload = await middleware[Method.Size](payload);
 
-    payload = await this.provider[Method.Size](payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Size](payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -1481,7 +1496,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Some)) payload = await middleware[Method.Some](payload);
 
-    payload = await this.provider[Method.Some](payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Some](payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
@@ -1544,7 +1560,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Values)) payload = await middleware[Method.Values](payload);
 
-    payload = await this.provider.values(payload);
+    if (!this.isPayloadWithData<boolean>(payload)) payload = await this.provider.values(payload);
+
     payload.trigger = Trigger.PostProvider;
 
     if (payload.error) throw payload.error;
