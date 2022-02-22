@@ -249,7 +249,7 @@ export namespace Payloads {
    * @see {@link Payload}
    * @see {@link Payload.Data}
    */
-  export interface Find<StoredValue> extends Payload, Payload.OptionalData<[string, StoredValue]> {
+  export interface Find<StoredValue> extends Payload, Payload.Data<[string, StoredValue] | [null, null]> {
     /**
      * The method this payload is for.
      * @since 2.0.0
@@ -289,7 +289,10 @@ export namespace Payloads {
      * @see {@link Payload.ByHook}
      * @see {@link Payload.Data}
      */
-    export interface ByHook<StoredValue> extends Payload, Payload.ByHook<Payload.Hook<StoredValue>>, Payload.OptionalData<[string, StoredValue]> {
+    export interface ByHook<StoredValue>
+      extends Payload,
+        Payload.ByHook<Payload.Hook<StoredValue>>,
+        Payload.Data<[string, StoredValue] | [null, null]> {
       /**
        * The method this payload is for.
        * @since 2.0.0
@@ -304,7 +307,7 @@ export namespace Payloads {
      * @see {@link Payload.ByValue}
      * @see {@link Payload.Data}
      */
-    export interface ByValue<StoredValue> extends Payload, Payload.ByValueWithPath<Primitive>, Payload.OptionalData<[string, StoredValue]> {
+    export interface ByValue<StoredValue> extends Payload, Payload.ByValueWithPath<Primitive>, Payload.Data<[string, StoredValue] | [null, null]> {
       /**
        * The method this payload is for.
        * @since 2.0.0
@@ -318,9 +321,9 @@ export namespace Payloads {
    * @since 2.0.0
    * @see {@link Payload}
    * @see {@link Payload.KeyPath}
-   * @see {@link Payload.OptionalData}
+   * @see {@link Payload.Data}
    */
-  export interface Get<StoredValue> extends Payload, Payload.KeyPath, Payload.OptionalData<StoredValue> {
+  export interface Get<StoredValue> extends Payload, Payload.KeyPath, Payload.Data<StoredValue> {
     /**
      * The method this payload is for.
      * @since 2.0.0
@@ -366,7 +369,7 @@ export namespace Payloads {
    * @since 2.0.0
    * @see {@link Payload}
    * @see {@link Payload.KeyPath}
-   * @see {@link Payload.OptionalData}
+   * @see {@link Payload.Data}
    */
   export interface Has extends Payload, Payload.KeyPath, Payload.Data<boolean> {
     /**
@@ -620,7 +623,7 @@ export namespace Payloads {
    * The payload for {@link Method.Random}
    * @since 2.0.0
    */
-  export interface Random<StoredValue> extends Payload, Payload.OptionalData<StoredValue[]> {
+  export interface Random<StoredValue> extends Payload, Payload.Data<StoredValue[]> {
     /**
      * The method this payload is for.
      * @since 2.0.0
@@ -644,7 +647,7 @@ export namespace Payloads {
    * The payload for {@link Method.RandomKey}
    * @since 2.0.0
    */
-  export interface RandomKey extends Payload, Payload.OptionalData<string[]> {
+  export interface RandomKey extends Payload, Payload.Data<string[]> {
     /**
      * The method this payload is for.
      * @since 2.0.0
@@ -765,7 +768,7 @@ export namespace Payloads {
    * @see {@link Payload}
    * @see {@link Payload.Data}
    */
-  export interface SetMany<Value> extends Payload, Payload.Data<[Payload.KeyPath, Value][]> {
+  export interface SetMany<Value> extends Payload {
     /**
      * The method this payload is for.
      * @since 2.0.0
@@ -777,6 +780,12 @@ export namespace Payloads {
      * @since 2.0.0
      */
     overwrite: boolean;
+
+    /**
+     * The entries to set.
+     * @since 2.0.0
+     */
+    entries: [Payload.KeyPath, Value][];
   }
 
   /**
@@ -868,9 +877,9 @@ export namespace Payloads {
    * @since 2.0.0
    * @see {@link Payload}
    * @see {@link Payload.KeyPath}
-   * @see {@link Payload.OptionalData}
+   * @see {@link Payload.Data}
    */
-  export interface Update<Value, ReturnValue> extends Payload, Payload.KeyPath, Payload.OptionalData<ReturnValue> {
+  export interface Update<Value, ReturnValue> extends Payload, Payload.KeyPath {
     /**
      * The method this payload is for.
      * @since 2.0.0

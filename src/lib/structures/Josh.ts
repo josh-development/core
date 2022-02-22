@@ -162,7 +162,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async autoKey(): Promise<string> {
-    let payload: Payloads.AutoKey = { method: Method.AutoKey, trigger: Trigger.PreProvider, data: '' };
+    let payload: Payloads.AutoKey = { method: Method.AutoKey, trigger: Trigger.PreProvider };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.AutoKey)) payload = await middleware[Method.AutoKey](payload);
@@ -175,7 +175,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.AutoKey)) payload = await middleware[Method.AutoKey](payload);
 
-    return payload.data;
+    if (this.isPayloadWithData<string>(payload)) return payload.data;
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -386,7 +388,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async ensure(key: string, defaultValue: StoredValue): Promise<StoredValue> {
-    let payload: Payloads.Ensure<StoredValue> = { method: Method.Ensure, trigger: Trigger.PreProvider, key, defaultValue, data: defaultValue };
+    let payload: Payloads.Ensure<StoredValue> = { method: Method.Ensure, trigger: Trigger.PreProvider, key, defaultValue };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Ensure)) payload = await middleware[Method.Ensure](payload);
@@ -399,7 +401,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Ensure)) payload = await middleware[Method.Ensure](payload);
 
-    return payload.data;
+    if (this.isPayloadWithData<StoredValue>(payload)) return payload.data;
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -473,8 +477,7 @@ export class Josh<StoredValue = unknown> {
     let payload: Payloads.Every<StoredValue> = {
       method: Method.Every,
       trigger: Trigger.PreProvider,
-      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value,
-      data: true
+      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value
     };
 
     if (isFunction(pathOrHook)) payload.hook = pathOrHook;
@@ -494,7 +497,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Every)) payload = await middleware[Method.Every](payload);
 
-    return payload.data;
+    if (this.isPayloadWithData<boolean>(payload)) return payload.data;
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -555,8 +560,7 @@ export class Josh<StoredValue = unknown> {
     let payload: Payloads.Filter<StoredValue> = {
       method: Method.Filter,
       trigger: Trigger.PreProvider,
-      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value,
-      data: {}
+      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value
     };
 
     if (isFunction(pathOrHook)) payload.hook = pathOrHook;
@@ -576,7 +580,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Filter)) payload = await middleware[Method.Filter](payload);
 
-    return this.convertBulkData(payload.data, returnBulkType);
+    if (this.isPayloadWithData<Record<string, StoredValue>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -649,7 +655,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Find)) payload = await middleware[Method.Find](payload);
 
-    return payload.data ?? [null, null];
+    if (this.isPayloadWithData<Record<string, StoredValue>>(payload)) return payload.data;
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -733,7 +741,7 @@ export class Josh<StoredValue = unknown> {
   public async getAll<BulkType extends keyof ReturnBulk<StoredValue> = Bulk.Object>(
     returnBulkType?: BulkType
   ): Promise<ReturnBulk<StoredValue>[BulkType]> {
-    let payload: Payloads.GetAll<StoredValue> = { method: Method.GetAll, trigger: Trigger.PreProvider, data: {} };
+    let payload: Payloads.GetAll<StoredValue> = { method: Method.GetAll, trigger: Trigger.PreProvider };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.GetAll)) payload = await middleware[Method.GetAll](payload);
@@ -746,7 +754,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.GetAll)) payload = await middleware[Method.GetAll](payload);
 
-    return this.convertBulkData(payload.data, returnBulkType);
+    if (this.isPayloadWithData<Record<string, StoredValue>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -768,7 +778,7 @@ export class Josh<StoredValue = unknown> {
     keys: string[],
     returnBulkType?: BulkType
   ): Promise<ReturnBulk<StoredValue | null>[BulkType]> {
-    let payload: Payloads.GetMany<StoredValue> = { method: Method.GetMany, trigger: Trigger.PreProvider, keys, data: {} };
+    let payload: Payloads.GetMany<StoredValue> = { method: Method.GetMany, trigger: Trigger.PreProvider, keys };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.GetMany)) payload = await middleware[Method.GetMany](payload);
@@ -781,7 +791,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.GetMany)) payload = await middleware[Method.GetMany](payload);
 
-    return this.convertBulkData(payload.data, returnBulkType);
+    if (this.isPayloadWithData<Record<string, StoredValue | null>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -816,7 +828,7 @@ export class Josh<StoredValue = unknown> {
    */
   public async has(keyPath: KeyPath): Promise<boolean> {
     const [key, path] = this.getKeyPath(keyPath);
-    let payload: Payloads.Has = { method: Method.Has, trigger: Trigger.PreProvider, key, path, data: false };
+    let payload: Payloads.Has = { method: Method.Has, trigger: Trigger.PreProvider, key, path };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Has)) payload = await middleware[Method.Has](payload);
@@ -829,7 +841,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Has)) payload = await middleware[Method.Has](payload);
 
-    return payload.data;
+    if (this.isPayloadWithData<boolean>(payload)) return payload.data;
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -914,7 +928,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async keys(): Promise<string[]> {
-    let payload: Payloads.Keys = { method: Method.Keys, trigger: Trigger.PreProvider, data: [] };
+    let payload: Payloads.Keys = { method: Method.Keys, trigger: Trigger.PreProvider };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Keys)) payload = await middleware[Method.Keys](payload);
@@ -927,7 +941,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Keys)) payload = await middleware[Method.Keys](payload);
 
-    return payload.data;
+    if (this.isPayloadWithData<string[]>(payload)) return payload.data;
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -961,8 +977,7 @@ export class Josh<StoredValue = unknown> {
     let payload: Payloads.Map<StoredValue, Value> = {
       method: Method.Map,
       trigger: Trigger.PreProvider,
-      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Path,
-      data: []
+      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Path
     };
 
     if (isFunction(pathOrHook)) payload.hook = pathOrHook;
@@ -979,7 +994,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Map)) payload = await middleware[Method.Map](payload);
 
-    return payload.data;
+    if (this.isPayloadWithData<Value[]>(payload)) return payload.data;
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -1103,8 +1120,7 @@ export class Josh<StoredValue = unknown> {
     let payload: Payloads.Partition<StoredValue> = {
       method: Method.Partition,
       trigger: Trigger.PreProvider,
-      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value,
-      data: { truthy: {}, falsy: {} }
+      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value
     };
 
     if (isFunction(pathOrHook)) payload.hook = pathOrHook;
@@ -1124,9 +1140,13 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Partition)) payload = await middleware[Method.Partition](payload);
 
-    const { truthy, falsy } = payload.data;
+    if (this.isPayloadWithData<Payloads.Partition.Data<StoredValue>>(payload)) {
+      const { truthy, falsy } = payload.data;
 
-    return [this.convertBulkData(truthy, returnBulkType), this.convertBulkData(falsy, returnBulkType)];
+      return [this.convertBulkData(truthy, returnBulkType), this.convertBulkData(falsy, returnBulkType)];
+    }
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -1195,7 +1215,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Random)) payload = await middleware[Method.Random](payload);
 
-    return payload.data ?? null;
+    if (this.isPayloadWithData<StoredValue[]>(payload)) return payload.data.length ? payload.data : null;
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -1232,7 +1254,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.RandomKey)) payload = await middleware[Method.RandomKey](payload);
 
-    return payload.data ?? null;
+    if (this.isPayloadWithData<string[]>(payload)) return payload.data.length ? payload.data : null;
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -1345,7 +1369,7 @@ export class Josh<StoredValue = unknown> {
     let payload: Payloads.SetMany<Value> = {
       method: Method.SetMany,
       trigger: Trigger.PreProvider,
-      data: entries.map(([keyPath, value]) => {
+      entries: entries.map(([keyPath, value]) => {
         const [key, path] = this.getKeyPath(keyPath);
 
         return [{ key, path: this.getPath(path) }, value];
@@ -1378,7 +1402,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async size(): Promise<number> {
-    let payload: Payloads.Size = { method: Method.Size, trigger: Trigger.PreProvider, data: 0 };
+    let payload: Payloads.Size = { method: Method.Size, trigger: Trigger.PreProvider };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Size)) payload = await middleware[Method.Size](payload);
@@ -1391,7 +1415,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Size)) payload = await middleware[Method.Size](payload);
 
-    return payload.data;
+    if (this.isPayloadWithData<number>(payload)) return payload.data;
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -1443,8 +1469,7 @@ export class Josh<StoredValue = unknown> {
     let payload: Payloads.Some<StoredValue> = {
       method: Method.Some,
       trigger: Trigger.PreProvider,
-      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value,
-      data: false
+      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value
     };
 
     if (isFunction(pathOrHook)) payload.hook = pathOrHook;
@@ -1464,7 +1489,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Some)) payload = await middleware[Method.Some](payload);
 
-    return payload.data;
+    if (this.isPayloadWithData<boolean>(payload)) return payload.data;
+
+    throw this.providerFailedError;
   }
 
   /**
@@ -1480,7 +1507,7 @@ export class Josh<StoredValue = unknown> {
    * await josh.update('key', (value) => value.toUpperCase()); // 'VALUE'
    * ```
    */
-  public async update<Value = StoredValue>(keyPath: KeyPath, hook: Payload.Hook<StoredValue, Value>): Promise<Value | null> {
+  public async update<Value = StoredValue>(keyPath: KeyPath, hook: Payload.Hook<StoredValue, Value>): Promise<this> {
     const [key, path] = this.getKeyPath(keyPath);
     let payload: Payloads.Update<StoredValue, Value> = { method: Method.Update, trigger: Trigger.PreProvider, key, path, hook };
 
@@ -1495,7 +1522,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Update)) payload = await middleware[Method.Update](payload);
 
-    return payload.data ?? null;
+    return this;
   }
 
   /**
@@ -1512,7 +1539,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async values(): Promise<StoredValue[]> {
-    let payload: Payloads.Values<StoredValue> = { method: Method.Values, trigger: Trigger.PreProvider, data: [] };
+    let payload: Payloads.Values<StoredValue> = { method: Method.Values, trigger: Trigger.PreProvider };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Values)) payload = await middleware[Method.Values](payload);
@@ -1525,7 +1552,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Values)) payload = await middleware[Method.Values](payload);
 
-    return payload.data;
+    if (this.isPayloadWithData<StoredValue[]>(payload)) return payload.data;
+
+    throw this.providerFailedError;
   }
 
   public async import(options: Josh.ImportOptions<StoredValue>): Promise<this> {
@@ -1546,7 +1575,7 @@ export class Josh<StoredValue = unknown> {
 
     await this.provider[Method.SetMany]({
       method: Method.SetMany,
-      data: json.entries.map(([key, value]) => [{ key, path: [] }, value]),
+      entries: json.entries.map(([key, value]) => [{ key, path: [] }, value]),
       overwrite: overwrite ?? false
     });
 
@@ -1559,7 +1588,7 @@ export class Josh<StoredValue = unknown> {
    * @returns The exported data json object.
    */
   public async export(): Promise<Josh.ExportJSON<StoredValue>> {
-    const entries = Object.entries<StoredValue>((await this.provider[Method.GetAll]({ method: Method.GetAll, data: {} })).data);
+    const entries = Object.entries<StoredValue>((await this.provider[Method.GetAll]({ method: Method.GetAll })).data ?? []);
     const json: Josh.ExportJSON<StoredValue> = { name: this.name, version: Josh.version, exportedTimestamp: Date.now(), entries };
 
     return json;
@@ -1604,6 +1633,14 @@ export class Josh<StoredValue = unknown> {
 
   private getPath(path: Path): string[] {
     return typeof path === 'string' ? path.split('.') : path;
+  }
+
+  private isPayloadWithData<Value>(payload: Payload): payload is Payload.WithData<Value> {
+    return 'data' in payload;
+  }
+
+  private get providerFailedError(): JoshError {
+    return this.error({ identifier: Josh.Identifiers.ProviderDataFailed, message: 'The provider failed to return data.' });
   }
 
   private error(options: JoshErrorOptions): JoshError {
@@ -1810,6 +1847,8 @@ export namespace Josh {
     PartitionInvalidValue = 'partitionInvalidValue',
 
     PartitionMissingValue = 'partitionMissingValue',
+
+    ProviderDataFailed = 'providerDataFailed',
 
     RemoveInvalidValue = 'removeInvalidValue',
 

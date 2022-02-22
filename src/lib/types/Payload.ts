@@ -54,15 +54,16 @@ export namespace Payload {
      * The data for this extension.
      * @since 2.0.0
      */
-    data: Value;
+    data?: Value;
   }
 
-  /**
-   * The optional data extension for {@link Payload}
-   * @since 2.0.0
-   * @see {@link Data}
-   */
-  export type OptionalData<Value = unknown> = Partial<Data<Value>>;
+  export interface WithData<Value = unknown> extends Payload {
+    /**
+     * The data for this extension.
+     * @since 2.0.0
+     */
+    data: Value;
+  }
 
   /**
    * The hook extension for {@link Payload}
