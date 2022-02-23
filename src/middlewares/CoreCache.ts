@@ -32,8 +32,8 @@ export class CoreCache<StoredValue = unknown> extends Middleware<StoredValue> {
   }
 
   public async [Method.Dec](payload: Payloads.Dec): Promise<Payloads.Dec> {
-    const { key } = payload;
     const { provider } = this.context;
+    const { key } = payload;
 
     await this.ensureCachedEntry(key);
     payload = await provider.dec(payload);
@@ -68,8 +68,8 @@ export class CoreCache<StoredValue = unknown> extends Middleware<StoredValue> {
   }
 
   public async [Method.Ensure](payload: Payloads.Ensure<StoredValue>): Promise<Payloads.Ensure<StoredValue>> {
-    const { key } = payload;
     const { provider } = this.context;
+    const { key } = payload;
 
     await this.ensureCachedEntry(key);
     await provider.ensure(payload);
@@ -108,8 +108,8 @@ export class CoreCache<StoredValue = unknown> extends Middleware<StoredValue> {
   }
 
   public async [Method.Get]<Value = StoredValue>(payload: Payloads.Get<Value>): Promise<Payloads.Get<Value>> {
-    const { key } = payload;
     const { provider } = this.context;
+    const { key } = payload;
 
     await this.ensureCachedEntry(key);
     payload = await provider.get(payload);
@@ -127,8 +127,8 @@ export class CoreCache<StoredValue = unknown> extends Middleware<StoredValue> {
   }
 
   public async [Method.GetMany](payload: Payloads.GetMany<StoredValue>): Promise<Payloads.GetMany<StoredValue>> {
-    const { keys } = payload;
     const { provider } = this.context;
+    const { keys } = payload;
 
     for (const key of keys) await this.ensureCachedEntry(key);
 
@@ -147,8 +147,8 @@ export class CoreCache<StoredValue = unknown> extends Middleware<StoredValue> {
   }
 
   public async [Method.Inc](payload: Payloads.Inc): Promise<Payloads.Inc> {
-    const { key } = payload;
     const { provider } = this.context;
+    const { key } = payload;
 
     await this.ensureCachedEntry(key);
     payload = await provider.inc(payload);
@@ -176,8 +176,8 @@ export class CoreCache<StoredValue = unknown> extends Middleware<StoredValue> {
   }
 
   public async [Method.Math](payload: Payloads.Math): Promise<Payloads.Math> {
-    const { key } = payload;
     const { provider } = this.context;
+    const { key } = payload;
 
     await this.ensureCachedEntry(key);
     payload = await provider.math(payload);
@@ -197,8 +197,8 @@ export class CoreCache<StoredValue = unknown> extends Middleware<StoredValue> {
   }
 
   public async [Method.Push]<Value>(payload: Payloads.Push<Value>): Promise<Payloads.Push<Value>> {
-    const { key } = payload;
     const { provider } = this.context;
+    const { key } = payload;
 
     await this.ensureCachedEntry(key);
     payload = await provider.push(payload);
@@ -226,8 +226,8 @@ export class CoreCache<StoredValue = unknown> extends Middleware<StoredValue> {
   public async [Method.Remove]<Value = StoredValue>(payload: Payloads.Remove.ByHook<Value>): Promise<Payloads.Remove.ByHook<Value>>;
   public async [Method.Remove](payload: Payloads.Remove.ByValue): Promise<Payloads.Remove.ByValue>;
   public async [Method.Remove]<Value = StoredValue>(payload: Payloads.Remove<Value>): Promise<Payloads.Remove<Value>> {
-    const { key } = payload;
     const { provider } = this.context;
+    const { key } = payload;
 
     await this.ensureCachedEntry(key);
     payload = await provider.remove(payload);
@@ -237,8 +237,8 @@ export class CoreCache<StoredValue = unknown> extends Middleware<StoredValue> {
   }
 
   public async [Method.Set]<Value = StoredValue>(payload: Payloads.Set<Value>): Promise<Payloads.Set<Value>> {
-    const { key } = payload;
     const { provider } = this.context;
+    const { key } = payload;
 
     await this.ensureCachedEntry(key);
     payload = await provider.set(payload);
@@ -248,8 +248,8 @@ export class CoreCache<StoredValue = unknown> extends Middleware<StoredValue> {
   }
 
   public async [Method.SetMany]<Value = StoredValue>(payload: Payloads.SetMany<Value>): Promise<Payloads.SetMany<Value>> {
-    const { entries } = payload;
     const { provider } = this.context;
+    const { entries } = payload;
 
     for (const [{ key }] of entries) await this.ensureCachedEntry(key);
 
@@ -279,8 +279,8 @@ export class CoreCache<StoredValue = unknown> extends Middleware<StoredValue> {
   }
 
   public async [Method.Update]<Value = StoredValue>(payload: Payloads.Update<StoredValue, Value>): Promise<Payloads.Update<StoredValue, Value>> {
-    const { key } = payload;
     const { provider } = this.context;
+    const { key } = payload;
 
     await this.ensureCachedEntry(key);
     payload = await provider.update(payload);
