@@ -20,7 +20,7 @@ describe('MapProvider', () => {
 
     describe('with autoKey method', () => {
       test('GIVEN ... THEN returns payload w/ generated key as data AND increments autoKeyCount', () => {
-        const payload = provider.autoKey({ method: Method.AutoKey, data: '0' });
+        const payload = provider.autoKey({ method: Method.AutoKey });
 
         expect(typeof payload).toBe('object');
 
@@ -37,7 +37,7 @@ describe('MapProvider', () => {
 
     describe('with clear method', () => {
       test('GIVEN provider w/o data THEN provider data cleared', () => {
-        const sizeBefore = provider.size({ method: Method.Size, data: 0 });
+        const sizeBefore = provider.size({ method: Method.Size });
 
         expect(sizeBefore.data).toBe(0);
 
@@ -51,7 +51,7 @@ describe('MapProvider', () => {
         expect(trigger).toBeUndefined();
         expect(error).toBeUndefined();
 
-        const sizeAfter = provider.size({ method: Method.Size, data: 0 });
+        const sizeAfter = provider.size({ method: Method.Size });
 
         expect(sizeAfter.data).toBe(0);
       });
@@ -59,7 +59,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ data THEN provider data cleared', () => {
         provider.set({ method: Method.Set, key: 'test:clear', path: [], value: 'value' });
 
-        const sizeBefore = provider.size({ method: Method.Size, data: 0 });
+        const sizeBefore = provider.size({ method: Method.Size });
 
         expect(sizeBefore.data).toBe(1);
 
@@ -73,7 +73,7 @@ describe('MapProvider', () => {
         expect(trigger).toBeUndefined();
         expect(error).toBeUndefined();
 
-        const sizeAfter = provider.size({ method: Method.Size, data: 0 });
+        const sizeAfter = provider.size({ method: Method.Size });
 
         expect(sizeAfter.data).toBe(0);
       });
@@ -181,7 +181,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ value at key THEN deletes value at key', () => {
         provider.set({ method: Method.Set, key: 'test:delete', path: [], value: 'value' });
 
-        const hasBefore = provider.has({ method: Method.Has, key: 'test:delete', path: [], data: false });
+        const hasBefore = provider.has({ method: Method.Has, key: 'test:delete', path: [] });
 
         expect(hasBefore.data).toBe(true);
 
@@ -195,7 +195,7 @@ describe('MapProvider', () => {
         expect(trigger).toBeUndefined();
         expect(error).toBeUndefined();
 
-        const hasAfter = provider.has({ method: Method.Has, key: 'test:delete', path: [], data: false });
+        const hasAfter = provider.has({ method: Method.Has, key: 'test:delete', path: [] });
 
         expect(hasAfter.data).toBe(false);
       });
@@ -203,7 +203,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ value at path THEN deletes value at path', () => {
         provider.set({ method: Method.Set, key: 'test:delete', path: ['path'], value: 'value' });
 
-        const hasBefore = provider.has({ method: Method.Has, key: 'test:delete', path: ['path'], data: false });
+        const hasBefore = provider.has({ method: Method.Has, key: 'test:delete', path: ['path'] });
 
         expect(hasBefore.data).toBe(true);
 
@@ -217,7 +217,7 @@ describe('MapProvider', () => {
         expect(trigger).toBeUndefined();
         expect(error).toBeUndefined();
 
-        const hasAfter = provider.has({ method: Method.Has, key: 'test:delete', path: ['path'], data: false });
+        const hasAfter = provider.has({ method: Method.Has, key: 'test:delete', path: ['path'] });
 
         expect(hasAfter.data).toBe(false);
       });
@@ -225,7 +225,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ value at nested path THEN deletes value at nested path', () => {
         provider.set({ method: Method.Set, key: 'test:delete', path: ['path', 'nested'], value: 'value' });
 
-        const hasBefore = provider.has({ method: Method.Has, key: 'test:delete', path: ['path', 'nested'], data: false });
+        const hasBefore = provider.has({ method: Method.Has, key: 'test:delete', path: ['path', 'nested'] });
 
         expect(hasBefore.data).toBe(true);
 
@@ -239,7 +239,7 @@ describe('MapProvider', () => {
         expect(trigger).toBeUndefined();
         expect(error).toBeUndefined();
 
-        const hasAfter = provider.has({ method: Method.Has, key: 'test:delete', path: ['path', 'nested'], data: false });
+        const hasAfter = provider.has({ method: Method.Has, key: 'test:delete', path: ['path', 'nested'] });
 
         expect(hasAfter.data).toBe(false);
       });
@@ -249,7 +249,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ value at key THEN deletes value at key', () => {
         provider.set({ method: Method.Set, key: 'test:deleteMany', path: [], value: 'value' });
 
-        const hasBefore = provider.has({ method: Method.Has, key: 'test:deleteMany', path: [], data: false });
+        const hasBefore = provider.has({ method: Method.Has, key: 'test:deleteMany', path: [] });
 
         expect(hasBefore.data).toBe(true);
 
@@ -263,7 +263,7 @@ describe('MapProvider', () => {
         expect(trigger).toBeUndefined();
         expect(error).toBeUndefined();
 
-        const hasAfter = provider.has({ method: Method.Has, key: 'test:deleteMany', path: [], data: false });
+        const hasAfter = provider.has({ method: Method.Has, key: 'test:deleteMany', path: [] });
 
         expect(hasAfter.data).toBe(false);
       });
@@ -271,11 +271,11 @@ describe('MapProvider', () => {
 
     describe('with ensure method', () => {
       test('GIVEN provider w/o data at key THEN returns payload w/ data as defaultValue AND sets default value at key', () => {
-        const sizeBefore = provider.size({ method: Method.Size, data: 0 });
+        const sizeBefore = provider.size({ method: Method.Size });
 
         expect(sizeBefore.data).toBe(0);
 
-        const payload = provider.ensure({ method: Method.Ensure, key: 'test:ensure', defaultValue: 'defaultValue', data: 'defaultValue' });
+        const payload = provider.ensure({ method: Method.Ensure, key: 'test:ensure', defaultValue: 'defaultValue' });
 
         expect(typeof payload).toBe('object');
 
@@ -288,7 +288,7 @@ describe('MapProvider', () => {
         expect(defaultValue).toBe('defaultValue');
         expect(data).toBe('defaultValue');
 
-        const sizeAfter = provider.size({ method: Method.Size, data: 0 });
+        const sizeAfter = provider.size({ method: Method.Size });
 
         expect(sizeAfter.data).toBe(1);
       });
@@ -296,7 +296,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ value at key THEN returns payload w/ data as value at key', () => {
         provider.set({ method: Method.Set, key: 'test:ensure', path: [], value: 'value' });
 
-        const payload = provider.ensure({ method: Method.Ensure, key: 'test:ensure', defaultValue: 'defaultValue', data: 'defaultValue' });
+        const payload = provider.ensure({ method: Method.Ensure, key: 'test:ensure', defaultValue: 'defaultValue' });
 
         expect(typeof payload).toBe('object');
 
@@ -314,7 +314,7 @@ describe('MapProvider', () => {
     describe('with every method', () => {
       describe('hook type', () => {
         test('GIVEN provider w/o data THEN returns payload(true)', async () => {
-          const payload = await provider.every({ method: Method.Every, type: Payload.Type.Hook, hook: (value) => value === 'value', data: true });
+          const payload = await provider.every({ method: Method.Every, type: Payload.Type.Hook, hook: (value) => value === 'value' });
 
           expect(typeof payload).toBe('object');
 
@@ -330,14 +330,14 @@ describe('MapProvider', () => {
         test('GIVEN provider w/ data THEN returns payload(true)', async () => {
           provider.setMany({
             method: Method.SetMany,
-            data: [
+            entries: [
               [{ key: 'firstKey', path: [] }, 'value'],
               [{ key: 'secondKey', path: [] }, 'value']
             ],
             overwrite: true
           });
 
-          const payload = await provider.every({ method: Method.Every, type: Payload.Type.Hook, hook: (value) => value === 'value', data: true });
+          const payload = await provider.every({ method: Method.Every, type: Payload.Type.Hook, hook: (value) => value === 'value' });
 
           expect(typeof payload).toBe('object');
 
@@ -353,7 +353,7 @@ describe('MapProvider', () => {
 
       describe('value type', () => {
         test('GIVEN provider w/o data THEN returns payload(false)', async () => {
-          const payload = await provider.every({ method: Method.Every, type: Payload.Type.Value, path: ['path'], value: 'value', data: true });
+          const payload = await provider.every({ method: Method.Every, type: Payload.Type.Value, path: ['path'], value: 'value' });
 
           expect(typeof payload).toBe('object');
 
@@ -370,14 +370,14 @@ describe('MapProvider', () => {
         test('GIVEN provider w/ data THEN returns payload(true)', async () => {
           provider.setMany({
             method: Method.SetMany,
-            data: [
+            entries: [
               [{ key: 'firstKey', path: ['path'] }, 'value'],
               [{ key: 'secondKey', path: ['path'] }, 'value']
             ],
             overwrite: true
           });
 
-          const payload = await provider.every({ method: Method.Every, type: Payload.Type.Value, path: ['path'], value: 'value', data: true });
+          const payload = await provider.every({ method: Method.Every, type: Payload.Type.Value, path: ['path'], value: 'value' });
 
           expect(typeof payload).toBe('object');
 
@@ -396,7 +396,7 @@ describe('MapProvider', () => {
     describe('with filter method', () => {
       describe('hook type', () => {
         test('GIVEN provider w/o data THEN returns payload w/o data from filter', async () => {
-          const payload = await provider.filter({ method: Method.Filter, type: Payload.Type.Hook, hook: (value) => value === 'value', data: {} });
+          const payload = await provider.filter({ method: Method.Filter, type: Payload.Type.Hook, hook: (value) => value === 'value' });
 
           expect(typeof payload).toBe('object');
 
@@ -412,7 +412,7 @@ describe('MapProvider', () => {
         test('GIVEN provider w/ data THEN returns payload w/ data from filter', async () => {
           provider.set({ method: Method.Set, key: 'test:filter', path: [], value: 'value' });
 
-          const payload = await provider.filter({ method: Method.Filter, type: Payload.Type.Hook, hook: (value) => value === 'value', data: {} });
+          const payload = await provider.filter({ method: Method.Filter, type: Payload.Type.Hook, hook: (value) => value === 'value' });
 
           expect(typeof payload).toBe('object');
 
@@ -428,7 +428,7 @@ describe('MapProvider', () => {
 
       describe('value type', () => {
         test('GIVEN provider w/o data THEN returns payload w/o data from filter', async () => {
-          const payload = await provider.filter({ method: Method.Filter, type: Payload.Type.Value, path: ['path'], value: 'value', data: {} });
+          const payload = await provider.filter({ method: Method.Filter, type: Payload.Type.Value, path: ['path'], value: 'value' });
 
           expect(typeof payload).toBe('object');
 
@@ -445,7 +445,7 @@ describe('MapProvider', () => {
         test('GIVEN provider w/ data THEN returns payload w/ data from filter', async () => {
           provider.set({ method: Method.Set, key: 'test:filter', path: ['path'], value: 'value' });
 
-          const payload = await provider.filter({ method: Method.Filter, type: Payload.Type.Value, path: ['path'], value: 'value', data: {} });
+          const payload = await provider.filter({ method: Method.Filter, type: Payload.Type.Value, path: ['path'], value: 'value' });
 
           expect(typeof payload).toBe('object');
 
@@ -474,7 +474,7 @@ describe('MapProvider', () => {
           expect(trigger).toBeUndefined();
           expect(error).toBeUndefined();
           expect(typeof hook).toBe('function');
-          expect(data).toBeUndefined();
+          expect(data).toEqual([null, null]);
         });
 
         test('GIVEN provider w/ data THEN returns payload w/ data from find', async () => {
@@ -507,7 +507,7 @@ describe('MapProvider', () => {
           expect(error).toBeUndefined();
           expect(path).toEqual(['path']);
           expect(value).toBe('value');
-          expect(data).toBeUndefined();
+          expect(data).toEqual([null, null]);
         });
 
         test('GIVEN provider w/ data THEN returns payload w/o data from find', async () => {
@@ -582,7 +582,7 @@ describe('MapProvider', () => {
 
     describe('with getAll method', () => {
       test('GIVEN provider w/o data THEN returns payload w/o data from getAll', () => {
-        const payload = provider.getAll({ method: Method.GetAll, data: {} });
+        const payload = provider.getAll({ method: Method.GetAll });
 
         expect(typeof payload).toBe('object');
 
@@ -597,7 +597,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ data THEN returns payload w/ data from getAll', () => {
         provider.set({ method: Method.Set, key: 'test:getAll', path: [], value: 'value' });
 
-        const payload = provider.getAll({ method: Method.GetAll, data: {} });
+        const payload = provider.getAll({ method: Method.GetAll });
 
         expect(typeof payload).toBe('object');
 
@@ -612,7 +612,7 @@ describe('MapProvider', () => {
 
     describe('with getMany method', () => {
       test('GIVEN provider w/o data THEN returns payload w/o data from getMany', () => {
-        const payload = provider.getMany({ method: Method.GetMany, keys: ['test:getMany'], data: {} });
+        const payload = provider.getMany({ method: Method.GetMany, keys: ['test:getMany'] });
 
         expect(typeof payload).toBe('object');
 
@@ -628,7 +628,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ data THEN returns payload w/ data from getMany', () => {
         provider.set({ method: Method.Set, key: 'test:getMany', path: [], value: 'value' });
 
-        const payload = provider.getMany({ method: Method.GetMany, keys: ['test:getMany'], data: {} });
+        const payload = provider.getMany({ method: Method.GetMany, keys: ['test:getMany'] });
 
         expect(typeof payload).toBe('object');
 
@@ -644,7 +644,7 @@ describe('MapProvider', () => {
 
     describe('with has method', () => {
       test('GIVEN provider w/o data at key THEN returns payload(false)', () => {
-        const payload = provider.has({ method: Method.Has, key: 'test:has', path: [], data: false });
+        const payload = provider.has({ method: Method.Has, key: 'test:has', path: [] });
 
         expect(typeof payload).toBe('object');
 
@@ -661,7 +661,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/o data at path THEN returns payload(false)', () => {
         provider.set({ method: Method.Set, key: 'test:has', path: [], value: 'value' });
 
-        const payload = provider.has({ method: Method.Has, key: 'test:has', path: ['path'], data: false });
+        const payload = provider.has({ method: Method.Has, key: 'test:has', path: ['path'] });
 
         expect(typeof payload).toBe('object');
 
@@ -678,7 +678,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ data at key THEN returns payload(true)', () => {
         provider.set({ method: Method.Set, key: 'test:has', path: [], value: 'value' });
 
-        const payload = provider.has({ method: Method.Has, key: 'test:has', path: [], data: false });
+        const payload = provider.has({ method: Method.Has, key: 'test:has', path: [] });
 
         expect(typeof payload).toBe('object');
 
@@ -695,7 +695,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ data at path THEN returns payload(true)', () => {
         provider.set({ method: Method.Set, key: 'test:has', path: ['path'], value: 'value' });
 
-        const payload = provider.has({ method: Method.Has, key: 'test:has', path: ['path'], data: false });
+        const payload = provider.has({ method: Method.Has, key: 'test:has', path: ['path'] });
 
         expect(typeof payload).toBe('object');
 
@@ -810,7 +810,7 @@ describe('MapProvider', () => {
 
     describe('with keys method', () => {
       test('GIVEN provider w/o data THEN returns payload w/o data from keys', () => {
-        const payload = provider.keys({ method: Method.Keys, data: [] });
+        const payload = provider.keys({ method: Method.Keys });
 
         expect(typeof payload).toBe('object');
 
@@ -825,7 +825,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ data THEN returns payload w/ data from keys', () => {
         provider.set({ method: Method.Set, key: 'test:keys', path: [], value: 'value' });
 
-        const payload = provider.keys({ method: Method.Keys, data: [] });
+        const payload = provider.keys({ method: Method.Keys });
 
         expect(typeof payload).toBe('object');
 
@@ -841,7 +841,7 @@ describe('MapProvider', () => {
     describe('with map method', () => {
       describe('hook type', () => {
         test('GIVEN provider w/o data THEN returns payload w/o data from map', async () => {
-          const payload = await provider.map({ method: Method.Map, type: Payload.Type.Hook, hook: (value) => value, data: [] });
+          const payload = await provider.map({ method: Method.Map, type: Payload.Type.Hook, hook: (value) => value });
 
           expect(typeof payload).toBe('object');
 
@@ -857,7 +857,7 @@ describe('MapProvider', () => {
         test('GIVEN provider w/ data THEN returns payload w/ data from map', async () => {
           provider.set({ method: Method.Set, key: 'test:map', path: [], value: 'value' });
 
-          const payload = await provider.map({ method: Method.Map, type: Payload.Type.Hook, hook: (value) => value, data: [] });
+          const payload = await provider.map({ method: Method.Map, type: Payload.Type.Hook, hook: (value) => value });
 
           expect(typeof payload).toBe('object');
 
@@ -873,7 +873,7 @@ describe('MapProvider', () => {
 
       describe('path type', () => {
         test('GIVEN provider w/o data THEN returns payload w/o data from map', async () => {
-          const payload = await provider.map({ method: Method.Map, type: Payload.Type.Path, path: [], data: [] });
+          const payload = await provider.map({ method: Method.Map, type: Payload.Type.Path, path: [] });
 
           expect(typeof payload).toBe('object');
 
@@ -889,7 +889,7 @@ describe('MapProvider', () => {
         test('GIVEN provider w/ data THEN returns payload w/ data from map', async () => {
           provider.set({ method: Method.Set, key: 'test:map', path: [], value: 'value' });
 
-          const payload = await provider.map({ method: Method.Map, type: Payload.Type.Path, path: [], data: [] });
+          const payload = await provider.map({ method: Method.Map, type: Payload.Type.Path, path: [] });
 
           expect(typeof payload).toBe('object');
 
@@ -905,7 +905,7 @@ describe('MapProvider', () => {
         test('GIVEN provider w/ data at path THEN returns payload w/ data from map', async () => {
           provider.set({ method: Method.Set, key: 'test:map', path: ['path'], value: 'value' });
 
-          const payload = await provider.map({ method: Method.Map, type: Payload.Type.Path, path: ['path'], data: [] });
+          const payload = await provider.map({ method: Method.Map, type: Payload.Type.Path, path: ['path'] });
 
           expect(typeof payload).toBe('object');
 
@@ -1002,8 +1002,7 @@ describe('MapProvider', () => {
           const payload = await provider.partition({
             method: Method.Partition,
             type: Payload.Type.Hook,
-            hook: (value) => value === 'value',
-            data: { truthy: {}, falsy: {} }
+            hook: (value) => value === 'value'
           });
 
           expect(typeof payload).toBe('object');
@@ -1015,8 +1014,8 @@ describe('MapProvider', () => {
           expect(error).toBeUndefined();
           expect(type).toBe(Payload.Type.Hook);
           expect(typeof hook).toBe('function');
-          expect(data.truthy).toEqual({});
-          expect(data.falsy).toEqual({});
+          expect(data?.truthy).toEqual({});
+          expect(data?.falsy).toEqual({});
         });
 
         test('GIVEN provider w/ data THEN returns payload w/ data', async () => {
@@ -1025,8 +1024,7 @@ describe('MapProvider', () => {
           const payload = await provider.partition({
             method: Method.Partition,
             type: Payload.Type.Hook,
-            hook: (value) => value === 'value',
-            data: { truthy: {}, falsy: {} }
+            hook: (value) => value === 'value'
           });
 
           expect(typeof payload).toBe('object');
@@ -1038,8 +1036,8 @@ describe('MapProvider', () => {
           expect(error).toBeUndefined();
           expect(type).toBe(Payload.Type.Hook);
           expect(typeof hook).toBe('function');
-          expect(data.truthy).toEqual({ 'test:partition': 'value' });
-          expect(data.falsy).toEqual({});
+          expect(data?.truthy).toEqual({ 'test:partition': 'value' });
+          expect(data?.falsy).toEqual({});
         });
 
         test('GIVEN provider w/ data THEN returns payload w/ data', async () => {
@@ -1048,8 +1046,7 @@ describe('MapProvider', () => {
           const payload = await provider.partition({
             method: Method.Partition,
             type: Payload.Type.Hook,
-            hook: (value) => value !== 'value',
-            data: { truthy: {}, falsy: {} }
+            hook: (value) => value !== 'value'
           });
 
           expect(typeof payload).toBe('object');
@@ -1061,8 +1058,8 @@ describe('MapProvider', () => {
           expect(error).toBeUndefined();
           expect(type).toBe(Payload.Type.Hook);
           expect(typeof hook).toBe('function');
-          expect(data.truthy).toEqual({});
-          expect(data.falsy).toEqual({ 'test:partition': 'value' });
+          expect(data?.truthy).toEqual({});
+          expect(data?.falsy).toEqual({ 'test:partition': 'value' });
         });
       });
 
@@ -1072,8 +1069,7 @@ describe('MapProvider', () => {
             method: Method.Partition,
             type: Payload.Type.Value,
             path: [],
-            value: 'value',
-            data: { truthy: {}, falsy: {} }
+            value: 'value'
           });
 
           expect(typeof payload).toBe('object');
@@ -1086,8 +1082,8 @@ describe('MapProvider', () => {
           expect(type).toBe(Payload.Type.Value);
           expect(path).toEqual([]);
           expect(value).toBe('value');
-          expect(data.truthy).toEqual({});
-          expect(data.falsy).toEqual({});
+          expect(data?.truthy).toEqual({});
+          expect(data?.falsy).toEqual({});
         });
 
         test('GIVEN provider w/ data THEN returns payload w/ data', async () => {
@@ -1097,8 +1093,7 @@ describe('MapProvider', () => {
             method: Method.Partition,
             type: Payload.Type.Value,
             path: [],
-            value: 'value',
-            data: { truthy: {}, falsy: {} }
+            value: 'value'
           });
 
           expect(typeof payload).toBe('object');
@@ -1111,8 +1106,8 @@ describe('MapProvider', () => {
           expect(type).toBe(Payload.Type.Value);
           expect(path).toEqual([]);
           expect(value).toBe('value');
-          expect(data.truthy).toEqual({ 'test:partition': 'value' });
-          expect(data.falsy).toEqual({});
+          expect(data?.truthy).toEqual({ 'test:partition': 'value' });
+          expect(data?.falsy).toEqual({});
         });
 
         test('GIVEN provider w/ data THEN returns payload w/ data', async () => {
@@ -1122,8 +1117,7 @@ describe('MapProvider', () => {
             method: Method.Partition,
             type: Payload.Type.Value,
             path: [],
-            value: 'anotherValue',
-            data: { truthy: {}, falsy: {} }
+            value: 'anotherValue'
           });
 
           expect(typeof payload).toBe('object');
@@ -1136,8 +1130,8 @@ describe('MapProvider', () => {
           expect(type).toBe(Payload.Type.Value);
           expect(path).toEqual([]);
           expect(value).toBe('anotherValue');
-          expect(data.truthy).toEqual({});
-          expect(data.falsy).toEqual({ 'test:partition': 'value' });
+          expect(data?.truthy).toEqual({});
+          expect(data?.falsy).toEqual({ 'test:partition': 'value' });
         });
       });
     });
@@ -1458,7 +1452,7 @@ describe('MapProvider', () => {
 
     describe('with set method', () => {
       test('GIVEN provider w/o data THEN returns payload AND sets value at key', () => {
-        const hasBefore = provider.has({ method: Method.Has, key: 'test:set', path: [], data: false });
+        const hasBefore = provider.has({ method: Method.Has, key: 'test:set', path: [] });
 
         expect(hasBefore.data).toBe(false);
 
@@ -1475,13 +1469,13 @@ describe('MapProvider', () => {
         expect(path).toEqual([]);
         expect(value).toBe('value');
 
-        const hasAfter = provider.has({ method: Method.Has, key: 'test:set', path: [], data: false });
+        const hasAfter = provider.has({ method: Method.Has, key: 'test:set', path: [] });
 
         expect(hasAfter.data).toBe(true);
       });
 
       test('GIVEN provider w/o data THEN returns payload AND sets value at key and path', () => {
-        const hasBefore = provider.has({ method: Method.Has, key: 'test:set', path: ['path'], data: false });
+        const hasBefore = provider.has({ method: Method.Has, key: 'test:set', path: ['path'] });
 
         expect(hasBefore.data).toBe(false);
 
@@ -1498,7 +1492,7 @@ describe('MapProvider', () => {
         expect(path).toEqual(['path']);
         expect(value).toBe('value');
 
-        const hasAfter = provider.has({ method: Method.Has, key: 'test:set', path: ['path'], data: false });
+        const hasAfter = provider.has({ method: Method.Has, key: 'test:set', path: ['path'] });
 
         expect(hasAfter.data).toBe(true);
       });
@@ -1506,26 +1500,26 @@ describe('MapProvider', () => {
 
     describe('with setMany method', () => {
       test('GIVEN provider w/o data THEN returns payload AND sets value at key', () => {
-        const hasBefore = provider.has({ method: Method.Has, key: 'test:setMany', path: [], data: false });
+        const hasBefore = provider.has({ method: Method.Has, key: 'test:setMany', path: [] });
 
         expect(hasBefore.data).toBe(false);
 
-        const payload = provider.setMany({ method: Method.SetMany, data: [[{ key: 'test:setMany', path: [] }, 'value']], overwrite: true });
+        const payload = provider.setMany({ method: Method.SetMany, entries: [[{ key: 'test:setMany', path: [] }, 'value']], overwrite: true });
 
         expect(typeof payload).toBe('object');
 
-        const { method, trigger, error, data } = payload;
+        const { method, trigger, error, entries } = payload;
 
         expect(method).toBe(Method.SetMany);
         expect(trigger).toBeUndefined();
         expect(error).toBeUndefined();
-        expect(data).toEqual([[{ key: 'test:setMany', path: [] }, 'value']]);
+        expect(entries).toEqual([[{ key: 'test:setMany', path: [] }, 'value']]);
       });
     });
 
     describe('with size method', () => {
       test('GIVEN provider w/o data THEN returns payload(0)', () => {
-        const payload = provider.size({ method: Method.Size, data: 0 });
+        const payload = provider.size({ method: Method.Size });
 
         expect(typeof payload).toBe('object');
 
@@ -1540,7 +1534,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ data THEN returns payload(1)', () => {
         provider.set({ method: Method.Set, key: 'test:size', path: [], value: 'value' });
 
-        const payload = provider.size({ method: Method.Size, data: 0 });
+        const payload = provider.size({ method: Method.Size });
 
         expect(typeof payload).toBe('object');
 
@@ -1556,7 +1550,7 @@ describe('MapProvider', () => {
     describe('with some method', () => {
       describe('hook type', () => {
         test('GIVEN provider w/o data THEN returns payload(false)', async () => {
-          const payload = await provider.some({ method: Method.Some, type: Payload.Type.Hook, hook: (value) => value === 'value', data: false });
+          const payload = await provider.some({ method: Method.Some, type: Payload.Type.Hook, hook: (value) => value === 'value' });
 
           expect(typeof payload).toBe('object');
 
@@ -1572,7 +1566,7 @@ describe('MapProvider', () => {
         test('GIVEN provider w/ data THEN returns payload(true)', async () => {
           provider.set({ method: Method.Set, key: 'test:some', path: [], value: 'value' });
 
-          const payload = await provider.some({ method: Method.Some, type: Payload.Type.Hook, hook: (value) => value === 'value', data: false });
+          const payload = await provider.some({ method: Method.Some, type: Payload.Type.Hook, hook: (value) => value === 'value' });
 
           expect(typeof payload).toBe('object');
 
@@ -1588,7 +1582,7 @@ describe('MapProvider', () => {
 
       describe('value type', () => {
         test('GIVEN provider w/o data THEN returns payload(false)', async () => {
-          const payload = await provider.some({ method: Method.Some, type: Payload.Type.Value, path: ['path'], value: 'value', data: false });
+          const payload = await provider.some({ method: Method.Some, type: Payload.Type.Value, path: ['path'], value: 'value' });
 
           expect(typeof payload).toBe('object');
 
@@ -1605,7 +1599,7 @@ describe('MapProvider', () => {
         test('GIVEN provider w/ data THEN returns payload(true)', async () => {
           provider.set({ method: Method.Set, key: 'test:some', path: ['path'], value: 'value' });
 
-          const payload = await provider.some({ method: Method.Some, type: Payload.Type.Value, path: ['path'], value: 'value', data: false });
+          const payload = await provider.some({ method: Method.Some, type: Payload.Type.Value, path: ['path'], value: 'value' });
 
           expect(typeof payload).toBe('object');
 
@@ -1627,7 +1621,7 @@ describe('MapProvider', () => {
 
         expect(typeof payload).toBe('object');
 
-        const { method, trigger, error, key, path, hook, data } = payload;
+        const { method, trigger, error, key, path, hook } = payload;
 
         expect(method).toBe(Method.Update);
         expect(trigger).toBeUndefined();
@@ -1635,7 +1629,6 @@ describe('MapProvider', () => {
         expect(key).toBe('test:update');
         expect(path).toEqual([]);
         expect(typeof hook).toBe('function');
-        expect(data).toBeUndefined();
       });
 
       test('GIVEN provider w/ data at key THEN returns payload w/ data AND updates value at key', async () => {
@@ -1645,7 +1638,7 @@ describe('MapProvider', () => {
 
         expect(typeof payload).toBe('object');
 
-        const { method, trigger, error, key, path, hook, data } = payload;
+        const { method, trigger, error, key, path, hook } = payload;
 
         expect(method).toBe(Method.Update);
         expect(trigger).toBeUndefined();
@@ -1653,7 +1646,6 @@ describe('MapProvider', () => {
         expect(key).toBe('test:update');
         expect(path).toEqual([]);
         expect(typeof hook).toBe('function');
-        expect(data).toBe('value');
       });
 
       test('GIVEN provider w/ data at path THEN returns payload w/ data AND updates value at path', async () => {
@@ -1663,7 +1655,7 @@ describe('MapProvider', () => {
 
         expect(typeof payload).toBe('object');
 
-        const { method, trigger, error, key, path, hook, data } = payload;
+        const { method, trigger, error, key, path, hook } = payload;
 
         expect(method).toBe(Method.Update);
         expect(trigger).toBeUndefined();
@@ -1671,13 +1663,12 @@ describe('MapProvider', () => {
         expect(key).toBe('test:update');
         expect(path).toEqual(['path']);
         expect(typeof hook).toBe('function');
-        expect(data).toBe('value');
       });
     });
 
     describe('with values method', () => {
       test('GIVEN provider w/o data THEN returns payload w/o data', () => {
-        const payload = provider.values({ method: Method.Values, data: [] });
+        const payload = provider.values({ method: Method.Values });
 
         expect(typeof payload).toBe('object');
 
@@ -1692,7 +1683,7 @@ describe('MapProvider', () => {
       test('GIVEN provider w/ data THEN returns payload w/ data', () => {
         provider.set({ method: Method.Set, key: 'test:values', path: [], value: 'value' });
 
-        const payload = provider.values({ method: Method.Values, data: [] });
+        const payload = provider.values({ method: Method.Values });
 
         expect(typeof payload).toBe('object');
 

@@ -24,7 +24,7 @@
     "docs": "typedoc",
     "lint": "eslint src tests --ext ts --fix",
     "format": "prettier --write {src,tests}/**/*.ts",
-    "test": "jest --verbose",
+    "test": "jest",
     "update": "yarn upgrade-interactive --latest",
     "build": "rollup -c rollup.bundle.ts",
     "watch": "tsc -b src -w",

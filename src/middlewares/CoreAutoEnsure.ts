@@ -1,20 +1,6 @@
 import { ApplyMiddlewareOptions } from '../lib/decorators/ApplyMiddlewareOptions';
-import type {
-  DecPayload,
-  GetManyPayload,
-  GetPayload,
-  IncPayload,
-  MathPayload,
-  PushPayload,
-  RemoveByHookPayload,
-  RemoveByValuePayload,
-  RemovePayload,
-  SetManyPayload,
-  SetPayload,
-  UpdatePayload
-} from '../lib/payloads';
 import { Middleware } from '../lib/structures/Middleware';
-import { BuiltInMiddleware, Method } from '../lib/types';
+import { BuiltInMiddleware, Method, Payloads } from '../lib/types';
 
 @ApplyMiddlewareOptions({
   name: BuiltInMiddleware.AutoEnsure,
@@ -24,8 +10,8 @@ import { BuiltInMiddleware, Method } from '../lib/types';
     post: [Method.Get, Method.GetMany, Method.Update]
   }
 })
-export class CoreAutoEnsure extends Middleware {
-  public async [Method.Dec](payload: DecPayload): Promise<DecPayload> {
+export class CoreAutoEnsure<StoredValue = unknown> extends Middleware<StoredValue> {
+  public async [Method.Dec](payload: Payloads.Dec): Promise<Payloads.Dec> {
     if (!this.context) return payload;
 
     const { defaultValue } = this.context;
@@ -36,7 +22,7 @@ export class CoreAutoEnsure extends Middleware {
     return payload;
   }
 
-  public async [Method.Get]<Value>(payload: GetPayload<Value>): Promise<GetPayload<Value>> {
+  public async [Method.Get]<Value = StoredValue>(payload: Payloads.Get<Value>): Promise<Payloads.Get<Value>> {
     if (payload.data !== undefined) return payload;
     if (!this.context) return payload;
 
@@ -49,7 +35,7 @@ export class CoreAutoEnsure extends Middleware {
     return payload;
   }
 
-  public async [Method.GetMany]<Value>(payload: GetManyPayload<Value>): Promise<GetManyPayload<Value>> {
+  public async [Method.GetMany](payload: Payloads.GetMany<StoredValue>): Promise<Payloads.GetMany<StoredValue>> {
     if (Object.keys(payload.data).length !== 0) return payload;
     if (!this.context) return payload;
 
@@ -66,7 +52,7 @@ export class CoreAutoEnsure extends Middleware {
     return payload;
   }
 
-  public async [Method.Inc](payload: IncPayload): Promise<IncPayload> {
+  public async [Method.Inc](payload: Payloads.Inc): Promise<Payloads.Inc> {
     if (!this.context) return payload;
 
     const { defaultValue } = this.context;
@@ -77,7 +63,7 @@ export class CoreAutoEnsure extends Middleware {
     return payload;
   }
 
-  public async [Method.Push]<Value>(payload: PushPayload<Value>): Promise<PushPayload<Value>> {
+  public async [Method.Push]<Value>(payload: Payloads.Push<Value>): Promise<Payloads.Push<Value>> {
     if (!this.context) return payload;
 
     const { defaultValue } = this.context;
@@ -88,7 +74,7 @@ export class CoreAutoEnsure extends Middleware {
     return payload;
   }
 
-  public async [Method.Math](payload: MathPayload): Promise<MathPayload> {
+  public async [Method.Math](payload: Payloads.Math): Promise<Payloads.Math> {
     if (!this.context) return payload;
 
     const { defaultValue } = this.context;
@@ -99,9 +85,9 @@ export class CoreAutoEnsure extends Middleware {
     return payload;
   }
 
-  public async [Method.Remove]<HookValue>(payload: RemoveByHookPayload<HookValue>): Promise<RemoveByHookPayload<HookValue>>;
-  public async [Method.Remove](payload: RemoveByValuePayload): Promise<RemoveByValuePayload>;
-  public async [Method.Remove]<HookValue>(payload: RemovePayload<HookValue>): Promise<RemovePayload<HookValue>> {
+  public async [Method.Remove]<Value = StoredValue>(payload: Payloads.Remove.ByHook<Value>): Promise<Payloads.Remove.ByHook<Value>>;
+  public async [Method.Remove](payload: Payloads.Remove.ByValue): Promise<Payloads.Remove.ByValue>;
+  public async [Method.Remove]<Value = StoredValue>(payload: Payloads.Remove<Value>): Promise<Payloads.Remove<Value>> {
     if (!this.context) return payload;
 
     const { defaultValue } = this.context;
@@ -112,7 +98,7 @@ export class CoreAutoEnsure extends Middleware {
     return payload;
   }
 
-  public async [Method.Set]<Value>(payload: SetPayload<Value>): Promise<SetPayload<Value>> {
+  public async [Method.Set]<Value = StoredValue>(payload: Payloads.Set<Value>): Promise<Payloads.Set<Value>> {
     if (!this.context) return payload;
 
     const { defaultValue } = this.context;
@@ -123,7 +109,7 @@ export class CoreAutoEnsure extends Middleware {
     return payload;
   }
 
-  public async [Method.SetMany]<Value>(payload: SetManyPayload<Value>): Promise<SetManyPayload<Value>> {
+  public async [Method.SetMany]<Value>(payload: Payloads.SetMany<Value>): Promise<Payloads.SetMany<Value>> {
     if (!this.context) return payload;
 
     const { defaultValue } = this.context;
@@ -133,9 +119,7 @@ export class CoreAutoEnsure extends Middleware {
     return payload;
   }
 
-  public async [Method.Update]<StoredValue, Value, HookValue>(
-    payload: UpdatePayload<StoredValue, Value, HookValue>
-  ): Promise<UpdatePayload<StoredValue, Value, HookValue>> {
+  public async [Method.Update]<Value = StoredValue>(payload: Payloads.Update<StoredValue, Value>): Promise<Payloads.Update<StoredValue, Value>> {
     if (!this.context) return payload;
 
     const { defaultValue } = this.context;
@@ -146,13 +130,14 @@ export class CoreAutoEnsure extends Middleware {
     return payload;
   }
 
-  private get context(): CoreAutoEnsure.ContextData | undefined {
+  private get context(): CoreAutoEnsure.ContextData<StoredValue> | undefined {
+    // @ts-expect-error 2322
     return this.instance.options.middlewareContextData?.[BuiltInMiddleware.AutoEnsure];
   }
 }
 
 export namespace CoreAutoEnsure {
-  export interface ContextData<Value = unknown> extends Middleware.ContextData {
-    defaultValue: Value;
+  export interface ContextData<StoredValue = unknown> extends Middleware.ContextData {
+    defaultValue: StoredValue;
   }
 }

@@ -1,22 +1,21 @@
-import { Payload, RemoveByHookPayload, RemoveByValuePayload, RemovePayload } from '../../../payloads';
-import { Method } from '../../../types';
+import { Method, Payload, Payloads } from '../../../types';
 
 /**
- * Validates whether the given payload is {@link RemoveByHookPayload}
+ * Validates whether the given payload is {@link Payloads.Remove.ByHook}
  * @since 2.0.0
  * @param payload The payload to validate.
  * @returns Validation boolean.
  */
-export function isRemoveByHookPayload<HookValue>(payload: RemovePayload<HookValue>): payload is RemoveByHookPayload<HookValue> {
+export function isRemoveByHookPayload<Value>(payload: Payloads.Remove<Value>): payload is Payloads.Remove.ByHook<Value> {
   return payload.method === Method.Remove && payload.type === Payload.Type.Hook;
 }
 
 /**
- * Validates whether the given payload is {@link RemoveByValuePayload}
+ * Validates whether the given payload is {@link Payloads.Remove.ByValue}
  * @since 2.0.0
  * @param payload The payload to validate.
  * @returns Validation boolean.
  */
-export function isRemoveByValuePayload<HookValue>(payload: RemovePayload<HookValue>): payload is RemoveByValuePayload {
+export function isRemoveByValuePayload<Value>(payload: Payloads.Remove<Value>): payload is Payloads.Remove.ByValue {
   return payload.method === Method.Remove && payload.type === Payload.Type.Value;
 }
