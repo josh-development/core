@@ -8,8 +8,8 @@ import { Method, Payloads } from '../lib/types';
   name: 'cache',
   position: 0,
   conditions: {
-    pre: [],
-    post: []
+    pre: [Method.Ensure],
+    post: [Method.Clear, Method.Dec, Method.Delete, Method.DeleteMany]
   }
 })
 export class CoreCache<StoredValue = unknown> extends Middleware<StoredValue> {
