@@ -1,5 +1,4 @@
-import { Payload, SomeByHookPayload, SomeByValuePayload, SomePayload } from '../../../payloads';
-import { Method } from '../../../types';
+import { Method, Payload, Payloads } from '../../../types';
 
 /**
  * Validates whether the given payload is {@link SomeByHookPayload}
@@ -7,7 +6,7 @@ import { Method } from '../../../types';
  * @param payload The payload to validate.
  * @returns Validation boolean.
  */
-export function isSomeByHookPayload<HookValue>(payload: SomePayload<HookValue>): payload is SomeByHookPayload<HookValue> {
+export function isSomeByHookPayload<StoredValue>(payload: Payloads.Some<StoredValue>): payload is Payloads.Some.ByHook<StoredValue> {
   return payload.method === Method.Some && payload.type === Payload.Type.Hook;
 }
 
@@ -17,6 +16,6 @@ export function isSomeByHookPayload<HookValue>(payload: SomePayload<HookValue>):
  * @param payload The payload to validate.
  * @returns Validation boolean.
  */
-export function isSomeByValuePayload<HookValue>(payload: SomePayload<HookValue>): payload is SomeByValuePayload {
+export function isSomeByValuePayload<StoredValue>(payload: Payloads.Some<StoredValue>): payload is Payloads.Some.ByValue {
   return payload.method === Method.Some && payload.type === Payload.Type.Value;
 }

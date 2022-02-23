@@ -1,51 +1,6 @@
 import type { Awaitable } from '@sapphire/utilities';
 import { JoshError } from '../errors';
-import type {
-  AutoKeyPayload,
-  ClearPayload,
-  DecPayload,
-  DeleteManyPayload,
-  DeletePayload,
-  EnsurePayload,
-  EveryByHookPayload,
-  EveryByValuePayload,
-  EveryPayload,
-  FilterByHookPayload,
-  FilterByValuePayload,
-  FilterPayload,
-  FindByHookPayload,
-  FindByValuePayload,
-  FindPayload,
-  GetAllPayload,
-  GetManyPayload,
-  GetPayload,
-  HasPayload,
-  IncPayload,
-  KeysPayload,
-  MapByHookPayload,
-  MapByPathPayload,
-  MapPayload,
-  MathPayload,
-  PartitionByHookPayload,
-  PartitionByValuePayload,
-  PartitionPayload,
-  Payload,
-  PushPayload,
-  RandomKeyPayload,
-  RandomPayload,
-  RemoveByHookPayload,
-  RemoveByValuePayload,
-  RemovePayload,
-  SetManyPayload,
-  SetPayload,
-  SizePayload,
-  SomeByHookPayload,
-  SomeByValuePayload,
-  SomePayload,
-  UpdatePayload,
-  ValuesPayload
-} from '../payloads';
-import { Method } from '../types';
+import { Method, Payload, Payloads } from '../types';
 import type { Josh } from './Josh';
 import type { JoshProvider } from './JoshProvider';
 import type { MiddlewareStore } from './MiddlewareStore';
@@ -133,138 +88,136 @@ export class Middleware<StoredValue = unknown> {
     return this;
   }
 
-  public [Method.AutoKey](payload: AutoKeyPayload): Awaitable<AutoKeyPayload> {
+  public [Method.AutoKey](payload: Payloads.AutoKey): Awaitable<Payloads.AutoKey> {
     return payload;
   }
 
-  public [Method.Clear](payload: ClearPayload): Awaitable<ClearPayload> {
+  public [Method.Clear](payload: Payloads.Clear): Awaitable<Payloads.Clear> {
     return payload;
   }
 
-  public [Method.Dec](payload: DecPayload): Awaitable<DecPayload> {
+  public [Method.Dec](payload: Payloads.Dec): Awaitable<Payloads.Dec> {
     return payload;
   }
 
-  public [Method.Delete](payload: DeletePayload): Awaitable<DeletePayload> {
+  public [Method.Delete](payload: Payloads.Delete): Awaitable<Payloads.Delete> {
     return payload;
   }
 
-  public [Method.DeleteMany](payload: DeleteManyPayload): Awaitable<DeleteManyPayload> {
+  public [Method.DeleteMany](payload: Payloads.DeleteMany): Awaitable<Payloads.DeleteMany> {
     return payload;
   }
 
-  public [Method.Ensure](payload: EnsurePayload<StoredValue>): Awaitable<EnsurePayload<StoredValue>> {
+  public [Method.Ensure](payload: Payloads.Ensure<StoredValue>): Awaitable<Payloads.Ensure<StoredValue>> {
     return payload;
   }
 
-  public [Method.Every]<HookValue>(payload: EveryByHookPayload<HookValue>): Awaitable<EveryByHookPayload<HookValue>>;
-  public [Method.Every](payload: EveryByValuePayload): Awaitable<EveryByValuePayload>;
-  public [Method.Every]<HookValue>(payload: EveryPayload<HookValue>): Awaitable<EveryPayload<HookValue>>;
-  public [Method.Every]<HookValue>(payload: EveryPayload<HookValue>): Awaitable<EveryPayload<HookValue>> {
+  public [Method.Every]<StoredValue>(payload: Payloads.Every.ByHook<StoredValue>): Awaitable<Payloads.Every.ByHook<StoredValue>>;
+  public [Method.Every](payload: Payloads.Every.ByValue): Awaitable<Payloads.Every.ByValue>;
+  public [Method.Every]<StoredValue>(payload: Payloads.Every<StoredValue>): Awaitable<Payloads.Every<StoredValue>>;
+  public [Method.Every]<StoredValue>(payload: Payloads.Every<StoredValue>): Awaitable<Payloads.Every<StoredValue>> {
     return payload;
   }
 
-  public [Method.Filter](payload: FilterByHookPayload<StoredValue>): Awaitable<FilterByHookPayload<StoredValue>>;
-  public [Method.Filter](payload: FilterByValuePayload<StoredValue>): Awaitable<FilterByValuePayload<StoredValue>>;
-  public [Method.Filter](payload: FilterPayload<StoredValue>): Awaitable<FilterPayload<StoredValue>>;
-  public [Method.Filter](payload: FilterPayload<StoredValue>): Awaitable<FilterPayload<StoredValue>> {
+  public [Method.Filter](payload: Payloads.Filter.ByHook<StoredValue>): Awaitable<Payloads.Filter.ByHook<StoredValue>>;
+  public [Method.Filter](payload: Payloads.Filter.ByValue<StoredValue>): Awaitable<Payloads.Filter.ByValue<StoredValue>>;
+  public [Method.Filter](payload: Payloads.Filter<StoredValue>): Awaitable<Payloads.Filter<StoredValue>>;
+  public [Method.Filter](payload: Payloads.Filter<StoredValue>): Awaitable<Payloads.Filter<StoredValue>> {
     return payload;
   }
 
-  public [Method.Find](payload: FindByHookPayload<StoredValue>): Awaitable<FindByHookPayload<StoredValue>>;
-  public [Method.Find](payload: FindByValuePayload<StoredValue>): Awaitable<FindByValuePayload<StoredValue>>;
-  public [Method.Find](payload: FindPayload<StoredValue>): Awaitable<FindPayload<StoredValue>>;
-  public [Method.Find](payload: FindPayload<StoredValue>): Awaitable<FindPayload<StoredValue>> {
+  public [Method.Find](payload: Payloads.Find.ByHook<StoredValue>): Awaitable<Payloads.Find.ByHook<StoredValue>>;
+  public [Method.Find](payload: Payloads.Find.ByValue<StoredValue>): Awaitable<Payloads.Find.ByValue<StoredValue>>;
+  public [Method.Find](payload: Payloads.Find<StoredValue>): Awaitable<Payloads.Find<StoredValue>>;
+  public [Method.Find](payload: Payloads.Find<StoredValue>): Awaitable<Payloads.Find<StoredValue>> {
     return payload;
   }
 
-  public [Method.Get]<DataValue>(payload: GetPayload<DataValue>): Awaitable<GetPayload<DataValue>> {
+  public [Method.Get]<Value>(payload: Payloads.Get<Value>): Awaitable<Payloads.Get<Value>> {
     return payload;
   }
 
-  public [Method.GetAll]<DataValue>(payload: GetAllPayload<DataValue>): Awaitable<GetAllPayload<DataValue>> {
+  public [Method.GetAll](payload: Payloads.GetAll<StoredValue>): Awaitable<Payloads.GetAll<StoredValue>> {
     return payload;
   }
 
-  public [Method.GetMany]<DataValue>(payload: GetManyPayload<DataValue>): Awaitable<GetManyPayload<DataValue>> {
+  public [Method.GetMany](payload: Payloads.GetMany<StoredValue>): Awaitable<Payloads.GetMany<StoredValue>> {
     return payload;
   }
 
-  public [Method.Has](payload: HasPayload): Awaitable<HasPayload> {
+  public [Method.Has](payload: Payloads.Has): Awaitable<Payloads.Has> {
     return payload;
   }
 
-  public [Method.Inc](payload: IncPayload): Awaitable<IncPayload> {
+  public [Method.Inc](payload: Payloads.Inc): Awaitable<Payloads.Inc> {
     return payload;
   }
 
-  public [Method.Keys](payload: KeysPayload): Awaitable<KeysPayload> {
+  public [Method.Keys](payload: Payloads.Keys): Awaitable<Payloads.Keys> {
     return payload;
   }
 
-  public [Method.Map]<Value, HookValue>(payload: MapByHookPayload<Value, HookValue>): Awaitable<MapByHookPayload<Value, HookValue>>;
-  public [Method.Map]<Value>(payload: MapByPathPayload<Value>): Awaitable<MapByPathPayload<Value>>;
-  public [Method.Map]<Value, HookValue>(payload: MapPayload<Value, HookValue>): Awaitable<MapPayload<Value, HookValue>>;
-  public [Method.Map]<Value, HookValue>(payload: MapPayload<Value, HookValue>): Awaitable<MapPayload<Value, HookValue>> {
+  public [Method.Map]<Value = StoredValue>(payload: Payloads.Map.ByHook<StoredValue, Value>): Awaitable<Payloads.Map.ByHook<StoredValue, Value>>;
+  public [Method.Map]<Value>(payload: Payloads.Map.ByPath<Value>): Awaitable<Payloads.Map.ByPath<Value>>;
+  public [Method.Map]<Value = StoredValue>(payload: Payloads.Map<StoredValue, Value>): Awaitable<Payloads.Map<StoredValue, Value>>;
+  public [Method.Map]<Value = StoredValue>(payload: Payloads.Map<StoredValue, Value>): Awaitable<Payloads.Map<StoredValue, Value>> {
     return payload;
   }
 
-  public [Method.Math](payload: MathPayload): Awaitable<MathPayload> {
+  public [Method.Math](payload: Payloads.Math): Awaitable<Payloads.Math> {
     return payload;
   }
 
-  public [Method.Partition](payload: PartitionByHookPayload<StoredValue>): Awaitable<PartitionByHookPayload<StoredValue>>;
-  public [Method.Partition](payload: PartitionByValuePayload<StoredValue>): Awaitable<PartitionByValuePayload<StoredValue>>;
-  public [Method.Partition](payload: PartitionPayload<StoredValue>): Awaitable<PartitionPayload<StoredValue>>;
-  public [Method.Partition](payload: PartitionPayload<StoredValue>): Awaitable<PartitionPayload<StoredValue>> {
+  public [Method.Partition](payload: Payloads.Partition.ByHook<StoredValue>): Awaitable<Payloads.Partition.ByHook<StoredValue>>;
+  public [Method.Partition](payload: Payloads.Partition.ByValue<StoredValue>): Awaitable<Payloads.Partition.ByValue<StoredValue>>;
+  public [Method.Partition](payload: Payloads.Partition<StoredValue>): Awaitable<Payloads.Partition<StoredValue>>;
+  public [Method.Partition](payload: Payloads.Partition<StoredValue>): Awaitable<Payloads.Partition<StoredValue>> {
     return payload;
   }
 
-  public [Method.Push]<Value>(payload: PushPayload<Value>): Awaitable<PushPayload<Value>> {
+  public [Method.Push]<Value>(payload: Payloads.Push<Value>): Awaitable<Payloads.Push<Value>> {
     return payload;
   }
 
-  public [Method.Random](payload: RandomPayload<StoredValue>): Awaitable<RandomPayload<StoredValue>> {
+  public [Method.Random](payload: Payloads.Random<StoredValue>): Awaitable<Payloads.Random<StoredValue>> {
     return payload;
   }
 
-  public [Method.RandomKey](payload: RandomKeyPayload): Awaitable<RandomKeyPayload> {
+  public [Method.RandomKey](payload: Payloads.RandomKey): Awaitable<Payloads.RandomKey> {
     return payload;
   }
 
-  public [Method.Remove]<HookValue>(payload: RemoveByHookPayload<HookValue>): Awaitable<RemoveByHookPayload<HookValue>>;
-  public [Method.Remove](payload: RemoveByValuePayload): Awaitable<RemoveByValuePayload>;
-  public [Method.Remove]<HookValue>(payload: RemovePayload<HookValue>): Awaitable<RemovePayload<HookValue>>;
-  public [Method.Remove]<HookValue>(payload: RemovePayload<HookValue>): Awaitable<RemovePayload<HookValue>> {
+  public [Method.Remove]<StoredValue>(payload: Payloads.Remove.ByHook<StoredValue>): Awaitable<Payloads.Remove.ByHook<StoredValue>>;
+  public [Method.Remove](payload: Payloads.Remove.ByValue): Awaitable<Payloads.Remove.ByValue>;
+  public [Method.Remove]<StoredValue>(payload: Payloads.Remove<StoredValue>): Awaitable<Payloads.Remove<StoredValue>>;
+  public [Method.Remove]<StoredValue>(payload: Payloads.Remove<StoredValue>): Awaitable<Payloads.Remove<StoredValue>> {
     return payload;
   }
 
-  public [Method.Set]<Value>(payload: SetPayload<Value>): Awaitable<SetPayload<Value>> {
+  public [Method.Set]<Value>(payload: Payloads.Set<Value>): Awaitable<Payloads.Set<Value>> {
     return payload;
   }
 
-  public [Method.SetMany]<Value = StoredValue>(payload: SetManyPayload<Value>): Awaitable<SetManyPayload<Value>> {
+  public [Method.SetMany]<Value = StoredValue>(payload: Payloads.SetMany<Value>): Awaitable<Payloads.SetMany<Value>> {
     return payload;
   }
 
-  public [Method.Size](payload: SizePayload): Awaitable<SizePayload> {
+  public [Method.Size](payload: Payloads.Size): Awaitable<Payloads.Size> {
     return payload;
   }
 
-  public [Method.Some]<HookValue>(payload: SomeByHookPayload<HookValue>): Awaitable<SomeByHookPayload<HookValue>>;
-  public [Method.Some]<Value>(payload: SomeByValuePayload): Awaitable<SomeByValuePayload>;
-  public [Method.Some]<HookValue>(payload: SomePayload<HookValue>): Awaitable<SomePayload<HookValue>>;
-  public [Method.Some]<HookValue>(payload: SomePayload<HookValue>): Awaitable<SomePayload<HookValue>> {
+  public [Method.Some]<StoredValue>(payload: Payloads.Some.ByHook<StoredValue>): Awaitable<Payloads.Some.ByHook<StoredValue>>;
+  public [Method.Some]<Value>(payload: Payloads.Some.ByValue): Awaitable<Payloads.Some.ByValue>;
+  public [Method.Some]<StoredValue>(payload: Payloads.Some<StoredValue>): Awaitable<Payloads.Some<StoredValue>>;
+  public [Method.Some]<StoredValue>(payload: Payloads.Some<StoredValue>): Awaitable<Payloads.Some<StoredValue>> {
     return payload;
   }
 
-  public [Method.Update]<StoredValue, Value, HookValue>(
-    payload: UpdatePayload<StoredValue, Value, HookValue>
-  ): Awaitable<UpdatePayload<StoredValue, Value, HookValue>> {
+  public [Method.Update]<Value = StoredValue>(payload: Payloads.Update<StoredValue, Value>): Awaitable<Payloads.Update<StoredValue, Value>> {
     return payload;
   }
 
-  public [Method.Values](payload: ValuesPayload<StoredValue>): Awaitable<ValuesPayload<StoredValue>> {
+  public [Method.Values](payload: Payloads.Values<StoredValue>): Awaitable<Payloads.Values<StoredValue>> {
     return payload;
   }
 
