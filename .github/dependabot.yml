@@ -8,3 +8,4 @@ updates:
       time: '12:00'
     labels:
       - 'Meta: Dependencies'
+      - 'Meta: GitHub'
