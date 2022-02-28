@@ -1,3 +1,4 @@
+export * from 'property-helpers';
 export * from './lib/decorators';
 export * from './lib/errors';
 export * from './lib/functions';

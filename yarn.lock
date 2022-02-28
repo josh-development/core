@@ -763,11 +763,6 @@
     mkdirp "^1.0.4"
     rimraf "^3.0.2"
 
-"@realware/utilities@^2.0.2":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@realware/utilities/-/utilities-2.1.0.tgz#83dbcae0b350a278ddd7b4e181ceebc438a004e8"
-  integrity sha512-NhFl1HUMkqDgSgUxxl++RkjPFCt47rs4JEMXfVqtZP0ZfW1DrPGcdlEsWKvLsQ8Dwld8Ku9cuvHeR6Ou9rGcxw==
-
 "@rollup/pluginutils@^4.1.2":
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/@rollup/pluginutils/-/pluginutils-4.1.2.tgz#ed5821c15e5e05e32816f5fb9ec607cdf5a75751"
@@ -4261,6 +4256,11 @@ prompts@^2.0.1:
   dependencies:
     kleur "^3.0.3"
     sisteransi "^1.0.5"
+
+property-helpers@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/property-helpers/-/property-helpers-1.0.0.tgz#c451ea044179f1d7fe7295508099e2ecd01ec43d"
+  integrity sha512-pgkcBVSrwhuJtKXmCtU6ZYUFWWL9D+lQ3P6bmptyuP5pwW5iO9mwg8v3BfFepixY2ZD0Ec5ZupZ1TN+ori0faA==
 
 psl@^1.1.33:
   version "1.8.0"
