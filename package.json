@@ -32,8 +32,8 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@realware/utilities": "^2.0.2",
-    "@sapphire/utilities": "^3.3.0"
+    "@sapphire/utilities": "^3.3.0",
+    "property-helpers": "^1.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.1.0",

@@ -1,5 +1,5 @@
-import { deleteFromObject, getFromObject, hasFromObject, setToObject } from '@realware/utilities';
 import { isNumber, isPrimitive } from '@sapphire/utilities';
+import { deleteProperty, getProperty, hasProperty, PROPERTY_NOT_FOUND, setProperty } from 'property-helpers';
 import {
   isEveryByHookPayload,
   isEveryByValuePayload,
@@ -92,7 +92,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     }
 
     if (this.has({ method: Method.Has, key, path }).data) {
-      deleteFromObject(this.cache.get(key), path);
+      deleteProperty(this.cache.get(key), path);
 
       return payload;
     }
@@ -186,8 +186,11 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
         return payload;
       }
 
-      for (const [key, storedValue] of this.cache.entries())
-        if (value === (path.length === 0 ? storedValue : getFromObject(storedValue, path))) payload.data[key] = storedValue;
+      for (const [key, storedValue] of this.cache.entries()) {
+        const data = getProperty(storedValue, path);
+
+        if (data !== PROPERTY_NOT_FOUND) payload.data[key] = storedValue;
+      }
     }
 
     return payload;
@@ -227,7 +230,10 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
       for (const [key, storedValue] of this.cache.entries()) {
         if (payload.data[0] !== null && payload.data[1] !== null) break;
-        if (value === (path.length === 0 ? storedValue : getFromObject(storedValue, path))) payload.data = [key, storedValue];
+
+        const data = getProperty(storedValue, path);
+
+        if (data !== PROPERTY_NOT_FOUND) payload.data = [key, storedValue];
       }
     }
 
@@ -237,7 +243,9 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   public [Method.Get]<Value = StoredValue>(payload: Payloads.Get<Value>): Payloads.Get<Value> {
     const { key, path } = payload;
 
-    Reflect.set(payload, 'data', path.length === 0 ? this.cache.get(key) : getFromObject(this.cache.get(key), path));
+    const data = getProperty(this.cache.get(key), path);
+
+    if (data !== PROPERTY_NOT_FOUND) Reflect.set(payload, 'data', data);
 
     return payload;
   }
@@ -263,7 +271,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   public [Method.Has](payload: Payloads.Has): Payloads.Has {
     const { key, path } = payload;
 
-    payload.data = this.cache.has(key) ? (path.length === 0 ? true : hasFromObject(this.cache.get(key)!, path)) : false;
+    payload.data = this.cache.has(key) ? (path.length === 0 ? true : hasProperty(this.cache.get(key)!, path)) : false;
 
     return payload;
   }
@@ -319,8 +327,11 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     if (isMapByPathPayload(payload)) {
       const { path } = payload;
 
-      // @ts-expect-error 2345
-      for (const value of this.cache.values()) payload.data.push(path.length === 0 ? value : getFromObject(value, path));
+      for (const value of this.cache.values()) {
+        const data = getProperty<Value>(value, path);
+
+        if (data !== PROPERTY_NOT_FOUND) payload.data.push(data);
+      }
     }
 
     return payload;
@@ -416,9 +427,13 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
         return payload;
       }
 
-      for (const [key, storedValue] of this.cache.entries())
-        if (value === (path.length === 0 ? storedValue : getFromObject(storedValue, path))) payload.data.truthy[key] = storedValue;
+      for (const [key, storedValue] of this.cache.entries()) {
+        const data = getProperty<StoredValue>(storedValue, path);
+
+        // @ts-expect-error 2367
+        if (value === data) payload.data.truthy[key] = storedValue;
         else payload.data.falsy[key] = storedValue;
+      }
     }
 
     return payload;
@@ -574,7 +589,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     else {
       const storedValue = this.cache.get(key);
 
-      this.cache.set(key, setToObject(storedValue ?? {}, path, value));
+      this.cache.set(key, setProperty(storedValue ?? {}, path, value));
     }
 
     return payload;
@@ -619,7 +634,9 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       const { path, value } = payload;
 
       for (const storedValue of this.cache.values()) {
-        if (path.length !== 0 && value !== getFromObject(storedValue, path)) continue;
+        const data = getProperty(storedValue, path);
+
+        if (value !== data) continue;
         if (isPrimitive(storedValue) && value === storedValue) continue;
 
         payload.data = true;
