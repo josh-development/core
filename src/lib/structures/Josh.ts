@@ -1,7 +1,7 @@
 import { Awaitable, isFunction, isPrimitive, Primitive } from '@sapphire/utilities';
 import { emitWarning } from 'process';
 import type { CoreAutoEnsure } from '../../middlewares/CoreAutoEnsure';
-import type { JoshError, JoshErrorOptions } from '../errors';
+import { JoshError, JoshErrorOptions } from '../errors';
 import { convertLegacyExportJSON } from '../functions';
 import { isLegacyExportJSON } from '../functions/validators';
 import { BuiltInMiddleware, KeyPath, KeyPathJSON, MathOperator, Method, Path, Payload, Payloads, Trigger } from '../types';
@@ -1661,7 +1661,7 @@ export class Josh<StoredValue = unknown> {
   }
 
   private error(options: JoshErrorOptions): JoshError {
-    return this.error(options);
+    return new JoshError(options);
   }
 
   /**
