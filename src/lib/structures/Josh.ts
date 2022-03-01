@@ -2,8 +2,7 @@ import { Awaitable, isFunction, isPrimitive, Primitive } from '@sapphire/utiliti
 import { emitWarning } from 'process';
 import type { CoreAutoEnsure } from '../../middlewares/CoreAutoEnsure';
 import { JoshError, JoshErrorOptions } from '../errors';
-import { convertLegacyExportJSON } from '../functions';
-import { isLegacyExportJSON } from '../functions/validators';
+import { convertLegacyExportJSON, isLegacyExportJSON } from '../functions';
 import { BuiltInMiddleware, KeyPath, KeyPathJSON, MathOperator, Method, Path, Payload, Payloads, Trigger } from '../types';
 import { MapProvider } from './default-provider/MapProvider';
 import { JoshProvider } from './JoshProvider';
@@ -1605,10 +1604,12 @@ export class Josh<StoredValue = unknown> {
    * @returns The exported data json object.
    */
   public async export(): Promise<Josh.ExportJSON<StoredValue>> {
-    const entries = Object.entries<StoredValue>((await this.provider[Method.GetAll]({ method: Method.GetAll })).data ?? []);
-    const json: Josh.ExportJSON<StoredValue> = { name: this.name, version: Josh.version, exportedTimestamp: Date.now(), entries };
-
-    return json;
+    return {
+      name: this.name,
+      version: Josh.version,
+      exportedTimestamp: Date.now(),
+      entries: await this.getAll(Bulk.TwoDimensionalArray)
+    };
   }
 
   /** A private method for converting bulk data.
