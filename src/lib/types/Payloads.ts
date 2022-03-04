@@ -768,7 +768,7 @@ export namespace Payloads {
    * @see {@link Payload}
    * @see {@link Payload.Data}
    */
-  export interface SetMany<Value> extends Payload {
+  export interface SetMany extends Payload {
     /**
      * The method this payload is for.
      * @since 2.0.0
@@ -785,7 +785,7 @@ export namespace Payloads {
      * The entries to set.
      * @since 2.0.0
      */
-    entries: [Payload.KeyPath, Value][];
+    entries: [Payload.KeyPath, unknown][];
   }
 
   /**
@@ -879,12 +879,18 @@ export namespace Payloads {
    * @see {@link Payload.KeyPath}
    * @see {@link Payload.Data}
    */
-  export interface Update<Value, ReturnValue> extends Payload, Payload.KeyPath {
+  export interface Update<Value, ReturnValue> extends Payload {
     /**
      * The method this payload is for.
      * @since 2.0.0
      */
     method: Method.Update;
+
+    /**
+     * The key to the value to update.
+     * @since 2.0.0
+     */
+    key: string;
 
     /**
      * The hook to update stored value.

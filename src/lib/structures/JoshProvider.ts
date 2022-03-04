@@ -1,6 +1,7 @@
 import type { Awaitable } from '@sapphire/utilities';
 import { JoshProviderError, JoshProviderErrorOptions } from '../errors';
-import type { Method, Payloads } from '../types';
+import { resolveCommonIdentifier } from '../functions';
+import { Method, Payloads } from '../types';
 import type { Josh } from './Josh';
 
 /**
@@ -67,23 +68,60 @@ export abstract class JoshProvider<StoredValue = unknown> {
   }
 
   /**
+   * Generates a unique automatic key. This key must be unique and cannot overlap other keys.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+   *
+   * @example
+   * ```javascript
+   * // Generate a unique key...
+   * const key = await generateUniqueKey(payload);
+   *
+   * // Modify the payload...
+   * payload.data = key;
+   *
+   * // Return the payload...
+   * return payload;
+   * ```
    */
   public abstract [Method.AutoKey](payload: Payloads.AutoKey): Awaitable<Payloads.AutoKey>;
 
   /**
+   * Clears the provider of it's data entries.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+   *
+   * @example
+   * ```javascript
+   * // Clear the provider...
+   * await database.clear();
+   *
+   * // Return the payload...
+   * return payload;
+   * ```
    */
   public abstract [Method.Clear](payload: Payloads.Clear): Awaitable<Payloads.Clear>;
 
   /**
+   * Decrements an integer value by 1.
+   *
+   * An error should be set to the payload and immediately return, if any of the following occurs:
+   * - The key and/or path does not exist - {@link JoshProvider.CommonIdentifiers.MissingData}
+   * - The data is not an integer - {@link JoshProvider.CommonIdentifiers.InvalidDataType}
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+   *
+   * @example
+   * ```javascript
+   * // Destructure the payload...
+   * const { key, path } = payload;
+   *
+   * // Get the value from the provider...
+   * const getPayload = this[Method.Get]({ method: Method.Get, key, path });
+   * ```
    */
   public abstract [Method.Dec](payload: Payloads.Dec): Awaitable<Payloads.Dec>;
 
@@ -326,8 +364,18 @@ export abstract class JoshProvider<StoredValue = unknown> {
    * @param options The options for the error.
    * @returns The error.
    */
-  protected error(options: JoshProviderErrorOptions): JoshProviderError {
-    return new JoshProviderError({ ...options, name: options.name ?? this.constructor.name });
+  protected error(options: JoshProviderErrorOptions, metadata: Record<string, unknown> = {}): JoshProviderError {
+    if ('message' in options) return new JoshProviderError(options);
+
+    return new JoshProviderError({ ...options, message: this.resolveIdentifier(options.identifier, metadata) });
+  }
+
+  protected resolveIdentifier(identifier: string, metadata: Record<string, unknown>): string {
+    const result = resolveCommonIdentifier(identifier, metadata);
+
+    if (result !== null) return result;
+
+    throw new Error(`Unknown identifier: ${identifier}`);
   }
 }
 
@@ -379,39 +427,5 @@ export namespace JoshProvider {
 
   export interface Constructor<StoredValue = unknown> {
     new (options: Options): JoshProvider<StoredValue>;
-  }
-
-  export enum CommonIdentifiers {
-    DecMissingData = 'decMissingData',
-
-    DecInvalidType = 'decInvalidType',
-
-    EveryInvalidType = 'everyInvalidType',
-
-    FilterInvalidValue = 'filterInvalidValue',
-
-    FindInvalidValue = 'findInvalidValue',
-
-    IncInvalidType = 'incInvalidType',
-
-    IncMissingData = 'incMissingData',
-
-    MathInvalidType = 'mathInvalidType',
-
-    MathMissingData = 'mathMissingData',
-
-    PartitionInvalidValue = 'partitionInvalidValue',
-
-    PushInvalidType = 'pushInvalidType',
-
-    PushMissingData = 'pushMissingData',
-
-    RandomInvalidCount = 'randomInvalidCount',
-
-    RandomKeyInvalidCount = 'randomKeyInvalidCount',
-
-    RemoveInvalidType = 'removeInvalidType',
-
-    RemoveMissingData = 'removeMissingData'
   }
 }
