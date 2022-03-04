@@ -226,7 +226,7 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key', 1);
    *
-   * await josh.inc('key');
+   * await josh.dec('key');
    *
    * await josh.get('key'); // 0
    * ```
@@ -235,7 +235,7 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key', 1);
    *
-   * await josh.inc({ key: 'key' });
+   * await josh.dec({ key: 'key' });
    *
    * await josh.get('key'); // 0
    * ```
@@ -244,7 +244,7 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key.path', 1);
    *
-   * await josh.inc('key.path');
+   * await josh.dec('key.path');
    *
    * await josh.get('key.path'); // 0
    * ```
@@ -253,7 +253,7 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key.path', 1);
    *
-   * await josh.inc({ key: 'key', path: 'path' });
+   * await josh.dec({ key: 'key', path: 'path' });
    *
    * await josh.get('key.path'); // 0
    * ```
@@ -262,7 +262,7 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key.path', 1);
    *
-   * await josh.inc({ key: 'key', path: ['path'] });
+   * await josh.dec({ key: 'key', path: ['path'] });
    *
    * await josh.get('key.path'); // 0
    * ```
