@@ -470,17 +470,19 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   public async [Method.Remove]<Value = StoredValue>(payload: Payloads.Remove.ByHook<Value>): Promise<Payloads.Remove.ByHook<Value>>;
   public async [Method.Remove](payload: Payloads.Remove.ByValue): Promise<Payloads.Remove.ByValue>;
   public async [Method.Remove]<Value = StoredValue>(payload: Payloads.Remove<Value>): Promise<Payloads.Remove<Value>> {
+    const { key, path } = payload;
+    const getPayload = this[Method.Get]({ method: Method.Get, key, path });
+
+    if (!isPayloadWithData(getPayload))
+      return {
+        ...payload,
+        error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Remove })
+      };
+
+    const { data } = getPayload;
+
     if (isRemoveByHookPayload(payload)) {
-      const { key, path, hook } = payload;
-      const getPayload = this[Method.Get]({ method: Method.Get, key, path });
-
-      if (!isPayloadWithData(getPayload))
-        return {
-          ...payload,
-          error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Remove })
-        };
-
-      const { data } = getPayload;
+      const { hook } = payload;
 
       if (!Array.isArray(data))
         return {
@@ -494,16 +496,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     }
 
     if (isRemoveByValuePayload(payload)) {
-      const { key, path, value } = payload;
-      const getPayload = this[Method.Get]({ method: Method.Get, key, path });
-
-      if (!isPayloadWithData(getPayload))
-        return {
-          ...payload,
-          error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Remove }, { key, path })
-        };
-
-      const { data } = getPayload;
+      const { value } = payload;
 
       if (!Array.isArray(data))
         return {
