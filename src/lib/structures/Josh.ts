@@ -1623,7 +1623,7 @@ export class Josh<StoredValue = unknown> {
 
     switch (identifier) {
       case Josh.Identifiers.InvalidProvider:
-        return 'The "provider" option must extend the exported "JoshProvider" class';
+        return 'The "provider" option must extend the exported "JoshProvider" class to ensure compatibility, but continuing anyway.';
 
       case Josh.Identifiers.LegacyDeprecation:
         return 'You have imported data from a deprecated legacy format. This will be removed in the next semver major version.';
