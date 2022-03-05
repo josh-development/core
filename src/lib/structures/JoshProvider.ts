@@ -7,7 +7,7 @@ import type { Josh } from './Josh';
 /**
  * The base provider class. Extend this class to create your own provider.
  *
- * NOTE: If you want an example of how to use this class please see `src/lib/structures/defaultProvider/MapProvider.ts`
+ * NOTE: If you want an example of how to use this class please see `src/lib/structures/default-provider/MapProvider.ts`
  *
  * @see {@link JoshProvider.Options} for all options available to the JoshProvider class.
  *
@@ -68,7 +68,9 @@ export abstract class JoshProvider<StoredValue = unknown> {
   }
 
   /**
-   * Generates a unique automatic key. This key must be unique and cannot overlap other keys.
+   * Generates a unique automatic key.
+   * This key must be unique and cannot overlap other keys.
+   * Notice, there is not a set rule of how the key is generated or it's formatted.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
@@ -88,7 +90,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.AutoKey](payload: Payloads.AutoKey): Awaitable<Payloads.AutoKey>;
 
   /**
-   * Clears the provider of it's data entries.
+   * Clears all data.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
@@ -116,7 +118,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Delete](payload: Payloads.Delete): Awaitable<Payloads.Delete>;
 
   /**
-   * Deletes multiple keys in the provider.
+   * Deletes multiple keys.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
@@ -203,7 +205,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Get]<Value = StoredValue>(payload: Payloads.Get<Value>): Awaitable<Payloads.Get<Value>>;
 
   /**
-   * Gets all data from the provider.
+   * Gets all data.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
@@ -211,7 +213,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.GetAll](payload: Payloads.GetAll<StoredValue>): Awaitable<Payloads.GetAll<StoredValue>>;
 
   /**
-   * Gets multiple keys from the provider.
+   * Gets multiple keys.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
@@ -239,7 +241,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Inc](payload: Payloads.Inc): Awaitable<Payloads.Inc>;
 
   /**
-   * Returns all keys in the provider.
+   * Returns all keys.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
@@ -314,7 +316,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Push]<Value>(payload: Payloads.Push<Value>): Awaitable<Payloads.Push<Value>>;
 
   /**
-   * Gets random value(s) from the provider.
+   * Gets random value(s).
    * Whether duplicates are allowed or not are controlled by {@link Payloads.Random.duplicates} option.
    * The amount of values returned is controlled by {@link Payloads.Random.count} option.
    * @since 2.0.0
@@ -324,7 +326,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Random](payload: Payloads.Random<StoredValue>): Awaitable<Payloads.Random<StoredValue>>;
 
   /**
-   * Gets random key(s) from the provider.
+   * Gets random key(s).
    * Whether duplicates are allowed or not are controlled by {@link Payloads.RandomKey.duplicates} option.
    * The amount of keys returned is controlled by {@link Payloads.RandomKey.count} option.
    * @since 2.0.0
@@ -370,7 +372,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.SetMany](payload: Payloads.SetMany): Awaitable<Payloads.SetMany>;
 
   /**
-   * Returns the amount of entries in the provider.
+   * Returns the count of entries.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
@@ -410,7 +412,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Update]<Value>(payload: Payloads.Update<StoredValue, Value>): Awaitable<Payloads.Update<StoredValue, Value>>;
 
   /**
-   * Returns all entries in the provider.
+   * Returns all stored values.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
