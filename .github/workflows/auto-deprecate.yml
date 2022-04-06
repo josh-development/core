@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 16
       - name: Install Dependencies
-        run: yarn --ignore-scripts --frozen-lockfile
+        run: yarn --immutable
       - name: Deprecate Versions
         run: yarn npm-deprecate
         env:

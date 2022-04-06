@@ -23,7 +23,7 @@ jobs:
           node-version: 16
           registry-url: https://registry.npmjs.org/
       - name: Install Dependencies
-        run: yarn --ignore-scripts --frozen-lockfile
+        run: yarn --immutable
       - name: Bump Version & Publish
         run: |
           echo -e "\n# Resolve the tag for publish"
