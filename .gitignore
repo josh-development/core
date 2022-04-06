@@ -27,3 +27,7 @@ gh
 
 # Ignore auto-generated documentation
 docs/api.json
+
+# Ignore Yarn files
+.yarn/install-state.gz
+.yarn/build-state.yml
