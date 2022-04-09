@@ -879,12 +879,18 @@ export namespace Payloads {
    * @see {@link Payload.KeyPath}
    * @see {@link Payload.Data}
    */
-  export interface Update<Value, ReturnValue> extends Payload, Payload.KeyPath {
+  export interface Update<Value, ReturnValue> extends Payload {
     /**
      * The method this payload is for.
      * @since 2.0.0
      */
     method: Method.Update;
+
+    /**
+     * The key to the value to update.
+     * @since 2.0.0
+     */
+    key: string;
 
     /**
      * The hook to update stored value.
