@@ -1504,7 +1504,6 @@ export class Josh<StoredValue = unknown> {
    * await josh.update('key', (value) => value.toUpperCase()); // 'VALUE'
    * ```
    */
-
   public async update<Value = StoredValue>(key: string, hook: Payload.Hook<StoredValue, Value>): Promise<this> {
     let payload: Payloads.Update<StoredValue, Value> = { method: Method.Update, trigger: Trigger.PreProvider, key, hook };
 
