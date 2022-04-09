@@ -647,12 +647,12 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   }
 
   public async [Method.Update]<Value = StoredValue>(payload: Payloads.Update<StoredValue, Value>): Promise<Payloads.Update<StoredValue, Value>> {
-    const { key, path, hook } = payload;
-    const { data } = this.get({ method: Method.Get, key, path });
+    const { key, hook } = payload;
+    const data = this.cache.get(key);
 
     if (data === undefined) return payload;
 
-    this.set({ method: Method.Set, key, path, value: await hook(data) });
+    this.cache.set(key, (await hook(data)) as unknown as StoredValue);
 
     return payload;
   }
