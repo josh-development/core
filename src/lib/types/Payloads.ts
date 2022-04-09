@@ -768,7 +768,7 @@ export namespace Payloads {
    * @see {@link Payload}
    * @see {@link Payload.Data}
    */
-  export interface SetMany<Value> extends Payload {
+  export interface SetMany extends Payload {
     /**
      * The method this payload is for.
      * @since 2.0.0
@@ -785,7 +785,7 @@ export namespace Payloads {
      * The entries to set.
      * @since 2.0.0
      */
-    entries: [Payload.KeyPath, Value][];
+    entries: [Payload.KeyPath, unknown][];
   }
 
   /**
