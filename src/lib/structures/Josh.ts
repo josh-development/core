@@ -1523,7 +1523,7 @@ export class Josh<StoredValue = unknown> {
 
   /**
    * Update a stored value using a hook function.
-   * @param keyPath The key and/or path to the stored value for updating.
+   * @param key The key to the stored value for updating.
    * @param hook The hook to update the stored value.
    * @returns The updated value or null.
    *
@@ -1534,9 +1534,8 @@ export class Josh<StoredValue = unknown> {
    * await josh.update('key', (value) => value.toUpperCase()); // 'VALUE'
    * ```
    */
-  public async update<Value = StoredValue>(keyPath: KeyPath, hook: Payload.Hook<StoredValue, Value>): Promise<this> {
-    const [key, path] = this.getKeyPath(keyPath);
-    let payload: Payloads.Update<StoredValue, Value> = { method: Method.Update, trigger: Trigger.PreProvider, key, path, hook };
+  public async update<Value = StoredValue>(key: string, hook: Payload.Hook<StoredValue, Value>): Promise<this> {
+    let payload: Payloads.Update<StoredValue, Value> = { method: Method.Update, trigger: Trigger.PreProvider, key, hook };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Update)) payload = await middleware[Method.Update](payload);
