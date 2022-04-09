@@ -564,7 +564,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     const getPayload = this[Method.Get]({ method: Method.Get, key, path: [] });
 
     if (!isPayloadWithData<StoredValue>(getPayload))
-      return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Update }, { key }) };
+      return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Update }, { key, path: [] }) };
 
     const { data } = getPayload;
 
