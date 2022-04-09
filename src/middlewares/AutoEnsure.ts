@@ -33,7 +33,6 @@ export class AutoEnsure<StoredValue = unknown> extends Middleware<StoredValue> {
     const { defaultValue } = this.context;
 
     await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
-
     payload.data = defaultValue as unknown as Value;
 
     return payload;
@@ -50,7 +49,6 @@ export class AutoEnsure<StoredValue = unknown> extends Middleware<StoredValue> {
       const { defaultValue } = this.context;
 
       await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
-
       payload.data[key] = defaultValue;
     }
 
