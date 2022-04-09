@@ -595,7 +595,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.SetMany]<Value = StoredValue>(payload: Payloads.SetMany<Value>): Payloads.SetMany<Value> {
+  public [Method.SetMany](payload: Payloads.SetMany): Payloads.SetMany {
     const { entries, overwrite } = payload;
 
     for (const [{ key, path }, value] of entries)
