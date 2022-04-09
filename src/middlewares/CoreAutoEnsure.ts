@@ -11,6 +11,8 @@ import { BuiltInMiddleware, Method, Payloads } from '../lib/types';
   }
 })
 export class CoreAutoEnsure<StoredValue = unknown> extends Middleware<StoredValue> {
+  public declare context: CoreAutoEnsure.ContextData<StoredValue>;
+
   public async [Method.Dec](payload: Payloads.Dec): Promise<Payloads.Dec> {
     if (!this.context) return payload;
 
@@ -36,12 +38,14 @@ export class CoreAutoEnsure<StoredValue = unknown> extends Middleware<StoredValu
   }
 
   public async [Method.GetMany](payload: Payloads.GetMany<StoredValue>): Promise<Payloads.GetMany<StoredValue>> {
+    payload.data ??= {};
+
     if (Object.keys(payload.data).length !== 0) return payload;
     if (!this.context) return payload;
 
     const { defaultValue } = this.context;
 
-    for (const [key] of payload.keys) {
+    for (const key of payload.keys) {
       if (payload.data[key] !== null) continue;
 
       const { data } = await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
@@ -114,7 +118,7 @@ export class CoreAutoEnsure<StoredValue = unknown> extends Middleware<StoredValu
 
     const { defaultValue } = this.context;
 
-    for (const [{ key }] of payload.data) await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
+    for (const [{ key }] of payload.entries) await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
 
     return payload;
   }
@@ -128,11 +132,6 @@ export class CoreAutoEnsure<StoredValue = unknown> extends Middleware<StoredValu
     await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
 
     return payload;
-  }
-
-  private get context(): CoreAutoEnsure.ContextData<StoredValue> | undefined {
-    // @ts-expect-error 2322
-    return this.instance.options.middlewareContextData?.[BuiltInMiddleware.AutoEnsure];
   }
 }
 
