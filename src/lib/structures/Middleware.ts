@@ -58,6 +58,8 @@ export class Middleware<StoredValue = unknown> {
    */
   public readonly conditions: Middleware.Conditions;
 
+  public context?: Middleware.ContextData;
+
   public constructor(options: Middleware.Options) {
     const { name, position, conditions } = options;
 
@@ -213,6 +215,18 @@ export class Middleware<StoredValue = unknown> {
 
   public run<P extends Payload>(payload: P): Awaitable<unknown> {
     return payload;
+  }
+
+  /**
+   * Sets the context for this middleware.
+   * @since 2.0.0
+   * @param context The context to set to `this`.
+   * @returns Returns the current Middleware class.
+   */
+  public setContext(context: Middleware.ContextData): this {
+    this.context = context;
+
+    return this;
   }
 
   /**
