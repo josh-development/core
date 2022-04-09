@@ -574,15 +574,15 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   }
 
   public async [Method.Update]<Value = StoredValue>(payload: Payloads.Update<StoredValue, Value>): Promise<Payloads.Update<StoredValue, Value>> {
-    const { key, path, hook } = payload;
-    const getPayload = this[Method.Get]({ method: Method.Get, key, path });
+    const { key, hook } = payload;
+    const getPayload = this[Method.Get]({ method: Method.Get, key, path: [] });
 
     if (!isPayloadWithData<StoredValue>(getPayload))
-      return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Update }, { key, path }) };
+      return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Update }, { key, path: [] }) };
 
     const { data } = getPayload;
 
-    this[Method.Set]({ method: Method.Set, key, path, value: await hook(data) });
+    this[Method.Set]({ method: Method.Set, key, path: [], value: await hook(data) });
 
     return payload;
   }

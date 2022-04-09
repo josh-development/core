@@ -36,6 +36,8 @@ export class CoreAutoEnsure<StoredValue = unknown> extends Middleware<StoredValu
   }
 
   public async [Method.GetMany](payload: Payloads.GetMany<StoredValue>): Promise<Payloads.GetMany<StoredValue>> {
+    payload.data = {};
+
     if (Object.keys(payload.data).length !== 0) return payload;
     if (!this.context) return payload;
 
@@ -109,12 +111,12 @@ export class CoreAutoEnsure<StoredValue = unknown> extends Middleware<StoredValu
     return payload;
   }
 
-  public async [Method.SetMany]<Value>(payload: Payloads.SetMany<Value>): Promise<Payloads.SetMany<Value>> {
+  public async [Method.SetMany](payload: Payloads.SetMany): Promise<Payloads.SetMany> {
     if (!this.context) return payload;
 
     const { defaultValue } = this.context;
 
-    for (const [{ key }] of payload.data) await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
+    for (const [{ key }] of payload.entries) await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
 
     return payload;
   }
