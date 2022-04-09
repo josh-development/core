@@ -1378,8 +1378,8 @@ export class Josh<StoredValue = unknown> {
     return this;
   }
 
-  public async setMany<Value = StoredValue>(entries: [KeyPath, Value][], overwrite = true): Promise<this> {
-    let payload: Payloads.SetMany<Value> = {
+  public async setMany(entries: [KeyPath, unknown][], overwrite = true): Promise<this> {
+    let payload: Payloads.SetMany = {
       method: Method.SetMany,
       trigger: Trigger.PreProvider,
       entries: entries.map(([keyPath, value]) => {
