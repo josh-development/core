@@ -39,7 +39,6 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
   public [Method.AutoKey](payload: Payloads.AutoKey): Payloads.AutoKey {
     this.autoKeyCount++;
-
     payload.data = this.autoKeyCount.toString();
 
     return payload;
@@ -242,7 +241,6 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
   public [Method.Get]<Value = StoredValue>(payload: Payloads.Get<Value>): Payloads.Get<Value> {
     const { key, path } = payload;
-
     const data = getProperty(this.cache.get(key), path);
 
     if (data !== PROPERTY_NOT_FOUND) Reflect.set(payload, 'data', data);
@@ -464,7 +462,6 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     }
 
     data.push(value);
-
     this.set({ method: Method.Set, key, path, value: data });
 
     return payload;

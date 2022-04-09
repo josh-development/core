@@ -13,7 +13,6 @@ export class JoshError extends Error {
     const { name, message, identifier } = options;
 
     super(message);
-
     this.name = name ?? 'JoshError';
     this.identifier = identifier;
   }
