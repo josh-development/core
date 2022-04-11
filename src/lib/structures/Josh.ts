@@ -1,5 +1,6 @@
 import { Awaitable, isFunction, isPrimitive, Primitive } from '@sapphire/utilities';
 import { emitWarning } from 'process';
+import { CoreAutoEnsure } from '../../middlewares/CoreAutoEnsure';
 import { JoshError, JoshErrorOptions } from '../errors';
 import { convertLegacyExportJSON, isLegacyExportJSON } from '../functions';
 import { KeyPath, KeyPathJSON, MathOperator, Method, Path, Payload, Payloads, Trigger } from '../types';
@@ -79,8 +80,17 @@ export class Josh<StoredValue = unknown> {
 
     this.middlewares = new MiddlewareStore({ instance: this });
 
+    if ('autoEnsure' in options) this.middlewares.set('autoEnsure', new CoreAutoEnsure());
     if (middlewares !== undefined)
-      for (const middleware of middlewares.filter((middleware) => middleware instanceof Middleware)) this.use(middleware);
+      for (const middleware of middlewares.filter((middleware) => {
+        if (!(middleware instanceof Middleware))
+          emitWarning(
+            this.error({ identifier: Josh.Identifiers.InvalidMiddleware, message: 'The middleware must extend the exported "Middleware" class.' })
+          );
+
+        return middleware instanceof Middleware;
+      }))
+        this.use(middleware);
   }
 
   /**
@@ -124,11 +134,6 @@ export class Josh<StoredValue = unknown> {
    * @example
    * ```javascript
    * josh.use(new MyMiddleware());
-   * ```
-   *
-   * @example
-   * ```javascript
-   * josh.use(new MyMiddleware().setContext({ data: 'data' }));
    * ```
    */
   public use(instance: Middleware<StoredValue>): this;
@@ -1721,6 +1726,12 @@ export namespace Josh {
      * @since 2.0.0
      */
     middlewares?: Middleware<StoredValue>[];
+
+    /**
+     * The value for CoreAutoEnsure to use.
+     * @since 2.0.0
+     */
+    autoEnsure?: StoredValue;
   }
 
   /**
@@ -1858,6 +1869,8 @@ export namespace Josh {
     FindInvalidValue = 'findInvalidValue',
 
     FindMissingValue = 'findMissingValue',
+
+    InvalidMiddleware = 'invalidMiddleware',
 
     InvalidProvider = 'invalidProvider',
 

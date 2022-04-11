@@ -58,10 +58,12 @@ export class Middleware<StoredValue = unknown> {
    */
   public readonly conditions: Middleware.Conditions;
 
-  public context?: Middleware.ContextData;
-
-  public constructor(options: Middleware.Options) {
+  public constructor(options: Partial<Middleware.Options> = {}) {
     const { name, position, conditions } = options;
+
+    if (!name) throw new JoshError({ identifier: Middleware.Identifiers.NameNotFound, message: 'No name was provided for this middleware.' });
+    if (!conditions)
+      throw new JoshError({ identifier: Middleware.Identifiers.ConditionsNotFound, message: 'No conditions were provided for this middleware.' });
 
     this.name = name;
     this.position = position;
@@ -218,18 +220,6 @@ export class Middleware<StoredValue = unknown> {
   }
 
   /**
-   * Sets the context for this middleware.
-   * @since 2.0.0
-   * @param context The context to set to `this`.
-   * @returns Returns the current Middleware class.
-   */
-  public setContext(context: Middleware.ContextData): this {
-    this.context = context;
-
-    return this;
-  }
-
-  /**
    * Adds the options of this class to an object.
    * @since 2.0.0
    * @returns The options for this middleware as an object.
@@ -328,13 +318,11 @@ export namespace Middleware {
     conditions: Conditions;
   }
 
-  /**
-   * The context data to use for middleware.
-   * @since 2.0.0
-   */
-  export interface ContextData {}
-
   export enum Identifiers {
+    ConditionsNotFound = 'conditionsNotFound',
+
+    NameNotFound = 'nameNotFound',
+
     StoreNotFound = 'storeNotFound'
   }
 }
