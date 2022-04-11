@@ -103,8 +103,6 @@ export class AutoEnsure<StoredValue = unknown> extends Middleware<StoredValue> {
   }
 
   public async [Method.SetMany](payload: Payloads.SetMany): Promise<Payloads.SetMany> {
-    if (!this.context) return payload;
-
     const { defaultValue } = this.context;
 
     for (const [{ key }] of payload.entries) await this.provider.ensure({ method: Method.Ensure, key, data: defaultValue, defaultValue });
