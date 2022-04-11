@@ -108,10 +108,10 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public async [Method.Each](payload: Payloads.Each): Promise<Payloads.Each> {
+  public async [Method.Each](payload: Payloads.Each<StoredValue>): Promise<Payloads.Each<StoredValue>> {
     const { hook } = payload;
 
-    for (const key of this.cache.keys()) await hook(this.cache.get(key), key);
+    for (const key of this.cache.keys()) await hook(this.cache.get(key) as StoredValue, key);
 
     return payload;
   }

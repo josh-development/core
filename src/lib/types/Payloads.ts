@@ -90,7 +90,7 @@ export namespace Payloads {
      */
     method: Method.Each;
 
-    hook: Payload.Hook<StoredValue>;
+    hook: Payload.HookWithKey<StoredValue>;
   }
 
   /**
