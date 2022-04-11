@@ -152,5 +152,5 @@ export namespace Payload {
 
   export type Hook<Value, R = boolean> = (value: Value) => Awaitable<R>;
 
-  export type HookWithKey<Value, R = boolean> = (value: Value, key: string) => Awaitable<R>;
+  export type HookWithKey<Value, R = unknown> = (value: Value, key: string) => Awaitable<R>;
 }
