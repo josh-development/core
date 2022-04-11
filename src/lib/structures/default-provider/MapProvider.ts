@@ -1,4 +1,4 @@
-import { isNumber, isPrimitive } from '@sapphire/utilities';
+import { isPrimitive } from '@sapphire/utilities';
 import { deleteProperty, getProperty, hasProperty, PROPERTY_NOT_FOUND, setProperty } from 'property-helpers';
 import {
   isEveryByHookPayload,
@@ -11,12 +11,13 @@ import {
   isMapByPathPayload,
   isPartitionByHookPayload,
   isPartitionByValuePayload,
+  isPayloadWithData,
   isRemoveByHookPayload,
   isRemoveByValuePayload,
   isSomeByHookPayload,
   isSomeByValuePayload
-} from '../../functions/validators';
-import { MathOperator, Method, Payloads } from '../../types';
+} from '../../functions';
+import { CommonIdentifiers, MathOperator, Method, Payloads } from '../../types';
 import { JoshProvider } from '../JoshProvider';
 
 /**
@@ -27,12 +28,11 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   /**
    * The [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) cache to store data.
    * @since 2.0.0
-   * @private
    */
   private cache = new Map<string, StoredValue>();
 
   /**
-   * A simple cache for the {@link MapProvider.autoKey} method.
+   * A simple cache for the autoKey method.
    * @since 2.0.0
    */
   private autoKeyCount = 0;
@@ -54,30 +54,17 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
   public [Method.Dec](payload: Payloads.Dec): Payloads.Dec {
     const { key, path } = payload;
-    const { data } = this.get({ method: Method.Get, key, path });
+    const getPayload = this[Method.Get]({ method: Method.Get, key, path });
 
-    if (data === undefined) {
-      payload.error = this.error({
-        identifier: JoshProvider.CommonIdentifiers.DecMissingData,
-        message: path.length === 0 ? `The data at "${key}" does not exist.` : `The data at "${key}.${path.join('.')}" does not exist.`,
-        method: Method.Dec
-      });
+    if (!isPayloadWithData(getPayload))
+      return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Dec }, { key, path }) };
 
-      return payload;
-    }
+    const { data } = getPayload;
 
-    if (typeof data !== 'number') {
-      payload.error = this.error({
-        identifier: JoshProvider.CommonIdentifiers.DecInvalidType,
-        message:
-          path.length === 0 ? `The data at "${key}" must be of type "number".` : `The data at "${key}.${path.join('.')}" must be of type "number".`,
-        method: Method.Dec
-      });
+    if (typeof data !== 'number')
+      return { ...payload, error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Dec }, { key, path, type: 'number' }) };
 
-      return payload;
-    }
-
-    this.set({ method: Method.Set, key, path, value: data - 1 });
+    this[Method.Set]({ method: Method.Set, key, path, value: data - 1 });
 
     return payload;
   }
@@ -85,17 +72,8 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   public [Method.Delete](payload: Payloads.Delete): Payloads.Delete {
     const { key, path } = payload;
 
-    if (path.length === 0) {
-      this.cache.delete(key);
-
-      return payload;
-    }
-
-    if (this.has({ method: Method.Has, key, path }).data) {
-      deleteProperty(this.cache.get(key), path);
-
-      return payload;
-    }
+    if (path.length === 0) this.cache.delete(key);
+    else if (this[Method.Has]({ ...payload, method: Method.Has }).data) deleteProperty(this.cache.get(key), path);
 
     return payload;
   }
@@ -109,11 +87,12 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   }
 
   public [Method.Ensure](payload: Payloads.Ensure<StoredValue>): Payloads.Ensure<StoredValue> {
-    const { key } = payload;
+    const { key, defaultValue } = payload;
 
-    if (!this.cache.has(key)) this.cache.set(key, payload.defaultValue);
+    payload.data = defaultValue;
 
-    Reflect.set(payload, 'data', this.cache.get(key));
+    if (this.cache.has(key)) payload.data = this.cache.get(key);
+    else this.cache.set(key, defaultValue);
 
     return payload;
   }
@@ -123,19 +102,15 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   public async [Method.Every](payload: Payloads.Every<StoredValue>): Promise<Payloads.Every<StoredValue>> {
     payload.data = true;
 
-    if (this.cache.size === 0) {
-      payload.data = false;
-
-      return payload;
-    }
+    if (this.cache.size === 0) return payload;
 
     if (isEveryByHookPayload(payload)) {
       const { hook } = payload;
 
       for (const value of this.cache.values()) {
-        const everyValue = await hook(value);
+        const result = await hook(value);
 
-        if (everyValue) continue;
+        if (result) continue;
 
         payload.data = false;
       }
@@ -144,10 +119,19 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     if (isEveryByValuePayload(payload)) {
       const { path, value } = payload;
 
-      for (const key of this.cache.keys()) {
-        const { data } = this.get({ method: Method.Get, key, path });
+      for (const [key, storedValue] of this.cache.entries()) {
+        const data = getProperty(storedValue, path);
 
-        if (value === data) continue;
+        if (data === PROPERTY_NOT_FOUND)
+          return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Every }, { key, path }) };
+
+        if (!isPrimitive(data))
+          return {
+            ...payload,
+            error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Every }, { key, path, type: 'primitive' })
+          };
+
+        if (data === value) continue;
 
         payload.data = false;
       }
@@ -164,32 +148,25 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     if (isFilterByHookPayload(payload)) {
       const { hook } = payload;
 
-      for (const [key, value] of this.cache.entries()) {
-        const filterValue = await hook(value);
-
-        if (!filterValue) continue;
-
-        payload.data[key] = value;
-      }
+      for (const [key, value] of this.cache.entries()) if (await hook(value)) payload.data[key] = value;
     }
 
     if (isFilterByValuePayload(payload)) {
       const { path, value } = payload;
 
-      if (!isPrimitive(value)) {
-        payload.error = this.error({
-          identifier: JoshProvider.CommonIdentifiers.FilterInvalidValue,
-          message: 'The "value" must be a primitive type.',
-          method: Method.Filter
-        });
-
-        return payload;
-      }
-
       for (const [key, storedValue] of this.cache.entries()) {
         const data = getProperty(storedValue, path);
 
-        if (data !== PROPERTY_NOT_FOUND) payload.data[key] = storedValue;
+        if (data === PROPERTY_NOT_FOUND)
+          return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Filter }, { key, path }) };
+
+        if (!isPrimitive(data))
+          return {
+            ...payload,
+            error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Filter }, { key, path, type: 'primitive' })
+          };
+
+        if (data === value) payload.data[key] = storedValue;
       }
     }
 
@@ -205,9 +182,9 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       const { hook } = payload;
 
       for (const [key, value] of this.cache.entries()) {
-        const foundValue = await hook(value);
+        const result = await hook(value);
 
-        if (!foundValue) continue;
+        if (!result) continue;
 
         payload.data = [key, value];
 
@@ -219,11 +196,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       const { path, value } = payload;
 
       if (!isPrimitive(value)) {
-        payload.error = this.error({
-          identifier: JoshProvider.CommonIdentifiers.FindInvalidValue,
-          message: 'The "value" must be of type primitive.',
-          method: Method.Find
-        });
+        payload.error = this.error({ identifier: CommonIdentifiers.InvalidValueType, method: Method.Find }, { type: 'primitive' });
 
         return payload;
       }
@@ -233,7 +206,20 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
         const data = getProperty(storedValue, path);
 
-        if (data !== PROPERTY_NOT_FOUND) payload.data = [key, storedValue];
+        if (data === PROPERTY_NOT_FOUND)
+          return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Find }, { key, path }) };
+
+        if (!isPrimitive(data))
+          return {
+            ...payload,
+            error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Find }, { key, path, type: 'primitive' })
+          };
+
+        if (data !== value) continue;
+
+        payload.data = [key, storedValue];
+
+        break;
       }
     }
 
@@ -243,17 +229,15 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   public [Method.Get]<Value = StoredValue>(payload: Payloads.Get<Value>): Payloads.Get<Value> {
     const { key, path } = payload;
 
-    const data = getProperty(this.cache.get(key), path);
+    const data = getProperty<Value>(this.cache.get(key), path);
 
-    if (data !== PROPERTY_NOT_FOUND) Reflect.set(payload, 'data', data);
+    if (data !== PROPERTY_NOT_FOUND) payload.data = data;
 
     return payload;
   }
 
   public [Method.GetAll](payload: Payloads.GetAll<StoredValue>): Payloads.GetAll<StoredValue> {
-    payload.data = {};
-
-    for (const [key, value] of this.cache.entries()) payload.data[key] = value;
+    payload.data = Array.from(this.cache.entries()).reduce((data, [key, value]) => ({ ...data, [key]: value }), {});
 
     return payload;
   }
@@ -261,9 +245,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   public [Method.GetMany](payload: Payloads.GetMany<StoredValue>): Payloads.GetMany<StoredValue> {
     const { keys } = payload;
 
-    payload.data = {};
-
-    for (const key of keys) payload.data[key] = this.cache.get(key) ?? null;
+    payload.data = keys.reduce((data, key) => ({ ...data, [key]: this.cache.has(key) ? this.cache.get(key) : null }), {});
 
     return payload;
   }
@@ -271,37 +253,24 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   public [Method.Has](payload: Payloads.Has): Payloads.Has {
     const { key, path } = payload;
 
-    payload.data = this.cache.has(key) ? (path.length === 0 ? true : hasProperty(this.cache.get(key)!, path)) : false;
+    payload.data = this.cache.has(key) && hasProperty(this.cache.get(key), path);
 
     return payload;
   }
 
   public [Method.Inc](payload: Payloads.Inc): Payloads.Inc {
     const { key, path } = payload;
-    const { data } = this.get({ method: Method.Get, key, path });
+    const getPayload = this[Method.Get]({ method: Method.Get, key, path });
 
-    if (data === undefined) {
-      payload.error = this.error({
-        identifier: JoshProvider.CommonIdentifiers.IncMissingData,
-        message: path.length === 0 ? `The data at "${key}" does not exist.` : `The data at "${key}.${path.join('.')}" does not exist.`,
-        method: Method.Inc
-      });
+    if (!isPayloadWithData(getPayload))
+      return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Inc }, { key, path }) };
 
-      return payload;
-    }
+    const { data } = getPayload;
 
-    if (typeof data !== 'number') {
-      payload.error = this.error({
-        identifier: JoshProvider.CommonIdentifiers.IncInvalidType,
-        message:
-          path.length === 0 ? `The data at "${key}" must be of type "number".` : `The data at "${key}.${path.join('.')}" must be of type "number".`,
-        method: Method.Inc
-      });
+    if (typeof data !== 'number')
+      return { ...payload, error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Inc }, { key, path, type: 'number' }) };
 
-      return payload;
-    }
-
-    this.set({ method: Method.Set, key, path, value: data + 1 });
+    this[Method.Set]({ method: Method.Set, key, path, value: data + 1 });
 
     return payload;
   }
@@ -313,7 +282,6 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   }
 
   public async [Method.Map]<Value = StoredValue>(payload: Payloads.Map.ByHook<StoredValue, Value>): Promise<Payloads.Map.ByHook<StoredValue, Value>>;
-
   public async [Method.Map]<Value = StoredValue>(payload: Payloads.Map.ByPath<Value>): Promise<Payloads.Map.ByPath<Value>>;
   public async [Method.Map]<Value = StoredValue>(payload: Payloads.Map<StoredValue, Value>): Promise<Payloads.Map<StoredValue, Value>> {
     payload.data = [];
@@ -339,27 +307,15 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
   public [Method.Math](payload: Payloads.Math): Payloads.Math {
     const { key, path, operator, operand } = payload;
-    let { data } = this.get<number>({ method: Method.Get, key, path });
+    const getPayload = this[Method.Get]<number>({ method: Method.Get, key, path });
 
-    if (data === undefined) {
-      payload.error = this.error({
-        identifier: JoshProvider.CommonIdentifiers.MathMissingData,
-        message: path.length === 0 ? `The data at "${key}" does not exist.` : `The data at "${key}.${path.join('.')}" does not exist.`,
-        method: Method.Math
-      });
+    if (!isPayloadWithData(getPayload))
+      return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Math }, { key, path }) };
 
-      return payload;
-    }
+    let { data } = getPayload;
 
-    if (!isNumber(data)) {
-      payload.error = this.error({
-        identifier: JoshProvider.CommonIdentifiers.MathInvalidType,
-        message: path.length === 0 ? `The data at "${key}" must be a number.` : `The data at "${key}.${path.join('.')}" must be a number.`,
-        method: Method.Math
-      });
-
-      return payload;
-    }
+    if (typeof data !== 'number')
+      return { ...payload, error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Math }, { key, path, type: 'number' }) };
 
     switch (operator) {
       case MathOperator.Addition:
@@ -393,7 +349,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
         break;
     }
 
-    this.set({ method: Method.Set, key, path, value: data });
+    this[Method.Set]({ method: Method.Set, key, path, value: data });
 
     return payload;
   }
@@ -407,9 +363,9 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       const { hook } = payload;
 
       for (const [key, value] of this.cache.entries()) {
-        const filterValue = await hook(value);
+        const result = await hook(value);
 
-        if (filterValue) payload.data.truthy[key] = value;
+        if (result) payload.data.truthy[key] = value;
         else payload.data.falsy[key] = value;
       }
     }
@@ -417,20 +373,18 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     if (isPartitionByValuePayload(payload)) {
       const { path, value } = payload;
 
-      if (!isPrimitive(value)) {
-        payload.error = this.error({
-          identifier: JoshProvider.CommonIdentifiers.PartitionInvalidValue,
-          message: 'The "value" must be a primitive type.',
-          method: Method.Partition
-        });
-
-        return payload;
-      }
-
       for (const [key, storedValue] of this.cache.entries()) {
         const data = getProperty<StoredValue>(storedValue, path);
 
-        // @ts-expect-error 2367
+        if (data === PROPERTY_NOT_FOUND)
+          return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Partition }, { key, path }) };
+
+        if (!isPrimitive(data))
+          return {
+            ...payload,
+            error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Partition }, { key, path, type: 'primitive' })
+          };
+
         if (value === data) payload.data.truthy[key] = storedValue;
         else payload.data.falsy[key] = storedValue;
       }
@@ -441,48 +395,33 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
   public [Method.Push]<Value = StoredValue>(payload: Payloads.Push<Value>): Payloads.Push<Value> {
     const { key, path, value } = payload;
-    const { data } = this.get({ method: Method.Get, key, path });
+    const getPayload = this[Method.Get]({ method: Method.Get, key, path });
 
-    if (data === undefined) {
-      payload.error = this.error({
-        identifier: JoshProvider.CommonIdentifiers.PushMissingData,
-        message: path.length === 0 ? `The data at "${key}" does not exist.` : `The data at "${key}.${path.join('.')}" does not exist.`,
-        method: Method.Push
-      });
+    if (!isPayloadWithData(getPayload))
+      return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Push }, { key, path }) };
 
-      return payload;
-    }
+    const { data } = getPayload;
 
-    if (!Array.isArray(data)) {
-      payload.error = this.error({
-        identifier: JoshProvider.CommonIdentifiers.PushInvalidType,
-        message: path.length === 0 ? `The data at "${key}" must be an array.` : `The data at "${key}.${path.join('.')}" does not exist.`,
-        method: Method.Push
-      });
-
-      return payload;
-    }
+    if (!Array.isArray(data))
+      return { ...payload, error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Push }, { key, path, type: 'array' }) };
 
     data.push(value);
 
-    this.set({ method: Method.Set, key, path, value: data });
+    this[Method.Set]({ method: Method.Set, key, path, value: data });
 
     return payload;
   }
 
   public [Method.Random](payload: Payloads.Random<StoredValue>): Payloads.Random<StoredValue> {
+    if (this.cache.size === 0) return payload;
+
     const { count, duplicates } = payload;
 
-    if (this.cache.size === 0) return payload;
-    if (this.cache.size < count) {
-      payload.error = this.error({
-        identifier: JoshProvider.CommonIdentifiers.RandomInvalidCount,
-        message: `The count of values to be selected must be less than or equal to the number of values in the map.`,
-        method: Method.Random
-      });
-
-      return payload;
-    }
+    if (this.cache.size < count)
+      return {
+        ...payload,
+        error: this.error({ identifier: CommonIdentifiers.InvalidCount, method: Method.Random })
+      };
 
     const data: [string, StoredValue][] = [];
     const entries = Array.from(this.cache.entries());
@@ -496,18 +435,15 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   }
 
   public [Method.RandomKey](payload: Payloads.RandomKey): Payloads.RandomKey {
+    if (this.cache.size === 0) return payload;
+
     const { count, duplicates } = payload;
 
-    if (this.cache.size === 0) return payload;
-    if (this.cache.size < count) {
-      payload.error = this.error({
-        identifier: JoshProvider.CommonIdentifiers.RandomKeyInvalidCount,
-        message: `The count of keys to be selected must be less than or equal to the number of keys in the map.`,
-        method: Method.RandomKey
-      });
-
-      return payload;
-    }
+    if (this.cache.size < count)
+      return {
+        ...payload,
+        error: this.error({ identifier: CommonIdentifiers.InvalidCount, method: Method.RandomKey })
+      };
 
     payload.data = [];
 
@@ -524,58 +460,40 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   public async [Method.Remove]<Value = StoredValue>(payload: Payloads.Remove<Value>): Promise<Payloads.Remove<Value>> {
     if (isRemoveByHookPayload(payload)) {
       const { key, path, hook } = payload;
-      const { data } = this.get<unknown[]>({ method: Method.Get, key, path });
+      const getPayload = this[Method.Get]<Value[]>({ method: Method.Get, key, path });
 
-      if (data === undefined) {
-        payload.error = this.error({
-          identifier: JoshProvider.CommonIdentifiers.RemoveMissingData,
-          message: path.length === 0 ? `The data at "${key}" does not exist.` : `The data at "${key}.${path.join('.')}" does not exist.`,
-          method: Method.Remove
-        });
+      if (!isPayloadWithData(getPayload))
+        return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Remove }, { key, path }) };
 
-        return payload;
-      }
+      const { data } = getPayload;
 
-      if (!Array.isArray(data)) {
-        payload.error = this.error({
-          identifier: JoshProvider.CommonIdentifiers.RemoveInvalidType,
-          message: path.length === 0 ? `The data at "${key}" must be an array.` : `The data at "${key}.${path.join('.')}" must be an array.`,
-          method: Method.Remove
-        });
-
-        return payload;
-      }
+      if (!Array.isArray(data))
+        return {
+          ...payload,
+          error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Remove }, { key, path, type: 'array' })
+        };
 
       const filterValues = await Promise.all(data.map(hook));
 
-      this.set({ method: Method.Set, key, path, value: data.filter((_, index) => !filterValues[index]) });
+      this[Method.Set]({ method: Method.Set, key, path, value: data.filter((_, index) => !filterValues[index]) });
     }
 
     if (isRemoveByValuePayload(payload)) {
       const { key, path, value } = payload;
-      const { data } = this.get({ method: Method.Get, key, path });
+      const getPayload = this[Method.Get]({ method: Method.Get, key, path });
 
-      if (data === undefined) {
-        payload.error = this.error({
-          identifier: JoshProvider.CommonIdentifiers.RemoveMissingData,
-          message: path.length === 0 ? `The data at "${key}" does not exist.` : `The data at "${key}.${path.join('.')}" does not exist.`,
-          method: Method.Remove
-        });
+      if (!isPayloadWithData(getPayload))
+        return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Remove }, { key, path }) };
 
-        return payload;
-      }
+      const { data } = getPayload;
 
-      if (!Array.isArray(data)) {
-        payload.error = this.error({
-          identifier: JoshProvider.CommonIdentifiers.RemoveInvalidType,
-          message: path.length === 0 ? `The data at "${key}" must be an array.` : `The data at "${key}.${path.join('.')}" must be an array.`,
-          method: Method.Remove
-        });
+      if (!Array.isArray(data))
+        return {
+          ...payload,
+          error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Remove }, { key, path, type: 'array' })
+        };
 
-        return payload;
-      }
-
-      this.set({ method: Method.Set, key, path, value: data.filter((storedValue) => value !== storedValue) });
+      this[Method.Set]({ method: Method.Set, key, path, value: data.filter((storedValue) => value !== storedValue) });
     }
 
     return payload;
@@ -584,8 +502,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   public [Method.Set]<Value = StoredValue>(payload: Payloads.Set<Value>): Payloads.Set<Value> {
     const { key, path, value } = payload;
 
-    // @ts-expect-error 2345
-    if (path.length === 0) this.cache.set(key, value);
+    if (path.length === 0) this.cache.set(key, value as unknown as StoredValue);
     else {
       const storedValue = this.cache.get(key);
 
@@ -599,8 +516,8 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     const { entries, overwrite } = payload;
 
     for (const [{ key, path }, value] of entries)
-      if (overwrite) this.set({ method: Method.Set, key, path, value });
-      else if (!this.has({ method: Method.Has, key, path }).data) this.set({ method: Method.Set, key, path, value });
+      if (overwrite) this[Method.Set]({ method: Method.Set, key, path, value });
+      else if (!this[Method.Has]({ method: Method.Has, key, path }).data) this[Method.Set]({ method: Method.Set, key, path, value });
 
     return payload;
   }
@@ -620,9 +537,9 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       const { hook } = payload;
 
       for (const value of this.cache.values()) {
-        const someValue = await hook(value);
+        const result = await hook(value);
 
-        if (!someValue) continue;
+        if (!result) continue;
 
         payload.data = true;
 
@@ -633,13 +550,23 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     if (isSomeByValuePayload(payload)) {
       const { path, value } = payload;
 
-      for (const storedValue of this.cache.values()) {
+      for (const [key, storedValue] of this.cache.entries()) {
         const data = getProperty(storedValue, path);
 
-        if (value !== data) continue;
-        if (isPrimitive(storedValue) && value === storedValue) continue;
+        if (data === PROPERTY_NOT_FOUND)
+          return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Some }, { key, path }) };
+
+        if (!isPrimitive(data))
+          return {
+            ...payload,
+            error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Some }, { key, path, type: 'primitive' })
+          };
+
+        if (data !== value) continue;
 
         payload.data = true;
+
+        break;
       }
     }
 
@@ -648,17 +575,20 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
   public async [Method.Update]<Value = StoredValue>(payload: Payloads.Update<StoredValue, Value>): Promise<Payloads.Update<StoredValue, Value>> {
     const { key, path, hook } = payload;
-    const { data } = this.get({ method: Method.Get, key, path });
+    const getPayload = this[Method.Get]({ method: Method.Get, key, path });
 
-    if (data === undefined) return payload;
+    if (!isPayloadWithData<StoredValue>(getPayload))
+      return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Update }, { key, path }) };
 
-    this.set({ method: Method.Set, key, path, value: await hook(data) });
+    const { data } = getPayload;
+
+    this[Method.Set]({ method: Method.Set, key, path, value: await hook(data) });
 
     return payload;
   }
 
   public [Method.Values](payload: Payloads.Values<StoredValue>): Payloads.Values<StoredValue> {
-    Reflect.set(payload, 'data', Array.from(this.cache.values()));
+    payload.data = Array.from(this.cache.values());
 
     return payload;
   }
