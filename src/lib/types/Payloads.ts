@@ -83,14 +83,14 @@ export namespace Payloads {
    * @see {@link Payload}
    * @see {@link Payload.Data}
    */
-  export interface Each extends Payload {
+  export interface Each<StoredValue> extends Payload {
     /**
      * The method this payload is for.
      * @since 2.0.0
      */
     method: Method.Each;
 
-    hook: (value: any, key: string) => void;
+    hook: Payload.Hook<StoredValue>;
   }
 
   /**
