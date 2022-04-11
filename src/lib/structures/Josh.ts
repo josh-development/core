@@ -1560,7 +1560,6 @@ export class Josh<StoredValue = unknown> {
 
     if (isLegacyExportJSON(json)) {
       emitWarning(this.error(Josh.Identifiers.LegacyDeprecation));
-
       json = convertLegacyExportJSON(json);
     }
 
