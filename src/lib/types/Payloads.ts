@@ -78,6 +78,22 @@ export namespace Payloads {
   }
 
   /**
+   * The payload for {@link Method.Ensure}
+   * @since 3.0.0
+   * @see {@link Payload}
+   * @see {@link Payload.Data}
+   */
+  export interface Each extends Payload {
+    /**
+     * The method this payload is for.
+     * @since 3.0.0
+     */
+    method: Method.Each;
+
+    hook: (value: any, key: string, path: string[]) => void;
+  }
+
+  /**
    * The payload for {@link Method.Get}
    * @since 2.0.0
    * @see {@link Payload}

@@ -98,6 +98,10 @@ export class Middleware<StoredValue = unknown> {
     return payload;
   }
 
+  public [Method.Each](payload: Payloads.Each): Awaitable<Payloads.Each> {
+    return payload;
+  }
+
   public [Method.Ensure](payload: Payloads.Ensure<StoredValue>): Awaitable<Payloads.Ensure<StoredValue>> {
     return payload;
   }
