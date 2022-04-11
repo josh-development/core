@@ -372,7 +372,7 @@ export class Josh<StoredValue = unknown> {
    * Loop over every key-value pair in this {@link Josh} and execute `hook` on it.
    * @param hook The hook function to execute with each key.
    */
-  public async each(hook: (value: any, key: string, path: string[]) => void): Promise<this> {
+  public async each(hook: (value: any, key: string) => void): Promise<this> {
     let payload: Payloads.Each = { method: Method.Each, trigger: Trigger.PreProvider, hook };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);

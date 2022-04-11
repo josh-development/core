@@ -90,7 +90,7 @@ export namespace Payloads {
      */
     method: Method.Each;
 
-    hook: (value: any, key: string, path: string[]) => void;
+    hook: (value: any, key: string) => void;
   }
 
   /**
