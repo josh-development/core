@@ -102,7 +102,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.DeleteMany](payload: Payloads.DeleteMany): Awaitable<Payloads.DeleteMany>;
 
   /**
-   * @since 3.0.0
+   * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
    */

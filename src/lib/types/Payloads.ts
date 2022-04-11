@@ -79,14 +79,14 @@ export namespace Payloads {
 
   /**
    * The payload for {@link Method.Ensure}
-   * @since 3.0.0
+   * @since 2.0.0
    * @see {@link Payload}
    * @see {@link Payload.Data}
    */
   export interface Each extends Payload {
     /**
      * The method this payload is for.
-     * @since 3.0.0
+     * @since 2.0.0
      */
     method: Method.Each;
 
