@@ -39,7 +39,6 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
   public [Method.AutoKey](payload: Payloads.AutoKey): Payloads.AutoKey {
     this.autoKeyCount++;
-
     payload.data = this.autoKeyCount.toString();
 
     return payload;
@@ -103,7 +102,6 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     payload.data = true;
 
     if (this.cache.size === 0) return payload;
-
     if (isEveryByHookPayload(payload)) {
       const { hook } = payload;
 
@@ -124,13 +122,11 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
         if (data === PROPERTY_NOT_FOUND)
           return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Every }, { key, path }) };
-
         if (!isPrimitive(data))
           return {
             ...payload,
             error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Every }, { key, path, type: 'primitive' })
           };
-
         if (data === value) continue;
 
         payload.data = false;
@@ -159,13 +155,11 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
         if (data === PROPERTY_NOT_FOUND)
           return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Filter }, { key, path }) };
-
         if (!isPrimitive(data))
           return {
             ...payload,
             error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Filter }, { key, path, type: 'primitive' })
           };
-
         if (data === value) payload.data[key] = storedValue;
       }
     }
@@ -208,13 +202,11 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
         if (data === PROPERTY_NOT_FOUND)
           return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Find }, { key, path }) };
-
         if (!isPrimitive(data))
           return {
             ...payload,
             error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Find }, { key, path, type: 'primitive' })
           };
-
         if (data !== value) continue;
 
         payload.data = [key, storedValue];
@@ -228,7 +220,6 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
   public [Method.Get]<Value = StoredValue>(payload: Payloads.Get<Value>): Payloads.Get<Value> {
     const { key, path } = payload;
-
     const data = getProperty<Value>(this.cache.get(key), path);
 
     if (data !== PROPERTY_NOT_FOUND) payload.data = data;
@@ -378,13 +369,11 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
         if (data === PROPERTY_NOT_FOUND)
           return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Partition }, { key, path }) };
-
         if (!isPrimitive(data))
           return {
             ...payload,
             error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Partition }, { key, path, type: 'primitive' })
           };
-
         if (value === data) payload.data.truthy[key] = storedValue;
         else payload.data.falsy[key] = storedValue;
       }
@@ -406,7 +395,6 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       return { ...payload, error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Push }, { key, path, type: 'array' }) };
 
     data.push(value);
-
     this[Method.Set]({ method: Method.Set, key, path, value: data });
 
     return payload;
@@ -555,13 +543,11 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
         if (data === PROPERTY_NOT_FOUND)
           return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Some }, { key, path }) };
-
         if (!isPrimitive(data))
           return {
             ...payload,
             error: this.error({ identifier: CommonIdentifiers.InvalidDataType, method: Method.Some }, { key, path, type: 'primitive' })
           };
-
         if (data !== value) continue;
 
         payload.data = true;
