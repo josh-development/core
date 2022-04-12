@@ -58,7 +58,11 @@ export class Middleware<StoredValue = unknown> {
    */
   public readonly conditions: Middleware.Conditions;
 
-  public constructor(options: Partial<Middleware.Options> = {}) {
+  protected context: Middleware.ContextData;
+
+  public constructor(context: Middleware.ContextData, options: Partial<Middleware.Options> = {}) {
+    this.context = context;
+
     const { name, position, conditions } = options;
 
     if (!name) throw new JoshError({ identifier: Middleware.Identifiers.NameNotFound, message: 'No name was provided for this middleware.' });
@@ -317,6 +321,8 @@ export namespace Middleware {
      */
     conditions: Conditions;
   }
+
+  export interface ContextData {}
 
   export enum Identifiers {
     ConditionsNotFound = 'conditionsNotFound',

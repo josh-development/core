@@ -1,6 +1,6 @@
 import { Awaitable, isFunction, isPrimitive, Primitive } from '@sapphire/utilities';
 import { emitWarning } from 'process';
-import { CoreAutoEnsure } from '../../middlewares/CoreAutoEnsure';
+import { AutoEnsure } from '../../middlewares/AutoEnsure';
 import { JoshError, JoshErrorOptions } from '../errors';
 import { convertLegacyExportJSON, isLegacyExportJSON } from '../functions';
 import { KeyPath, KeyPathJSON, MathOperator, Method, Path, Payload, Payloads, Trigger } from '../types';
@@ -61,7 +61,7 @@ export class Josh<StoredValue = unknown> {
   public provider: JoshProvider<StoredValue>;
 
   public constructor(options: Josh.Options<StoredValue>) {
-    const { name, provider, middlewares } = options;
+    const { name, provider, middlewares, autoEnsure } = options;
 
     this.options = options;
 
@@ -80,7 +80,7 @@ export class Josh<StoredValue = unknown> {
 
     this.middlewares = new MiddlewareStore({ instance: this });
 
-    if ('autoEnsure' in options) this.middlewares.set('autoEnsure', new CoreAutoEnsure());
+    if ('autoEnsure' in options) this.use(new AutoEnsure<StoredValue>({ defaultValue: autoEnsure! }));
     if (middlewares !== undefined)
       for (const middleware of middlewares.filter((middleware) => {
         if (!(middleware instanceof Middleware))
