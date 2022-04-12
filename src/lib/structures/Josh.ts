@@ -141,7 +141,6 @@ export class Josh<StoredValue = unknown> {
       if (trigger !== undefined && method !== undefined) options.conditions[trigger === Trigger.PreProvider ? 'pre' : 'post'].push(method);
 
       Object.defineProperty(middleware, method === undefined ? 'run' : method, { value: hook });
-
       this.middlewares.set(middleware.name, middleware);
     }
 

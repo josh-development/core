@@ -30,7 +30,6 @@ describe('MapProvider', () => {
         expect(trigger).toBeUndefined();
         expect(error).toBeUndefined();
         expect(data).toBe('1');
-
         expect(provider['autoKeyCount']).toBe(1);
       });
     });
