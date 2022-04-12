@@ -39,7 +39,6 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
   public [Method.AutoKey](payload: Payloads.AutoKey): Payloads.AutoKey {
     this.autoKeyCount++;
-
     payload.data = this.autoKeyCount.toString();
 
     return payload;
@@ -250,7 +249,6 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
   public [Method.Get]<Value = StoredValue>(payload: Payloads.Get<Value>): Payloads.Get<Value> {
     const { key, path } = payload;
-
     const data = getProperty(this.cache.get(key), path);
 
     if (data !== PROPERTY_NOT_FOUND) Reflect.set(payload, 'data', data);
@@ -472,7 +470,6 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     }
 
     data.push(value);
-
     this.set({ method: Method.Set, key, path, value: data });
 
     return payload;
@@ -603,7 +600,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
-  public [Method.SetMany]<Value = StoredValue>(payload: Payloads.SetMany<Value>): Payloads.SetMany<Value> {
+  public [Method.SetMany](payload: Payloads.SetMany): Payloads.SetMany {
     const { entries, overwrite } = payload;
 
     for (const [{ key, path }, value] of entries)
@@ -655,12 +652,12 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
   }
 
   public async [Method.Update]<Value = StoredValue>(payload: Payloads.Update<StoredValue, Value>): Promise<Payloads.Update<StoredValue, Value>> {
-    const { key, path, hook } = payload;
-    const { data } = this.get({ method: Method.Get, key, path });
+    const { key, hook } = payload;
+    const data = this.cache.get(key);
 
     if (data === undefined) return payload;
 
-    this.set({ method: Method.Set, key, path, value: await hook(data) });
+    this.cache.set(key, (await hook(data)) as unknown as StoredValue);
 
     return payload;
   }

@@ -192,7 +192,7 @@ export class Middleware<StoredValue = unknown> {
     return payload;
   }
 
-  public [Method.SetMany]<Value = StoredValue>(payload: Payloads.SetMany<Value>): Awaitable<Payloads.SetMany<Value>> {
+  public [Method.SetMany](payload: Payloads.SetMany): Awaitable<Payloads.SetMany> {
     return payload;
   }
 

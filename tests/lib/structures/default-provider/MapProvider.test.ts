@@ -30,7 +30,6 @@ describe('MapProvider', () => {
         expect(trigger).toBeUndefined();
         expect(error).toBeUndefined();
         expect(data).toBe('1');
-
         expect(provider['autoKeyCount']).toBe(1);
       });
     });
@@ -1617,51 +1616,48 @@ describe('MapProvider', () => {
 
     describe('with update method', () => {
       test('GIVEN provider w/o data THEN returns payload w/o data', async () => {
-        const payload = await provider.update({ method: Method.Update, key: 'test:update', path: [], hook: (value) => value });
+        const payload = await provider.update({ method: Method.Update, key: 'test:update', hook: (value) => value });
 
         expect(typeof payload).toBe('object');
 
-        const { method, trigger, error, key, path, hook } = payload;
+        const { method, trigger, error, key, hook } = payload;
 
         expect(method).toBe(Method.Update);
         expect(trigger).toBeUndefined();
         expect(error).toBeUndefined();
         expect(key).toBe('test:update');
-        expect(path).toEqual([]);
         expect(typeof hook).toBe('function');
       });
 
       test('GIVEN provider w/ data at key THEN returns payload w/ data AND updates value at key', async () => {
         provider.set({ method: Method.Set, key: 'test:update', path: [], value: 'value' });
 
-        const payload = await provider.update({ method: Method.Update, key: 'test:update', path: [], hook: (value) => value });
+        const payload = await provider.update({ method: Method.Update, key: 'test:update', hook: (value) => value });
 
         expect(typeof payload).toBe('object');
 
-        const { method, trigger, error, key, path, hook } = payload;
+        const { method, trigger, error, key, hook } = payload;
 
         expect(method).toBe(Method.Update);
         expect(trigger).toBeUndefined();
         expect(error).toBeUndefined();
         expect(key).toBe('test:update');
-        expect(path).toEqual([]);
         expect(typeof hook).toBe('function');
       });
 
       test('GIVEN provider w/ data at path THEN returns payload w/ data AND updates value at path', async () => {
         provider.set({ method: Method.Set, key: 'test:update', path: ['path'], value: 'value' });
 
-        const payload = await provider.update({ method: Method.Update, key: 'test:update', path: ['path'], hook: (value) => value });
+        const payload = await provider.update({ method: Method.Update, key: 'test:update', hook: (value) => value });
 
         expect(typeof payload).toBe('object');
 
-        const { method, trigger, error, key, path, hook } = payload;
+        const { method, trigger, error, key, hook } = payload;
 
         expect(method).toBe(Method.Update);
         expect(trigger).toBeUndefined();
         expect(error).toBeUndefined();
         expect(key).toBe('test:update');
-        expect(path).toEqual(['path']);
         expect(typeof hook).toBe('function');
       });
     });

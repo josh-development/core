@@ -289,7 +289,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
    */
-  public abstract [Method.SetMany]<Value = StoredValue>(payload: Payloads.SetMany<Value>): Awaitable<Payloads.SetMany<Value>>;
+  public abstract [Method.SetMany](payload: Payloads.SetMany): Awaitable<Payloads.SetMany>;
 
   /**
    * @since 2.0.0
