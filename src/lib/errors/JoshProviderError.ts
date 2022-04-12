@@ -16,7 +16,6 @@ export class JoshProviderError extends JoshError {
     const { name, method } = options;
 
     super({ ...options, name: name ?? 'JoshProviderError' });
-
     this.method = method ?? null;
   }
 }
