@@ -394,4 +394,8 @@ export namespace JoshProvider {
      */
     error?: JoshProviderError;
   }
+
+  export interface Constructor {
+    new: (options?: Options) => JoshProvider;
+  }
 }
