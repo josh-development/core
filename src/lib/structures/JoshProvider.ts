@@ -396,6 +396,6 @@ export namespace JoshProvider {
   }
 
   export interface Constructor {
-    new: (options?: Options) => JoshProvider;
+    new (options?: Options): JoshProvider;
   }
 }
