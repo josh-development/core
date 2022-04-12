@@ -66,12 +66,10 @@ export class Middleware<StoredValue = unknown> {
     const { name, position, conditions } = options;
 
     if (!name) throw new JoshError({ identifier: Middleware.Identifiers.NameNotFound, message: 'No name was provided for this middleware.' });
-    if (!conditions)
-      throw new JoshError({ identifier: Middleware.Identifiers.ConditionsNotFound, message: 'No conditions were provided for this middleware.' });
 
     this.name = name;
     this.position = position;
-    this.conditions = conditions;
+    this.conditions = conditions ?? { pre: [], post: [] };
   }
 
   /**
@@ -325,8 +323,6 @@ export namespace Middleware {
   export interface ContextData {}
 
   export enum Identifiers {
-    ConditionsNotFound = 'conditionsNotFound',
-
     NameNotFound = 'nameNotFound',
 
     StoreNotFound = 'storeNotFound'
