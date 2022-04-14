@@ -1,4 +1,4 @@
-import type { Ctor } from '@sapphire/utilities';
+import type { Ctor, PartialRequired } from '@sapphire/utilities';
 import type { Middleware } from '../../lib/structures/Middleware';
 import { createClassDecorator } from './utils/createClassDecorator';
 import { createProxy } from './utils/createProxy';
@@ -18,10 +18,15 @@ import { createProxy } from './utils/createProxy';
  * })
  * export class CoreMiddleware extends Middleware {}
  * ``` */
-export function ApplyMiddlewareOptions(options: Middleware.Options): ClassDecorator {
+export function ApplyMiddlewareOptions(options: PartialRequired<Middleware.Options, 'name'>): ClassDecorator {
   return createClassDecorator((target: Ctor<ConstructorParameters<typeof Middleware>, Middleware>) =>
     createProxy(target, {
-      construct: (ctor, [context]) => new ctor(context, options)
+      construct(ctor, [context]) {
+        const pre = Reflect.getMetadata('pre', target.constructor) ?? [];
+        const post = Reflect.getMetadata('post', target.constructor) ?? [];
+
+        return new ctor(context, { ...options, conditions: { pre, post } });
+      }
     })
   );
 }
