@@ -1,4 +1,4 @@
-import type { Awaitable } from '@sapphire/utilities';
+import type { Awaitable, NonNullObject } from '@sapphire/utilities';
 import { JoshError } from '../errors';
 import { Method, Payload, Payloads } from '../types';
 import type { Josh } from './Josh';
@@ -33,7 +33,7 @@ import type { MiddlewareStore } from './MiddlewareStore';
  * ```
  */
 
-export class Middleware<StoredValue = unknown> {
+export class Middleware<ContextData extends NonNullObject, StoredValue = unknown> {
   /**
    * The store for this middleware.
    * @since 2.0.0
@@ -58,9 +58,9 @@ export class Middleware<StoredValue = unknown> {
    */
   public readonly conditions: Middleware.Conditions;
 
-  protected context: Middleware.ContextData;
+  protected context: ContextData;
 
-  public constructor(context: Middleware.ContextData, options: Partial<Middleware.Options> = {}) {
+  public constructor(context: ContextData, options: Partial<Middleware.Options> = {}) {
     this.context = context;
 
     const { name, position, conditions } = options;
@@ -319,8 +319,6 @@ export namespace Middleware {
      */
     conditions: Conditions;
   }
-
-  export interface ContextData {}
 
   export enum Identifiers {
     NameNotFound = 'nameNotFound',

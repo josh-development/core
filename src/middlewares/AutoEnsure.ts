@@ -3,13 +3,7 @@ import { Middleware } from '../lib/structures/Middleware';
 import { Method, Payloads } from '../lib/types';
 
 @ApplyMiddlewareOptions({ name: 'autoEnsure' })
-export class AutoEnsure<StoredValue = unknown> extends Middleware<StoredValue> {
-  protected declare context: AutoEnsure.ContextData<StoredValue>;
-
-  public constructor(context: AutoEnsure.ContextData<StoredValue>) {
-    super(context);
-  }
-
+export class AutoEnsure<StoredValue = unknown> extends Middleware<AutoEnsure.ContextData<StoredValue>, StoredValue> {
   @PreProvider()
   public async [Method.Dec](payload: Payloads.Dec): Promise<Payloads.Dec> {
     const { key } = payload;
