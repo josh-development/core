@@ -1,4 +1,4 @@
-import { Awaitable, isFunction, isPrimitive, Primitive } from '@sapphire/utilities';
+import { Awaitable, isFunction, isPrimitive, NonNullObject, Primitive } from '@sapphire/utilities';
 import { emitWarning } from 'process';
 import { AutoEnsure } from '../../middlewares/AutoEnsure';
 import { JoshError, JoshErrorOptions } from '../errors';
@@ -89,7 +89,7 @@ export class Josh<StoredValue = unknown> {
           );
 
         return middleware instanceof Middleware;
-      }))
+      }) as Middleware<NonNullObject, StoredValue>[])
         this.use(middleware);
   }
 
@@ -136,8 +136,11 @@ export class Josh<StoredValue = unknown> {
    * josh.use(new MyMiddleware());
    * ```
    */
-  public use(instance: Middleware<StoredValue>): this;
-  public use<P extends Payload>(optionsOrInstance: Josh.UseMiddlewareOptions | Middleware<StoredValue>, hook?: (payload: P) => Awaitable<P>): this {
+  public use(instance: Middleware<NonNullObject, StoredValue>): this;
+  public use<P extends Payload>(
+    optionsOrInstance: Josh.UseMiddlewareOptions | Middleware<NonNullObject, StoredValue>,
+    hook?: (payload: P) => Awaitable<P>
+  ): this {
     if (optionsOrInstance instanceof Middleware) this.middlewares.set(optionsOrInstance.name, optionsOrInstance);
     else {
       if (hook === undefined)
@@ -148,7 +151,7 @@ export class Josh<StoredValue = unknown> {
 
       const { name, position, trigger, method } = optionsOrInstance;
       const options: Middleware.Options = { name, position, conditions: { pre: [], post: [] } };
-      const middleware = this.middlewares.get(options.name) ?? new Middleware<StoredValue>(options).init(this.middlewares);
+      const middleware = this.middlewares.get(options.name) ?? new Middleware<NonNullObject, StoredValue>({}, options).init(this.middlewares);
 
       if (trigger !== undefined && method !== undefined) options.conditions[trigger === Trigger.PreProvider ? 'pre' : 'post'].push(method);
 
