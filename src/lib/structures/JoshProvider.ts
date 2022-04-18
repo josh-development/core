@@ -331,7 +331,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
     if (typeof options === 'string') return new JoshProviderError({ identifier: options, message: this.resolveIdentifier(options, metadata) });
     if ('message' in options) return new JoshProviderError(options);
 
-    return new JoshProviderError({ ...options, name: options.name ?? this.constructor.name });
+    return new JoshProviderError({ ...options, name: options.name ?? `${this.constructor.name}Error` });
   }
 
   /**

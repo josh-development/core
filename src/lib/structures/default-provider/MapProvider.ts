@@ -220,9 +220,14 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
   public [Method.Get]<Value = StoredValue>(payload: Payloads.Get<Value>): Payloads.Get<Value> {
     const { key, path } = payload;
-    const data = getProperty<Value>(this.cache.get(key), path, false);
 
-    if (data !== PROPERTY_NOT_FOUND) payload.data = data;
+    if (path.length === 0) {
+      if (this.cache.has(key)) payload.data = this.cache.get(key) as unknown as Value;
+    } else {
+      const data = getProperty<Value>(this.cache.get(key), path);
+
+      if (data !== PROPERTY_NOT_FOUND) payload.data = data;
+    }
 
     return payload;
   }
@@ -287,7 +292,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       const { path } = payload;
 
       for (const value of this.cache.values()) {
-        const data = getProperty<Value>(value, path, false);
+        const data = getProperty<Value>(value, path);
 
         if (data !== PROPERTY_NOT_FOUND) payload.data.push(data);
       }
@@ -365,7 +370,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
       const { path, value } = payload;
 
       for (const [key, storedValue] of this.cache.entries()) {
-        const data = getProperty<StoredValue>(storedValue, path, false);
+        const data = getProperty<StoredValue>(storedValue, path);
 
         if (data === PROPERTY_NOT_FOUND)
           return { ...payload, error: this.error({ identifier: CommonIdentifiers.MissingData, method: Method.Partition }, { key, path }) };
@@ -494,7 +499,7 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     else {
       const storedValue = this.cache.get(key);
 
-      this.cache.set(key, setProperty(storedValue ?? {}, path, value));
+      this.cache.set(key, setProperty(storedValue, path, value));
     }
 
     return payload;
