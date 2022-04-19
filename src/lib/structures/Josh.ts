@@ -78,10 +78,7 @@ export class Josh<StoredValue = unknown> {
     if (autoEnsure !== undefined) this.use(new AutoEnsure<StoredValue>(autoEnsure));
     if (middlewares !== undefined)
       for (const middleware of middlewares.filter((middleware) => {
-        if (!(middleware instanceof Middleware))
-          emitWarning(
-            this.error({ identifier: Josh.Identifiers.InvalidMiddleware, message: 'The middleware must extend the exported "Middleware" class.' })
-          );
+        if (!(middleware instanceof Middleware)) emitWarning(this.error(Josh.Identifiers.InvalidMiddleware));
 
         return middleware instanceof Middleware;
       }) as Middleware<NonNullObject, StoredValue>[])
@@ -1645,6 +1642,9 @@ export class Josh<StoredValue = unknown> {
     if (result !== null) return result;
 
     switch (identifier) {
+      case Josh.Identifiers.InvalidMiddleware:
+        return 'The middleware must extend the exported "Middleware" class.';
+
       case Josh.Identifiers.InvalidProvider:
         return 'The "provider" option must extend the exported "JoshProvider" class to ensure compatibility, but continuing anyway.';
 
