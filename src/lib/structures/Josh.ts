@@ -1,9 +1,10 @@
-import { Awaitable, isFunction, isPrimitive, Primitive } from '@sapphire/utilities';
+import { Awaitable, isFunction, isPrimitive, NonNullObject, Primitive } from '@sapphire/utilities';
 import { emitWarning } from 'process';
-import type { CoreAutoEnsure } from '../../middlewares/CoreAutoEnsure';
+import { AutoEnsure } from '../../middlewares/AutoEnsure';
 import { JoshError, JoshErrorOptions } from '../errors';
 import { convertLegacyExportJSON, isLegacyExportJSON, isPayloadWithData, resolveCommonIdentifier } from '../functions';
-import { BuiltInMiddleware, CommonIdentifiers, KeyPath, KeyPathJSON, MathOperator, Method, Path, Payload, Payloads, Trigger } from '../types';
+import { KeyPath, KeyPathJSON, MathOperator, Method, Path, Payload, Payloads, Trigger } from '../types';
+import { CommonIdentifiers } from '../types/CommonIdentifiers';
 import { MapProvider } from './default-provider/MapProvider';
 import { JoshProvider } from './JoshProvider';
 import { Middleware } from './Middleware';
@@ -61,7 +62,7 @@ export class Josh<StoredValue = unknown> {
   public provider: JoshProvider<StoredValue>;
 
   public constructor(options: Josh.Options<StoredValue>) {
-    const { name, provider } = options;
+    const { name, provider, middlewares, autoEnsure } = options;
 
     this.options = options;
 
@@ -73,6 +74,15 @@ export class Josh<StoredValue = unknown> {
     if (!(this.provider instanceof JoshProvider)) emitWarning(this.error(Josh.Identifiers.InvalidProvider));
 
     this.middlewares = new MiddlewareStore({ instance: this });
+
+    if (autoEnsure !== undefined) this.use(new AutoEnsure<StoredValue>(autoEnsure));
+    if (middlewares !== undefined && Array.isArray(middlewares))
+      for (const middleware of middlewares.filter((middleware) => {
+        if (!(middleware instanceof Middleware)) emitWarning(this.error(Josh.Identifiers.InvalidMiddleware));
+
+        return middleware instanceof Middleware;
+      }) as Middleware<NonNullObject, StoredValue>[])
+        this.use(middleware);
   }
 
   /**
@@ -118,15 +128,18 @@ export class Josh<StoredValue = unknown> {
    * josh.use(new MyMiddleware());
    * ```
    */
-  public use(instance: Middleware<StoredValue>): this;
-  public use<P extends Payload>(optionsOrInstance: Josh.UseMiddlewareOptions | Middleware<StoredValue>, hook?: (payload: P) => Awaitable<P>): this {
+  public use(instance: Middleware<NonNullObject, StoredValue>): this;
+  public use<P extends Payload>(
+    optionsOrInstance: Josh.UseMiddlewareOptions | Middleware<NonNullObject, StoredValue>,
+    hook?: (payload: P) => Awaitable<P>
+  ): this {
     if (optionsOrInstance instanceof Middleware) this.middlewares.set(optionsOrInstance.name, optionsOrInstance);
     else {
       if (hook === undefined) throw this.error(Josh.Identifiers.UseMiddlewareHookNotFound);
 
       const { name, position, trigger, method } = optionsOrInstance;
       const options: Middleware.Options = { name, position, conditions: { pre: [], post: [] } };
-      const middleware = this.middlewares.get(options.name) ?? new Middleware<StoredValue>(options).init(this.middlewares);
+      const middleware = this.middlewares.get(options.name) ?? new Middleware<NonNullObject, StoredValue>({}, options).init(this.middlewares);
 
       if (trigger !== undefined && method !== undefined) options.conditions[trigger === Trigger.PreProvider ? 'pre' : 'post'].push(method);
 
@@ -1629,6 +1642,9 @@ export class Josh<StoredValue = unknown> {
     if (result !== null) return result;
 
     switch (identifier) {
+      case Josh.Identifiers.InvalidMiddleware:
+        return 'The middleware must extend the exported "Middleware" class.';
+
       case Josh.Identifiers.InvalidProvider:
         return 'The "provider" option must extend the exported "JoshProvider" class to ensure compatibility, but continuing anyway.';
 
@@ -1709,12 +1725,16 @@ export namespace Josh {
     provider?: JoshProvider<StoredValue>;
 
     /**
-     * The middleware context data.
+     * The middleware to use.
      * @since 2.0.0
      */
-    middlewareContextData?: {
-      [BuiltInMiddleware.AutoEnsure]: CoreAutoEnsure.ContextData;
-    };
+    middlewares?: Middleware<StoredValue>[];
+
+    /**
+     * The value for CoreAutoEnsure to use.
+     * @since 2.0.0
+     */
+    autoEnsure?: AutoEnsure.ContextData<StoredValue>;
   }
 
   /**
@@ -1841,6 +1861,8 @@ export namespace Josh {
   }
 
   export enum Identifiers {
+    InvalidMiddleware = 'InvalidMiddleware',
+
     InvalidProvider = 'invalidProvider',
 
     LegacyDeprecation = 'legacyDeprecation',

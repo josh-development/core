@@ -32,7 +32,8 @@
   },
   "dependencies": {
     "@sapphire/utilities": "^3.6.2",
-    "property-helpers": "^1.1.0"
+    "property-helpers": "^1.0.0",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@commitlint/cli": "^16.2.3",

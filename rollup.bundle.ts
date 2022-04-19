@@ -26,10 +26,11 @@ export default {
       globals: {
         'property-helpers': 'PropertyHelpers',
         '@sapphire/utilities': 'SapphireUtilities',
+        'reflect-metatdata': 'ReflectMetadata',
         process: 'process'
       }
     }
   ],
-  external: ['@sapphire/utilities', 'property-helpers', 'process'],
+  external: ['@sapphire/utilities', 'property-helpers', 'reflect-metadata', 'process'],
   plugins: [cleaner({ targets: ['./dist'] }), typescript({ tsconfig: resolve(process.cwd(), 'src', 'tsconfig.json') }), versionInjector()]
 };
