@@ -80,7 +80,7 @@ export class Josh<StoredValue = unknown> {
 
     this.middlewares = new MiddlewareStore({ instance: this });
 
-    if ('autoEnsure' in options) this.use(new AutoEnsure<StoredValue>({ defaultValue: autoEnsure! }));
+    if (autoEnsure !== undefined) this.use(new AutoEnsure<StoredValue>(autoEnsure));
     if (middlewares !== undefined)
       for (const middleware of middlewares.filter((middleware) => {
         if (!(middleware instanceof Middleware))
@@ -1732,7 +1732,7 @@ export namespace Josh {
      * The value for CoreAutoEnsure to use.
      * @since 2.0.0
      */
-    autoEnsure?: StoredValue;
+    autoEnsure?: AutoEnsure.ContextData<StoredValue>;
   }
 
   /**
