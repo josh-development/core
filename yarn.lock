@@ -922,7 +922,7 @@ __metadata:
     lint-staged: ^12.3.7
     prettier: ^2.6.2
     pretty-quick: ^3.1.3
-    property-helpers: ^1.0.0
+    property-helpers: ^1.1.0
     rimraf: ^3.0.2
     rollup: ^2.70.1
     rollup-plugin-cleaner: ^1.0.0
@@ -5931,10 +5931,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"property-helpers@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "property-helpers@npm:1.0.0"
-  checksum: f5a0944b8307b38ae1bad46456891aa634cab7934c3b56d1f3e044da95db48104b32f082034e6368dbb04c70e4d4b292545545f5530982d32c1afb340b72196f
+"property-helpers@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "property-helpers@npm:1.1.0"
+  checksum: c49de69e85a6611fed22cf5368c649e73c33bc00564be1ccdff500b366f239eab081b3a1afd08e47642dd97d64fbb172fe9fcf6aa01022aeb902f8164d7d295b
   languageName: node
   linkType: hard
 
