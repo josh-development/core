@@ -107,6 +107,13 @@ export abstract class JoshProvider<StoredValue = unknown> {
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
    */
+  public abstract [Method.Each](payload: Payloads.Each<StoredValue>): Awaitable<Payloads.Each<StoredValue>>;
+
+  /**
+   * @since 2.0.0
+   * @param payload The payload sent by this provider's {@link Josh} instance.
+   * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+   */
   public abstract [Method.Ensure](payload: Payloads.Ensure<StoredValue>): Awaitable<Payloads.Ensure<StoredValue>>;
 
   /**

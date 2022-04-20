@@ -104,6 +104,10 @@ export class Middleware<ContextData extends NonNullObject, StoredValue = unknown
     return payload;
   }
 
+  public [Method.Each](payload: Payloads.Each<StoredValue>): Awaitable<Payloads.Each<StoredValue>> {
+    return payload;
+  }
+
   public [Method.Ensure](payload: Payloads.Ensure<StoredValue>): Awaitable<Payloads.Ensure<StoredValue>> {
     return payload;
   }
