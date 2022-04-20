@@ -1,12 +1,13 @@
 import type { Awaitable } from '@sapphire/utilities';
 import { JoshProviderError, JoshProviderErrorOptions } from '../errors';
+import { resolveCommonIdentifier } from '../functions';
 import type { Method, Payloads } from '../types';
 import type { Josh } from './Josh';
 
 /**
  * The base provider class. Extend this class to create your own provider.
  *
- * NOTE: If you want an example of how to use this class please see `src/lib/structures/defaultProvider/MapProvider.ts`
+ * NOTE: If you want an example of how to use this class please see `src/lib/structures/default-provider/MapProvider.ts`
  *
  * @see {@link JoshProvider.Options} for all options available to the JoshProvider class.
  *
@@ -333,8 +334,25 @@ export abstract class JoshProvider<StoredValue = unknown> {
    * @param options The options for the error.
    * @returns The error.
    */
-  protected error(options: JoshProviderErrorOptions): JoshProviderError {
-    return new JoshProviderError({ ...options, name: options.name ?? this.constructor.name });
+  protected error(options: string | JoshProviderErrorOptions, metadata: Record<string, unknown> = {}): JoshProviderError {
+    if (typeof options === 'string') return new JoshProviderError({ identifier: options, message: this.resolveIdentifier(options, metadata) });
+    if ('message' in options) return new JoshProviderError(options);
+
+    return new JoshProviderError({ ...options, name: options.name ?? `${this.constructor.name}Error` });
+  }
+
+  /**
+   * Resolves an identifier.
+   * @param identifier The identifier to resolve.
+   * @param metadata The metadata to use.
+   * @returns The resolved identifier message.
+   */
+  protected resolveIdentifier(identifier: string, metadata: Record<string, unknown>): string {
+    const result = resolveCommonIdentifier(identifier, metadata);
+
+    if (result !== null) return result;
+
+    throw new Error(`Unknown identifier: ${identifier}`);
   }
 }
 
@@ -384,41 +402,7 @@ export namespace JoshProvider {
     error?: JoshProviderError;
   }
 
-  export interface Constructor<StoredValue = unknown> {
-    new (options: Options): JoshProvider<StoredValue>;
-  }
-
-  export enum CommonIdentifiers {
-    DecMissingData = 'decMissingData',
-
-    DecInvalidType = 'decInvalidType',
-
-    EveryInvalidType = 'everyInvalidType',
-
-    FilterInvalidValue = 'filterInvalidValue',
-
-    FindInvalidValue = 'findInvalidValue',
-
-    IncInvalidType = 'incInvalidType',
-
-    IncMissingData = 'incMissingData',
-
-    MathInvalidType = 'mathInvalidType',
-
-    MathMissingData = 'mathMissingData',
-
-    PartitionInvalidValue = 'partitionInvalidValue',
-
-    PushInvalidType = 'pushInvalidType',
-
-    PushMissingData = 'pushMissingData',
-
-    RandomInvalidCount = 'randomInvalidCount',
-
-    RandomKeyInvalidCount = 'randomKeyInvalidCount',
-
-    RemoveInvalidType = 'removeInvalidType',
-
-    RemoveMissingData = 'removeMissingData'
+  export interface Constructor {
+    new (options?: Options): JoshProvider;
   }
 }

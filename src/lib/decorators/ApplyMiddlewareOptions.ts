@@ -1,5 +1,5 @@
-import type { Ctor } from '@sapphire/utilities';
-import type { Middleware } from '../..';
+import type { Ctor, NonNullableProperties, PartialRequired } from '@sapphire/utilities';
+import type { Middleware } from '../../lib/structures/Middleware';
 import { createClassDecorator } from './utils/createClassDecorator';
 import { createProxy } from './utils/createProxy';
 
@@ -12,16 +12,21 @@ import { createProxy } from './utils/createProxy';
  * ```typescript
  * import { ApplyMiddlewareOptions, Middleware } from '@joshdb/core';
  *
- * (at)ApplyMiddlewareOptions({
+ * @ApplyMiddlewareOptions({
  *   name: 'name',
  *   // More options...
  * })
  * export class CoreMiddleware extends Middleware {}
  * ``` */
-export function ApplyMiddlewareOptions(options: Middleware.Options): ClassDecorator {
-  return createClassDecorator((target: Ctor<ConstructorParameters<typeof Middleware>, Middleware>) =>
+export function ApplyMiddlewareOptions(options: PartialRequired<Middleware.Options, 'name'>): ClassDecorator {
+  return createClassDecorator((target: Ctor<ConstructorParameters<typeof Middleware>, Middleware<NonNullableProperties>>) =>
     createProxy(target, {
-      construct: (ctor) => new ctor(options)
+      construct(ctor, [context]) {
+        const pre = Reflect.getMetadata('pre', target.constructor) ?? [];
+        const post = Reflect.getMetadata('post', target.constructor) ?? [];
+
+        return new ctor(context, { ...options, conditions: { pre, post } });
+      }
     })
   );
 }

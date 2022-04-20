@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 export * from 'property-helpers';
 export * from './lib/decorators';
 export * from './lib/errors';
