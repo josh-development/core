@@ -1769,7 +1769,6 @@ describe('MapProvider', () => {
         const payload = provider.each({ method: Method.Each, hook: () => mockCallback() });
 
         expect(typeof payload).toBe('object');
-
         expect(mockCallback.mock.calls.length).toBe(0);
       });
 
@@ -1783,7 +1782,6 @@ describe('MapProvider', () => {
         const payload = await provider.each({ method: Method.Each, hook: mockCallback });
 
         expect(typeof payload).toBe('object');
-
         expect(mockCallback.mock.calls.length).toBe(3);
         expect(mockCallback.mock.calls[0]).toEqual(['value1', 'test:each1']);
         expect(mockCallback.mock.calls[1]).toEqual(['value2', 'test:each2']);
