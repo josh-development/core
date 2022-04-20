@@ -371,6 +371,27 @@ export class Josh<StoredValue = unknown> {
   }
 
   /**
+   * Loop over every key-value pair in this {@link Josh} and execute `hook` on it.
+   * @param hook The hook function to execute with each key.
+   */
+  public async each(hook: Payload.HookWithKey<StoredValue>): Promise<this> {
+    let payload: Payloads.Each<StoredValue> = { method: Method.Each, trigger: Trigger.PreProvider, hook };
+
+    for (const middleware of this.middlewares.array()) await middleware.run(payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Each)) payload = await middleware[Method.Each](payload);
+
+    payload = await this.provider[Method.Each](payload);
+    payload.trigger = Trigger.PostProvider;
+
+    if (payload.error) throw payload.error;
+
+    for (const middleware of this.middlewares.array()) await middleware.run(payload);
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Each)) payload = await middleware[Method.Each](payload);
+
+    return this;
+  }
+
+  /**
    * Ensure a key exists and set a default value if it doesn't.
    * @since 2.0.0
    * @param key The key to ensure.

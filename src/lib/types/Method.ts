@@ -9,6 +9,8 @@ export enum Method {
 
   DeleteMany = 'deleteMany',
 
+  Each = 'each',
+
   Ensure = 'ensure',
 
   Every = 'every',

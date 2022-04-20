@@ -1762,5 +1762,31 @@ describe('MapProvider', () => {
         expect(data).toEqual(['value']);
       });
     });
+
+    describe('with each method', () => {
+      test('GIVEN provider w/o data THEN loops 0 times', () => {
+        const mockCallback = jest.fn(() => true);
+        const payload = provider.each({ method: Method.Each, hook: () => mockCallback() });
+
+        expect(typeof payload).toBe('object');
+        expect(mockCallback.mock.calls.length).toBe(0);
+      });
+
+      test('GIVEN provider w/ data THEN loops x times', async () => {
+        const mockCallback = jest.fn((..._) => true);
+
+        provider.set({ method: Method.Set, key: 'test:each1', path: [], value: 'value1' });
+        provider.set({ method: Method.Set, key: 'test:each2', path: [], value: 'value2' });
+        provider.set({ method: Method.Set, key: 'test:each3', path: [], value: 'value3' });
+
+        const payload = await provider.each({ method: Method.Each, hook: mockCallback });
+
+        expect(typeof payload).toBe('object');
+        expect(mockCallback.mock.calls.length).toBe(3);
+        expect(mockCallback.mock.calls[0]).toEqual(['value1', 'test:each1']);
+        expect(mockCallback.mock.calls[1]).toEqual(['value2', 'test:each2']);
+        expect(mockCallback.mock.calls[2]).toEqual(['value3', 'test:each3']);
+      });
+    });
   });
 });
