@@ -455,7 +455,13 @@ export namespace JoshProvider {
    * }
    * ```
    */
-  export interface Options {}
+  export interface Options {
+    /**
+     * Whether to allow automatic provider data migrations.
+     * @since 2.0.0
+     */
+    allowMigrations?: boolean;
+  }
 
   /**
    * The context sent by the {@link Josh} instance.
