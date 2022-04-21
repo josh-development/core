@@ -439,6 +439,23 @@ export abstract class JoshProvider<StoredValue = unknown> {
 
     throw new Error(`Unknown identifier: ${identifier}`);
   }
+
+  /**
+   * Resolves a version.
+   * @param version The version to resolve.
+   * @returns The resolved version.
+   */
+  protected resolveVersion(version: string): JoshProvider.SemverVersion {
+    return version
+      .split('.')
+      .map(Number)
+      .reduce((semver, value, index) => ({ ...semver, [index === 0 ? 'major' : index === 1 ? 'minor' : 'patch']: value }), {
+        fullVersion: version,
+        major: 0,
+        minor: 0,
+        patch: 0
+      });
+  }
 }
 
 export namespace JoshProvider {
@@ -491,6 +508,16 @@ export namespace JoshProvider {
      * @since 2.0.0
      */
     error?: JoshProviderError;
+  }
+
+  export interface SemverVersion {
+    fullVersion: string;
+
+    major: number;
+
+    minor: number;
+
+    patch: number;
   }
 
   export interface Constructor {
