@@ -4,5 +4,5 @@
 /.yarn/ @RealShadowNova
 /src/ @RealShadowNova @dan-online
 /tests/ @RealShadowNova @dan-online @WilsontheWolf
-LICENSE.md @eslachance
-package.json @eslachance @RealShadowNova
+LICENSE @eslachance
+package.json @RealShadowNova
