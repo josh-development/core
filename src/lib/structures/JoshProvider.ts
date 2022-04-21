@@ -37,6 +37,8 @@ export abstract class JoshProvider<StoredValue = unknown> {
    */
   public options: JoshProvider.Options;
 
+  public migrations: JoshProvider.Migration<StoredValue>[] = [];
+
   public abstract version: string;
 
   public constructor(options: JoshProvider.Options = {}) {
@@ -65,8 +67,28 @@ export abstract class JoshProvider<StoredValue = unknown> {
     this.name = name;
     this.instance = instance;
 
+    if (await this.needsMigration()) {
+      const { allowMigrations } = this.options;
+
+      if (!allowMigrations) throw this.error(JoshProvider.Identifiers.NeedsMigrations);
+
+      const migrations = this.migrations.map((migration) => ({ ...migration, version: this.resolveVersion(migration.version) }));
+
+      for (const migration of migrations
+        .filter((migration) => migration.version.major > this.resolveVersion(this.version).major)
+        .sort((a, b) => a.version.major - b.version.major)) {
+        console.log(`[${this.constructor.name}]: Running migration ${migration.version.fullVersion}...`);
+        await migration.hook(context);
+        console.log(`[${this.constructor.name}]: Migration ${migration.version.fullVersion} ran successfully.`);
+      }
+
+      console.log(`[${this.constructor.name}]: Migrations ran successfully.`);
+    }
+
     return Promise.resolve(context);
   }
+
+  public abstract needsMigration(): Awaitable<boolean>;
 
   /**
    * A method which generates a unique automatic key. This key must be unique and cannot overlap other keys.
@@ -439,6 +461,13 @@ export abstract class JoshProvider<StoredValue = unknown> {
 
     if (result !== null) return result;
 
+    switch (identifier) {
+      case JoshProvider.Identifiers.NeedsMigrations:
+        return `[${this.constructor.name}]: The provider ${
+          this.name?.length ? `with the name "${this.name}" ` : ''
+        }needs migrations. Please set the "allowMigrations" option to true to run migrations automatically.`;
+    }
+
     throw new Error(`Unknown identifier: ${identifier}`);
   }
 
@@ -486,7 +515,7 @@ export namespace JoshProvider {
    * The context sent by the {@link Josh} instance.
    * @since 2.0.0
    */
-  export interface Context<Value = unknown> {
+  export interface Context<StoredValue = unknown> {
     /**
      * The name of this context.
      * @since 2.0.0
@@ -497,7 +526,7 @@ export namespace JoshProvider {
      * The instance of this context.
      * @since 2.0.0
      */
-    instance?: Josh<Value>;
+    instance?: Josh<StoredValue>;
 
     /**
      * The version of the Josh initiating this provider.
@@ -512,6 +541,12 @@ export namespace JoshProvider {
     error?: JoshProviderError;
   }
 
+  export interface Migration<StoredValue = unknown> {
+    version: string;
+
+    hook(context: Context<StoredValue>): Awaitable<void>;
+  }
+
   export interface SemverVersion {
     fullVersion: string;
 
@@ -524,5 +559,9 @@ export namespace JoshProvider {
 
   export interface Constructor {
     new (options?: Options): JoshProvider;
+  }
+
+  export enum Identifiers {
+    NeedsMigrations = 'needsMigration'
   }
 }
