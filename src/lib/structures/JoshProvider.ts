@@ -88,8 +88,6 @@ export abstract class JoshProvider<StoredValue = unknown> {
     return Promise.resolve(context);
   }
 
-  public abstract needsMigration(): Awaitable<boolean>;
-
   /**
    * A method which generates a unique automatic key. This key must be unique and cannot overlap other keys.
    * @since 2.0.0
@@ -487,6 +485,8 @@ export abstract class JoshProvider<StoredValue = unknown> {
         patch: 0
       });
   }
+
+  protected abstract needsMigration(): Awaitable<boolean>;
 }
 
 export namespace JoshProvider {

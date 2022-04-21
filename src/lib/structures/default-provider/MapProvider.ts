@@ -594,6 +594,10 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
+  protected needsMigration(): boolean {
+    return false;
+  }
+
   private randomEntriesWithoutDuplicates(data: [string, StoredValue][]): [string, StoredValue] {
     const entries = Array.from(this.cache.entries());
     const entry = entries[Math.floor(Math.random() * entries.length)];
