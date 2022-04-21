@@ -480,7 +480,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
     return version
       .split('.')
       .map(Number)
-      .reduce((semver, value, index) => ({ ...semver, [index === 0 ? 'major' : index === 1 ? 'minor' : 'patch']: value }), {
+      .reduce((semver, value, index) => ({ ...semver, [['major', 'minor', 'patch'][index]]: value }), {
         fullVersion: version,
         major: 0,
         minor: 0,
