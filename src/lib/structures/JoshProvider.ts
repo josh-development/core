@@ -37,6 +37,8 @@ export abstract class JoshProvider<StoredValue = unknown> {
    */
   public options: JoshProvider.Options;
 
+  public abstract version: string;
+
   public constructor(options: JoshProvider.Options = {}) {
     this.options = options;
   }
