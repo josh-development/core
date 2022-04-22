@@ -1710,7 +1710,7 @@ export class Josh<StoredValue = unknown> {
   }
 
   private resolvePath(path: Path): string[] {
-    return Array.isArray(path) ? path : path.replace(/\[/g, '').replace(/\]/g, '').split('.').filter(Boolean);
+    return Array.isArray(path) ? path : path.replace(/\[/g, '.').replace(/\]/g, '').split('.').filter(Boolean);
   }
 
   private get providerFailedError(): JoshError {
