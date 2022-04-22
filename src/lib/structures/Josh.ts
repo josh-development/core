@@ -233,38 +233,20 @@ export class Josh<StoredValue = unknown> {
    *
    * @example
    * ```javascript
-   * await josh.set('key', 1);
+   * await josh.set('key', 1, 'path');
    *
-   * await josh.inc({ key: 'key' });
+   * await josh.inc('key', 'path');
    *
-   * await josh.get('key'); // 0
+   * await josh.get('key', 'path); // 0
    * ```
    *
    * @example
    * ```javascript
-   * await josh.set('key.path', 1);
+   * await josh.set('key', 1, 'path');
    *
-   * await josh.inc('key.path');
+   * await josh.inc('key', ['path']);
    *
-   * await josh.get('key.path'); // 0
-   * ```
-   *
-   * @example
-   * ```javascript
-   * await josh.set('key.path', 1);
-   *
-   * await josh.inc({ key: 'key', path: 'path' });
-   *
-   * await josh.get('key.path'); // 0
-   * ```
-   *
-   * @example
-   * ```javascript
-   * await josh.set('key.path', 1);
-   *
-   * await josh.inc({ key: 'key', path: ['path'] });
-   *
-   * await josh.get('key.path'); // 0
+   * await josh.get('key', 'path'); // 0
    * ```
    */
   public async dec(key: string, path: Path = []): Promise<this> {
@@ -304,18 +286,9 @@ export class Josh<StoredValue = unknown> {
    *
    * @example
    * ```javascript
-   * await josh.set('key', 'value');
-   *
-   * await josh.delete({ key: 'key' });
-   *
-   * await josh.get('key'); // null
-   * ```
-   *
-   * @example
-   * ```javascript
    * await josh.set('key', { path: 'value' });
    *
-   * await josh.delete('key.path');
+   * await josh.delete('key'`, 'path');
    *
    * await josh.get('key'); // {}
    * ```
@@ -324,16 +297,7 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key', { path: 'value' });
    *
-   * await josh.delete({ key: 'key', path: 'path' });
-   *
-   * await josh.get('key'); // {}
-   * ```
-   *
-   * @example
-   * ```javascript
-   * await josh.set('key', { path: 'value' });
-   *
-   * await josh.delete({ key: 'key', path: ['path'] });
+   * await josh.delete('key', ['path']);
    *
    * await josh.get('key'); // {}
    * ```
@@ -715,16 +679,14 @@ export class Josh<StoredValue = unknown> {
    * await josh.set('key', { path: 'value' });
    *
    * await josh.get('key'); // { path: 'value' }
-   * await josh.get({ key: 'key' }); // { path: 'value' }
    * ```
    *
    * @example
    * ```javascript
    * await josh.set('key', { path: 'value' });
    *
-   * await josh.get('key.path'); // 'value'
-   * await josh.get({ key: 'key', path: 'path' }); // 'value'
-   * await josh.get({ key: 'key', path: ['path'] }); //'value'
+   * await josh.get('key', 'path'); // 'value'
+   * await josh.get('key', ['path']); // 'value'
    * ```
    */
   public async get<Value = StoredValue>(key: string, path: Path = []): Promise<Value | null> {
@@ -839,25 +801,21 @@ export class Josh<StoredValue = unknown> {
    * @example
    * ```javascript
    * await josh.has('key'); // false
-   * await josh.has({ key: 'key' }) // false
    *
    * await josh.set('key', 'value');
    *
    * await josh.has('key'); // true
-   * await josh.has({ key: 'key' }) // true
    * ```
    *
    * @example
    * ```javascript
-   * await josh.has('key.path'); // false
-   * await josh.has({ key: 'key', path: 'path' }); // false
-   * await josh.has({ key: 'key', path: ['path'] }) // false
+   * await josh.has('key', 'path'); // false
+   * await josh.has('key', ['path']); // false
    *
    * await josh.set('key', { path: 'value' });
    *
-   * await josh.has('key.path'); // true
-   * await josh.has({ key: 'key', path: 'path' }); // true
-   * await josh.has({ key: 'key', path: ['path'] }) // true
+   * await josh.has('key', 'path'); // true
+   * await josh.has('key', ['path']); // true
    * ```
    */
   public async has(key: string, path: Path = []): Promise<boolean> {
@@ -900,38 +858,20 @@ export class Josh<StoredValue = unknown> {
    *
    * @example
    * ```javascript
-   * await josh.set('key', 0);
+   * await josh.set('key', 0, 'path');
    *
-   * await josh.inc({ key: 'key' });
+   * await josh.inc('key', 'path');
    *
-   * await josh.get('key'); // 1
+   * await josh.get('key', 'path'); // 1
    * ```
    *
    * @example
    * ```javascript
-   * await josh.set('key.path', 0);
+   * await josh.set('key', 0, 'path');
    *
-   * await josh.inc('key.path');
+   * await josh.inc('key', ['path']);
    *
-   * await josh.get('key.path'); // 1
-   * ```
-   *
-   * @example
-   * ```javascript
-   * await josh.set('key.path', 0);
-   *
-   * await josh.inc({ key: 'key', path: 'path' });
-   *
-   * await josh.get('key.path'); // 1
-   * ```
-   *
-   * @example
-   * ```javascript
-   * await josh.set('key.path', 0);
-   *
-   * await josh.inc({ key: 'key', path: ['path'] });
-   *
-   * await josh.get('key.path'); // 1
+   * await josh.get('key', 'path); // 1
    * ```
    */
   public async inc(key: string, path: Path = []): Promise<this> {
@@ -1203,7 +1143,6 @@ export class Josh<StoredValue = unknown> {
    * await josh.set('key', []);
    *
    * await josh.push('key', 'value');
-   * await josh.push({ key: 'key' }, 'value');
    *
    * await josh.get('key'); // ['value']
    * ```
@@ -1212,11 +1151,10 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key', { path: [] });
    *
-   * await josh.push('key.path', 'value');
-   * await josh.push({ key: 'key', path: 'path' }, 'value');
-   * await josh.push({ key: 'key', path: ['path'] }, 'value');
+   * await josh.push('key', 'value', 'path');
+   * await josh.push('key', 'value', ['path']);
    *
-   * await josh.get('key.path'); // ['value']
+   * await josh.get('key', 'path'); // ['value']
    * ```
    */
   public async push<Value = StoredValue>(key: string, value: Value, path: Path = []): Promise<this> {
@@ -1313,11 +1251,11 @@ export class Josh<StoredValue = unknown> {
    *
    * @example
    * ```javascript
-   * await provider.set('key', ['value']);
+   * await josh.set('key', ['value']);
    *
-   * await provider.remove('key', 'value');
+   * await josh.remove('key', 'value');
    *
-   * await provider.get('key'); // []
+   * await josh.get('key'); // []
    * ```
    */
   public async remove(key: string, value: Primitive, path?: Path): Promise<this>;
@@ -1331,11 +1269,11 @@ export class Josh<StoredValue = unknown> {
    *
    * @example
    * ```javascript
-   * await provider.set('key', ['value']);
+   * await josh.set('key', ['value']);
    *
-   * await provider.remove('key', (value) => value === 'value');
+   * await josh.remove('key', (value) => value === 'value');
    *
-   * await provider.get('key'); // []
+   * await josh.get('key'); // []
    * ```
    */
   public async remove<Value = StoredValue>(key: string, hook: Payload.Hook<Value>, path?: Path): Promise<this>;
@@ -1382,14 +1320,12 @@ export class Josh<StoredValue = unknown> {
    * @example
    * ```javascript
    * await josh.set('key', { path: 'value' });
-   * await josh.set({ key: 'key' });
    * ```
    *
    * @example
    * ```javascript
-   * await josh.set('key.path');
-   * await josh.set({ key: 'key', path: 'path' });
-   * await josh.set({ key: 'key', path: ['path'] });
+   * await josh.set('key', 'value', 'path');
+   * await josh.set('key', 'value', ['path']);
    * ```
    */
   public async set<Value = StoredValue>(key: string, value: Value, path: Path = []): Promise<this> {
@@ -1475,14 +1411,14 @@ export class Josh<StoredValue = unknown> {
    *
    * @example
    * ```javascript
-   * await provider.some('path', 'value'); // false
+   * await josh.some('path', 'value'); // false
    * ```
    *
    * @example
    * ```javascript
-   * await provider.set('key.path', 'value');
+   * await josh.set('key', 'value', 'path');
    *
-   * await provider.some('path', 'value'); // true
+   * await josh.some('path', 'value'); // true
    * ```
    *
    */
@@ -1495,14 +1431,14 @@ export class Josh<StoredValue = unknown> {
    *
    * @example
    * ```javascript
-   * await provider.some((value) => value === 'value'); // false
+   * await josh.some((value) => value === 'value'); // false
    * ```
    *
    * @example
    * ```javascript
-   * await provider.set('key.path', 'value');
+   * await josh.set('key', 'value', 'path');
    *
-   * await provider.some('path', 'value'); // true
+   * await josh.some('path', 'value'); // true
    * ```
    */
   public async some(hook: Payload.Hook<StoredValue>): Promise<boolean>;
