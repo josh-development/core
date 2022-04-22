@@ -218,7 +218,8 @@ export class Josh<StoredValue = unknown> {
   /**
    * Decrement an integer by `1`.
    * @since 2.0.0
-   * @param keyPath The key/path to the integer for decrementing.
+   * @param key The key to the integer for decrementing.
+   * @param path The path to the integer for decrementing.
    * @returns The {@link Josh} instance.
    *
    * @example
@@ -232,42 +233,25 @@ export class Josh<StoredValue = unknown> {
    *
    * @example
    * ```javascript
-   * await josh.set('key', 1);
+   * await josh.set('key', 1, 'path');
    *
-   * await josh.inc({ key: 'key' });
+   * await josh.inc('key', 'path');
    *
-   * await josh.get('key'); // 0
+   * await josh.get('key', 'path); // 0
    * ```
    *
    * @example
    * ```javascript
-   * await josh.set('key.path', 1);
+   * await josh.set('key', 1, 'path');
    *
-   * await josh.inc('key.path');
+   * await josh.inc('key', ['path']);
    *
-   * await josh.get('key.path'); // 0
-   * ```
-   *
-   * @example
-   * ```javascript
-   * await josh.set('key.path', 1);
-   *
-   * await josh.inc({ key: 'key', path: 'path' });
-   *
-   * await josh.get('key.path'); // 0
-   * ```
-   *
-   * @example
-   * ```javascript
-   * await josh.set('key.path', 1);
-   *
-   * await josh.inc({ key: 'key', path: ['path'] });
-   *
-   * await josh.get('key.path'); // 0
+   * await josh.get('key', 'path'); // 0
    * ```
    */
-  public async dec(keyPath: KeyPath): Promise<this> {
-    const [key, path] = this.resolveKeyPath(keyPath);
+  public async dec(key: string, path: Path = []): Promise<this> {
+    path = this.resolvePath(path);
+
     let payload: Payloads.Dec = { method: Method.Dec, trigger: Trigger.PreProvider, key, path };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -287,7 +271,8 @@ export class Josh<StoredValue = unknown> {
   /**
    * Deletes a key or path in a key value.
    * @since 2.0.0
-   * @param keyPath The key/path to delete from.
+   * @param key The key to delete from.
+   * @param path The path to delete from.
    * @returns The {@link Josh} instance.
    *
    * @example
@@ -301,18 +286,9 @@ export class Josh<StoredValue = unknown> {
    *
    * @example
    * ```javascript
-   * await josh.set('key', 'value');
-   *
-   * await josh.delete({ key: 'key' });
-   *
-   * await josh.get('key'); // null
-   * ```
-   *
-   * @example
-   * ```javascript
    * await josh.set('key', { path: 'value' });
    *
-   * await josh.delete('key.path');
+   * await josh.delete('key'`, 'path');
    *
    * await josh.get('key'); // {}
    * ```
@@ -321,22 +297,14 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key', { path: 'value' });
    *
-   * await josh.delete({ key: 'key', path: 'path' });
-   *
-   * await josh.get('key'); // {}
-   * ```
-   *
-   * @example
-   * ```javascript
-   * await josh.set('key', { path: 'value' });
-   *
-   * await josh.delete({ key: 'key', path: ['path'] });
+   * await josh.delete('key', ['path']);
    *
    * await josh.get('key'); // {}
    * ```
    */
-  public async delete(keyPath: KeyPath): Promise<this> {
-    const [key, path] = this.resolveKeyPath(keyPath);
+  public async delete(key: string, path: Path = []): Promise<this> {
+    path = this.resolvePath(path);
+
     let payload: Payloads.Delete = { method: Method.Delete, trigger: Trigger.PreProvider, key, path };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -702,7 +670,8 @@ export class Josh<StoredValue = unknown> {
   /**
    * Get a value using a key and/or path.
    * @since 2.0.0
-   * @param keyPath A key and/or path at which a value is.
+   * @param key A key at which a value is.
+   * @param path A path to the value.
    * @returns The value gotten or null.
    *
    * @example
@@ -710,20 +679,19 @@ export class Josh<StoredValue = unknown> {
    * await josh.set('key', { path: 'value' });
    *
    * await josh.get('key'); // { path: 'value' }
-   * await josh.get({ key: 'key' }); // { path: 'value' }
    * ```
    *
    * @example
    * ```javascript
    * await josh.set('key', { path: 'value' });
    *
-   * await josh.get('key.path'); // 'value'
-   * await josh.get({ key: 'key', path: 'path' }); // 'value'
-   * await josh.get({ key: 'key', path: ['path'] }); //'value'
+   * await josh.get('key', 'path'); // 'value'
+   * await josh.get('key', ['path']); // 'value'
    * ```
    */
-  public async get<Value = StoredValue>(keyPath: KeyPath): Promise<Value | null> {
-    const [key, path] = this.resolveKeyPath(keyPath);
+  public async get<Value = StoredValue>(key: string, path: Path = []): Promise<Value | null> {
+    path = this.resolvePath(path);
+
     let payload: Payloads.Get<Value> = { method: Method.Get, trigger: Trigger.PreProvider, key, path };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -826,35 +794,33 @@ export class Josh<StoredValue = unknown> {
   /**
    * Check if a key and/or path exists.
    * @since 2.0.0
-   * @param keyPath A key and/or path to the value to check for.
+   * @param key A key to the value to check for.
+   * @param path A path to the value to check for.
    * @returns Whether the value exists.
    *
    * @example
    * ```javascript
    * await josh.has('key'); // false
-   * await josh.has({ key: 'key' }) // false
    *
    * await josh.set('key', 'value');
    *
    * await josh.has('key'); // true
-   * await josh.has({ key: 'key' }) // true
    * ```
    *
    * @example
    * ```javascript
-   * await josh.has('key.path'); // false
-   * await josh.has({ key: 'key', path: 'path' }); // false
-   * await josh.has({ key: 'key', path: ['path'] }) // false
+   * await josh.has('key', 'path'); // false
+   * await josh.has('key', ['path']); // false
    *
    * await josh.set('key', { path: 'value' });
    *
-   * await josh.has('key.path'); // true
-   * await josh.has({ key: 'key', path: 'path' }); // true
-   * await josh.has({ key: 'key', path: ['path'] }) // true
+   * await josh.has('key', 'path'); // true
+   * await josh.has('key', ['path']); // true
    * ```
    */
-  public async has(keyPath: KeyPath): Promise<boolean> {
-    const [key, path] = this.resolveKeyPath(keyPath);
+  public async has(key: string, path: Path = []): Promise<boolean> {
+    path = this.resolvePath(path);
+
     let payload: Payloads.Has = { method: Method.Has, trigger: Trigger.PreProvider, key, path };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -877,7 +843,8 @@ export class Josh<StoredValue = unknown> {
   /**
    * Increment an integer by `1`.
    * @since 2.0.0
-   * @param keyPath The key and/or path to an integer value for incrementing.
+   * @param key The key to an integer value for incrementing.
+   * @param path The path to an integer value for incrementing.
    * @returns The {@link Josh} instance.
    *
    * @example
@@ -891,42 +858,25 @@ export class Josh<StoredValue = unknown> {
    *
    * @example
    * ```javascript
-   * await josh.set('key', 0);
+   * await josh.set('key', 0, 'path');
    *
-   * await josh.inc({ key: 'key' });
+   * await josh.inc('key', 'path');
    *
-   * await josh.get('key'); // 1
+   * await josh.get('key', 'path'); // 1
    * ```
    *
    * @example
    * ```javascript
-   * await josh.set('key.path', 0);
+   * await josh.set('key', 0, 'path');
    *
-   * await josh.inc('key.path');
+   * await josh.inc('key', ['path']);
    *
-   * await josh.get('key.path'); // 1
-   * ```
-   *
-   * @example
-   * ```javascript
-   * await josh.set('key.path', 0);
-   *
-   * await josh.inc({ key: 'key', path: 'path' });
-   *
-   * await josh.get('key.path'); // 1
-   * ```
-   *
-   * @example
-   * ```javascript
-   * await josh.set('key.path', 0);
-   *
-   * await josh.inc({ key: 'key', path: ['path'] });
-   *
-   * await josh.get('key.path'); // 1
+   * await josh.get('key', 'path); // 1
    * ```
    */
-  public async inc(keyPath: KeyPath): Promise<this> {
-    const [key, path] = this.resolveKeyPath(keyPath);
+  public async inc(key: string, path: Path = []): Promise<this> {
+    path = this.resolvePath(path);
+
     let payload: Payloads.Inc = { method: Method.Inc, trigger: Trigger.PreProvider, key, path };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1032,9 +982,10 @@ export class Josh<StoredValue = unknown> {
   /**
    * Executes math operations on a value with an operand at a specified key and/or path.
    * @since 2.0.0
-   * @param keyPath The key and/or path the value is at.
+   * @param key The key the value is at.
    * @param operator The operator that will be used on the operand and value.
    * @param operand The operand to apply to the value.
+   * @param path The path to the value.
    * @returns The {@link Josh} instance.
    *
    * @example
@@ -1073,8 +1024,9 @@ export class Josh<StoredValue = unknown> {
    * await josh.get('key'); 1
    * ```
    */
-  public async math(keyPath: KeyPath, operator: MathOperator, operand: number): Promise<this> {
-    const [key, path] = this.resolveKeyPath(keyPath);
+  public async math(key: string, operator: MathOperator, operand: number, path: Path = []): Promise<this> {
+    path = this.resolvePath(path);
+
     let payload: Payloads.Math = { method: Method.Math, trigger: Trigger.PreProvider, key, path, operator, operand };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1181,8 +1133,9 @@ export class Josh<StoredValue = unknown> {
   /**
    * Push a value to an array.
    * @since 2.0.0
-   * @param keyPath A key and/or path to the array.
+   * @param key A key to the array.
    * @param value The value to push.
+   * @param path A path to the array.
    * @returns The {@link Josh} instance.
    *
    * @example
@@ -1190,7 +1143,6 @@ export class Josh<StoredValue = unknown> {
    * await josh.set('key', []);
    *
    * await josh.push('key', 'value');
-   * await josh.push({ key: 'key' }, 'value');
    *
    * await josh.get('key'); // ['value']
    * ```
@@ -1199,15 +1151,15 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key', { path: [] });
    *
-   * await josh.push('key.path', 'value');
-   * await josh.push({ key: 'key', path: 'path' }, 'value');
-   * await josh.push({ key: 'key', path: ['path'] }, 'value');
+   * await josh.push('key', 'value', 'path');
+   * await josh.push('key', 'value', ['path']);
    *
-   * await josh.get('key.path'); // ['value']
+   * await josh.get('key', 'path'); // ['value']
    * ```
    */
-  public async push<Value = StoredValue>(keyPath: KeyPath, value: Value): Promise<this> {
-    const [key, path] = this.resolveKeyPath(keyPath);
+  public async push<Value = StoredValue>(key: string, value: Value, path: Path = []): Promise<this> {
+    path = this.resolvePath(path);
+
     let payload: Payloads.Push<Value> = { method: Method.Push, trigger: Trigger.PreProvider, key, path, value };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1293,40 +1245,40 @@ export class Josh<StoredValue = unknown> {
   /**
    * Removes an element from an array at a key and/or path that matches the given value.
    * @since 2.0.0
-   * @param keyPath The key and/or path to the array to remove an element.
+   * @param key The key and/or path to the array to remove an element.
    * @param value The value to match to an element in the array.
    * @returns The {@link Josh} instance.
    *
    * @example
    * ```javascript
-   * await provider.set('key', ['value']);
+   * await josh.set('key', ['value']);
    *
-   * await provider.remove('key', 'value');
+   * await josh.remove('key', 'value');
    *
-   * await provider.get('key'); // []
+   * await josh.get('key'); // []
    * ```
    */
-  public async remove(keyPath: KeyPath, value: Primitive): Promise<this>;
+  public async remove(key: string, value: Primitive, path?: Path): Promise<this>;
 
   /**
    * Removes an element from an array at a key and/or path that are validated by a hook function.
    * @since 2.0.0
-   * @param keyPath The key and/or path to the array to remove an element.
+   * @param key The key and/or path to the array to remove an element.
    * @param hook The hook function to validate elements in the array.
    * @returns The {@link Josh} instance.
    *
    * @example
    * ```javascript
-   * await provider.set('key', ['value']);
+   * await josh.set('key', ['value']);
    *
-   * await provider.remove('key', (value) => value === 'value');
+   * await josh.remove('key', (value) => value === 'value');
    *
-   * await provider.get('key'); // []
+   * await josh.get('key'); // []
    * ```
    */
-  public async remove<Value = StoredValue>(keyPath: KeyPath, hook: Payload.Hook<Value>): Promise<this>;
-  public async remove<Value = StoredValue>(keyPath: KeyPath, valueOrHook: Primitive | Payload.Hook<Value>): Promise<this> {
-    const [key, path] = this.resolveKeyPath(keyPath);
+  public async remove<Value = StoredValue>(key: string, hook: Payload.Hook<Value>, path?: Path): Promise<this>;
+  public async remove<Value = StoredValue>(key: string, valueOrHook: Primitive | Payload.Hook<Value>, path: Path = []): Promise<this> {
+    path = this.resolvePath(path);
 
     if (!isFunction(valueOrHook)) {
       if (!isPrimitive(valueOrHook)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
@@ -1360,25 +1312,25 @@ export class Josh<StoredValue = unknown> {
   /**
    * Sets a value using a key and/or path.
    * @since 2.0.0
-   * @param keyPath The key and/or path to set the value to.
+   * @param key The key to set the value to.
    * @param value The value to set at the key and/or path.
+   * @returns The {@link Josh} instance.
    * @returns The {@link Josh} instance.
    *
    * @example
    * ```javascript
    * await josh.set('key', { path: 'value' });
-   * await josh.set({ key: 'key' });
    * ```
    *
    * @example
    * ```javascript
-   * await josh.set('key.path');
-   * await josh.set({ key: 'key', path: 'path' });
-   * await josh.set({ key: 'key', path: ['path'] });
+   * await josh.set('key', 'value', 'path');
+   * await josh.set('key', 'value', ['path']);
    * ```
    */
-  public async set<Value = StoredValue>(keyPath: KeyPath, value: Value): Promise<this> {
-    const [key, path] = this.resolveKeyPath(keyPath);
+  public async set<Value = StoredValue>(key: string, value: Value, path: Path = []): Promise<this> {
+    path = this.resolvePath(path);
+
     let payload: Payloads.Set<Value> = { method: Method.Set, trigger: Trigger.PreProvider, key, path, value };
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1459,14 +1411,14 @@ export class Josh<StoredValue = unknown> {
    *
    * @example
    * ```javascript
-   * await provider.some('path', 'value'); // false
+   * await josh.some('path', 'value'); // false
    * ```
    *
    * @example
    * ```javascript
-   * await provider.set('key.path', 'value');
+   * await josh.set('key', 'value', 'path');
    *
-   * await provider.some('path', 'value'); // true
+   * await josh.some('path', 'value'); // true
    * ```
    *
    */
@@ -1479,14 +1431,14 @@ export class Josh<StoredValue = unknown> {
    *
    * @example
    * ```javascript
-   * await provider.some((value) => value === 'value'); // false
+   * await josh.some((value) => value === 'value'); // false
    * ```
    *
    * @example
    * ```javascript
-   * await provider.set('key.path', 'value');
+   * await josh.set('key', 'value', 'path');
    *
-   * await provider.some('path', 'value'); // true
+   * await josh.some('path', 'value'); // true
    * ```
    */
   public async some(hook: Payload.Hook<StoredValue>): Promise<boolean>;
@@ -1694,7 +1646,7 @@ export class Josh<StoredValue = unknown> {
   }
 
   private resolvePath(path: Path): string[] {
-    return typeof path === 'string' ? path.split('.') : path;
+    return Array.isArray(path) ? path : path.replace(/\[/g, '.').replace(/\]/g, '').split('.').filter(Boolean);
   }
 
   private get providerFailedError(): JoshError {
