@@ -223,7 +223,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
    * Increments a key or path in an entry by 1.
    *
    * An error should be set to the payload and immediately return, if any of the following occurs:
-   * - The key and/or path does not exist - `CommonIdentifiers.MissingData`
+   * - The entry or path in an entry does not exist - `CommonIdentifiers.MissingData`
    * - The data is not an integer - `CommonIdentifiers.InvalidDataType``
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
