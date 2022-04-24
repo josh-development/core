@@ -282,7 +282,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Partition](payload: Payloads.Partition.ByHook<StoredValue>): Awaitable<Payloads.Partition.ByHook<StoredValue>>;
 
   /**
-   * Filter stored values using a path and get both truthy and falsy results.
+   * A method which mimics the functionality of [Array#filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter), except returns both truthy and falsy entries and validates using a path and value.
    *
    * An error should be set to the payload and immediately return, if any of the following occurs:
    * - The data at the path is not found - `CommonIdentifiers.MissingData`
