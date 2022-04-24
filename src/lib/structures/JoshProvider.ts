@@ -240,7 +240,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Keys](payload: Payloads.Keys): Awaitable<Payloads.Keys>;
 
   /**
-   * Maps all stored values using a hook function.
+   * A method which mimics the functionality of [Array#map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map), except supports asynchronous functions.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
