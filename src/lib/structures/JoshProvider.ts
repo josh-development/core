@@ -156,7 +156,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Filter](payload: Payloads.Filter.ByHook<StoredValue>): Awaitable<Payloads.Filter.ByHook<StoredValue>>;
 
   /**
-   * Filter stored values at a path against the given value.
+   * A method which mimics the functionality of [Array#filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter), except this uses a path and a value to validate.
    *
    * An error should be set to the payload and immediately return, if any of the following occurs:
    * - The data at the path is not a primitive type - `CommonIdentifiers.InvalidDataType`
