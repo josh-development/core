@@ -358,7 +358,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Set]<Value = StoredValue>(payload: Payloads.Set<Value>): Awaitable<Payloads.Set<Value>>;
 
   /**
-   * Set many values at specified keys and/or paths.
+   * A method which sets multiple entries and/or paths in entries.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
