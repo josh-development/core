@@ -295,7 +295,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Partition](payload: Payloads.Partition<StoredValue>): Awaitable<Payloads.Partition<StoredValue>>;
 
   /**
-   * Push a value to an array at a specified key and/or path.
+   * A method which mimics the functionality of [Array#push()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push), except this supports a path.
    *
    * An error should be set to the payload and immediately return, if any of the following occurs:
    * - The key and/or path does not exist - `CommonIdentifiers.MissingData`
