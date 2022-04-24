@@ -274,7 +274,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Math](payload: Payloads.Math): Awaitable<Payloads.Math>;
 
   /**
-   * Filter stored values using a hook function and get both truthy and falsy results.
+   * A method which mimics the functionality of [Array#filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter), except returns both truthy and falsy entries and supports asynchronous functions.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
