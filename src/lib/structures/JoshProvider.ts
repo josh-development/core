@@ -232,7 +232,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Inc](payload: Payloads.Inc): Awaitable<Payloads.Inc>;
 
   /**
-   * Returns all keys in the provider.
+   * A method which mimics the functionality of [Map#keys()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/keys), except returns an array.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
