@@ -307,7 +307,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Push]<Value>(payload: Payloads.Push<Value>): Awaitable<Payloads.Push<Value>>;
 
   /**
-   * Gets random value(s) from the provider.
+   * A method which gets random value(s).
    * Whether duplicates are allowed or not are controlled by {@link Payloads.Random.duplicates} option.
    * The amount of values returned is controlled by {@link Payloads.Random.count} option.
    * @since 2.0.0
