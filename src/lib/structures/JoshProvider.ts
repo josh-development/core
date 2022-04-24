@@ -395,7 +395,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Some]<StoredValue>(payload: Payloads.Some<StoredValue>): Awaitable<Payloads.Some<StoredValue>>;
 
   /**
-   * Updates a value with a function.
+   * A method which gets the stored value at a key and passes it to an asynchronous function and sets the data returned.
    *
    * An error should be set to the payload and immediately return, if any of the following occurs:
    * - The key does not exist - `CommonIdentifiers.MissingData`
