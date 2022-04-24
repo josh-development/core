@@ -73,7 +73,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.AutoKey](payload: Payloads.AutoKey): Awaitable<Payloads.AutoKey>;
 
   /**
-   * Clears the provider of it's data entries.
+   * A method which clears all entries.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
