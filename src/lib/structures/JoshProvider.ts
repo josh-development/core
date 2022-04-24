@@ -327,9 +327,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.RandomKey](payload: Payloads.RandomKey): Awaitable<Payloads.RandomKey>;
 
   /**
-   * Gets random key(s) from the provider.
-   * Whether duplicates are allowed or not are controlled by {@link Payloads.RandomKey.duplicates} option.
-   * The amount of keys returned is controlled by {@link Payloads.RandomKey.count} option.
+   * A method which mimics the functionality of [Array#filter()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter), except it removes the values filtered and uses a path and value to validate
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
