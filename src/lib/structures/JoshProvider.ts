@@ -93,7 +93,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Dec](payload: Payloads.Dec): Awaitable<Payloads.Dec>;
 
   /**
-   * Deletes a key or path in an entry.
+   * Deletes either the entry itself or a path in an entry.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
