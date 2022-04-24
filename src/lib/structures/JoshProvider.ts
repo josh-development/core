@@ -317,7 +317,9 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Random](payload: Payloads.Random<StoredValue>): Awaitable<Payloads.Random<StoredValue>>;
 
   /**
-   * Gets a random key from the provider.
+   * A method which gets random key(s).
+   * Whether duplicates are allowed or not are controlled by {@link Payloads.RandomKey.duplicates} option.
+   * The amount of keys returned is controlled by {@link Payloads.RandomKey.count} option.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
