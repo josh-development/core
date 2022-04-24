@@ -176,7 +176,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Find](payload: Payloads.Find.ByHook<StoredValue>): Awaitable<Payloads.Find.ByHook<StoredValue>>;
 
   /**
-   * Find a stored value at a path against the given value.
+   * A method which mimics the functionality of [Array#find()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find), except this uses a path and value to validate.
    *
    * An error should be set to the payload and immediately return, if any of the following occurs:
    * - The data at the path is not a primitive type - `CommonIdentifiers.InvalidDataType`
