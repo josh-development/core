@@ -366,7 +366,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.SetMany](payload: Payloads.SetMany): Awaitable<Payloads.SetMany>;
 
   /**
-   * Returns the amount of entries in the provider.
+   * A method which mimics the functionality of [Map#size()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/size)
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
