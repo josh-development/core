@@ -101,7 +101,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Delete](payload: Payloads.Delete): Awaitable<Payloads.Delete>;
 
   /**
-   * Deletes multiple keys in the provider.
+   * Deletes multiple entries and/or a path in an entry.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
