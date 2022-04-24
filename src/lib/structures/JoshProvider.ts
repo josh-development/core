@@ -382,7 +382,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Some]<StoredValue>(payload: Payloads.Some.ByHook<StoredValue>): Awaitable<Payloads.Some.ByHook<StoredValue>>;
 
   /**
-   * Identical to {@link JoshProvider.find}, but returns a boolean instead of a value.
+   * A method which mimics the functionality of [Array#some()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some), except this uses a path and value to validate.
    *
    * An error should be set to the payload and immediately return, if any of the following occurs:
    * - The path does not exist on an entry - `CommonIdentifiers.MissingData`
