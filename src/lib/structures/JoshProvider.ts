@@ -204,7 +204,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.GetAll](payload: Payloads.GetAll<StoredValue>): Awaitable<Payloads.GetAll<StoredValue>>;
 
   /**
-   * Gets multiple keys from the provider.
+   * A method to get multiple entries.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
