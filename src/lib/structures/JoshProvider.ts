@@ -117,7 +117,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Each](payload: Payloads.Each<StoredValue>): Awaitable<Payloads.Each<StoredValue>>;
 
   /**
-   * Ensures a key exists.
+   * A method which ensures an entry exists.
    *
    * If the key exists, it returns the value.
    * If the key does not exist, it creates it and returns the default value.
