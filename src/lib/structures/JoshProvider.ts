@@ -220,7 +220,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Has](payload: Payloads.Has): Awaitable<Payloads.Has>;
 
   /**
-   * Increments a key or path in an entry by 1.
+   * Increments an entry or a path in an entry by one.
    *
    * An error should be set to the payload and immediately return, if any of the following occurs:
    * - The entry or path in an entry does not exist - `CommonIdentifiers.MissingData`
