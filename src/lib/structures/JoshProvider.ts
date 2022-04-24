@@ -65,7 +65,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   }
 
   /**
-   * Generates a unique automatic key. This key must be unique and cannot overlap other keys.
+   * A method which generates a unique automatic key. This key must be unique and cannot overlap other keys.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
