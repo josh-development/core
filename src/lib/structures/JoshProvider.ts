@@ -81,7 +81,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Clear](payload: Payloads.Clear): Awaitable<Payloads.Clear>;
 
   /**
-   * Decrements a key or path in an entry by 1.
+   * Decrements an entry or a path in an entry by one.
    *
    * An error should be set to the payload and immediately return, if any of the following occurs:
    * - The key and/or path does not exist - `CommonIdentifiers.MissingData`
