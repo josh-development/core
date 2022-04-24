@@ -262,7 +262,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Map]<Value = StoredValue>(payload: Payloads.Map<StoredValue, Value>): Awaitable<Payloads.Map<StoredValue, Value>>;
 
   /**
-   * Executes math operations on a value with an operand at a specified key and/or path.
+   * A method which executes a math operation a value with an operand either on the entry or a path in the entry.
    *
    * An error should be set to the payload and immediately return, if any of the following occurs:
    * - The key and/or path does not exist - `CommonIdentifiers.MissingData`
