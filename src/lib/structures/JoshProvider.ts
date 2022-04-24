@@ -109,7 +109,7 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.DeleteMany](payload: Payloads.DeleteMany): Awaitable<Payloads.DeleteMany>;
 
   /**
-   * Iterates over all stored values and the keys in the provider and passes them into the hook function.
+   * A method which mimics the functionality of [Array#forEach()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach), except this supports asynchronous functions.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
