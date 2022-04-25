@@ -6,8 +6,10 @@ import type { Josh } from './Josh';
 
 /**
  * The base provider class. Extend this class to create your own provider.
+ *
+ * NOTE: If you want an example of how to use this class please see `src/lib/structures/default-provider/MapProvider.ts`
+ *
  * @since 2.0.0
- * @see [MapProvider](default-provider/MapProvider.ts) for an example of how to use this class.
  * @see {@link JoshProvider.Options} for all options available to the JoshProvider class.
  * @example
  * ```typescript
