@@ -13,6 +13,8 @@ export enum Method {
 
   Ensure = 'ensure',
 
+  Entries = 'entries',
+
   Every = 'every',
 
   Filter = 'filter',
@@ -20,8 +22,6 @@ export enum Method {
   Find = 'find',
 
   Get = 'get',
-
-  GetAll = 'getAll',
 
   GetMany = 'getMany',
 

@@ -130,6 +130,14 @@ export abstract class JoshProvider<StoredValue = unknown> {
   public abstract [Method.Ensure](payload: Payloads.Ensure<StoredValue>): Awaitable<Payloads.Ensure<StoredValue>>;
 
   /**
+   * A method which mimics the functionality of [Map#entries()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/entries), except returns a record of key-value pairs.
+   * @since 2.0.0
+   * @param payload The payload sent by this provider's {@link Josh} instance.
+   * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
+   */
+  public abstract [Method.Entries](payload: Payloads.Entries<StoredValue>): Awaitable<Payloads.Entries<StoredValue>>;
+
+  /**
    * A method which mimics the functionality of [Array#each(https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every)], except this supports asynchronous functions.
    * @since 2.0.0
    * @param payload The payload sent by this provider's {@link Josh} instance.
@@ -196,14 +204,6 @@ export abstract class JoshProvider<StoredValue = unknown> {
    * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
    */
   public abstract [Method.Get]<Value = StoredValue>(payload: Payloads.Get<Value>): Awaitable<Payloads.Get<Value>>;
-
-  /**
-   * A method which mimics the functionality of [Map#entries()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/entries), except returns a record of key-value pairs.
-   * @since 2.0.0
-   * @param payload The payload sent by this provider's {@link Josh} instance.
-   * @returns The payload (modified), originally sent by this provider's {@link Josh} instance.
-   */
-  public abstract [Method.GetAll](payload: Payloads.GetAll<StoredValue>): Awaitable<Payloads.GetAll<StoredValue>>;
 
   /**
    * A method to get multiple entries.

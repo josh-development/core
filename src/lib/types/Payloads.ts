@@ -78,7 +78,7 @@ export namespace Payloads {
   }
 
   /**
-   * The payload for {@link Method.Ensure}
+   * The payload for {@link Method.Each}
    * @since 2.0.0
    * @see {@link Payload}
    * @see {@link Payload.Data}
@@ -125,6 +125,19 @@ export namespace Payloads {
    * @see {@link Payload}
    * @see {@link Payload.Data}
    */
+
+  /**
+   * The payload for {@link Method.Entries}
+   * @since 2.0.0
+   * @see {@link Payload}
+   * @see {@link Payload.Data}
+   */
+  export interface Entries<StoredValue> extends Payload, Payload.Data<Record<string, StoredValue>> {
+    /**
+     * The method this payload is for.
+     * @since 2.0.0
+     */
+  }
   export interface Every<StoredValue> extends Payload, Payload.Data<boolean> {
     /**
      * The method this payload is for.
@@ -345,19 +358,6 @@ export namespace Payloads {
      * @since 2.0.0
      */
     method: Method.Get;
-  }
-
-  /**
-   * The payload for {@link Method.GetAll}
-   * @since 2.0.0
-   * @see {@link Payload}
-   * @see {@link Payload.Data}
-   */
-  export interface GetAll<StoredValue> extends Payload, Payload.Data<Record<string, StoredValue>> {
-    /**
-     * The method this payload is for.
-     * @since 2.0.0
-     */
   }
 
   /**
