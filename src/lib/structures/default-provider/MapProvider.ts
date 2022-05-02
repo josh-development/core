@@ -104,6 +104,12 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
     return payload;
   }
 
+  public [Method.Entries](payload: Payloads.Entries<StoredValue>): Payloads.Entries<StoredValue> {
+    payload.data = Array.from(this.cache.entries()).reduce((data, [key, value]) => ({ ...data, [key]: value }), {});
+
+    return payload;
+  }
+
   public async [Method.Every](payload: Payloads.Every.ByHook<StoredValue>): Promise<Payloads.Every.ByHook<StoredValue>>;
   public async [Method.Every](payload: Payloads.Every.ByValue): Promise<Payloads.Every.ByValue>;
   public async [Method.Every](payload: Payloads.Every<StoredValue>): Promise<Payloads.Every<StoredValue>> {
@@ -236,12 +242,6 @@ export class MapProvider<StoredValue = unknown> extends JoshProvider<StoredValue
 
       if (data !== PROPERTY_NOT_FOUND) payload.data = data;
     }
-
-    return payload;
-  }
-
-  public [Method.GetAll](payload: Payloads.GetAll<StoredValue>): Payloads.GetAll<StoredValue> {
-    payload.data = Array.from(this.cache.entries()).reduce((data, [key, value]) => ({ ...data, [key]: value }), {});
 
     return payload;
   }

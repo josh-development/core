@@ -112,6 +112,10 @@ export class Middleware<ContextData extends NonNullObject, StoredValue = unknown
     return payload;
   }
 
+  public [Method.Entries](payload: Payloads.Entries<StoredValue>): Awaitable<Payloads.Entries<StoredValue>> {
+    return payload;
+  }
+
   public [Method.Every]<StoredValue>(payload: Payloads.Every.ByHook<StoredValue>): Awaitable<Payloads.Every.ByHook<StoredValue>>;
   public [Method.Every](payload: Payloads.Every.ByValue): Awaitable<Payloads.Every.ByValue>;
   public [Method.Every]<StoredValue>(payload: Payloads.Every<StoredValue>): Awaitable<Payloads.Every<StoredValue>>;
@@ -134,10 +138,6 @@ export class Middleware<ContextData extends NonNullObject, StoredValue = unknown
   }
 
   public [Method.Get]<Value>(payload: Payloads.Get<Value>): Awaitable<Payloads.Get<Value>> {
-    return payload;
-  }
-
-  public [Method.GetAll](payload: Payloads.GetAll<StoredValue>): Awaitable<Payloads.GetAll<StoredValue>> {
     return payload;
   }
 
