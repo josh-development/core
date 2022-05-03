@@ -903,13 +903,13 @@ __metadata:
   linkType: hard
 
 "@joshdb/core@npm:next":
-  version: 3.0.0-next.f0c6f4f966762649dfebe0248f3a09f36f410ab9.0
-  resolution: "@joshdb/core@npm:3.0.0-next.f0c6f4f966762649dfebe0248f3a09f36f410ab9.0"
+  version: 3.0.0-next.7b155ed9e89f985eeb2e055cf00e11d2d4ba706f.0
+  resolution: "@joshdb/core@npm:3.0.0-next.7b155ed9e89f985eeb2e055cf00e11d2d4ba706f.0"
   dependencies:
     "@sapphire/utilities": ^3.6.2
     property-helpers: ^1.1.0
     reflect-metadata: ^0.1.13
-  checksum: 646e116f63e8a4ae4e7f97890dbbce16973adc766cea17633c802f42bc5889593e2a45f622204e06d2000e63961462a116d9552a48bc16ddfac02b489539731e
+  checksum: 0d1d14375b1194f5ae70d5098caea5ec12453a2ca410e47eaa07cd208aa5c54abb4134ca5279e50c35efe7957e3b0ada9f1b1130a7d3611f06848b35db0bcb7e
   languageName: node
   linkType: hard
 
@@ -956,11 +956,11 @@ __metadata:
   linkType: soft
 
 "@joshdb/tests@npm:next":
-  version: 1.1.0-next.a4b0525d7919b96ec60e0c95d06142919657f9ba.0
-  resolution: "@joshdb/tests@npm:1.1.0-next.a4b0525d7919b96ec60e0c95d06142919657f9ba.0"
+  version: 1.1.0-next.e0d5c4d3f06b6606a75cfda2aad82b21b59ba976.0
+  resolution: "@joshdb/tests@npm:1.1.0-next.e0d5c4d3f06b6606a75cfda2aad82b21b59ba976.0"
   dependencies:
     "@joshdb/core": next
-  checksum: 6b5bd3f8fbf7629af7dccd0fbf1375b03f035d4b977e5603d6bcff2c8a01865a745995e9a381de074cfdc5f692325efd00a9643826a44ca6ae119315260d7b74
+  checksum: 3890f1d96f7e3e6f7edaec41747f72ecf85f001defcaa6c59f55194c82b73a35ab9a89db51ef84452534a812e08f50455b4d452900c3c20212fdbf726140b3f8
   languageName: node
   linkType: hard
 
@@ -2751,9 +2751,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.118":
-  version: 1.4.130
-  resolution: "electron-to-chromium@npm:1.4.130"
-  checksum: b3912b8073b66eef01ac1096bf5e6be492fff2be3af9e87f01e9c046d31443fd9192e1230113f26bbe77b8671e1196d4e5aa9f58d3191e2760bebf7cd3ea413b
+  version: 1.4.131
+  resolution: "electron-to-chromium@npm:1.4.131"
+  checksum: adf3159d22dd8ae3e46e86fe89e91ad39f622855ece36a0f73e53171792dead8e6876c3246e8b54b259b3a7d68ef093e020a12d55adf34692ed38d4c172b0376
   languageName: node
   linkType: hard
 
