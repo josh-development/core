@@ -96,6 +96,8 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async init(): Promise<this> {
+    for (const middleware of this.middlewares.values()) await middleware.init(this.middlewares);
+
     const context = await this.provider.init({ name: this.name, instance: this, version: Josh.version });
 
     if (context.error) throw context.error;
@@ -139,7 +141,7 @@ export class Josh<StoredValue = unknown> {
 
       const { name, position, trigger, method } = optionsOrInstance;
       const options: Middleware.Options = { name, position, conditions: { pre: [], post: [] } };
-      const middleware = this.middlewares.get(options.name) ?? new Middleware<NonNullObject, StoredValue>({}, options).init(this.middlewares);
+      const middleware = this.middlewares.get(options.name) ?? new Middleware<NonNullObject, StoredValue>({}, options);
 
       if (trigger !== undefined && method !== undefined) options.conditions[trigger === Trigger.PreProvider ? 'pre' : 'post'].push(method);
 

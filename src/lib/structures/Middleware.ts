@@ -78,7 +78,7 @@ export class Middleware<ContextData extends NonNullObject, StoredValue = unknown
    * @param store The store to set to `this`.
    * @returns Returns the current Middleware class.
    */
-  public init(store: MiddlewareStore<StoredValue>): this {
+  public init(store: MiddlewareStore<StoredValue>): Awaitable<this> {
     this.store = store;
 
     return this;
