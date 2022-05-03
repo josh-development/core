@@ -96,6 +96,8 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async init(): Promise<this> {
+    for (const middleware of this.middlewares.values()) middleware.init(this.middlewares);
+
     const context = await this.provider.init({ name: this.name, instance: this, version: Josh.version });
 
     if (context.error) throw context.error;
