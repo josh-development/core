@@ -4,34 +4,30 @@ on:
   push:
     branches:
       - main
+      - stable
   pull_request:
 
 jobs:
-  Linting:
+  linting:
     name: Linting
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - name: Add problem matcher
+      - name: Add ESLint Problem Matcher
         run: echo "::add-matcher::.github/problemMatchers/eslint.json"
       - name: Use Node.js v16
         uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
         with:
           node-version: 16
-      - name: Restore CI Cache
-        uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # tag=v3
-        id: cache-restore
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-16-${{ hashFiles('**/yarn.lock') }}
-      - name: Install Dependencies if Cache Miss
-        if: ${{ !steps.cache-restore.outputs.cache-hit }}
+          cache: yarn
+          registry-url: https://registry.npmjs.org/
+      - name: Install Dependencies
         run: yarn --immutable
       - name: Run ESLint
         run: yarn lint --fix=false
 
-  Testing:
+  testing:
     name: Unit Tests
     runs-on: ubuntu-latest
     steps:
@@ -41,37 +37,28 @@ jobs:
         uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
         with:
           node-version: 16
-      - name: Restore CI Cache
-        uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # tag=v3
-        id: cache-restore
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-16-${{ hashFiles('**/yarn.lock') }}
-      - name: Install Dependencies if Cache Miss
-        if: ${{ !steps.cache-restore.outputs.cache-hit }}
+          cache: yarn
+          registry-url: https://registry.npmjs.org/
+      - name: Install Dependencies
         run: yarn --immutable
       - name: Run tests
         run: yarn test --coverage
 
-  Building:
+  building:
     name: Compile Source Code
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
-      - name: Add problem matcher
+      - name: Add TypeScript Problem Matcher
         run: echo "::add-matcher::.github/problemMatchers/tsc.json"
       - name: Use Node.js v16
         uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
         with:
           node-version: 16
-      - name: Restore CI Cache
-        uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # tag=v3
-        id: cache-restore
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-16-${{ hashFiles('**/yarn.lock') }}
-      - name: Install Dependencies if Cache Miss
+          cache: yarn
+          registry-url: https://registry.npmjs.org/
+      - name: Install Dependencies
         if: ${{ !steps.cache-restore.outputs.cache-hit }}
         run: yarn --immutable
       - name: Build Code

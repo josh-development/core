@@ -1,12 +1,13 @@
-name: NPM Auto Deprecate
+name: NPM Deprecate PR On Merge
 
 on:
-  schedule:
-    - cron: '0 0 * * *'
+  pull_request:
+    types:
+      - closed
 
 jobs:
-  auto-deprecate:
-    name: NPM Auto Deprecate
+  deprecate-on-merge:
+    name: NPM Deprecate PR On Merge
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
@@ -19,7 +20,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: Install Dependencies
         run: yarn --immutable
-      - name: Deprecate Versions
-        run: yarn npm-deprecate
+      - name: Deprecate versions
+        run: yarn npm-deprecate --name "*pr-${PR_NUMBER}*" -d -v
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+          PR_NUMBER: ${{ github.event.number }}

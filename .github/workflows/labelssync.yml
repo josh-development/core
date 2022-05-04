@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  label_sync:
+  label-sync:
     name: Automatic Label Synchronization
     runs-on: ubuntu-latest
     steps:
