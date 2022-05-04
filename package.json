@@ -26,6 +26,7 @@
     "update": "yarn upgrade-interactive",
     "build": "rollup -c rollup.bundle.ts",
     "watch": "tsc -b src -w",
+    "release": "npm publish",
     "prepublishOnly": "rollup-type-bundler",
     "prepare": "husky install"
   },
