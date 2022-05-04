@@ -6,8 +6,8 @@ on:
       prNumber:
         description: The number of the PR that is being deployed
         required: true
-      ref:
-        description: The branch that is being deployed. Should be a branch on the given repository
+      branch:
+        description: The branch that is being deployed.
         required: false
         default: main
   push:
@@ -15,27 +15,28 @@ on:
       - main
 
 jobs:
-  Publish:
-    name: Publish Next to npm
+  publish:
+    name: Publish Next to NPM
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
         with:
           fetch-depth: 0
-          ref: ${{ github.event.inputs.ref || 'main' }}
-      - name: Add TypeScript problem matcher
+          ref: ${{ github.event.inputs.branch || 'main' }}
+      - name: Add TypeScript Problem Matcher
         run: echo "::add-matcher::.github/problemMatchers/tsc.json"
-      - name: Use Node.js 16
+      - name: Use Node.js v16
         uses: actions/setup-node@56337c425554a6be30cdef71bf441f15be286854 # tag=v3
         with:
           node-version: 16
+          cache: yarn
           registry-url: https://registry.npmjs.org/
       - name: Install Dependencies
         run: yarn --immutable
       - name: Bump Version & Publish
         run: |
-          # Resolve the tag to be used. "next" for push events, "pr-{prNumber}" for dispatch events.
+          echo -e "\n# Resolve the tag to be used. "next" for push events, \"pr-{prNumber}\" for dispatch events."
           TAG=$([[ ${{ github.event_name }} == 'push' ]] && echo 'next' || echo 'pr-${{ github.event.inputs.prNumber }}')
 
           echo -e "\n# Bump the version"
