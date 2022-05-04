@@ -22,14 +22,7 @@ jobs:
           node-version: 16
           cache: yarn
           registry-url: https://registry.npmjs.org/
-      - name: Restore CI Cache
-        uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # tag=v3
-        id: cache-restore
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-16-${{ hashFiles('**/yarn.lock') }}
-      - name: Install Dependencies if Cache Miss
-        if: ${{ !steps.cache-restore.outputs.cache-hit }}
+      - name: Install Dependencies
         run: yarn --immutable
       - name: Run ESLint
         run: yarn lint --fix=false
@@ -46,14 +39,7 @@ jobs:
           node-version: 16
           cache: yarn
           registry-url: https://registry.npmjs.org/
-      - name: Restore CI Cache
-        uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # tag=v3
-        id: cache-restore
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-16-${{ hashFiles('**/yarn.lock') }}
-      - name: Install Dependencies if Cache Miss
-        if: ${{ !steps.cache-restore.outputs.cache-hit }}
+      - name: Install Dependencies
         run: yarn --immutable
       - name: Run tests
         run: yarn test --coverage
@@ -72,13 +58,7 @@ jobs:
           node-version: 16
           cache: yarn
           registry-url: https://registry.npmjs.org/
-      - name: Restore CI Cache
-        uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # tag=v3
-        id: cache-restore
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-16-${{ hashFiles('**/yarn.lock') }}
-      - name: Install Dependencies if Cache Miss
+      - name: Install Dependencies
         if: ${{ !steps.cache-restore.outputs.cache-hit }}
         run: yarn --immutable
       - name: Build Code
