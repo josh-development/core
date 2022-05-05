@@ -87,11 +87,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
   "lint-staged": {
     "*.ts": "eslint --fix --ext ts"
   },
