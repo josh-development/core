@@ -5,7 +5,6 @@ import { JoshError, JoshErrorOptions } from '../errors';
 import { convertLegacyExportJSON, isLegacyExportJSON, isPayloadWithData, resolveCommonIdentifier } from '../functions';
 import { KeyPath, KeyPathJSON, MathOperator, Method, Path, Payload, Payloads, Trigger } from '../types';
 import { CommonIdentifiers } from '../types/CommonIdentifiers';
-import { MapProvider } from './default-provider/MapProvider';
 import { JoshProvider } from './JoshProvider';
 import { Middleware } from './Middleware';
 import { MiddlewareStore } from './MiddlewareStore';
@@ -69,9 +68,12 @@ export class Josh<StoredValue = unknown> {
     if (!name) throw this.error(Josh.Identifiers.MissingName);
 
     this.name = name;
-    this.provider = provider ?? new MapProvider<StoredValue>({});
 
-    if (!(this.provider instanceof JoshProvider)) emitWarning(this.error(Josh.Identifiers.InvalidProvider));
+    if (!provider) emitWarning(this.error(Josh.Identifiers.MissingProvider).message);
+
+    this.provider = provider!;
+
+    if (!(this.provider instanceof JoshProvider)) emitWarning(this.error(Josh.Identifiers.InvalidProvider).message);
 
     this.middlewares = new MiddlewareStore({ instance: this });
 
@@ -1629,6 +1631,9 @@ export class Josh<StoredValue = unknown> {
       case Josh.Identifiers.MissingName:
         return 'The "name" option is required to initiate a Josh instance.';
 
+      case Josh.Identifiers.MissingProvider:
+        return 'The "provider" option is required to initiate a Josh instance.';
+
       case Josh.Identifiers.ProviderDataFailed:
         return 'The provider failed to return data.';
 
@@ -1845,6 +1850,8 @@ export namespace Josh {
     MiddlewareNotFound = 'middlewareNotFound',
 
     MissingName = 'missingName',
+
+    MissingProvider = 'missingProvider',
 
     ProviderDataFailed = 'providerDataFailed',
 
