@@ -25,9 +25,6 @@ package-lock.json
 # Ignore the GH cli downloaded by workflows
 gh
 
-# Ignore auto-generated documentation
-docs/api.json
-
 # Ignore Yarn files
 .yarn/install-state.gz
 .yarn/build-state.yml
