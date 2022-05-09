@@ -25,6 +25,7 @@ export default {
       sourcemap: true,
       globals: {
         '@joshdb/provider': 'JoshProvider',
+        '@joshdb/auto-ensure': 'JoshAutoEnsure',
         'property-helpers': 'PropertyHelpers',
         '@sapphire/utilities': 'SapphireUtilities',
         'reflect-metatdata': 'ReflectMetadata',
@@ -32,6 +33,6 @@ export default {
       }
     }
   ],
-  external: ['@joshdb/provider', '@sapphire/utilities', 'property-helpers', 'reflect-metadata', 'process'],
+  external: ['@joshdb/provider', '@joshdb/auto-ensure', '@sapphire/utilities', 'property-helpers', 'reflect-metadata', 'process'],
   plugins: [cleaner({ targets: ['./dist'] }), typescript({ tsconfig: resolve(process.cwd(), 'src', 'tsconfig.json') }), versionInjector()]
 };

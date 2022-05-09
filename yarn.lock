@@ -948,6 +948,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@joshdb/auto-ensure@npm:next":
+  version: 1.1.0-next.8e770fe49a3d8b7bfe943cf577ef694a57e66c8c.0
+  resolution: "@joshdb/auto-ensure@npm:1.1.0-next.8e770fe49a3d8b7bfe943cf577ef694a57e66c8c.0"
+  dependencies:
+    "@joshdb/core": next
+  checksum: 7754957149cd9237feae4a69c1615aab9516cea7fd639e03bd3583426fee213560179430b711acf6f8dbf0201dff974a05657b61428992e760b707e4e2e382ba
+  languageName: node
+  linkType: hard
+
+"@joshdb/core@npm:next":
+  version: 3.0.0-next.55a98a756cefd58c27a76bc8d495fa57c02fdad8.0
+  resolution: "@joshdb/core@npm:3.0.0-next.55a98a756cefd58c27a76bc8d495fa57c02fdad8.0"
+  dependencies:
+    "@sapphire/utilities": ^3.6.2
+    property-helpers: ^1.1.0
+    reflect-metadata: ^0.1.13
+  checksum: cdbc1a3949eea322e6869aabac014ccc24898ba8f3622b1fdd3ee92d34fa7017ee179e5c4ab1a9c57c951fe11640cc4ce17f5e15a3e53c866b08e0bb7bf53976
+  languageName: node
+  linkType: hard
+
 "@joshdb/core@workspace:.":
   version: 0.0.0-use.local
   resolution: "@joshdb/core@workspace:."
@@ -956,6 +976,7 @@ __metadata:
     "@commitlint/config-conventional": ^16.2.4
     "@favware/npm-deprecate": ^1.0.4
     "@favware/rollup-type-bundler": ^1.0.7
+    "@joshdb/auto-ensure": next
     "@joshdb/provider": next
     "@sapphire/eslint-config": ~4.3.4
     "@sapphire/ts-config": ^3.3.4
