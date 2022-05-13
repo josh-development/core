@@ -948,17 +948,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/core@npm:next":
-  version: 3.0.0-next.55a98a756cefd58c27a76bc8d495fa57c02fdad8.0
-  resolution: "@joshdb/core@npm:3.0.0-next.55a98a756cefd58c27a76bc8d495fa57c02fdad8.0"
-  dependencies:
-    "@sapphire/utilities": ^3.6.2
-    property-helpers: ^1.1.0
-    reflect-metadata: ^0.1.13
-  checksum: cdbc1a3949eea322e6869aabac014ccc24898ba8f3622b1fdd3ee92d34fa7017ee179e5c4ab1a9c57c951fe11640cc4ce17f5e15a3e53c866b08e0bb7bf53976
-  languageName: node
-  linkType: hard
-
 "@joshdb/core@workspace:.":
   version: 0.0.0-use.local
   resolution: "@joshdb/core@workspace:."
@@ -967,7 +956,7 @@ __metadata:
     "@commitlint/config-conventional": ^16.2.4
     "@favware/npm-deprecate": ^1.0.4
     "@favware/rollup-type-bundler": ^1.0.7
-    "@joshdb/tests": next
+    "@joshdb/provider": next
     "@sapphire/eslint-config": ~4.3.4
     "@sapphire/ts-config": ^3.3.4
     "@sapphire/utilities": ^3.6.2
@@ -999,12 +988,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@joshdb/tests@npm:next":
-  version: 1.1.0-next.e0d5c4d3f06b6606a75cfda2aad82b21b59ba976.0
-  resolution: "@joshdb/tests@npm:1.1.0-next.e0d5c4d3f06b6606a75cfda2aad82b21b59ba976.0"
+"@joshdb/provider@npm:next":
+  version: 1.1.0-next.ee0a6f00d84fa59bcf00eab6893933fe0b962514.0
+  resolution: "@joshdb/provider@npm:1.1.0-next.ee0a6f00d84fa59bcf00eab6893933fe0b962514.0"
   dependencies:
-    "@joshdb/core": next
-  checksum: 3890f1d96f7e3e6f7edaec41747f72ecf85f001defcaa6c59f55194c82b73a35ab9a89db51ef84452534a812e08f50455b4d452900c3c20212fdbf726140b3f8
+    "@sapphire/utilities": ^3.6.2
+  checksum: 39d8168152ed9b2dc548fb4ec1f791c13cf87149472190e9a861f44864a1575f76992ee779c421f4fdf90a7054e1e4c42d13f77d18bf26bf845001f2d6ef8679
   languageName: node
   linkType: hard
 

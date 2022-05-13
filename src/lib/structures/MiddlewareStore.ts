@@ -1,5 +1,5 @@
+import { Method, Trigger } from '@joshdb/provider';
 import type { NonNullObject } from '@sapphire/utilities';
-import { Method, Trigger } from '../types';
 import type { Josh } from './Josh';
 import type { Middleware } from './Middleware';
 

@@ -31,6 +31,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@joshdb/provider": "next",
     "@sapphire/utilities": "^3.6.2",
     "property-helpers": "^1.1.0",
     "reflect-metadata": "^0.1.13"
@@ -40,7 +41,6 @@
     "@commitlint/config-conventional": "^16.2.4",
     "@favware/npm-deprecate": "^1.0.4",
     "@favware/rollup-type-bundler": "^1.0.7",
-    "@joshdb/tests": "next",
     "@sapphire/eslint-config": "~4.3.4",
     "@sapphire/ts-config": "^3.3.4",
     "@types/jest": "^27.5.0",

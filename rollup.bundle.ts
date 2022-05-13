@@ -24,6 +24,7 @@ export default {
       name: 'JoshCore',
       sourcemap: true,
       globals: {
+        '@joshdb/provider': 'JoshProvider',
         'property-helpers': 'PropertyHelpers',
         '@sapphire/utilities': 'SapphireUtilities',
         'reflect-metatdata': 'ReflectMetadata',
@@ -31,6 +32,6 @@ export default {
       }
     }
   ],
-  external: ['@sapphire/utilities', 'property-helpers', 'reflect-metadata', 'process'],
+  external: ['@joshdb/provider', '@sapphire/utilities', 'property-helpers', 'reflect-metadata', 'process'],
   plugins: [cleaner({ targets: ['./dist'] }), typescript({ tsconfig: resolve(process.cwd(), 'src', 'tsconfig.json') }), versionInjector()]
 };
