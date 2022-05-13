@@ -1,8 +1,7 @@
+import { JoshProvider, Method, Payload, Payloads } from '@joshdb/provider';
 import type { Awaitable, NonNullObject } from '@sapphire/utilities';
-import { JoshError } from '../errors';
-import { Method, Payload, Payloads } from '../types';
 import type { Josh } from './Josh';
-import type { JoshProvider } from './JoshProvider';
+import { JoshError } from './JoshError';
 import type { MiddlewareStore } from './MiddlewareStore';
 
 /**

@@ -1,6 +1,6 @@
+import { Method, Payloads } from '@joshdb/provider';
 import { ApplyMiddlewareOptions, PostProvider, PreProvider } from '../lib/decorators';
 import { Middleware } from '../lib/structures/Middleware';
-import { Method, Payloads } from '../lib/types';
 
 @ApplyMiddlewareOptions({ name: 'autoEnsure' })
 export class AutoEnsure<StoredValue = unknown> extends Middleware<AutoEnsure.ContextData<StoredValue>, StoredValue> {

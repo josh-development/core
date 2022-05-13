@@ -1,12 +1,22 @@
+import {
+  CommonIdentifiers,
+  isPayloadWithData,
+  JoshProvider,
+  KeyPath,
+  KeyPathJSON,
+  MathOperator,
+  Method,
+  Path,
+  Payload,
+  Payloads,
+  resolveCommonIdentifier,
+  Trigger
+} from '@joshdb/provider';
 import { Awaitable, isFunction, isPrimitive, NonNullObject, Primitive } from '@sapphire/utilities';
 import { emitWarning } from 'process';
 import { AutoEnsure } from '../../middlewares/AutoEnsure';
-import { JoshError, JoshErrorOptions } from '../errors';
-import { convertLegacyExportJSON, isLegacyExportJSON, isPayloadWithData, resolveCommonIdentifier } from '../functions';
-import { KeyPath, KeyPathJSON, MathOperator, Method, Path, Payload, Payloads, Trigger } from '../types';
-import { CommonIdentifiers } from '../types/CommonIdentifiers';
 import { MapProvider } from './default-provider/MapProvider';
-import { JoshProvider } from './JoshProvider';
+import { JoshError, JoshErrorOptions } from './JoshError';
 import { Middleware } from './Middleware';
 import { MiddlewareStore } from './MiddlewareStore';
 
@@ -69,7 +79,7 @@ export class Josh<StoredValue = unknown> {
     if (!name) throw this.error(Josh.Identifiers.MissingName);
 
     this.name = name;
-    this.provider = provider ?? new MapProvider<StoredValue>({});
+    this.provider = provider ?? new MapProvider<StoredValue>();
 
     if (!(this.provider instanceof JoshProvider)) emitWarning(this.error(Josh.Identifiers.InvalidProvider));
 
@@ -98,7 +108,7 @@ export class Josh<StoredValue = unknown> {
   public async init(): Promise<this> {
     for (const middleware of this.middlewares.values()) await middleware.init(this.middlewares);
 
-    const context = await this.provider.init({ name: this.name, instance: this, version: Josh.version });
+    const context = await this.provider.init({ name: this.name });
 
     if (context.error) throw context.error;
 
@@ -1545,9 +1555,9 @@ export class Josh<StoredValue = unknown> {
   public async import(options: Josh.ImportOptions<StoredValue>): Promise<this> {
     let { json, overwrite, clear } = options;
 
-    if (isLegacyExportJSON(json)) {
+    if (this.isLegacyExportJSON(json)) {
       emitWarning(this.error(Josh.Identifiers.LegacyDeprecation));
-      json = convertLegacyExportJSON(json);
+      json = this.convertLegacyExportJSON(json);
     }
 
     if (clear) await this.provider[Method.Clear]({ method: Method.Clear });
@@ -1609,6 +1619,18 @@ export class Josh<StoredValue = unknown> {
     if ('message' in options) return new JoshError(options);
 
     return new JoshError({ ...options, message: this.resolveIdentifier(options.identifier, metadata) });
+  }
+
+  private convertLegacyExportJSON<StoredValue>(json: Josh.LegacyExportJSON<StoredValue>): Josh.ExportJSON<StoredValue> {
+    const { name, version, exportDate, keys } = json;
+
+    return { name, version, exportedTimestamp: exportDate, entries: keys.map<[string, StoredValue]>(({ key, value }) => [key, value]) };
+  }
+
+  private isLegacyExportJSON<StoredValue>(
+    json: Josh.ExportJSON<StoredValue> | Josh.LegacyExportJSON<StoredValue>
+  ): json is Josh.LegacyExportJSON<StoredValue> {
+    return 'exportDate' in json && 'keys' in json;
   }
 
   private resolveIdentifier(identifier: string, metadata: Record<string, unknown>): string {
