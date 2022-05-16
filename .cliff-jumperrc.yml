@@ -1,0 +1,6 @@
+name: core
+packagePath: .
+org: joshdb
+monoRepo: false
+commitMessageTemplate: 'chore(release): release {{new-version}}'
+tagTemplate: v{{new-version}}

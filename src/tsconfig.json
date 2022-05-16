@@ -4,8 +4,8 @@
     "rootDir": "./",
     "outDir": "../dist",
     "composite": true,
-    "preserveConstEnums": true,
-    "useDefineForClassFields": false
+    "tsBuildInfoFile": "../dist/.tsbuildinfo",
+    "emitDeclarationOnly": true
   },
   "include": ["."]
 }
