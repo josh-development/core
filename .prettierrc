@@ -1,15 +1,6 @@
 {
   "$schema": "http://json.schemastore.org/prettierrc",
   "endOfLine": "lf",
-  "overrides": [
-    {
-      "files": "*.yml",
-      "options": {
-        "tabWidth": 2,
-        "useTabs": false
-      }
-    }
-  ],
   "printWidth": 150,
   "quoteProps": "as-needed",
   "semi": true,
