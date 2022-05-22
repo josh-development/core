@@ -238,11 +238,12 @@ export class Middleware<ContextData extends NonNullObject, StoredValue = unknown
    * @since 2.0.0
    */
   protected get instance(): Josh<StoredValue> {
-    if (this.store === undefined)
+    if (this.store === undefined) {
       throw new JoshError({
         identifier: Middleware.Identifiers.StoreNotFound,
         message: 'The "store" property is undefined. This usually means this middleware has not been initiated.'
       });
+    }
 
     return this.store.instance;
   }
