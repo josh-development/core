@@ -965,7 +965,7 @@ __metadata:
     "@commitlint/config-conventional": ^17.0.0
     "@favware/npm-deprecate": ^1.0.4
     "@favware/rollup-type-bundler": ^1.0.7
-    "@joshdb/provider": next
+    "@joshdb/provider": 1.1.0-next.ee0a6f00d84fa59bcf00eab6893933fe0b962514.0
     "@sapphire/eslint-config": ~4.3.5
     "@sapphire/ts-config": ^3.3.4
     "@sapphire/utilities": ^3.6.2
@@ -997,7 +997,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@joshdb/provider@npm:next":
+"@joshdb/provider@npm:1.1.0-next.ee0a6f00d84fa59bcf00eab6893933fe0b962514.0":
   version: 1.1.0-next.ee0a6f00d84fa59bcf00eab6893933fe0b962514.0
   resolution: "@joshdb/provider@npm:1.1.0-next.ee0a6f00d84fa59bcf00eab6893933fe0b962514.0"
   dependencies:

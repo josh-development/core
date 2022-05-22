@@ -31,7 +31,7 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@joshdb/provider": "next",
+    "@joshdb/provider": "1.1.0-next.ee0a6f00d84fa59bcf00eab6893933fe0b962514.0",
     "@sapphire/utilities": "^3.6.2",
     "property-helpers": "^1.1.0",
     "reflect-metadata": "^0.1.13"
