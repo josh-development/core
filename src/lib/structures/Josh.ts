@@ -86,13 +86,15 @@ export class Josh<StoredValue = unknown> {
     this.middlewares = new MiddlewareStore({ instance: this });
 
     if (autoEnsure !== undefined) this.use(new AutoEnsure<StoredValue>(autoEnsure));
-    if (middlewares !== undefined && Array.isArray(middlewares))
+    if (middlewares !== undefined && Array.isArray(middlewares)) {
       for (const middleware of middlewares.filter((middleware) => {
         if (!(middleware instanceof Middleware)) emitWarning(this.error(Josh.Identifiers.InvalidMiddleware));
 
         return middleware instanceof Middleware;
-      }) as Middleware<NonNullObject, StoredValue>[])
+      }) as Middleware<NonNullObject, StoredValue>[]) {
         this.use(middleware);
+      }
+    }
   }
 
   /**
