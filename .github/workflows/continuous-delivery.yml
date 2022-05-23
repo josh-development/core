@@ -36,13 +36,14 @@ jobs:
         run: yarn --immutable
       - name: Bump Version & Publish
         run: |
-          echo -e "\n# Resolve the tag to be used. \"next\" for push events, \"pr-{prNumber}\" for dispatch events."
+          # Resolve the tag to be used. "next" for push events, "pr-{prNumber}" for dispatch events.
           TAG=$([[ ${{ github.event_name }} == 'push' ]] && echo 'next' || echo 'pr-${{ github.event.inputs.prNumber }}')
 
-          echo -e "\n# Bump the version"
-          yarn standard-version --skip.commit --skip.tag --prerelease "${TAG}.$(git rev-parse --verify --shot HEAD)"
+          yarn config set npmAuthToken ${NODE_AUTH_TOKEN}
+          yarn config set npmPublishRegistry "https://registry.yarnpkg.com"
 
-          echo -e "\n# Publish to NPM"
-          yarn release --tag ${TAG}
+          yarn bump --preid "${TAG}.$(git rev-parse --verify --short HEAD)"
+
+          yarn npm publish --tag ${TAG}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
