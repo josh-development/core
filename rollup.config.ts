@@ -1,9 +1,9 @@
 import { resolve } from 'path';
+import { defineConfig } from 'rollup';
 import cleaner from 'rollup-plugin-cleaner';
 import typescript from 'rollup-plugin-typescript2';
-import versionInjector from 'rollup-plugin-version-injector';
 
-export default {
+export default defineConfig({
   input: 'src/index.ts',
   output: [
     {
@@ -25,13 +25,13 @@ export default {
       sourcemap: true,
       globals: {
         '@joshdb/provider': 'JoshProvider',
-        'property-helpers': 'PropertyHelpers',
         '@sapphire/utilities': 'SapphireUtilities',
-        'reflect-metatdata': 'ReflectMetadata',
-        process: 'process'
+        'property-helpers': 'PropertyHelpers',
+        'reflect-metadata': 'ReflectMetadata',
+        process: 'Process'
       }
     }
   ],
   external: ['@joshdb/provider', '@sapphire/utilities', 'property-helpers', 'reflect-metadata', 'process'],
-  plugins: [cleaner({ targets: ['./dist'] }), typescript({ tsconfig: resolve(process.cwd(), 'src', 'tsconfig.json') }), versionInjector()]
-};
+  plugins: [cleaner({ targets: ['./dist'] }), typescript({ tsconfig: resolve(process.cwd(), 'src', 'tsconfig.json') })]
+});

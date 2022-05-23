@@ -5,15 +5,9 @@ node_modules/
 # Ignore tsc dist folder
 dist/
 
-# Ignore JavaScript files
-**/*.js
-**/*.mjs
-**/*.js.map
-**/*.d.ts
-!src/**/*.d.ts
-**/*.tsbuildinfo
-!jest.config.ts
-!scripts/*.mjs
+# Build Artifacts
+dist/
+build/
 
 # Ignore heapsnapshot and log files
 *.heapsnapshot

@@ -1,4 +1,4 @@
 {
   "extends": "./tsconfig.base.json",
-  "include": ["src", "tests", "jest.config.ts", "rollup.bundle.ts"]
+  "include": ["jest.config.mjs", "rollup.config.ts", "src", "tests"]
 }
