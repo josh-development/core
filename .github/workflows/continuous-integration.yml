@@ -41,8 +41,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - name: Install Dependencies
         run: yarn --immutable
-      - name: Run tests
-        run: yarn test --coverage
+      - name: Run Tests
+        run: yarn test:coverage
       - name: Store Code Coverage Report
         uses: actions/upload-artifact@6673cd052c4cd6fcf4b4e6e60ea986c889389535 # tag=v3
         with:
@@ -70,7 +70,7 @@ jobs:
         run: yarn build
 
   upload-coverage-report:
-    name: Upload coverage report to codecov
+    name: Upload Code Coverage Report
     needs: [testing]
     runs-on: ubuntu-latest
     steps:
@@ -78,7 +78,7 @@ jobs:
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
         with:
           fetch-depth: 2
-      - name: Download Coverage report
+      - name: Download Coverage Report
         uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3
         with:
           name: coverage
