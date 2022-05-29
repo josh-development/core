@@ -20,7 +20,6 @@ jobs:
         run: yarn --immutable
       - name: Deprecate Versions
         run: |
-          yarn npm-deprecate --name "*pr-79*" -d -v
           yarn npm-deprecate --name "*pr-77*" -d -v
           yarn npm-deprecate --name "*pr-57*" -d -v
         env:
