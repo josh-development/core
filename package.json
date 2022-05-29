@@ -33,7 +33,7 @@
     "postpack": "pinst --enable"
   },
   "dependencies": {
-    "@joshdb/provider": "1.1.0-next.ee0a6f00d84fa59bcf00eab6893933fe0b962514.0",
+    "@joshdb/provider": "1.1.0-pr-4.d962ff92fb98a59bc3568068a3cedb827bdf66e1.0",
     "@sapphire/utilities": "^3.6.2",
     "property-helpers": "^1.1.0",
     "reflect-metadata": "^0.1.13"
