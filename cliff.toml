@@ -9,9 +9,9 @@ body = """
     # [{{ version | trim_start_matches(pat="v") }}]\
     {% if previous %}\
         {% if previous.version %}\
-            (https://github.com/RealShadowNova/property-helpers/compare/{{ previous.version }}...{{ version }})\
+            (https://github.com/josh-development/core/compare/{{ previous.version }}...{{ version }})\
         {% else %}
-            (https://github.com/RealShadowNova/property-helpers/tree/{{ version }})\
+            (https://github.com/josh-development/core/tree/{{ version }})\
         {% endif %}\
     {% endif %} \
     - ({{ timestamp | date(format="%Y-%m-%d") }})
@@ -24,7 +24,7 @@ body = """
 		- {% if commit.scope %}\
 			**{{commit.scope}}:** \
 		  {% endif %}\
-            {{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/RealShadowNova/property-helpers/commit/{{ commit.id }}))\
+            {{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/josh-development/core/commit/{{ commit.id }}))\
 		{% if commit.breaking %}\
 			\n\n {% raw %}  {% endraw %} ### 💥 Breaking Changes:\n \
 			{% for breakingChange in commit.footers %}\
