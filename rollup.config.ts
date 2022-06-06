@@ -24,14 +24,14 @@ export default defineConfig({
       name: 'JoshCore',
       sourcemap: true,
       globals: {
+        '@joshdb/auto-ensure': 'JoshMiddlewareAutoEnsure',
         '@joshdb/map': 'JoshProviderMap',
-        '@joshdb/provider': 'JoshProvider',
+        '@joshdb/middleware': 'JoshMiddleware',
         '@sapphire/utilities': 'SapphireUtilities',
-        'reflect-metadata': 'ReflectMetadata',
         process: 'Process'
       }
     }
   ],
-  external: ['@joshdb/map', '@joshdb/provider', '@sapphire/utilities', 'reflect-metadata', 'process'],
+  external: ['@joshdb/auto-ensure', '@joshdb/map', '@joshdb/middleware', '@sapphire/utilities', 'process'],
   plugins: [cleaner({ targets: ['./dist'] }), typescript({ tsconfig: resolve(process.cwd(), 'src', 'tsconfig.json') })]
 });
