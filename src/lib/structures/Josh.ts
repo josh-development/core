@@ -1,3 +1,4 @@
+import { MapProvider } from '@joshdb/map';
 import {
   CommonIdentifiers,
   isPayloadWithData,
@@ -15,7 +16,6 @@ import {
 import { Awaitable, isFunction, isPrimitive, NonNullObject, Primitive } from '@sapphire/utilities';
 import { emitWarning } from 'process';
 import { AutoEnsure } from '../../middlewares/AutoEnsure';
-import { MapProvider } from './default-provider/MapProvider';
 import { JoshError, JoshErrorOptions } from './JoshError';
 import { Middleware } from './Middleware';
 import { MiddlewareStore } from './MiddlewareStore';
