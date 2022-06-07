@@ -1,3 +1,4 @@
+import { AutoEnsureMiddleware } from '@joshdb/auto-ensure';
 import { MapProvider } from '@joshdb/map';
 import {
   CommonIdentifiers,
@@ -7,18 +8,17 @@ import {
   KeyPathJSON,
   MathOperator,
   Method,
+  Middleware,
+  MiddlewareStore,
   Path,
   Payload,
   Payloads,
   resolveCommonIdentifier,
   Trigger
-} from '@joshdb/provider';
+} from '@joshdb/middleware';
 import { Awaitable, isFunction, isPrimitive, NonNullObject, Primitive } from '@sapphire/utilities';
 import { emitWarning } from 'process';
-import { AutoEnsure } from '../../middlewares/AutoEnsure';
 import { JoshError, JoshErrorOptions } from './JoshError';
-import { Middleware } from './Middleware';
-import { MiddlewareStore } from './MiddlewareStore';
 
 /**
  * The base class that makes Josh work.
@@ -83,9 +83,9 @@ export class Josh<StoredValue = unknown> {
 
     if (!(this.provider instanceof JoshProvider)) emitWarning(this.error(Josh.Identifiers.InvalidProvider));
 
-    this.middlewares = new MiddlewareStore({ instance: this });
+    this.middlewares = new MiddlewareStore({ provider: this.provider });
 
-    if (autoEnsure !== undefined) this.use(new AutoEnsure<StoredValue>(autoEnsure));
+    if (autoEnsure !== undefined) this.use(new AutoEnsureMiddleware<StoredValue>(autoEnsure));
     if (middlewares !== undefined && Array.isArray(middlewares)) {
       for (const middleware of middlewares.filter((middleware) => {
         if (!(middleware instanceof Middleware)) emitWarning(this.error(Josh.Identifiers.InvalidMiddleware));
@@ -1733,7 +1733,7 @@ export namespace Josh {
      * The value for CoreAutoEnsure to use.
      * @since 2.0.0
      */
-    autoEnsure?: AutoEnsure.ContextData<StoredValue>;
+    autoEnsure?: AutoEnsureMiddleware.ContextData<StoredValue>;
   }
 
   /**
