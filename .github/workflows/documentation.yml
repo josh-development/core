@@ -13,11 +13,15 @@ jobs:
     runs-on: ubuntu-latest
 
     if: github.repository_owner == 'josh-development'
+    outputs:
+      NAME: ${{ steps.env.outputs.NAME }}
+      TYPE: ${{ steps.env.outputs.TYPE }}
+      SHA: ${{ steps.env.outputs.SHA }}
     steps:
       - name: Checkout Project
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
       - name: Use Node.js v16
-        uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
+        uses: actions/setup-node@eeb10cff27034e7acf239c5d29f62154018672fd # tag=v3
         with:
           node-version: 16
           cache: yarn
@@ -27,7 +31,7 @@ jobs:
       - name: Build Documentation
         run: yarn docs
       - name: Upload Documentation Artifacts
-        uses: actions/cache@v2
+        uses: actions/upload-artifact@v2
         with:
           name: docs
           path: docs/api.json
@@ -43,14 +47,14 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     env:
-      NAME: ${{ needs.build.outputs.REF }}
+      NAME: ${{ needs.build.outputs.NAME }}
       TYPE: ${{ needs.build.outputs.TYPE }}
       SHA: ${{ needs.build.outputs.SHA }}
     steps:
       - name: Checkout Project
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
       - name: Use Node.js v16
-        uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3
+        uses: actions/setup-node@eeb10cff27034e7acf239c5d29f62154018672fd # tag=v3
         with:
           node-version: 16
           cache: yarn
@@ -58,7 +62,7 @@ jobs:
       - name: Install Dependencies
         run: yarn --immutable
       - name: Download Documentation Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v3
         with:
           name: docs
           path: docs
@@ -66,6 +70,7 @@ jobs:
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3
         with:
           repository: 'josh-development/docs'
+          token: ${{ secrets.JOSH_TOKEN }}
           path: 'out'
 
       - name: Move Documentation
@@ -89,5 +94,5 @@ jobs:
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
 
           git add .
-          git commit -m "docs(core): build for ${TYPE} ${NAME}: ${SHA}"
+          git commit -m "docs(core): build for ${TYPE} ${NAME}: ${SHA}" || true
           git push
