@@ -112,6 +112,7 @@ export class Josh<StoredValue = unknown> {
 
     const context = await this.provider.init({ name: this.name });
 
+    /* istanbul ignore if */
     if (context.error) throw context.error;
 
     return this;

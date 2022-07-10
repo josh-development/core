@@ -12,6 +12,22 @@ describe('Josh', () => {
     });
   });
 
+  describe('can be instantiated class', () => {
+    test('GIVEN class Josh THEN returns Josh', () => {
+      const josh = new Josh({ name: 'test:name' });
+      expect(josh).toBeInstanceOf(Josh);
+    });
+
+    test('GIVEN typeof ...prototype THEN returns object', () => {
+      expect(() => new Josh({ name: undefined })).toThrowError('The "name" option is required to initiate a Josh instance');
+    });
+
+    test('GIVEN typeof ...prototype THEN returns object', () => {
+      const josh = new Josh({ name: 'test:name', autoEnsure: { defaultValue: { foo: 'bar' } } });
+      expect(josh.middlewares.size).toBe(1);
+    });
+  });
+
   describe('methods runs', () => {
     const josh = new Josh({ name: 'test:name' });
 
@@ -722,6 +738,24 @@ describe('Josh', () => {
 
         expect(random).toEqual(['value']);
       });
+
+      test('GIVEN josh w/ data THEN returns multiple data from random', async () => {
+        await josh[Method.Set]('test:random', 'value');
+        await josh[Method.Set]('test:random2', 'value');
+
+        const random = await josh[Method.Random]({ count: 2, duplicates: false });
+
+        expect(random).toEqual(['value', 'value']);
+      });
+
+      test('GIVEN josh w/ data w/ duplicates THEN returns multiple data from random', async () => {
+        await josh[Method.Set]('test:random', 'value');
+        await josh[Method.Set]('test:random2', 'value');
+
+        const random = await josh[Method.Random]({ count: 2, duplicates: true });
+
+        expect(random).toEqual(['value', 'value']);
+      });
     });
 
     describe(Method.RandomKey, () => {
@@ -731,6 +765,24 @@ describe('Josh', () => {
         const random = await josh[Method.RandomKey]({ count: 1, duplicates: false });
 
         expect(random).toEqual(['test:randomKey']);
+      });
+
+      test('GIVEN josh w/ data THEN returns multiple data from randomKey', async () => {
+        await josh[Method.Set]('test:randomKey', 'value');
+        await josh[Method.Set]('test:randomKey2', 'value');
+
+        const random = await josh[Method.RandomKey]({ count: 2, duplicates: false });
+
+        expect(random?.length).toEqual(2);
+      });
+
+      test('GIVEN josh w/ data w/ duplicates THEN returns multiple data from randomKey', async () => {
+        await josh[Method.Set]('test:random', 'value');
+        await josh[Method.Set]('test:random2', 'value');
+
+        const random = await josh[Method.RandomKey]({ count: 2, duplicates: true });
+
+        expect(random?.length).toEqual(2);
       });
     });
 
