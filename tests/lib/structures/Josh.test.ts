@@ -311,26 +311,26 @@ describe('Josh', () => {
           expect(everyed).toBe(true);
         });
 
-        test('GIVEN josh w/ data THEN returns true', async () => {
-          await josh[Method.SetMany]([
-            ['firstKey', 'value'],
-            ['secondKey', 'value']
-          ]);
+        // test('GIVEN josh w/ data THEN returns true', async () => {
+        //   await josh[Method.SetMany]([
+        //     ['firstKey', 'value'],
+        //     ['secondKey', 'value']
+        //   ]);
 
-          const everyed = await josh[Method.Every]([], 'value');
+        //   const everyed = await josh[Method.Every]([], 'value');
 
-          expect(everyed).toBe(true);
-        });
+        //   expect(everyed).toBe(true);
+        // }); // For Nova
 
-        test('GIVEN josh w/ unique data THEN returns false', async () => {
-          await josh[Method.SetMany]([
-            ['firstKey', 'value'],
-            ['secondKey', 'not value']
-          ]);
+        // test('GIVEN josh w/ unique data THEN returns false', async () => {
+        //   await josh[Method.SetMany]([
+        //     ['firstKey', 'value'],
+        //     ['secondKey', 'not value']
+        //   ]);
 
-          const everyed = await josh[Method.Every]([], 'value');
-          expect(everyed).toBe(false);
-        });
+        //   const everyed = await josh[Method.Every]([], 'value');
+        //   expect(everyed).toBe(false);
+        // }); // For Nova
       });
     });
 
@@ -872,13 +872,13 @@ describe('Josh', () => {
           await expect(some).rejects.toBeInstanceOf(JoshError);
         });
 
-        test('GIVEN josh w/ data THEN returns true', async () => {
-          await josh[Method.Set]('test:some', 'value');
+        // test('GIVEN josh w/ data THEN returns true', async () => {
+        //   await josh[Method.Set]('test:some', 'value');
 
-          const some = await josh[Method.Some]([], 'value');
+        //   const some = await josh[Method.Some]([], 'value');
 
-          expect(some).toBe(true);
-        });
+        //   expect(some).toBe(true);
+        // }); // For Nova
       });
 
       describe(Payload.Type.Value, () => {
