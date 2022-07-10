@@ -186,6 +186,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -193,6 +194,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<string>(payload)) return payload.data;
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -221,6 +223,7 @@ export class Josh<StoredValue = unknown> {
     payload = await this.provider[Method.Clear](payload);
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -274,6 +277,7 @@ export class Josh<StoredValue = unknown> {
     payload = await this.provider[Method.Dec](payload);
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -327,6 +331,7 @@ export class Josh<StoredValue = unknown> {
     payload = await this.provider[Method.Delete](payload);
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -344,6 +349,7 @@ export class Josh<StoredValue = unknown> {
     payload = await this.provider[Method.DeleteMany](payload);
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -365,6 +371,7 @@ export class Josh<StoredValue = unknown> {
     payload = await this.provider[Method.Each](payload);
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -402,6 +409,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -409,6 +417,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<StoredValue>(payload)) return payload.data;
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -446,6 +455,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -453,6 +463,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<Record<string, StoredValue>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -542,6 +553,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -549,6 +561,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<boolean>(payload)) return payload.data;
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -625,6 +638,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -632,6 +646,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<Record<string, StoredValue>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -700,6 +715,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -707,6 +723,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<Record<string, StoredValue>>(payload)) return payload.data;
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -748,6 +765,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -784,6 +802,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -791,6 +810,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<Record<string, StoredValue | null>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -833,6 +853,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -840,6 +861,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<boolean>(payload)) return payload.data;
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -888,6 +910,7 @@ export class Josh<StoredValue = unknown> {
     payload = await this.provider[Method.Inc](payload);
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -918,6 +941,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -925,6 +949,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<string[]>(payload)) return payload.data;
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -972,6 +997,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -979,6 +1005,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<Value[]>(payload)) return payload.data;
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -1038,6 +1065,7 @@ export class Josh<StoredValue = unknown> {
     payload = await this.provider[Method.Math](payload);
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1119,6 +1147,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1130,6 +1159,7 @@ export class Josh<StoredValue = unknown> {
       return [this.convertBulkData(truthy, returnBulkType), this.convertBulkData(falsy, returnBulkType)];
     }
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -1171,6 +1201,7 @@ export class Josh<StoredValue = unknown> {
     payload = await this.provider[Method.Push](payload);
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1195,6 +1226,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1202,6 +1234,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<StoredValue[]>(payload)) return payload.data.length ? payload.data : null;
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -1235,6 +1268,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1242,6 +1276,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<string[]>(payload)) return payload.data.length ? payload.data : null;
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -1304,6 +1339,7 @@ export class Josh<StoredValue = unknown> {
     payload = await this.provider[Method.Remove](payload);
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1342,6 +1378,7 @@ export class Josh<StoredValue = unknown> {
     payload = await this.provider[Method.Set](payload);
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1368,6 +1405,7 @@ export class Josh<StoredValue = unknown> {
     payload = await this.provider[Method.SetMany](payload);
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1396,6 +1434,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1403,6 +1442,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<number>(payload)) return payload.data;
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -1470,6 +1510,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1477,6 +1518,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<boolean>(payload)) return payload.data;
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -1502,6 +1544,7 @@ export class Josh<StoredValue = unknown> {
     payload = await this.provider[Method.Update](payload);
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1533,6 +1576,7 @@ export class Josh<StoredValue = unknown> {
 
     payload.trigger = Trigger.PostProvider;
 
+    /* istanbul ignore if */
     if (payload.error) throw payload.error;
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
@@ -1540,6 +1584,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<StoredValue[]>(payload)) return payload.data;
 
+    /* istanbul ignore next */
     throw this.providerFailedError;
   }
 
@@ -1547,7 +1592,7 @@ export class Josh<StoredValue = unknown> {
     let { json, overwrite, clear } = options;
 
     if (this.isLegacyExportJSON(json)) {
-      emitWarning(this.error(Josh.Identifiers.LegacyDeprecation));
+      emitWarning(this.error(Josh.Identifiers.LegacyDeprecation).message);
       json = this.convertLegacyExportJSON(json);
     }
 
