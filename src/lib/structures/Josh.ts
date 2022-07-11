@@ -81,7 +81,7 @@ export class Josh<StoredValue = unknown> {
     this.name = name;
     this.provider = provider ?? new MapProvider<StoredValue>();
 
-    if (!(this.provider instanceof JoshProvider)) emitWarning(this.error(Josh.Identifiers.InvalidProvider));
+    if (!(this.provider instanceof JoshProvider)) emitWarning(this.error(Josh.Identifiers.InvalidProvider).message);
 
     this.middlewares = new MiddlewareStore({ provider: this.provider });
 

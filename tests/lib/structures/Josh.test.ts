@@ -26,6 +26,17 @@ describe('Josh', () => {
       const josh = new Josh({ name: 'test:name', autoEnsure: { defaultValue: { foo: 'bar' } } });
       expect(josh.middlewares.size).toBe(1);
     });
+
+    test('GIVEN provider with invalid instance THEN emits warning', () => {
+      jest.spyOn(process, 'emitWarning').mockImplementation();
+      // @ts-expect-error - this is a test
+      const josh = new Josh({ name: 'test:instanceof', provider: new Map() });
+
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      expect(process.emitWarning).toHaveBeenCalledWith(
+        expect.stringContaining('The "provider" option must extend the exported "JoshProvider" class to ensure compatibility, but continuing anyway.')
+      );
+    });
   });
 
   describe('methods runs', () => {
