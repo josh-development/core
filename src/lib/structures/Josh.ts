@@ -195,7 +195,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<string>(payload)) return payload.data;
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -418,7 +418,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<StoredValue>(payload)) return payload.data;
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -464,7 +464,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<Record<string, StoredValue>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -562,7 +562,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<boolean>(payload)) return payload.data;
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -647,7 +647,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<Record<string, StoredValue>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -724,7 +724,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<Record<string, StoredValue>>(payload)) return payload.data;
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -811,7 +811,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<Record<string, StoredValue | null>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -862,7 +862,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<boolean>(payload)) return payload.data;
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -950,7 +950,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<string[]>(payload)) return payload.data;
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -1006,7 +1006,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<Value[]>(payload)) return payload.data;
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -1160,7 +1160,7 @@ export class Josh<StoredValue = unknown> {
       return [this.convertBulkData(truthy, returnBulkType), this.convertBulkData(falsy, returnBulkType)];
     }
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -1235,7 +1235,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<StoredValue[]>(payload)) return payload.data.length ? payload.data : null;
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -1277,7 +1277,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<string[]>(payload)) return payload.data.length ? payload.data : null;
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -1443,7 +1443,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<number>(payload)) return payload.data;
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -1519,7 +1519,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<boolean>(payload)) return payload.data;
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
@@ -1585,7 +1585,7 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<StoredValue[]>(payload)) return payload.data;
 
-    /* istanbul ignore next */
+    /* istanbul ignore next: covered in provider tests */
     throw this.providerFailedError;
   }
 
