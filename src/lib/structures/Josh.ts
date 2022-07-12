@@ -1653,8 +1653,9 @@ export class Josh<StoredValue = unknown> {
 
   private error(options: string | JoshErrorOptions, metadata: Record<string, unknown> = {}): JoshError {
     if (typeof options === 'string') return new JoshError({ identifier: options, message: this.resolveIdentifier(options, metadata) });
+    /* istanbul ignore next: This doesn't happen */
     if ('message' in options) return new JoshError(options);
-
+    /* istanbul ignore next: This doesn't happen */
     return new JoshError({ ...options, message: this.resolveIdentifier(options.identifier, metadata) });
   }
 
@@ -1695,6 +1696,7 @@ export class Josh<StoredValue = unknown> {
         return 'The "hook" parameter for middleware was not found.';
     }
 
+    /* istanbul ignore next: This doesn't happen */
     throw new Error(`Unknown identifier: ${identifier}`);
   }
 

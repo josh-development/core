@@ -883,12 +883,26 @@ describe('Josh', () => {
       test('GIVEN josh w/ data THEN returns data from randomKey', async () => {
         await josh[Method.Set]('test:randomKey', 'value');
 
+        const random = await josh[Method.RandomKey]();
+
+        expect(random).toEqual(['test:randomKey']);
+      });
+
+      test('GIVEN josh w/o data THEN throw provider error', async () => {
+        const random = josh[Method.RandomKey]();
+
+        await expect(random).rejects.toThrowError('The provider failed to return data.');
+      });
+
+      test('GIVEN josh w/ data THEN returns data from random', async () => {
+        await josh[Method.Set]('test:randomKey', 'value');
+
         const random = await josh[Method.RandomKey]({ count: 1, duplicates: false });
 
         expect(random).toEqual(['test:randomKey']);
       });
 
-      test('GIVEN josh w/ data THEN returns multiple data from randomKey', async () => {
+      test('GIVEN josh w/ data THEN returns multiple data from random', async () => {
         await josh[Method.Set]('test:randomKey', 'value');
         await josh[Method.Set]('test:randomKey2', 'value');
 
@@ -897,9 +911,9 @@ describe('Josh', () => {
         expect(random?.length).toEqual(2);
       });
 
-      test('GIVEN josh w/ data w/ duplicates THEN returns multiple data from randomKey', async () => {
-        await josh[Method.Set]('test:random', 'value');
-        await josh[Method.Set]('test:random2', 'value');
+      test('GIVEN josh w/ data w/ duplicates THEN returns multiple data from random', async () => {
+        await josh[Method.Set]('test:randomKey', 'value');
+        await josh[Method.Set]('test:randomKey2', 'value');
 
         const random = await josh[Method.RandomKey]({ count: 2, duplicates: true });
 
