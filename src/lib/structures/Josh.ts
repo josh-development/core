@@ -83,12 +83,12 @@ export class Josh<StoredValue = unknown> {
 
     if (!(this.provider instanceof JoshProvider)) emitWarning(this.error(Josh.Identifiers.InvalidProvider).message);
 
-    this.middlewares = new MiddlewareStore({ provider: this.provider });
+    this.middlewares = new MiddlewareStore<StoredValue>({ provider: this.provider });
 
     if (autoEnsure !== undefined) this.use(new AutoEnsureMiddleware<StoredValue>(autoEnsure));
     if (middlewares !== undefined && Array.isArray(middlewares)) {
       for (const middleware of middlewares.filter((middleware) => {
-        if (!(middleware instanceof Middleware)) emitWarning(this.error(Josh.Identifiers.InvalidMiddleware));
+        if (!(middleware instanceof Middleware)) emitWarning(this.error(Josh.Identifiers.InvalidMiddleware).message);
 
         return middleware instanceof Middleware;
       }) as Middleware<NonNullObject, StoredValue>[]) {

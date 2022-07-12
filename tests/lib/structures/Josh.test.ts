@@ -1,4 +1,5 @@
-import { MathOperator, Method, Payload } from '@joshdb/middleware';
+import { AutoEnsureMiddleware } from '@joshdb/auto-ensure';
+import { MathOperator, Method, Middleware, Payload, Trigger } from '@joshdb/middleware';
 import { Bulk, Josh, JoshError } from '../../../src';
 
 describe('Josh', () => {
@@ -18,17 +19,32 @@ describe('Josh', () => {
       expect(josh).toBeInstanceOf(Josh);
     });
 
-    test('GIVEN typeof ...prototype THEN returns object', () => {
+    test('GIVEN class Josh w/o name THEN throws error', () => {
       expect(() => new Josh({ name: undefined })).toThrowError('The "name" option is required to initiate a Josh instance');
     });
 
-    test('GIVEN typeof ...prototype THEN returns object', () => {
+    test('GIVEN class Josh w/ autoEnsure THEN returns middleware size 1', () => {
       const josh = new Josh({ name: 'test:name', autoEnsure: { defaultValue: { foo: 'bar' } } });
       expect(josh.middlewares.size).toBe(1);
     });
 
+    test('GIVEN class Josh w/ empty middlewares THEN returns instance', () => {
+      const josh = new Josh({ name: 'test:name', middlewares: [] });
+      expect(josh.middlewares.size).toBe(0);
+    });
+
+    test('GIVEN class Josh w/ middlewares THEN returns instance', () => {
+      const josh = new Josh<{ test: boolean }>({
+        name: 'test:name',
+        // For nova, this seems to be the only way to make sure the middleware is allowed
+        middlewares: [new AutoEnsureMiddleware({ defaultValue: { test: false } }) as unknown as Middleware<{ test: boolean }>]
+      });
+
+      expect(josh.middlewares.size).toBe(1);
+    });
+
     test('GIVEN provider with invalid instance THEN emits warning', () => {
-      jest.spyOn(process, 'emitWarning').mockImplementation();
+      const spy = jest.spyOn(process, 'emitWarning').mockImplementation();
       // @ts-expect-error - this is a test
       const josh = new Josh({ name: 'test:instanceof', provider: new Map() });
 
@@ -36,10 +52,82 @@ describe('Josh', () => {
       expect(process.emitWarning).toHaveBeenCalledWith(
         expect.stringContaining('The "provider" option must extend the exported "JoshProvider" class to ensure compatibility, but continuing anyway.')
       );
+
+      spy.mockClear();
+    });
+
+    test('GIVEN provider with invalid instance THEN emits warning', () => {
+      jest.spyOn(process, 'emitWarning').mockImplementation();
+      // @ts-expect-error - this is a test
+      const josh = new Josh({ name: 'test:middlewares', middlewares: [new Map()] });
+
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      expect(process.emitWarning).toHaveBeenCalledWith(expect.stringContaining('The middleware must extend the exported "Middleware" class.'));
     });
   });
 
-  describe('methods runs', () => {
+  describe('middleware', () => {
+    describe('use', () => {
+      test('GIVEN josh THEN add middleware', () => {
+        const josh = new Josh({ name: 'test:middlewares' });
+
+        expect(josh.middlewares.size).toBe(0);
+
+        josh.use(new AutoEnsureMiddleware({ defaultValue: { test: false } }) as unknown as Middleware<{ test: boolean }>);
+
+        expect(josh.middlewares.size).toBe(1);
+      });
+
+      test('GIVEN josh w/ hook middleware THEN add middleware', () => {
+        const josh = new Josh({ name: 'test:middlewares' });
+
+        expect(josh.middlewares.size).toBe(0);
+
+        josh.use({ name: 'test' }, (payload) => payload);
+
+        expect(josh.middlewares.get('test')?.conditions).toEqual({ pre: [], post: [] });
+
+        expect(josh.middlewares.size).toBe(1);
+      });
+
+      test('GIVEN josh w/ hook middleware w/ trigger THEN add middleware', () => {
+        const josh = new Josh({ name: 'test:middlewares' });
+
+        expect(josh.middlewares.size).toBe(0);
+
+        josh.use({ name: 'test', trigger: Trigger.PreProvider, method: Method.Dec }, (payload) => payload);
+
+        expect(josh.middlewares.size).toBe(1);
+        expect(josh.middlewares.get('test')?.conditions.pre).toEqual(['dec']);
+        expect(josh.middlewares.get('test')?.conditions.post).toEqual([]);
+      });
+
+      test('GIVEN josh w/ hook middleware w/ trigger THEN add middleware', () => {
+        const josh = new Josh({ name: 'test:middlewares' });
+
+        expect(josh.middlewares.size).toBe(0);
+
+        josh.use({ name: 'test', trigger: Trigger.PostProvider, method: Method.Dec }, (payload) => payload);
+
+        expect(josh.middlewares.size).toBe(1);
+        expect(josh.middlewares.get('test')?.conditions.post).toEqual(['dec']);
+        expect(josh.middlewares.get('test')?.conditions.pre).toEqual([]);
+      });
+
+      test('GIVEN josh w/ invalid hook middleware THEN add middleware', () => {
+        const josh = new Josh({ name: 'test:middlewares' });
+
+        expect(josh.middlewares.size).toBe(0);
+
+        // @ts-expect-error this is a test
+        expect(() => josh.use({ name: 'test' })).toThrowError('The "hook" parameter for middleware was not found.');
+
+        expect(josh.middlewares.size).toBe(0);
+      });
+    });
+  });
+
+  describe('resolvePath', () => {
     const josh = new Josh({ name: 'test:name' });
 
     test('resolvePath', () => {
@@ -258,6 +346,14 @@ describe('Josh', () => {
         await josh[Method.Set]('test:entries', 'value');
 
         const entries = await josh.entries();
+
+        expect(entries).toEqual({ 'test:entries': 'value' });
+      });
+
+      test('GIVEN josh w/ data THEN returns data as Bulk.Object', async () => {
+        await josh[Method.Set]('test:entries', 'value');
+
+        const entries = await josh.entries(Bulk.Object);
 
         expect(entries).toEqual({ 'test:entries': 'value' });
       });
@@ -745,6 +841,20 @@ describe('Josh', () => {
       test('GIVEN josh w/ data THEN returns data from random', async () => {
         await josh[Method.Set]('test:random', 'value');
 
+        const random = await josh[Method.Random]();
+
+        expect(random).toEqual(['value']);
+      });
+
+      test('GIVEN josh w/o data THEN throw provider error', async () => {
+        const random = josh[Method.Random]();
+
+        await expect(random).rejects.toThrowError('The provider failed to return data.');
+      });
+
+      test('GIVEN josh w/ data THEN returns data from random', async () => {
+        await josh[Method.Set]('test:random', 'value');
+
         const random = await josh[Method.Random]({ count: 1, duplicates: false });
 
         expect(random).toEqual(['value']);
@@ -877,13 +987,16 @@ describe('Josh', () => {
 
         expect(hasBefore).toBe(false);
 
-        const setMany = await josh[Method.SetMany]([[{ key: 'test:setMany', path: [] }, 'value']]);
+        const setMany = await josh[Method.SetMany]([
+          [{ key: 'test:setMany', path: [] }, 'value'],
+          [{ key: 'test:setMany2' }, 'value']
+        ]);
 
         expect(setMany).toBeInstanceOf(Josh);
 
         const entries = await josh[Method.Entries]();
 
-        expect(entries).toEqual({ 'test:setMany': 'value' });
+        expect(entries).toEqual({ 'test:setMany': 'value', 'test:setMany2': 'value' });
       });
 
       test('GIVEN josh w/ data THEN returns data AND does not set value at key', async () => {
@@ -1049,6 +1162,20 @@ describe('Josh', () => {
         const entries = await josh.entries();
         expect(entries).toEqual({ 'test:import': 'real-value' });
       });
+
+      test('GIVEN fake legacy data THEN imports and converts', async () => {
+        const legacy = {
+          name: 'test',
+          version: '1.0.0',
+          exportDate: Date.now(),
+          keys: [{ key: 'foo', value: 'bar' }]
+        };
+
+        await josh.import({ json: legacy });
+
+        const entries = await josh.entries();
+        expect(entries).toEqual({ foo: 'bar' });
+      });
     });
 
     describe('export', () => {
@@ -1060,6 +1187,18 @@ describe('Josh', () => {
         expect(exported.entries).toEqual([['test:export', 'value']]);
         expect(exported.exportedTimestamp).toBeGreaterThan(0);
         expect(exported.name).toBe('test');
+      });
+    });
+
+    describe('multi', () => {
+      test("GIVEN josh w/ data THEN multi's data", async () => {
+        const multi = await Josh.multi(['foo', 'bar']);
+
+        expect(multi.foo).toBeInstanceOf(Josh);
+        expect(multi.bar).toBeInstanceOf(Josh);
+
+        expect(multi.foo.name).toBe('foo');
+        expect(multi.bar.name).toBe('bar');
       });
     });
   });
