@@ -174,9 +174,9 @@ describe('Josh', () => {
 
         expect(sizeBefore).toBe(0);
 
-        const cleared = await josh[Method.Clear]();
+        const result = await josh[Method.Clear]();
 
-        expect(cleared).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
 
         const sizeAfter = await josh[Method.Size]();
 
@@ -190,9 +190,9 @@ describe('Josh', () => {
 
         expect(sizeBefore).toBe(1);
 
-        const cleared = await josh[Method.Clear]();
+        const result = await josh[Method.Clear]();
 
-        expect(cleared).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
 
         const sizeAfter = await josh[Method.Size]();
 
@@ -204,9 +204,9 @@ describe('Josh', () => {
       test('GIVEN josh w/ number at key THEN decremented number at key', async () => {
         await josh[Method.Set]('test:dec', 1);
 
-        const deced = await josh[Method.Dec]('test:dec');
+        const result = await josh[Method.Dec]('test:dec');
 
-        expect(deced).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
 
         const value = await josh[Method.Get]('test:dec');
 
@@ -216,9 +216,9 @@ describe('Josh', () => {
       test('GIVEN josh w/ number at path THEN decremented number at path', async () => {
         await josh[Method.Set]('test:dec', 1, ['path']);
 
-        const deced = await josh[Method.Dec]('test:dec', ['path']);
+        const result = await josh[Method.Dec]('test:dec', ['path']);
 
-        expect(deced).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
 
         const value = await josh[Method.Get]('test:dec', ['path']);
 
@@ -234,9 +234,9 @@ describe('Josh', () => {
 
         expect(hasBefore).toBe(true);
 
-        const deleted = await josh[Method.Delete]('test:delete');
+        const result = await josh[Method.Delete]('test:delete');
 
-        expect(deleted).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
 
         const hasAfter = await josh[Method.Has]('test:delete');
 
@@ -250,9 +250,9 @@ describe('Josh', () => {
 
         expect(hasBefore).toBe(true);
 
-        const deleted = await josh[Method.Delete]('test:delete', ['path']);
+        const result = await josh[Method.Delete]('test:delete', ['path']);
 
-        expect(deleted).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
 
         const hasAfter = await josh[Method.Has]('test:delete', ['path']);
 
@@ -266,9 +266,9 @@ describe('Josh', () => {
 
         expect(hasBefore).toBe(true);
 
-        const deleted = await josh[Method.Delete]('test:delete', ['path', 'nested']);
+        const result = await josh[Method.Delete]('test:delete', ['path', 'nested']);
 
-        expect(deleted).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
 
         const hasAfter = await josh[Method.Has]('test:delete', ['path', 'nested']);
 
@@ -284,16 +284,16 @@ describe('Josh', () => {
 
         expect(hasBefore).toBe(true);
 
-        const deleted = await josh[Method.DeleteMany](['test:deletemany']);
+        const result = await josh[Method.DeleteMany](['test:deletemany']);
 
-        expect(deleted).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
 
         const hasAfter = await josh[Method.Has]('test:deletemany');
 
         expect(hasAfter).toBe(false);
       });
 
-      test('GIVEN josh w/ multiple values at keys THEN deletes values at keys', async () => {
+      test('GIVEN josh w/ multiple result at keys THEN deletes result at keys', async () => {
         await josh[Method.Set]('test:deletemany', 'value');
         await josh[Method.Set]('test:deletemany2', 'value');
 
@@ -301,9 +301,9 @@ describe('Josh', () => {
 
         expect(hasBefore).toBe(true);
 
-        const deleted = await josh[Method.DeleteMany](['test:deletemany', 'test:deletemany2']);
+        const result = await josh[Method.DeleteMany](['test:deletemany', 'test:deletemany2']);
 
-        expect(deleted).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
 
         const hasAfter = (await josh[Method.Has]('test:deletemany')) && (await josh[Method.Has]('test:deletemany2'));
 
@@ -317,9 +317,9 @@ describe('Josh', () => {
 
         expect(sizeBefore).toBe(0);
 
-        const ensured = await josh[Method.Ensure]('test:ensure', 'defaultValue');
+        const result = await josh[Method.Ensure]('test:ensure', 'defaultValue');
 
-        expect(ensured).toBe('defaultValue');
+        expect(result).toBe('defaultValue');
 
         const sizeAfter = await josh[Method.Size]();
 
@@ -329,81 +329,81 @@ describe('Josh', () => {
       test('GIVEN josh w/ value at key THEN returns data as value at key', async () => {
         await josh[Method.Set]('test:ensure', 'value');
 
-        const ensured = await josh[Method.Ensure]('test:ensure', 'defaultValue');
+        const result = await josh[Method.Ensure]('test:ensure', 'defaultValue');
 
-        expect(ensured).toBe('value');
+        expect(result).toBe('value');
       });
     });
 
     describe(Method.Entries, () => {
       test('GIVEN josh w/o data THEN returns data w/o data', async () => {
-        const entries = await josh[Method.Entries]();
+        const result = await josh[Method.Entries]();
 
-        expect(entries).toEqual({});
+        expect(result).toEqual({});
       });
 
       test('GIVEN josh w/ data THEN returns data as Bulk.Object', async () => {
         await josh[Method.Set]('test:entries', 'value');
 
-        const entries = await josh.entries();
+        const result = await josh[Method.Entries]();
 
-        expect(entries).toEqual({ 'test:entries': 'value' });
+        expect(result).toEqual({ 'test:entries': 'value' });
       });
 
       test('GIVEN josh w/ data THEN returns data as Bulk.Object', async () => {
         await josh[Method.Set]('test:entries', 'value');
 
-        const entries = await josh.entries(Bulk.Object);
+        const result = await josh[Method.Entries](Bulk.Object);
 
-        expect(entries).toEqual({ 'test:entries': 'value' });
+        expect(result).toEqual({ 'test:entries': 'value' });
       });
 
       test('GIVEN josh w/ data THEN returns data as Bulk.Map', async () => {
         await josh[Method.Set]('test:entries', 'value');
 
-        const entries = await josh[Method.Entries](Bulk.Map);
+        const result = await josh[Method.Entries](Bulk.Map);
 
-        expect(entries).toBeInstanceOf(Map);
-        expect(Array.from(entries.entries())).toEqual([['test:entries', 'value']]);
+        expect(result).toBeInstanceOf(Map);
+        expect(Array.from(result.entries())).toEqual([['test:entries', 'value']]);
       });
 
       test('GIVEN josh w/ data THEN returns data as Bulk.OneDimensionalArray', async () => {
         await josh[Method.Set]('test:entries', 'value');
 
-        const entries = await josh[Method.Entries](Bulk.OneDimensionalArray);
+        const result = await josh[Method.Entries](Bulk.OneDimensionalArray);
 
-        expect(entries).toBeInstanceOf(Array);
-        expect(entries).toEqual(['value']);
+        expect(result).toBeInstanceOf(Array);
+        expect(result).toEqual(['value']);
       });
 
       test('GIVEN josh w/ data THEN returns data as Bulk.TwoDimensionalArray', async () => {
         await josh[Method.Set]('test:entries', 'value');
 
-        const entries = await josh[Method.Entries](Bulk.TwoDimensionalArray);
+        const result = await josh[Method.Entries](Bulk.TwoDimensionalArray);
 
-        expect(entries).toBeInstanceOf(Array);
-        expect(entries).toEqual([['test:entries', 'value']]);
+        expect(result).toBeInstanceOf(Array);
+        expect(result).toEqual([['test:entries', 'value']]);
       });
     });
 
     describe(Method.Every, () => {
       describe(Payload.Type.Hook, () => {
         test('GIVEN josh w/o data THEN returns true', async () => {
-          const everyed = await josh[Method.Every]((value) => value === 'value');
+          const result = await josh[Method.Every]((value) => value === 'value');
 
-          expect(everyed).toBe(true);
+          expect(result).toBe(true);
         });
 
         test('GIVEN josh w/ data w/o value THEN rejects', async () => {
-          const everyed = josh[Method.Every]('path', undefined);
+          const result = josh[Method.Every]('path', undefined);
 
-          await expect(everyed).rejects.toBeInstanceOf(JoshError);
+          await expect(result).rejects.toBeInstanceOf(JoshError);
         });
 
         test('GIVEN josh w/ data w/ invalid primitive THEN rejects', async () => {
-          const everyed = josh[Method.Every]('path', null);
+          const result = josh[Method.Every]('path', null);
 
-          await expect(everyed).rejects.toBeInstanceOf(JoshError);
+          await expect(result).rejects.toBeInstanceOf(JoshError);
         });
 
         test('GIVEN josh w/ data THEN returns true', async () => {
@@ -412,8 +412,8 @@ describe('Josh', () => {
             ['secondKey', 'value']
           ]);
 
-          const everyed = await josh[Method.Every]((value) => value === 'value');
-          expect(everyed).toBe(true);
+          const result = await josh[Method.Every]((value) => value === 'value');
+          expect(result).toBe(true);
         });
 
         test('GIVEN josh w/ unique data THEN returns false', async () => {
@@ -422,83 +422,83 @@ describe('Josh', () => {
             ['secondKey', 'not value']
           ]);
 
-          const everyed = await josh[Method.Every]((value) => value === 'value');
-          expect(everyed).toBe(false);
+          const result = await josh[Method.Every]((value) => value === 'value');
+          expect(result).toBe(false);
         });
       });
 
       describe(Payload.Type.Value, () => {
         test('GIVEN josh w/o data THEN returns true', async () => {
-          const everyed = await josh[Method.Every]('path', 'value');
+          const result = await josh[Method.Every]('path', 'value');
 
-          expect(everyed).toBe(true);
+          expect(result).toBe(true);
         });
 
-        // test('GIVEN josh w/ data THEN returns true', async () => {
-        //   await josh[Method.SetMany]([
-        //     ['firstKey', 'value'],
-        //     ['secondKey', 'value']
-        //   ]);
+        test('GIVEN josh w/ data w/o path THEN returns true', async () => {
+          await josh[Method.SetMany]([
+            ['firstKey', 'value'],
+            ['secondKey', 'value']
+          ]);
 
-        //   const everyed = await josh[Method.Every]([], 'value');
+          const result = await josh[Method.Every]([], 'value');
 
-        //   expect(everyed).toBe(true);
-        // }); // For Nova
+          expect(result).toBe(true);
+        });
 
-        // test('GIVEN josh w/ unique data THEN returns false', async () => {
-        //   await josh[Method.SetMany]([
-        //     ['firstKey', 'value'],
-        //     ['secondKey', 'not value']
-        //   ]);
+        test('GIVEN josh w/ data THEN returns true', async () => {
+          await josh[Method.SetMany]([
+            ['firstKey', { path: 'value' }],
+            ['secondKey', { path: 'value' }]
+          ]);
 
-        //   const everyed = await josh[Method.Every]([], 'value');
-        //   expect(everyed).toBe(false);
-        // }); // For Nova
+          const result = await josh[Method.Every](['path'], 'value');
+          expect(result).toBe(true);
+        });
       });
     });
 
     describe(Method.Filter, () => {
       describe(Payload.Type.Hook, () => {
         test('GIVEN josh w/o data THEN returns data w/o data from filter', async () => {
-          const filtered = await josh[Method.Filter]((value) => value === 'value');
+          const result = await josh[Method.Filter]((value) => value === 'value');
 
-          expect(filtered).toEqual({});
+          expect(result).toEqual({});
         });
 
         test('GIVEN josh w/ data w/o value THEN rejects', async () => {
-          const filtered = josh[Method.Filter]('path', undefined);
+          const result = josh[Method.Filter]('path', undefined);
 
-          await expect(filtered).rejects.toBeInstanceOf(JoshError);
+          await expect(result).rejects.toBeInstanceOf(JoshError);
         });
 
         test('GIVEN josh w/ data w/ invalid primitive THEN rejects', async () => {
-          const filtered = josh[Method.Filter]('path', null);
+          const result = josh[Method.Filter]('path', null);
 
-          await expect(filtered).rejects.toBeInstanceOf(JoshError);
+          await expect(result).rejects.toBeInstanceOf(JoshError);
         });
 
         test('GIVEN josh w/ data THEN returns data from filter', async () => {
           await josh[Method.Set]('test:filter', 'value');
 
-          const filtered = await josh[Method.Filter]((value) => value === 'value');
+          const result = await josh[Method.Filter]((value) => value === 'value');
 
-          expect(filtered).toEqual({ 'test:filter': 'value' });
+          expect(result).toEqual({ 'test:filter': 'value' });
         });
       });
 
       describe(Payload.Type.Value, () => {
         test('GIVEN josh w/o data THEN returns data w/o data from filter', async () => {
-          const filtered = await josh[Method.Filter]('path', 'value');
+          const result = await josh[Method.Filter]('path', 'value');
 
-          expect(filtered).toEqual({});
+          expect(result).toEqual({});
         });
 
         test('GIVEN josh w/ data THEN returns data from filter', async () => {
           await josh[Method.Set]('test:filter', 'value', 'path');
 
-          const filtered = await josh[Method.Filter]('path', 'value');
+          const result = await josh[Method.Filter]('path', 'value');
 
-          expect(filtered).toEqual({ 'test:filter': { path: 'value' } });
+          expect(result).toEqual({ 'test:filter': { path: 'value' } });
         });
       });
     });
@@ -506,70 +506,70 @@ describe('Josh', () => {
     describe(Method.Find, () => {
       describe(Payload.Type.Hook, () => {
         test('GIVEN josh w/o data THEN returns data w/o data from find', async () => {
-          const found = await josh[Method.Find]((value) => value === 'value');
+          const result = await josh[Method.Find]((value) => value === 'value');
 
-          expect(found).toEqual([null, null]);
+          expect(result).toEqual([null, null]);
         });
 
         test('GIVEN josh w/ data w/o value THEN rejects', async () => {
-          const found = josh[Method.Find]('path', undefined);
+          const result = josh[Method.Find]('path', undefined);
 
-          await expect(found).rejects.toBeInstanceOf(JoshError);
+          await expect(result).rejects.toBeInstanceOf(JoshError);
         });
 
         test('GIVEN josh w/ data w/ invalid primitive THEN rejects', async () => {
-          const found = josh[Method.Find]('path', null);
+          const result = josh[Method.Find]('path', null);
 
-          await expect(found).rejects.toBeInstanceOf(JoshError);
+          await expect(result).rejects.toBeInstanceOf(JoshError);
         });
 
         test('GIVEN josh w/ data THEN returns data from find', async () => {
           await josh[Method.Set]('test:find', 'value');
 
-          const found = await josh[Method.Find]((value) => value === 'value');
+          const result = await josh[Method.Find]((value) => value === 'value');
 
-          expect(found).toEqual(['test:find', 'value']);
+          expect(result).toEqual(['test:find', 'value']);
         });
       });
 
       describe(Payload.Type.Value, () => {
         test('GIVEN josh w/o data THEN returns data w/o data from find', async () => {
-          const found = await josh[Method.Find]('path', 'value');
+          const result = await josh[Method.Find]('path', 'value');
 
-          expect(found).toEqual([null, null]);
+          expect(result).toEqual([null, null]);
         });
 
         test('GIVEN josh w/ data THEN returns data w/o data from find', async () => {
           await josh[Method.Set]('test:find', 'value', 'path');
 
-          const found = await josh[Method.Find]('path', 'value');
+          const result = await josh[Method.Find]('path', 'value');
 
-          expect(found).toEqual(['test:find', { path: 'value' }]);
+          expect(result).toEqual(['test:find', { path: 'value' }]);
         });
       });
     });
 
     describe(Method.Get, () => {
       test('GIVEN josh w/o data THEN returns data w/o data from get', async () => {
-        const got = await josh[Method.Get]('test:get');
+        const result = await josh[Method.Get]('test:get');
 
-        expect(got).toBeNull();
+        expect(result).toBeNull();
       });
 
       test('GIVEN josh w/ value at key THEN returns data from get at key', async () => {
         await josh[Method.Set]('test:get', 'value');
 
-        const got = await josh[Method.Get]('test:get');
+        const result = await josh[Method.Get]('test:get');
 
-        expect(got).toBe('value');
+        expect(result).toBe('value');
       });
 
       test('GIVEN josh w/ value at path THEN returns data from get at path', async () => {
         await josh[Method.Set]('test:get', 'value', 'path');
 
-        const got = await josh[Method.Get]('test:get', 'path');
+        const result = await josh[Method.Get]('test:get', 'path');
 
-        expect(got).toBe('value');
+        expect(result).toBe('value');
       });
     });
 
@@ -577,45 +577,44 @@ describe('Josh', () => {
       test('GIVEN josh w/o data THEN returns data w/o data from getMany', async () => {
         await josh[Method.Set]('test:getMany', null);
 
-        // don't judge the naming
-        const manyGot = await josh[Method.GetMany](['test:getMany']);
+        const result = await josh[Method.GetMany](['test:getMany']);
 
-        expect(manyGot).toEqual({ 'test:getMany': null });
+        expect(result).toEqual({ 'test:getMany': null });
       });
 
       test('GIVEN josh w/ data THEN returns data as Bulk.Object', async () => {
         await josh[Method.Set]('test:getMany', 'value');
 
-        const gotMany = await josh[Method.GetMany](['test:getMany']);
+        const result = await josh[Method.GetMany](['test:getMany']);
 
-        expect(gotMany).toEqual({ 'test:getMany': 'value' });
+        expect(result).toEqual({ 'test:getMany': 'value' });
       });
 
       test('GIVEN josh w/ data THEN returns data as Bulk.Map', async () => {
         await josh[Method.Set]('test:getMany', 'value');
 
-        const gotMany = await josh[Method.GetMany](['test:getMany'], Bulk.Map);
+        const result = await josh[Method.GetMany](['test:getMany'], Bulk.Map);
 
-        expect(gotMany).toBeInstanceOf(Map);
-        expect(Array.from(gotMany.entries())).toEqual([['test:getMany', 'value']]);
+        expect(result).toBeInstanceOf(Map);
+        expect(Array.from(result.entries())).toEqual([['test:getMany', 'value']]);
       });
 
       test('GIVEN josh w/ data THEN returns data as Bulk.OneDimensionalArray', async () => {
         await josh[Method.Set]('test:getMany', 'value');
 
-        const gotMany = await josh[Method.GetMany](['test:getMany'], Bulk.OneDimensionalArray);
+        const result = await josh[Method.GetMany](['test:getMany'], Bulk.OneDimensionalArray);
 
-        expect(gotMany).toBeInstanceOf(Array);
-        expect(gotMany).toEqual(['value']);
+        expect(result).toBeInstanceOf(Array);
+        expect(result).toEqual(['value']);
       });
 
       test('GIVEN josh w/ data THEN returns data as Bulk.OneDimensionalArray', async () => {
         await josh[Method.Set]('test:getMany', 'value');
 
-        const gotMany = await josh[Method.GetMany](['test:getMany'], Bulk.TwoDimensionalArray);
+        const result = await josh[Method.GetMany](['test:getMany'], Bulk.TwoDimensionalArray);
 
-        expect(gotMany).toBeInstanceOf(Array);
-        expect(gotMany).toEqual([['test:getMany', 'value']]);
+        expect(result).toBeInstanceOf(Array);
+        expect(result).toEqual([['test:getMany', 'value']]);
       });
     });
 
@@ -923,9 +922,9 @@ describe('Josh', () => {
 
     describe(Method.Remove, () => {
       test('GIVEN josh w/ data w/ invalid primitive THEN rejects', async () => {
-        const removed = josh[Method.Remove]('path', null);
+        const result = josh[Method.Remove]('path', null);
 
-        await expect(removed).rejects.toBeInstanceOf(JoshError);
+        await expect(result).rejects.toBeInstanceOf(JoshError);
       });
 
       describe(Payload.Type.Hook, () => {
@@ -936,9 +935,9 @@ describe('Josh', () => {
 
           expect(getBefore).toEqual(['value']);
 
-          const removed = await josh[Method.Remove]('test:remove', (value: string) => value === 'value', []);
+          const result = await josh[Method.Remove]('test:remove', (value: string) => value === 'value', []);
 
-          expect(removed).toBeInstanceOf(Josh);
+          expect(result).toBeInstanceOf(Josh);
 
           const getAfter = await josh[Method.Get]('test:remove');
 
@@ -954,9 +953,9 @@ describe('Josh', () => {
 
           expect(getBefore).toEqual(['value']);
 
-          const removed = await josh[Method.Remove]('test:remove', 'value', []);
+          const result = await josh[Method.Remove]('test:remove', 'value', []);
 
-          expect(removed).toBeInstanceOf(Josh);
+          expect(result).toBeInstanceOf(Josh);
 
           const getAfter = await josh[Method.Get]('test:remove');
 
@@ -971,9 +970,9 @@ describe('Josh', () => {
 
         expect(hasBefore).toBe(false);
 
-        const set = await josh[Method.Set]('test:set', 'value');
+        const result = await josh[Method.Set]('test:set', 'value');
 
-        expect(set).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
 
         const hasAfter = await josh[Method.Has]('test:set');
 
@@ -985,9 +984,9 @@ describe('Josh', () => {
 
         expect(hasBefore).toBe(false);
 
-        const set = await josh[Method.Set]('test:set', 'value', 'path');
+        const result = await josh[Method.Set]('test:set', 'value', 'path');
 
-        expect(set).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
 
         const hasAfter = await josh[Method.Has]('test:set', ['path']);
 
@@ -1001,12 +1000,12 @@ describe('Josh', () => {
 
         expect(hasBefore).toBe(false);
 
-        const setMany = await josh[Method.SetMany]([
+        const result = await josh[Method.SetMany]([
           [{ key: 'test:setMany', path: [] }, 'value'],
           [{ key: 'test:setMany2' }, 'value']
         ]);
 
-        expect(setMany).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
 
         const entries = await josh[Method.Entries]();
 
@@ -1016,9 +1015,9 @@ describe('Josh', () => {
       test('GIVEN josh w/ data THEN returns data AND does not set value at key', async () => {
         await josh[Method.Set]('test:setMany', 'value');
 
-        const setMany = await josh[Method.SetMany]([[{ key: 'test:setMany', path: [] }, 'value-overwritten']], false);
+        const result = await josh[Method.SetMany]([[{ key: 'test:setMany', path: [] }, 'value-overwritten']], false);
 
-        expect(setMany).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
 
         const entries = await josh[Method.Entries]();
 
@@ -1028,63 +1027,63 @@ describe('Josh', () => {
 
     describe(Method.Size, () => {
       test('GIVEN josh w/o data THEN returns 0', async () => {
-        const size = await josh[Method.Size]();
+        const result = await josh[Method.Size]();
 
-        expect(size).toBe(0);
+        expect(result).toBe(0);
       });
 
       test('GIVEN josh w/ data THEN returns 1)', async () => {
         await josh[Method.Set]('test:size', 'value');
 
-        const size = await josh[Method.Size]();
+        const result = await josh[Method.Size]();
 
-        expect(size).toBe(1);
+        expect(result).toBe(1);
       });
     });
 
     describe(Method.Some, () => {
       describe(Payload.Type.Hook, () => {
         test('GIVEN josh w/o data THEN returns false', async () => {
-          const some = await josh[Method.Some]((value) => value === 'value');
+          const result = await josh[Method.Some]((value) => value === 'value');
 
-          expect(some).toBe(false);
+          expect(result).toBe(false);
         });
 
         test('GIVEN josh w/ data w/o value THEN rejects', async () => {
-          const some = josh[Method.Some]('path', undefined);
+          const result = josh[Method.Some]('path', undefined);
 
-          await expect(some).rejects.toBeInstanceOf(JoshError);
+          await expect(result).rejects.toBeInstanceOf(JoshError);
         });
 
         test('GIVEN josh w/ data w/ invalid primitive THEN rejects', async () => {
-          const some = josh[Method.Some]('path', null);
+          const result = josh[Method.Some]('path', null);
 
-          await expect(some).rejects.toBeInstanceOf(JoshError);
+          await expect(result).rejects.toBeInstanceOf(JoshError);
         });
 
-        // test('GIVEN josh w/ data THEN returns true', async () => {
-        //   await josh[Method.Set]('test:some', 'value');
+        test('GIVEN josh w/ data THEN returns true', async () => {
+          await josh[Method.Set]('test:some', { path: 'value' });
 
-        //   const some = await josh[Method.Some]([], 'value');
+          const result = await josh[Method.Some](['path'], 'value');
 
-        //   expect(some).toBe(true);
-        // }); // For Nova
+          expect(result).toBe(true);
+        });
       });
 
       describe(Payload.Type.Value, () => {
         test('GIVEN josh w/o data THEN returns false', async () => {
-          const some = await josh[Method.Some]((value) => value === 'value');
+          const result = await josh[Method.Some]((value) => value === 'value');
 
-          expect(some).toBe(false);
+          expect(result).toBe(false);
         });
 
         test('GIVEN josh w/ data THEN returns true', async () => {
           await josh[Method.Set]('test:some', 'value');
 
           try {
-            const some = await josh[Method.Some]([], 'value');
+            const result = await josh[Method.Some]([], 'value');
 
-            expect(some).toBe(true);
+            expect(result).toBe(true);
           } catch (err) {
             console.log(err);
           }
@@ -1096,42 +1095,42 @@ describe('Josh', () => {
       test('GIVEN josh w/ data at key THEN returns data AND updates value at key', async () => {
         await josh[Method.Set]('test:update', 'value');
 
-        const updated = await josh[Method.Update]('test:update', (value) => value);
+        const result = await josh[Method.Update]('test:update', (value) => value);
 
-        expect(updated).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
       });
 
       test('GIVEN josh w/ data at path THEN returns data AND updates value at path', async () => {
         await josh[Method.Set]('test:update', 'value', 'path');
 
-        const updated = await josh[Method.Update]('test:update', (value) => value);
+        const result = await josh[Method.Update]('test:update', (value) => value);
 
-        expect(updated).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
       });
     });
 
     describe(Method.Values, () => {
       test('GIVEN josh w/o data THEN returns data w/o data', async () => {
-        const values = await josh[Method.Values]();
+        const result = await josh[Method.Values]();
 
-        expect(values).toEqual([]);
+        expect(result).toEqual([]);
       });
 
       test('GIVEN josh w/ data THEN returns data', async () => {
         await josh[Method.Set]('test:values', 'value');
 
-        const values = await josh[Method.Values]();
+        const result = await josh[Method.Values]();
 
-        expect(values).toEqual(['value']);
+        expect(result).toEqual(['value']);
       });
     });
 
     describe(Method.Each, () => {
       test('GIVEN josh w/o data THEN loops 0 times', async () => {
         const mockCallback = jest.fn(() => true);
-        const eached = await josh[Method.Each](mockCallback);
+        const result = await josh[Method.Each](mockCallback);
 
-        expect(eached).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
         expect(mockCallback.mock.calls.length).toBe(0);
       });
 
@@ -1142,9 +1141,9 @@ describe('Josh', () => {
         await josh[Method.Set]('test:each2', 'value2');
         await josh[Method.Set]('test:each3', 'value3');
 
-        const eached = await josh[Method.Each](mockCallback);
+        const result = await josh[Method.Each](mockCallback);
 
-        expect(eached).toBeInstanceOf(Josh);
+        expect(result).toBeInstanceOf(Josh);
         expect(mockCallback.mock.calls.length).toBe(3);
         expect(mockCallback.mock.calls).toContainEqual(['value1', 'test:each1']);
         expect(mockCallback.mock.calls).toContainEqual(['value2', 'test:each2']);
@@ -1160,8 +1159,8 @@ describe('Josh', () => {
 
         await josh.import({ json, clear: true, overwrite: true });
 
-        const entries = await josh.entries();
-        expect(entries).toEqual({ 'test:import': 'value' });
+        const result = await josh[Method.Entries]();
+        expect(result).toEqual({ 'test:import': 'value' });
       });
 
       test('GIVEN josh w/ data THEN exports data THEN imports', async () => {
@@ -1173,8 +1172,8 @@ describe('Josh', () => {
 
         await josh.import({ json, overwrite: false });
 
-        const entries = await josh.entries();
-        expect(entries).toEqual({ 'test:import': 'real-value' });
+        const result = await josh[Method.Entries]();
+        expect(result).toEqual({ 'test:import': 'real-value' });
       });
 
       test('GIVEN fake legacy data THEN imports and converts', async () => {
@@ -1187,8 +1186,8 @@ describe('Josh', () => {
 
         await josh.import({ json: legacy });
 
-        const entries = await josh.entries();
-        expect(entries).toEqual({ foo: 'bar' });
+        const result = await josh[Method.Entries]();
+        expect(result).toEqual({ foo: 'bar' });
       });
     });
 
@@ -1206,13 +1205,13 @@ describe('Josh', () => {
 
     describe('multi', () => {
       test("GIVEN josh w/ data THEN multi's data", async () => {
-        const multi = await Josh.multi(['foo', 'bar']);
+        const result = await Josh.multi(['foo', 'bar']);
 
-        expect(multi.foo).toBeInstanceOf(Josh);
-        expect(multi.bar).toBeInstanceOf(Josh);
+        expect(result.foo).toBeInstanceOf(Josh);
+        expect(result.bar).toBeInstanceOf(Josh);
 
-        expect(multi.foo.name).toBe('foo');
-        expect(multi.bar.name).toBe('bar');
+        expect(result.foo.name).toBe('foo');
+        expect(result.bar.name).toBe('bar');
       });
     });
   });
