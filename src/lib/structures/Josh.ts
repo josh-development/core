@@ -729,6 +729,22 @@ export class Josh<StoredValue = unknown> {
   }
 
   /**
+   * Get a value using a key.
+   * Get a value using a key.
+   * @since 2.0.0
+   * @param key A key at which a value is.
+   * @returns The value gotten or null.
+   *
+   * @example
+   * ```javascript
+   * await josh.set('key', 'value');
+   *
+   * await josh.get('key'); // 'value'
+   * ```
+   */
+  public async get(key: string): Promise<StoredValue | null>;
+
+  /**
    * Get a value using a key and/or path.
    * @since 2.0.0
    * @param key A key at which a value is.
@@ -754,6 +770,7 @@ export class Josh<StoredValue = unknown> {
    * await josh.get('key', ['path']); // 'value'
    * ```
    */
+  public async get<Value = StoredValue>(key: string, path?: Path): Promise<Value | null>;
   public async get<Value = StoredValue>(key: string, path: Path = []): Promise<Value | null> {
     path = this.resolvePath(path);
 
