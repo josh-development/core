@@ -1015,15 +1015,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/provider@npm:^1.0.0":
-  version: 1.1.0
-  resolution: "@joshdb/provider@npm:1.1.0"
-  dependencies:
-    "@sapphire/utilities": ^3.6.2
-  checksum: 41778221d905574e7f3752ec68a91ca47349f573038fd1a9f439ebcdf6d34c8292a0f94c9453000bd03db010ff65f124ed1f62399d7a2754e67f235b3e68fd26
-  languageName: node
-  linkType: hard
-
 "@jridgewell/gen-mapping@npm:^0.1.0":
   version: 0.1.1
   resolution: "@jridgewell/gen-mapping@npm:0.1.1"
