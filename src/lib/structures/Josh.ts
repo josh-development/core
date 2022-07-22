@@ -544,7 +544,7 @@ export class Josh<StoredValue = unknown> {
     if (isFunction(pathOrHook)) payload.hook = pathOrHook;
     else {
       payload.path = this.resolvePath(pathOrHook);
-      payload.value;
+      payload.value = value;
     }
 
     for (const middleware of this.middlewares.array()) await middleware.run(payload);
