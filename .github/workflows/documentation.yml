@@ -94,7 +94,7 @@ jobs:
           cd out
 
           git remote set-url origin "https://${GITHUB_TOKEN}:x-oauth-basic@github.com/josh-development/docs.git";
-          git config --local "${GITHUB_USER}";
+          git config --local user.name "${GITHUB_USER}";
           git config --local user.email "${GITHUB_EMAIL}";
 
           git add .
