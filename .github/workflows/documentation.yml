@@ -93,8 +93,9 @@ jobs:
         run: |
           cd out
 
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git remote set-url origin "https://${GITHUB_TOKEN}:x-oauth-basic@github.com/josh-development/docs.git";
+          git config --local "${GITHUB_USER}";
+          git config --local user.email "${GITHUB_EMAIL}";
 
           git add .
           git commit -m "docs(core): build for ${TYPE} ${NAME}: ${SHA}" || true
