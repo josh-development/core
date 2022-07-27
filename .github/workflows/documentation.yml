@@ -86,6 +86,10 @@ jobs:
           mv docs/api.json out/core/${NAME}.json
 
       - name: Commit & Push
+        env:
+          GITHUB_USER: github-actions[bot]
+          GITHUB_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd out
 
