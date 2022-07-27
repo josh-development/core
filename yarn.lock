@@ -989,8 +989,8 @@ __metadata:
     rollup-plugin-cleaner: ^1.0.0
     rollup-plugin-typescript2: ^0.32.1
     ts-jest: ^28.0.7
-    typedoc: ^0.22.17
-    typedoc-json-parser: ^1.0.0
+    typedoc: ^0.23.9
+    typedoc-json-parser: ^2.0.1
     typescript: ^4.7.4
   languageName: unknown
   linkType: soft
@@ -2244,7 +2244,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^9.3.0":
+"commander@npm:^9.3.0, commander@npm:^9.4.0":
   version: 9.4.0
   resolution: "commander@npm:9.4.0"
   checksum: a322de584a6ccd1ea83c24f6a660e52d16ffbe2613fcfbb8d2cc68bc9dec637492456d754fe8bb5b039ad843ed8e04fb0b107e581a75f62cde9e1a0ab1546e09
@@ -3203,7 +3203,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^8.0.1, glob@npm:^8.0.3":
+"glob@npm:^8.0.1":
   version: 8.0.3
   resolution: "glob@npm:8.0.3"
   dependencies:
@@ -6155,35 +6155,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc-json-parser@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "typedoc-json-parser@npm:1.0.0"
+"typedoc-json-parser@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "typedoc-json-parser@npm:2.0.1"
   dependencies:
     "@favware/colorette-spinner": ^1.0.0
-    colorette: ^2.0.17
-    commander: ^9.3.0
+    colorette: ^2.0.19
+    commander: ^9.4.0
     js-yaml: ^4.1.0
-    typedoc: ^0.22.17
+    typedoc: ^0.23.9
   bin:
     typedoc-json-parser: ./dist/bin/index.js
-  checksum: 287cc526265927d944f936586c4d9c4f46d5d0b88da96f05c59c634ad10f1773ff17829f094ce5267e4b9ee832b4c334ccbfa1cb798aaa0351b19d56c8e5f800
+  checksum: 28d40f841759d4b15ef12a1c23046013605a7358650ae9ef7fb8828f36eac5742d5deee7c90a6fe340001e797160ca392755903ce26cf8fc338aa6084b77910b
   languageName: node
   linkType: hard
 
-"typedoc@npm:^0.22.17":
-  version: 0.22.17
-  resolution: "typedoc@npm:0.22.17"
+"typedoc@npm:^0.23.9":
+  version: 0.23.9
+  resolution: "typedoc@npm:0.23.9"
   dependencies:
-    glob: ^8.0.3
     lunr: ^2.3.9
     marked: ^4.0.16
     minimatch: ^5.1.0
     shiki: ^0.10.1
   peerDependencies:
-    typescript: 4.0.x || 4.1.x || 4.2.x || 4.3.x || 4.4.x || 4.5.x || 4.6.x || 4.7.x
+    typescript: 4.6.x || 4.7.x
   bin:
     typedoc: bin/typedoc
-  checksum: 3a2f492477989855fa43afc0ebfb84dca819436ec5c868ca175cb02485c6347c04dbb2d11669a8be04fc6860a8f3d29d124300b5718ba17174622ace29a0276a
+  checksum: 3b1eac3c4acfe7390f23ff35bea3cd694762b465c53605b159cf4abbb8e50b22f835d52a7f20c71b9219c79b6ab093346d671ebba67b922782f8658375a65347
   languageName: node
   linkType: hard
 

@@ -29,6 +29,7 @@
     "build": "rollup -c rollup.config.ts",
     "bump": "cliff-jumper",
     "check-update": "cliff-jumper --dry-run",
+    "update": "yarn upgrade-interactive",
     "postinstall": "husky install .github/husky",
     "prepack": "yarn build && pinst --disable",
     "postpack": "pinst --enable"
@@ -67,8 +68,8 @@
     "rollup-plugin-cleaner": "^1.0.0",
     "rollup-plugin-typescript2": "^0.32.1",
     "ts-jest": "^28.0.7",
-    "typedoc": "^0.22.17",
-    "typedoc-json-parser": "^1.0.0",
+    "typedoc": "^0.23.9",
+    "typedoc-json-parser": "^2.0.1",
     "typescript": "^4.7.4"
   },
   "repository": {
