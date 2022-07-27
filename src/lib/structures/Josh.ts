@@ -133,7 +133,7 @@ export class Josh<StoredValue = unknown> {
   public use<P extends Payload>(options: Josh.UseMiddlewareOptions, hook: (payload: P) => Awaitable<P>): this;
 
   /**
-   * Adds a middleware by providing a {@link Middleware} instance.
+   * Adds a middleware by providing a Middleware instance.
    * @since 2.0.0
    * @param instance The middleware instance.
    * @returns The {@link Josh} instance.
