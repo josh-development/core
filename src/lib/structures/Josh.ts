@@ -100,7 +100,7 @@ export class Josh<StoredValue = unknown> {
   /**
    * The initialization method for Josh.
    * @since 2.0.0
-   * @returns The {@link Josh} instance.
+   * @returns The `Josh` instance.
    *
    * @example
    * ```javascript
