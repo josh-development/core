@@ -1835,7 +1835,7 @@ export namespace Josh {
     middlewares?: Middleware<StoredValue>[];
 
     /**
-     * The context data for the {@link AutoEnsureMiddleware}
+     * The context data for the auto-ensure middleware
      * @since 2.0.0
      */
     autoEnsure?: AutoEnsureMiddleware.ContextData<StoredValue>;
