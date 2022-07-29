@@ -1,8 +1,9 @@
 {
   "extends": "@sapphire",
   "rules": {
-    "@typescript-eslint/no-namespace": "off",
     "@typescript-eslint/class-literal-property-style": "off",
+    "@typescript-eslint/dot-notation": ["error", { "allowPrivateClassPropertyAccess": true, "allowProtectedClassPropertyAccess": true }],
+    "@typescript-eslint/no-namespace": "off",
     "curly": ["error", "multi-line"],
     "no-lone-blocks": "error",
     "no-tabs": "error",

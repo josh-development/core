@@ -4,7 +4,7 @@
   "description": "JavaScript Object Storage Helper",
   "author": "Évelyne Lachance <eslachance@gmail.com> (https://evie.codes/)",
   "contributors": [
-    "Hezekiah Hendry <real.shadow.nova@gmail.com>",
+    "Hezekiah Hendry <hezekiah.hendry@gmail.com>",
     "DanCodes <dan@dancodes.online> (https://dancodes.online/)",
     "Wilson (https://wilson.antti.codes/)"
   ],
@@ -20,7 +20,7 @@
     "types": "./dist/index.d.ts"
   },
   "scripts": {
-    "clean": "rimraf dist node_modules/.cache",
+    "clean": "rimraf coverage dist docs node_modules/.cache",
     "docs": "typedoc-json-parser",
     "lint": "eslint src tests --ext ts --fix",
     "format": "prettier --write {src,tests}/**/*.ts",
@@ -88,7 +88,7 @@
   "bugs": {
     "url": "https://github.com/josh-development/core/issues"
   },
-  "homepage": "https://github.com/josh-development/core",
+  "homepage": "https://josh.evie.dev",
   "publishConfig": {
     "access": "public"
   },

@@ -3,11 +3,11 @@ node_modules/
 .vs/
 
 # Ignore build artifacts
-build/
-coverage/
 dist/
+build/
 docs/
-
+coverage/
+.turbo/
 
 # Ignore heapsnapshot and log files
 *.heapsnapshot
@@ -22,3 +22,9 @@ gh
 # Ignore Yarn files
 .yarn/install-state.gz
 .yarn/build-state.yml
+
+# Ignore changelogs
+CHANGELOG.md
+
+# Ignore toml files
+*.toml

@@ -84,6 +84,7 @@ jobs:
         run: |
           mkdir -p out/core
           mv docs/api.json out/core/${NAME}.json
+
       - name: Commit & Push
         run: |
           cd out

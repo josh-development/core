@@ -1,2 +1,24 @@
+# Ignore a blackhole
 node_modules/
+.vs/
+
+# Ignore build artifacts
 dist/
+build/
+docs/
+coverage/
+.turbo/
+
+# Ignore heapsnapshot and log files
+*.heapsnapshot
+*.log
+
+# Ignore package locks
+package-lock.json
+
+# Ignore the GH cli downloaded by workflows
+gh
+
+# Ignore Yarn files
+.yarn/install-state.gz
+.yarn/build-state.yml

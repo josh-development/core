@@ -36,7 +36,6 @@ describe('Josh', () => {
     test('GIVEN class Josh w/ middlewares THEN returns instance', () => {
       const josh = new Josh<{ test: boolean }>({
         name: 'test:name',
-        // For nova, this seems to be the only way to make sure the middleware is allowed
         middlewares: [new AutoEnsureMiddleware({ defaultValue: { test: false } }) as unknown as Middleware<{ test: boolean }>]
       });
 

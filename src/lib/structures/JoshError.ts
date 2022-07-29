@@ -1,5 +1,5 @@
 /**
- * The base class for errors in {@link Josh}
+ * The base class for errors in `Josh`
  * @since 2.0.0
  */
 export class JoshError extends Error {
@@ -19,7 +19,7 @@ export class JoshError extends Error {
 }
 
 /**
- * The options for {@link JoshError}
+ * The options for `JoshError`
  * @since 2.0.0
  */
 export interface JoshErrorOptions {

@@ -81,14 +81,14 @@ export class Josh<StoredValue = unknown> {
     this.name = name;
     this.provider = provider ?? new MapProvider<StoredValue>();
 
-    if (!(this.provider instanceof JoshProvider)) emitWarning(this.error(Josh.Identifiers.InvalidProvider).message);
+    if (!(this.provider instanceof JoshProvider)) emitWarning(this.resolveIdentifier(Josh.Identifiers.InvalidProvider));
 
     this.middlewares = new MiddlewareStore<StoredValue>({ provider: this.provider });
 
     if (autoEnsure !== undefined) this.use(new AutoEnsureMiddleware<StoredValue>(autoEnsure));
     if (middlewares !== undefined && Array.isArray(middlewares)) {
       for (const middleware of middlewares.filter((middleware) => {
-        if (!(middleware instanceof Middleware)) emitWarning(this.error(Josh.Identifiers.InvalidMiddleware).message);
+        if (!(middleware instanceof Middleware)) emitWarning(this.resolveIdentifier(Josh.Identifiers.InvalidMiddleware));
 
         return middleware instanceof Middleware;
       }) as Middleware<NonNullObject, StoredValue>[]) {
@@ -341,6 +341,11 @@ export class Josh<StoredValue = unknown> {
     return this;
   }
 
+  /**
+   * Deletes many keys.
+   * @param keys The keys to delete.
+   * @returns The {@link Josh} instance.
+   */
   public async deleteMany(keys: string[]): Promise<this> {
     let payload: Payloads.DeleteMany = { method: Method.DeleteMany, trigger: Trigger.PreProvider, keys };
 
@@ -362,6 +367,7 @@ export class Josh<StoredValue = unknown> {
   /**
    * Loop over every key-value pair in this {@link Josh} and execute `hook` on it.
    * @param hook The hook function to execute with each key.
+   * @returns The {@link Josh} instance.
    */
   public async each(hook: Payload.HookWithKey<StoredValue>): Promise<this> {
     let payload: Payloads.Each<StoredValue> = { method: Method.Each, trigger: Trigger.PreProvider, hook };
@@ -656,7 +662,7 @@ export class Josh<StoredValue = unknown> {
    * @since 2.0.0
    * @param path A path to the value for equality check.
    * @param value The value to check equality.
-   * @returns The found value or null.
+   * @returns The found key/value pair or a null/null pair.
    *
    * @example
    * ```javascript
@@ -676,7 +682,7 @@ export class Josh<StoredValue = unknown> {
    * Find a stored value using a hook function.
    * @since 2.0.0
    * @param hook The hook to check equality.
-   * @returns The found value or null.
+   * @returns The found key/value pair or null/null pair.
    *
    * @example
    * ```javascript
@@ -729,7 +735,6 @@ export class Josh<StoredValue = unknown> {
   }
 
   /**
-   * Get a value using a key.
    * Get a value using a key.
    * @since 2.0.0
    * @param key A key at which a value is.
@@ -1232,6 +1237,18 @@ export class Josh<StoredValue = unknown> {
    * Gets random value(s).
    * @param options The options for getting random values.
    * @returns The random value(s) or null.
+   *
+   * @example
+   * ```javascript
+   * await josh.random(); // null
+   * ```
+   *
+   * @example
+   * ```javascript
+   * await josh.set('key', 'value');
+   *
+   * await josh.random(); // ['value']
+   * ```
    */
   public async random(options?: Josh.RandomOptions): Promise<StoredValue[] | null> {
     const { count = 1, duplicates = true } = options ?? {};
@@ -1272,7 +1289,7 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key', 'value');
    *
-   * await josh.randomKey(); // null
+   * await josh.randomKey(); // ['key']
    * ```
    */
   public async randomKey(options?: Josh.RandomOptions): Promise<string[] | null> {
@@ -1639,7 +1656,8 @@ export class Josh<StoredValue = unknown> {
     };
   }
 
-  /** A private method for converting bulk data.
+  /**
+   * Convert bulk data.
    * @since 2.0.0
    * @private
    * @param data The data to convert.
@@ -1668,6 +1686,13 @@ export class Josh<StoredValue = unknown> {
     }
   }
 
+  /**
+   * Resolves an identifier or options to an error.
+   * @since 2.0.0
+   * @param options The options for resolving the error.
+   * @param metadata The metadata for the error.
+   * @returns The resolved error.
+   */
   private error(options: string | JoshErrorOptions, metadata: Record<string, unknown> = {}): JoshError {
     if (typeof options === 'string') return new JoshError({ identifier: options, message: this.resolveIdentifier(options, metadata) });
     /* istanbul ignore next: This doesn't happen */
@@ -1676,19 +1701,35 @@ export class Josh<StoredValue = unknown> {
     return new JoshError({ ...options, message: this.resolveIdentifier(options.identifier, metadata) });
   }
 
+  /**
+   * Convert a legacy export json object to a new export json object.
+   * @param json
+   * @returns
+   */
   private convertLegacyExportJSON<StoredValue>(json: Josh.LegacyExportJSON<StoredValue>): Josh.ExportJSON<StoredValue> {
     const { name, version, exportDate, keys } = json;
 
     return { name, version, exportedTimestamp: exportDate, entries: keys.map<[string, StoredValue]>(({ key, value }) => [key, value]) };
   }
 
+  /**
+   * Check if a json object is a legacy export json object.
+   * @param json The json object to check.
+   * @returns Whether the json object is a legacy export json object.
+   */
   private isLegacyExportJSON<StoredValue>(
     json: Josh.ExportJSON<StoredValue> | Josh.LegacyExportJSON<StoredValue>
   ): json is Josh.LegacyExportJSON<StoredValue> {
     return 'exportDate' in json && 'keys' in json;
   }
 
-  private resolveIdentifier(identifier: string, metadata: Record<string, unknown>): string {
+  /**
+   * Resolve an identifier.
+   * @param identifier The identifier to resolve.
+   * @param metadata The metadata for the identifier.
+   * @returns The resolved identifier.
+   */
+  private resolveIdentifier(identifier: string, metadata: Record<string, unknown> = {}): string {
     const result = resolveCommonIdentifier(identifier, metadata);
 
     if (result !== null) return result;
@@ -1717,6 +1758,11 @@ export class Josh<StoredValue = unknown> {
     throw new Error(`Unknown identifier: ${identifier}`);
   }
 
+  /**
+   * Resolves a key and/or path for universal use.
+   * @param keyPath The key or path to resolve.
+   * @returns The resolved key and path.
+   */
   private resolveKeyPath(keyPath: KeyPath): [string, string[]] {
     if (typeof keyPath === 'object') return [keyPath.key, this.resolvePath(keyPath.path ?? [])];
 
@@ -1725,6 +1771,11 @@ export class Josh<StoredValue = unknown> {
     return [key, path];
   }
 
+  /**
+   * Resolves a path for universal use.
+   * @param path The path to resolve.
+   * @returns The resolved path.
+   */
   private resolvePath(path: Path): string[] {
     return Array.isArray(path) ? path : path.replace(/\[/g, '.').replace(/\]/g, '').split('.').filter(Boolean);
   }
@@ -1744,7 +1795,7 @@ export class Josh<StoredValue = unknown> {
    * @since 2.0.0
    * @param names The names to give each instance of {@link Josh}
    * @param options The options to give all the instances.
-   * @returns
+   * @returns The created instances.
    */
   public static multi<Instances extends Record<string, Josh> = Record<string, Josh>>(
     names: string[],
@@ -1784,7 +1835,7 @@ export namespace Josh {
     middlewares?: Middleware<StoredValue>[];
 
     /**
-     * The value for CoreAutoEnsure to use.
+     * The context data for the {@link AutoEnsureMiddleware}
      * @since 2.0.0
      */
     autoEnsure?: AutoEnsureMiddleware.ContextData<StoredValue>;

@@ -2,7 +2,7 @@
 
 ![Josh Logo](https://evie.codes/josh-light.png)
 
-# JOSH
+# @joshdb/core
 
 **JavaScript Object Storage Helper**
 
@@ -23,21 +23,20 @@ A simple, effective, and efficient database wrapper.
 ## Features
 
 - Written in TypeScript
-- Offers CommonJS and ESM bundles
+- Offers CommonJS, ESM and UMD bundles
 - Fully tested
 
 ## Installation
 
+You can use the following command to install this package, or replace `npm install` with your package manager of choice.
+
 ```sh
-# With NPM
 npm install @joshdb/core@next
-# Or with Yarn
-yarn add @joshdb/core@next
 ```
 
 ## Documentation
 
-While the website is still in development and is not running in production you can still read the markdown file guides [here](https://github.com/josh-development/website/tree/main/src/docs)
+Unfortunately, the website to host the documentation is not yet ready, but you can check on it's progress [here](https://github.com/josh-development/website)
 
 ## FAQ
 
