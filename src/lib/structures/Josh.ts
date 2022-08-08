@@ -97,6 +97,10 @@ export class Josh<StoredValue = unknown> {
     }
   }
 
+  private get providerFailedError(): JoshError {
+    return this.error(Josh.Identifiers.ProviderDataFailed);
+  }
+
   /**
    * The initialization method for Josh.
    * @since 2.0.0
@@ -1919,10 +1923,6 @@ export class Josh<StoredValue = unknown> {
    */
   private resolvePath(path: Path): string[] {
     return Array.isArray(path) ? path : path.replace(/\[/g, '.').replace(/\]/g, '').split('.').filter(Boolean);
-  }
-
-  private get providerFailedError(): JoshError {
-    return this.error(Josh.Identifiers.ProviderDataFailed);
   }
 
   /**

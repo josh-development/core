@@ -16,6 +16,7 @@ describe('Josh', () => {
   describe('can be instantiated class', () => {
     test('GIVEN class Josh THEN returns Josh', () => {
       const josh = new Josh({ name: 'test:name' });
+
       expect(josh).toBeInstanceOf(Josh);
     });
 
@@ -25,11 +26,13 @@ describe('Josh', () => {
 
     test('GIVEN class Josh w/ autoEnsure THEN returns middleware size 1', () => {
       const josh = new Josh({ name: 'test:name', autoEnsure: { defaultValue: { foo: 'bar' } } });
+
       expect(josh.middlewares.size).toBe(1);
     });
 
     test('GIVEN class Josh w/ empty middlewares THEN returns instance', () => {
       const josh = new Josh({ name: 'test:name', middlewares: [] });
+
       expect(josh.middlewares.size).toBe(0);
     });
 
@@ -57,6 +60,7 @@ describe('Josh', () => {
 
     test('GIVEN provider with invalid instance THEN emits warning', () => {
       jest.spyOn(process, 'emitWarning').mockImplementation();
+
       // @ts-expect-error - this is a test
       const josh = new Josh({ name: 'test:middlewares', middlewares: [new Map()] });
 
@@ -412,6 +416,7 @@ describe('Josh', () => {
           ]);
 
           const result = await josh[Method.Every]((value) => value === 'value');
+
           expect(result).toBe(true);
         });
 
@@ -422,6 +427,7 @@ describe('Josh', () => {
           ]);
 
           const result = await josh[Method.Every]((value) => value === 'value');
+
           expect(result).toBe(false);
         });
       });
@@ -451,6 +457,7 @@ describe('Josh', () => {
           ]);
 
           const result = await josh[Method.Every](['path'], 'value');
+
           expect(result).toBe(true);
         });
       });
@@ -1159,6 +1166,7 @@ describe('Josh', () => {
         await josh.import({ json, clear: true, overwrite: true });
 
         const result = await josh[Method.Entries]();
+
         expect(result).toEqual({ 'test:import': 'value' });
       });
 
@@ -1172,6 +1180,7 @@ describe('Josh', () => {
         await josh.import({ json, overwrite: false });
 
         const result = await josh[Method.Entries]();
+
         expect(result).toEqual({ 'test:import': 'real-value' });
       });
 
@@ -1186,6 +1195,7 @@ describe('Josh', () => {
         await josh.import({ json: legacy });
 
         const result = await josh[Method.Entries]();
+
         expect(result).toEqual({ foo: 'bar' });
       });
     });
