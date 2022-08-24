@@ -953,12 +953,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/auto-ensure@npm:1.1.0-next.e9d0c3d.0":
-  version: 1.1.0-next.e9d0c3d.0
-  resolution: "@joshdb/auto-ensure@npm:1.1.0-next.e9d0c3d.0"
+"@joshdb/auto-ensure@npm:1.1.0-next.86f9853.0":
+  version: 1.1.0-next.86f9853.0
+  resolution: "@joshdb/auto-ensure@npm:1.1.0-next.86f9853.0"
   dependencies:
-    "@joshdb/middleware": 1.1.0-next.ffebf9f.0
-  checksum: 3e01f0055306aea224bb65b4f298e021030ec0d7b4cf0a80cf932309d8f1ecca7312e1516de68ec296d5628778651cc26ab97d530f38ea725f444ada44e53bf3
+    "@joshdb/provider": 2.0.0-next.865d0de.0
+    "@sapphire/utilities": ^3.9.2
+  checksum: 7145cc2ba3fd802012c6da9100545578fde55e5fc0019a25812e2c0549a6922fd21c4e6a1517f676a6fb77259c2dc5c4e59ad65e1d417dd2d9a0be29349d5c01
   languageName: node
   linkType: hard
 
@@ -971,12 +972,12 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.7
     "@favware/npm-deprecate": ^1.0.5
     "@favware/rollup-type-bundler": ^1.0.11
-    "@joshdb/auto-ensure": 1.1.0-next.e9d0c3d.0
-    "@joshdb/map": 1.1.0-next.d8e99a9.0
-    "@joshdb/middleware": 1.1.0-next.ffebf9f.0
+    "@joshdb/auto-ensure": 1.1.0-next.86f9853.0
+    "@joshdb/map": 1.1.0-next.ea3bb4f.0
+    "@joshdb/provider": 2.0.0-next.865d0de.0
     "@sapphire/eslint-config": ^4.3.8
     "@sapphire/ts-config": ^3.3.4
-    "@sapphire/utilities": ^3.9.2
+    "@sapphire/utilities": ^3.9.0
     "@types/jest": ^28.1.7
     "@types/node": ^17.0.23
     "@types/rimraf": ^3.0.2
@@ -1003,34 +1004,24 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@joshdb/map@npm:1.1.0-next.d8e99a9.0":
-  version: 1.1.0-next.d8e99a9.0
-  resolution: "@joshdb/map@npm:1.1.0-next.d8e99a9.0"
+"@joshdb/map@npm:1.1.0-next.ea3bb4f.0":
+  version: 1.1.0-next.ea3bb4f.0
+  resolution: "@joshdb/map@npm:1.1.0-next.ea3bb4f.0"
   dependencies:
-    "@joshdb/provider": 1.1.0-next.ffebf9f.0
-    "@sapphire/utilities": ^3.7.0
+    "@joshdb/provider": 2.0.0-next.865d0de.0
+    "@sapphire/utilities": ^3.9.0
     property-helpers: ^1.1.0
-  checksum: dce7185fbf5be94f17e8baaff4707c17388f4ff3b6550d93d3b117b5b90f876355b579e1cc195ad82c2bfd61ecd69e1f55f9ba6dc4d788f320caf043d444f2e5
+  checksum: 7fbb4cbcc5034b694c0b3ae40736710a2697d4b9b6c8a23bd2b57b2a6f51246ceeb1cc0050340e25d9bcb119a7abea509ac7d0a87d4a6c532b9f5466a90b1886
   languageName: node
   linkType: hard
 
-"@joshdb/middleware@npm:1.1.0-next.ffebf9f.0":
-  version: 1.1.0-next.ffebf9f.0
-  resolution: "@joshdb/middleware@npm:1.1.0-next.ffebf9f.0"
+"@joshdb/provider@npm:2.0.0-next.865d0de.0":
+  version: 2.0.0-next.865d0de.0
+  resolution: "@joshdb/provider@npm:2.0.0-next.865d0de.0"
   dependencies:
-    "@joshdb/provider": 1.1.0-next.ffebf9f.0
-    "@sapphire/utilities": ^3.7.0
+    "@sapphire/utilities": ^3.9.2
     reflect-metadata: ^0.1.13
-  checksum: fd9857769c393f659e8bd5d826dd0d75bd34c1200eb68f9f94e723545640b8c181d01eb398ae92958fc6233b2f61396f7163a0667a6b1299b9f0e6bf278b92e2
-  languageName: node
-  linkType: hard
-
-"@joshdb/provider@npm:1.1.0-next.ffebf9f.0":
-  version: 1.1.0-next.ffebf9f.0
-  resolution: "@joshdb/provider@npm:1.1.0-next.ffebf9f.0"
-  dependencies:
-    "@sapphire/utilities": ^3.7.0
-  checksum: bcdc3c12a78d0efc20db04b70c2622ee7cca13f3b9988d204013e8b19c4c7f5c025f21631e276b0f12e9f557a7c3ed8db1544594c1de9293685872ff707448af
+  checksum: 0ff1b777e0fa3a689f0d5bc38f6c5de1fe2bf8830cde2711122f17d4672614bbc06fab963820df288efb04482614691b9957ce1aed3016e2468a6eddab4b5eae
   languageName: node
   linkType: hard
 
@@ -1194,13 +1185,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/utilities@npm:^3.7.0":
-  version: 3.7.0
-  resolution: "@sapphire/utilities@npm:3.7.0"
-  checksum: 3b574586242f015859e913123a5311774ad2d6cb79241c2a3d447a585282bdb04cddcd8e086f757a8ae5d2c49f4a25b4f848d63cebe605c7641364b51c3cfa11
-  languageName: node
-  linkType: hard
-
 "@sapphire/utilities@npm:^3.8.0":
   version: 3.8.0
   resolution: "@sapphire/utilities@npm:3.8.0"
@@ -1208,7 +1192,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/utilities@npm:^3.9.2":
+"@sapphire/utilities@npm:^3.9.0, @sapphire/utilities@npm:^3.9.2":
   version: 3.9.2
   resolution: "@sapphire/utilities@npm:3.9.2"
   checksum: eeef33b03b802e931ada752b8c335cc8bde4017f8029b577b0247e3f3d2b57bf5f1936b2c8c29aef5e2c6975d9b162363e4c5c434c4fead0bba74253d067b4d9
