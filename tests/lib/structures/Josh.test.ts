@@ -1,5 +1,5 @@
 import { AutoEnsureMiddleware } from '@joshdb/auto-ensure';
-import { MathOperator, Method, Middleware, Payload, Trigger } from '@joshdb/middleware';
+import { JoshMiddleware, MathOperator, Method, Payload, Trigger } from '@joshdb/provider';
 import { Bulk, Josh, JoshError } from '../../../src';
 
 describe('Josh', () => {
@@ -39,7 +39,7 @@ describe('Josh', () => {
     test('GIVEN class Josh w/ middlewares THEN returns instance', () => {
       const josh = new Josh<{ test: boolean }>({
         name: 'test:name',
-        middlewares: [new AutoEnsureMiddleware({ defaultValue: { test: false } }) as unknown as Middleware<{ test: boolean }>]
+        middlewares: [new AutoEnsureMiddleware<{ test: boolean }>({ defaultValue: { test: false } })]
       });
 
       expect(josh.middlewares.size).toBe(1);
@@ -76,7 +76,7 @@ describe('Josh', () => {
 
         expect(josh.middlewares.size).toBe(0);
 
-        josh.use(new AutoEnsureMiddleware({ defaultValue: { test: false } }) as unknown as Middleware<{ test: boolean }>);
+        josh.use(new AutoEnsureMiddleware({ defaultValue: { test: false } }) as unknown as JoshMiddleware<{ test: boolean }>);
 
         expect(josh.middlewares.size).toBe(1);
       });
