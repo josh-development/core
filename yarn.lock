@@ -1035,7 +1035,7 @@ __metadata:
     "@favware/rollup-type-bundler": ^1.0.11
     "@joshdb/auto-ensure": 1.1.0-next.86f9853.0
     "@joshdb/map": 1.1.0-next.ea3bb4f.0
-    "@joshdb/provider": 2.0.0-next.865d0de.0
+    "@joshdb/provider": 2.0.0-next.03f171f.0
     "@sapphire/eslint-config": ^4.3.8
     "@sapphire/ts-config": ^3.3.4
     "@sapphire/utilities": ^3.9.2
@@ -1073,6 +1073,16 @@ __metadata:
     "@sapphire/utilities": ^3.9.0
     property-helpers: ^1.1.0
   checksum: 7fbb4cbcc5034b694c0b3ae40736710a2697d4b9b6c8a23bd2b57b2a6f51246ceeb1cc0050340e25d9bcb119a7abea509ac7d0a87d4a6c532b9f5466a90b1886
+  languageName: node
+  linkType: hard
+
+"@joshdb/provider@npm:2.0.0-next.03f171f.0":
+  version: 2.0.0-next.03f171f.0
+  resolution: "@joshdb/provider@npm:2.0.0-next.03f171f.0"
+  dependencies:
+    "@sapphire/utilities": ^3.9.2
+    reflect-metadata: ^0.1.13
+  checksum: b3b066a82900f8ffae183b0140c0cf9a23b0ff4297ec318430fcd2861963282458178125b4a4619213ae6ef0fb18e026ccb3581726d7124e41de53e7e81c72b3
   languageName: node
   linkType: hard
 
