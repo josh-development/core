@@ -93,6 +93,6 @@ jobs:
           git config rebase.autostash true
           git config pull.rebase true
           git add .
-          git commit -m "docs(${PACKAGE}): build for ${TYPE} ${NAME}: ${SHA}" || true
+          git commit -m "docs(core): build for ${TYPE} ${NAME}: ${SHA}" || true
           git pull
           git push
