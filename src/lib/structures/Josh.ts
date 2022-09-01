@@ -256,7 +256,7 @@ export class Josh<StoredValue = unknown> {
    *
    * await josh.inc('key', 'path');
    *
-   * await josh.get('key', 'path); // 0
+   * await josh.get('key', 'path'); // 0
    * ```
    *
    * @example
