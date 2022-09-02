@@ -646,12 +646,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@favware/colorette-spinner@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@favware/colorette-spinner@npm:1.0.0"
+"@favware/colorette-spinner@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@favware/colorette-spinner@npm:1.0.1"
   dependencies:
     colorette: "*"
-  checksum: b7fe7d983f8063bb069c1748a7f8819f59577d9abec16968fcbf9a58461dadfa0188702f528244f5184d5ae93468548da51ec265b71712743d6904ef1e8b59f1
+  checksum: 839bfa3bd4480da4ce1c5cf34fe617769ed8c0298ceab440401d5849020d9cf95537a634c33e22f452390cd68034b818cf92c471e360cab0e68be45c954cd636
   languageName: node
   linkType: hard
 
@@ -1060,7 +1060,7 @@ __metadata:
     rollup-plugin-typescript2: ^0.33.0
     ts-jest: ^28.0.8
     typedoc: ^0.23.11
-    typedoc-json-parser: ^2.3.2
+    typedoc-json-parser: ^3.0.0
     typescript: ^4.8.2
   languageName: unknown
   linkType: soft
@@ -4699,15 +4699,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^4.0.18":
-  version: 4.0.18
-  resolution: "marked@npm:4.0.18"
-  bin:
-    marked: bin/marked.js
-  checksum: a13e886d5059a8500a6fd552feecc16e18fc3636aa491fce372384b1fdea67e323d67ac49f7618f6977e66ca96e39f27400eb5c1273d5ee9c2301e8c33e90dce
-  languageName: node
-  linkType: hard
-
 "marked@npm:^4.0.19":
   version: 4.0.19
   resolution: "marked@npm:4.0.19"
@@ -5808,17 +5799,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"shiki@npm:^0.10.1":
-  version: 0.10.1
-  resolution: "shiki@npm:0.10.1"
-  dependencies:
-    jsonc-parser: ^3.0.0
-    vscode-oniguruma: ^1.6.1
-    vscode-textmate: 5.2.0
-  checksum: fb746f3cb3de7e545e3b10a6cb658d3938f840e4ccc9a3c90ceb7e69a8f89dbb432171faac1e9f02a03f103684dad88ee5e54b5c4964fa6b579fca6e8e26424d
-  languageName: node
-  linkType: hard
-
 "shiki@npm:^0.11.1":
   version: 0.11.1
   resolution: "shiki@npm:0.11.1"
@@ -6368,35 +6348,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc-json-parser@npm:^2.3.2":
-  version: 2.3.2
-  resolution: "typedoc-json-parser@npm:2.3.2"
+"typedoc-json-parser@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "typedoc-json-parser@npm:3.0.0"
   dependencies:
-    "@favware/colorette-spinner": ^1.0.0
+    "@favware/colorette-spinner": ^1.0.1
     colorette: ^2.0.19
     commander: ^9.4.0
     js-yaml: ^4.1.0
     tslib: ^2.4.0
-    typedoc: ^0.23.10
+    typedoc: ^0.23.11
   bin:
     typedoc-json-parser: ./dist/bin/index.js
-  checksum: 9223c36cc93cc9c71b710532080b282c3c4e5ff9836474d2af6701058bd3073f4078d4286f08572de7e32983db9967a4d71d37c0250382130f8e738636d3406b
-  languageName: node
-  linkType: hard
-
-"typedoc@npm:^0.23.10":
-  version: 0.23.10
-  resolution: "typedoc@npm:0.23.10"
-  dependencies:
-    lunr: ^2.3.9
-    marked: ^4.0.18
-    minimatch: ^5.1.0
-    shiki: ^0.10.1
-  peerDependencies:
-    typescript: 4.6.x || 4.7.x
-  bin:
-    typedoc: bin/typedoc
-  checksum: 58dd8bc12856801c4f315812d03f209f706435e5f56edceeb3e01e456c7d058a127f3dee1674529d62b64dcc04847d8be5e4ce06921b9c5388b901dd976b92bf
+  checksum: 198da438307d897ff954c79a697ed01431374b09db34c53bddfd66d13e1ca3b05f27642c4b2f968b982661b9c9cd74dd9a848d578732b5d17f7d048257cb3109
   languageName: node
   linkType: hard
 
@@ -6552,13 +6516,6 @@ __metadata:
   version: 1.6.2
   resolution: "vscode-oniguruma@npm:1.6.2"
   checksum: 6b754acdafd5b68242ea5938bb00a32effc16c77f471d4f0f337d879d0e8e592622998e2441f42d9a7ff799c1593f31c11f26ca8d9bf9917e3ca881d3c1f3e19
-  languageName: node
-  linkType: hard
-
-"vscode-textmate@npm:5.2.0":
-  version: 5.2.0
-  resolution: "vscode-textmate@npm:5.2.0"
-  checksum: 5449b42d451080f6f3649b66948f4b5ee4643c4e88cfe3558a3b31c84c78060cfdd288c4958c1690eaa5cd65d09992fa6b7c3bef9d4aa72b3651054a04624d20
   languageName: node
   linkType: hard
 
