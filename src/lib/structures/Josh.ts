@@ -193,8 +193,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.AutoKey)) payload = await middleware[Method.AutoKey](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
+
     if (isPayloadWithData<string>(payload)) return payload.data;
 
     throw this.providerDataFailedError;
@@ -228,8 +228,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Clear)) payload = await middleware[Method.Clear](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
 
     return this;
   }
@@ -282,8 +281,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Dec)) payload = await middleware[Method.Dec](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
 
     return this;
   }
@@ -336,8 +334,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Delete)) payload = await middleware[Method.Delete](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
 
     return this;
   }
@@ -359,8 +356,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.DeleteMany)) payload = await middleware[Method.DeleteMany](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
 
     return this;
   }
@@ -376,14 +372,13 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Each)) payload = await middleware[Method.Each](payload);
 
-    payload = await this.provider[Method.Each](payload);
+    if (!payload.metadata?.skipProvider) payload = await this.provider[Method.Each](payload);
     payload.trigger = Trigger.PostProvider;
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Each)) payload = await middleware[Method.Each](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
 
     return this;
   }
@@ -419,8 +414,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Ensure)) payload = await middleware[Method.Ensure](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
+
     if (isPayloadWithData<StoredValue>(payload)) return payload.data;
 
     throw this.providerDataFailedError;
@@ -462,8 +457,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Entries)) payload = await middleware[Method.Entries](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
+
     if (isPayloadWithData<Record<string, StoredValue>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
 
     throw this.providerDataFailedError;
@@ -558,8 +553,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Every)) payload = await middleware[Method.Every](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
+
     if (isPayloadWithData<boolean>(payload)) return payload.data;
 
     throw this.providerDataFailedError;
@@ -642,8 +637,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Filter)) payload = await middleware[Method.Filter](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
+
     if (isPayloadWithData<Record<string, StoredValue>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
 
     throw this.providerDataFailedError;
@@ -718,8 +713,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Find)) payload = await middleware[Method.Find](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
+
     if (isPayloadWithData<Record<string, StoredValue>>(payload)) return payload.data;
 
     throw this.providerDataFailedError;
@@ -782,8 +777,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Get)) payload = await middleware[Method.Get](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
 
     return isPayloadWithData(payload) ? payload.data! : null;
   }
@@ -818,6 +812,8 @@ export class Josh<StoredValue = unknown> {
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.GetMany)) payload = await middleware[Method.GetMany](payload);
+
+    this.runBehaviorOnPayloadError(payload);
 
     if (isPayloadWithData<Record<string, StoredValue | null>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
 
@@ -865,6 +861,8 @@ export class Josh<StoredValue = unknown> {
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Has)) payload = await middleware[Method.Has](payload);
+
+    this.runBehaviorOnPayloadError(payload);
 
     if (isPayloadWithData<boolean>(payload)) return payload.data;
 
@@ -919,8 +917,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Inc)) payload = await middleware[Method.Inc](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
 
     return this;
   }
@@ -950,8 +947,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Keys)) payload = await middleware[Method.Keys](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
+
     if (isPayloadWithData<string[]>(payload)) return payload.data;
 
     throw this.providerDataFailedError;
@@ -1005,8 +1002,21 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Map)) payload = await middleware[Method.Map](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    if (payload.errors.length) {
+      const { behaviorOnPayloadError } = this.options;
+
+      if (behaviorOnPayloadError !== undefined && behaviorOnPayloadError >= Josh.ErrorBehavior.Log) {
+        if (payload.errors.length === 1 && behaviorOnPayloadError === Josh.ErrorBehavior.Throw) throw payload.errors[0];
+        else {
+          for (const error of payload.errors) console.error(error);
+
+          if (behaviorOnPayloadError === Josh.ErrorBehavior.Throw) {
+            throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+          }
+        }
+      }
+    }
+
     if (isPayloadWithData<Value[]>(payload)) return payload.data;
 
     throw this.providerDataFailedError;
@@ -1071,8 +1081,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Math)) payload = await middleware[Method.Math](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
 
     return this;
   }
@@ -1154,8 +1163,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Partition)) payload = await middleware[Method.Partition](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
+
     if (isPayloadWithData<Payloads.Partition.Data<StoredValue>>(payload)) {
       const { truthy, falsy } = payload.data;
 
@@ -1206,8 +1215,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Push)) payload = await middleware[Method.Push](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
 
     return this;
   }
@@ -1243,8 +1251,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Random)) payload = await middleware[Method.Random](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
+
     if (isPayloadWithData<StoredValue[]>(payload)) return payload.data.length ? payload.data : null;
 
     throw this.providerDataFailedError;
@@ -1283,8 +1291,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.RandomKey)) payload = await middleware[Method.RandomKey](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
+
     if (isPayloadWithData<string[]>(payload)) return payload.data.length ? payload.data : null;
 
     throw this.providerDataFailedError;
@@ -1353,8 +1361,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Remove)) payload = await middleware[Method.Remove](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
 
     return this;
   }
@@ -1392,8 +1399,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Set)) payload = await middleware[Method.Set](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
 
     return this;
   }
@@ -1420,8 +1426,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.SetMany)) payload = await middleware[Method.SetMany](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
 
     return this;
   }
@@ -1449,8 +1454,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Size)) payload = await middleware[Method.Size](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
+
     if (isPayloadWithData<number>(payload)) return payload.data;
 
     throw this.providerDataFailedError;
@@ -1524,8 +1529,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Some)) payload = await middleware[Method.Some](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
+
     if (isPayloadWithData<boolean>(payload)) return payload.data;
 
     throw this.providerDataFailedError;
@@ -1556,8 +1561,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Update)) payload = await middleware[Method.Update](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
 
     return this;
   }
@@ -1588,8 +1592,8 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Values)) payload = await middleware[Method.Values](payload);
 
-    if (payload.errors.length === 1) throw payload.errors[0];
-    else if (payload.errors.length > 1) throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+    this.runBehaviorOnPayloadError(payload);
+
     if (isPayloadWithData<StoredValue[]>(payload)) return payload.data;
 
     throw this.providerDataFailedError;
@@ -1659,6 +1663,23 @@ export class Josh<StoredValue = unknown> {
     }
   }
 
+  private runBehaviorOnPayloadError(payload: Payload): void {
+    if (payload.errors.length) {
+      const { behaviorOnPayloadError } = this.options;
+
+      if (behaviorOnPayloadError !== undefined && behaviorOnPayloadError >= Josh.ErrorBehavior.Log) {
+        if (payload.errors.length === 1 && behaviorOnPayloadError === Josh.ErrorBehavior.Throw) throw payload.errors[0];
+        else {
+          for (const error of payload.errors) console.error(error);
+
+          if (behaviorOnPayloadError === Josh.ErrorBehavior.Throw) {
+            throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
+          }
+        }
+      }
+    }
+  }
+
   /**
    * Resolves an identifier or options to an error.
    * @since 2.0.0
@@ -1668,9 +1689,8 @@ export class Josh<StoredValue = unknown> {
    */
   private error(options: string | JoshErrorOptions, metadata: Record<string, unknown> = {}): JoshError {
     if (typeof options === 'string') return new JoshError({ identifier: options, errors: [], message: this.resolveIdentifier(options, metadata) });
-    /* istanbul ignore next: This doesn't happen */
     if ('message' in options) return new JoshError(options);
-    /* istanbul ignore next: This doesn't happen */
+
     return new JoshError({ ...options, message: this.resolveIdentifier(options.identifier, metadata) });
   }
 
@@ -1730,7 +1750,6 @@ export class Josh<StoredValue = unknown> {
         return 'The "hook" parameter for middleware was not found.';
     }
 
-    /* istanbul ignore next: This doesn't happen */
     throw new Error(`Unknown identifier: ${identifier}`);
   }
 
@@ -1807,6 +1826,12 @@ export namespace Josh {
      * @since 2.0.0
      */
     autoEnsure?: AutoEnsureMiddleware.ContextData<StoredValue>;
+
+    /**
+     * The behavior when encountering errors.
+     * @since 2.0.0
+     */
+    behaviorOnPayloadError?: ErrorBehavior;
   }
 
   /**
@@ -1930,6 +1955,14 @@ export namespace Josh {
      * @since 2.0.0
      */
     duplicates?: boolean;
+  }
+
+  export enum ErrorBehavior {
+    None,
+
+    Log,
+
+    Throw
   }
 
   export enum Identifiers {
