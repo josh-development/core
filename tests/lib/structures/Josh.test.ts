@@ -23,12 +23,20 @@ class TestMiddleware<StoredValue = unknown> extends JoshMiddleware<NonNullObject
 
         return payload;
       }
+
+      if (TestMiddleware.deleteData) {
+        Reflect.deleteProperty(payload, 'data');
+
+        TestMiddleware.deleteData = false;
+      }
     }
 
     return payload;
   }
 
   public static errorCount: 0 | 1 | 2 = 0;
+
+  public static deleteData = false;
 }
 
 describe('Josh', () => {
@@ -198,6 +206,12 @@ describe('Josh', () => {
         TestMiddleware.errorCount = 2;
 
         await expect(josh.autoKey()).rejects.toThrowError(multipleError);
+      });
+
+      test('GIVEN payload w/o data property THEN throws error', async () => {
+        TestMiddleware.deleteData = true;
+
+        await expect(josh.autoKey()).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
       test('GIVEN ... THEN returns data w/ generated key as data AND increments autoKeyCount', async () => {
@@ -409,6 +423,44 @@ describe('Josh', () => {
       });
     });
 
+    describe(Method.Each, () => {
+      test('GIVEN payload w/ error THEN throws error', async () => {
+        TestMiddleware.errorCount = 1;
+
+        await expect(josh.each((value) => value === 'value')).rejects.toThrowError(errors[0]);
+      });
+
+      test('GIVEN payload w/ multiple errors THEN throws error', async () => {
+        TestMiddleware.errorCount = 2;
+
+        await expect(josh.each((value) => value === 'value')).rejects.toThrowError(multipleError);
+      });
+
+      test('GIVEN josh w/o data THEN loops 0 times', async () => {
+        const mockCallback = jest.fn(() => true);
+        const result = await josh.each(mockCallback);
+
+        expect(result).toBeInstanceOf(Josh);
+        expect(mockCallback.mock.calls.length).toBe(0);
+      });
+
+      test('GIVEN josh w/ data THEN loops x times THEN clears', async () => {
+        const mockCallback = jest.fn(() => true);
+
+        await josh.set('key1', 'value1');
+        await josh.set('key2', 'value2');
+        await josh.set('key3', 'value3');
+
+        const result = await josh.each(mockCallback);
+
+        expect(result).toBeInstanceOf(Josh);
+        expect(mockCallback.mock.calls.length).toBe(3);
+        expect(mockCallback.mock.calls).toContainEqual(['value1', 'key1']);
+        expect(mockCallback.mock.calls).toContainEqual(['value2', 'key2']);
+        expect(mockCallback.mock.calls).toContainEqual(['value3', 'key3']);
+      });
+    });
+
     describe(Method.Ensure, () => {
       test('GIVEN payload w/ error THEN throws error', async () => {
         TestMiddleware.errorCount = 1;
@@ -420,6 +472,12 @@ describe('Josh', () => {
         TestMiddleware.errorCount = 2;
 
         await expect(josh.ensure('key', 'defaultValue')).rejects.toThrowError(multipleError);
+      });
+
+      test('GIVEN payload w/o data property THEN throws error', async () => {
+        TestMiddleware.deleteData = true;
+
+        await expect(josh.ensure('key', 'defaultValue')).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
       test('GIVEN josh w/o data at key THEN returns data as defaultValue AND sets default value at key', async () => {
@@ -456,6 +514,12 @@ describe('Josh', () => {
         TestMiddleware.errorCount = 2;
 
         await expect(josh.entries()).rejects.toThrowError(multipleError);
+      });
+
+      test('GIVEN payload w/o data property THEN throws error', async () => {
+        TestMiddleware.deleteData = true;
+
+        await expect(josh.entries()).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
       test('GIVEN josh w/o data THEN returns data w/o data', async () => {
@@ -519,6 +583,12 @@ describe('Josh', () => {
         TestMiddleware.errorCount = 2;
 
         await expect(josh.every((value) => value === 'value')).rejects.toThrowError(multipleError);
+      });
+
+      test('GIVEN payload w/o data property THEN throws error', async () => {
+        TestMiddleware.deleteData = true;
+
+        await expect(josh.every((value) => value === 'value')).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
       describe(Payload.Type.Hook, () => {
@@ -607,6 +677,12 @@ describe('Josh', () => {
         await expect(josh.filter((value) => value === 'value')).rejects.toThrowError(multipleError);
       });
 
+      test('GIVEN payload w/o data property THEN throws error', async () => {
+        TestMiddleware.deleteData = true;
+
+        await expect(josh.filter((value) => value === 'value')).rejects.toThrowError(josh['providerDataFailedError']);
+      });
+
       describe(Payload.Type.Hook, () => {
         test('GIVEN josh w/o data THEN returns data w/o data from filter', async () => {
           const result = await josh.filter((value) => value === 'value');
@@ -663,6 +739,12 @@ describe('Josh', () => {
         TestMiddleware.errorCount = 2;
 
         await expect(josh.find((value) => value === 'value')).rejects.toThrowError(multipleError);
+      });
+
+      test('GIVEN payload w/o data property THEN throws error', async () => {
+        TestMiddleware.deleteData = true;
+
+        await expect(josh.find((value) => value === 'value')).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
       describe(Payload.Type.Hook, () => {
@@ -759,6 +841,12 @@ describe('Josh', () => {
         await expect(josh.getMany([])).rejects.toThrowError(multipleError);
       });
 
+      test('GIVEN payload w/o data property THEN throws error', async () => {
+        TestMiddleware.deleteData = true;
+
+        await expect(josh.getMany([])).rejects.toThrowError(josh['providerDataFailedError']);
+      });
+
       test('GIVEN josh w/o data THEN returns data w/o data from getMany', async () => {
         await josh.set('key', null);
 
@@ -814,6 +902,12 @@ describe('Josh', () => {
         TestMiddleware.errorCount = 2;
 
         await expect(josh.has('key')).rejects.toThrowError(multipleError);
+      });
+
+      test('GIVEN payload w/o data property THEN throws error', async () => {
+        TestMiddleware.deleteData = true;
+
+        await expect(josh.has('key')).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
       test('GIVEN josh w/o data at key THEN returns false', async () => {
@@ -902,6 +996,12 @@ describe('Josh', () => {
         await expect(josh.keys()).rejects.toThrowError(multipleError);
       });
 
+      test('GIVEN payload w/o data property THEN throws error', async () => {
+        TestMiddleware.deleteData = true;
+
+        await expect(josh.keys()).rejects.toThrowError(josh['providerDataFailedError']);
+      });
+
       test('GIVEN josh w/o data THEN returns data w/o data from keys', async () => {
         const keys = await josh.keys();
 
@@ -928,6 +1028,12 @@ describe('Josh', () => {
         TestMiddleware.errorCount = 2;
 
         await expect(josh.map((value) => value)).rejects.toThrowError(multipleError);
+      });
+
+      test('GIVEN payload w/o data property THEN throws error', async () => {
+        TestMiddleware.deleteData = true;
+
+        await expect(josh.map((value) => value)).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
       describe(Payload.Type.Hook, () => {
@@ -1012,6 +1118,12 @@ describe('Josh', () => {
         TestMiddleware.errorCount = 2;
 
         await expect(josh.partition((value) => value === 'value')).rejects.toThrowError(multipleError);
+      });
+
+      test('GIVEN payload w/o data property THEN throws error', async () => {
+        TestMiddleware.deleteData = true;
+
+        await expect(josh.partition((value) => value === 'value')).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
       describe(Payload.Type.Hook, () => {
@@ -1383,6 +1495,12 @@ describe('Josh', () => {
         await expect(josh.size()).rejects.toThrowError(multipleError);
       });
 
+      test('GIVEN payload w/o data property THEN throws error', async () => {
+        TestMiddleware.deleteData = true;
+
+        await expect(josh.size()).rejects.toThrowError(josh['providerDataFailedError']);
+      });
+
       test('GIVEN josh w/o data THEN returns 0', async () => {
         const result = await josh.size();
 
@@ -1409,6 +1527,12 @@ describe('Josh', () => {
         TestMiddleware.errorCount = 2;
 
         await expect(josh.some((value) => value === 'value')).rejects.toThrowError(multipleError);
+      });
+
+      test('GIVEN payload w/o data property THEN throws error', async () => {
+        TestMiddleware.deleteData = true;
+
+        await expect(josh.some((value) => value === 'value')).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
       describe(Payload.Type.Hook, () => {
@@ -1507,6 +1631,12 @@ describe('Josh', () => {
         await expect(josh.values()).rejects.toThrowError(multipleError);
       });
 
+      test('GIVEN payload w/o data property THEN throws error', async () => {
+        TestMiddleware.deleteData = true;
+
+        await expect(josh.values()).rejects.toThrowError(josh['providerDataFailedError']);
+      });
+
       test('GIVEN josh w/o data THEN returns data w/o data', async () => {
         const result = await josh.values();
 
@@ -1519,32 +1649,6 @@ describe('Josh', () => {
         const result = await josh.values();
 
         expect(result).toEqual(['value']);
-      });
-    });
-
-    describe(Method.Each, () => {
-      test('GIVEN josh w/o data THEN loops 0 times', async () => {
-        const mockCallback = jest.fn(() => true);
-        const result = await josh.each(mockCallback);
-
-        expect(result).toBeInstanceOf(Josh);
-        expect(mockCallback.mock.calls.length).toBe(0);
-      });
-
-      test('GIVEN josh w/ data THEN loops x times THEN clears', async () => {
-        const mockCallback = jest.fn(() => true);
-
-        await josh.set('key1', 'value1');
-        await josh.set('key2', 'value2');
-        await josh.set('key3', 'value3');
-
-        const result = await josh.each(mockCallback);
-
-        expect(result).toBeInstanceOf(Josh);
-        expect(mockCallback.mock.calls.length).toBe(3);
-        expect(mockCallback.mock.calls).toContainEqual(['value1', 'key1']);
-        expect(mockCallback.mock.calls).toContainEqual(['value2', 'key2']);
-        expect(mockCallback.mock.calls).toContainEqual(['value3', 'key3']);
       });
     });
 
