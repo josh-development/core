@@ -1266,9 +1266,9 @@ describe('Josh', () => {
       });
 
       test('GIVEN josh w/o data THEN throw provider error', async () => {
-        const random = josh.random();
+        const random = await josh.random();
 
-        await expect(random).rejects.toThrowError(josh['providerDataFailedError']);
+        expect(random).toBeNull();
       });
 
       test('GIVEN josh w/ data THEN returns data from random', async () => {
@@ -1320,9 +1320,9 @@ describe('Josh', () => {
       });
 
       test('GIVEN josh w/o data THEN throw provider error', async () => {
-        const random = josh.randomKey();
+        const random = await josh.randomKey();
 
-        await expect(random).rejects.toThrowError(josh['providerDataFailedError']);
+        expect(random).toBeNull();
       });
 
       test('GIVEN josh w/ data THEN returns data from random', async () => {

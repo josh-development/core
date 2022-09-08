@@ -413,7 +413,7 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Each)) payload = await middleware[Method.Each](payload);
 
-    payload = await this.provider[Method.Each](payload);
+    if (!payload.metadata?.skipProvider) payload = await this.provider[Method.Each](payload);
     payload.trigger = Trigger.PostProvider;
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
@@ -2012,9 +2012,8 @@ export class Josh<StoredValue = unknown> {
    */
   private error(options: string | JoshErrorOptions, metadata: Record<string, unknown> = {}): JoshError {
     if (typeof options === 'string') return new JoshError({ identifier: options, errors: [], message: this.resolveIdentifier(options, metadata) });
-    /* istanbul ignore next: This doesn't happen */
     if ('message' in options) return new JoshError(options);
-    /* istanbul ignore next: This doesn't happen */
+
     return new JoshError({ ...options, message: this.resolveIdentifier(options.identifier, metadata) });
   }
 
@@ -2074,7 +2073,6 @@ export class Josh<StoredValue = unknown> {
         return 'The "hook" parameter for middleware was not found.';
     }
 
-    /* istanbul ignore next: This doesn't happen */
     throw new Error(`Unknown identifier: ${identifier}`);
   }
 
