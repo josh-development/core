@@ -1,5 +1,6 @@
 import { AutoEnsureMiddleware } from '@joshdb/auto-ensure';
-import { ApplyMiddlewareOptions, CommonIdentifiers, JoshMiddleware, MathOperator, Method, Payload, Trigger } from '@joshdb/provider';
+import { MapProvider } from '@joshdb/map';
+import { ApplyMiddlewareOptions, CommonIdentifiers, JoshMiddleware, JoshProvider, MathOperator, Method, Payload, Trigger } from '@joshdb/provider';
 import type { NonNullObject } from '@sapphire/utilities';
 import { Bulk, Josh, JoshError } from '../../../src';
 
@@ -58,7 +59,7 @@ describe('Josh', () => {
     });
 
     test('GIVEN class Josh w/o name THEN throws error', () => {
-      expect(() => new Josh({ name: undefined })).toThrowError('The "name" option is required to initiate a Josh instance');
+      expect(() => new Josh({})).toThrowError('The "name" option is required to initiate a Josh instance');
     });
 
     test('GIVEN class Josh w/ autoEnsure THEN returns middleware size 1', () => {
@@ -103,6 +104,20 @@ describe('Josh', () => {
 
       // eslint-disable-next-line @typescript-eslint/unbound-method
       expect(process.emitWarning).toHaveBeenCalledWith(expect.stringContaining('The middleware must extend the exported "Middleware" class.'));
+    });
+
+    test('GIVEN Josh w/ init error THEN throws error', async () => {
+      class TestProvider extends MapProvider {
+        public async init(context: JoshProvider.Context): Promise<JoshProvider.Context> {
+          context.error = this.error(CommonIdentifiers.MissingValue);
+
+          return Promise.resolve(context);
+        }
+      }
+
+      const josh = new Josh({ name: 'name', provider: new TestProvider() });
+
+      await expect(josh.init()).rejects.toThrowError(josh.provider['error'](CommonIdentifiers.MissingValue));
     });
   });
 
@@ -1253,7 +1268,7 @@ describe('Josh', () => {
       test('GIVEN josh w/o data THEN throw provider error', async () => {
         const random = josh.random();
 
-        await expect(random).rejects.toThrowError('The provider failed to return data.');
+        await expect(random).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
       test('GIVEN josh w/ data THEN returns data from random', async () => {
@@ -1307,7 +1322,7 @@ describe('Josh', () => {
       test('GIVEN josh w/o data THEN throw provider error', async () => {
         const random = josh.randomKey();
 
-        await expect(random).rejects.toThrowError('The provider failed to return data.');
+        await expect(random).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
       test('GIVEN josh w/ data THEN returns data from random', async () => {
