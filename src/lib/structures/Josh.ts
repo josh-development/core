@@ -17,7 +17,7 @@ import {
   Trigger
 } from '@joshdb/provider';
 import { Awaitable, isFunction, isPrimitive, NonNullObject, Primitive } from '@sapphire/utilities';
-import { emitWarning } from 'process';
+import process from 'process';
 import { JoshError, JoshErrorOptions } from './JoshError';
 
 /**
@@ -81,14 +81,14 @@ export class Josh<StoredValue = unknown> {
     this.name = name;
     this.provider = provider ?? new MapProvider<StoredValue>();
 
-    if (!(this.provider instanceof JoshProvider)) emitWarning(this.resolveIdentifier(Josh.Identifiers.InvalidProvider));
+    if (!(this.provider instanceof JoshProvider)) process.emitWarning(this.resolveIdentifier(Josh.Identifiers.InvalidProvider));
 
     this.middlewares = new JoshMiddlewareStore<StoredValue>({ provider: this.provider });
 
     if (autoEnsure !== undefined) this.use(new AutoEnsureMiddleware<StoredValue>(autoEnsure));
     if (middlewares !== undefined && Array.isArray(middlewares)) {
       for (const middleware of middlewares.filter((middleware) => {
-        if (!(middleware instanceof JoshMiddleware)) emitWarning(this.resolveIdentifier(Josh.Identifiers.InvalidMiddleware));
+        if (!(middleware instanceof JoshMiddleware)) process.emitWarning(this.resolveIdentifier(Josh.Identifiers.InvalidMiddleware));
 
         return middleware instanceof JoshMiddleware;
       })) {
@@ -1603,7 +1603,7 @@ export class Josh<StoredValue = unknown> {
     let { json, overwrite, clear } = options;
 
     if (this.isLegacyExportJSON(json)) {
-      emitWarning(this.error(Josh.Identifiers.LegacyDeprecation).message);
+      process.emitWarning(this.error(Josh.Identifiers.LegacyDeprecation).message);
       json = this.convertLegacyExportJSON(json);
     }
 

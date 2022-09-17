@@ -52,6 +52,10 @@ describe('Josh', () => {
   });
 
   describe('can be instantiated class', () => {
+    beforeAll(() => {
+      process.emitWarning = () => undefined;
+    });
+
     test('GIVEN class Josh THEN returns Josh', () => {
       const josh = new Josh({ name: 'name' });
 
@@ -84,26 +88,21 @@ describe('Josh', () => {
     });
 
     test('GIVEN provider with invalid instance THEN emits warning', () => {
-      const spy = jest.spyOn(process, 'emitWarning').mockImplementation();
+      const spy = vi.spyOn(process, 'emitWarning');
       // @ts-expect-error - this is a test
       const josh = new Josh({ name: 'name', provider: new Map() });
 
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      expect(process.emitWarning).toHaveBeenCalledWith(
-        expect.stringContaining('The "provider" option must extend the exported "JoshProvider" class to ensure compatibility, but continuing anyway.')
-      );
+      expect(spy).toHaveBeenCalledOnce();
 
       spy.mockClear();
     });
 
     test('GIVEN provider with invalid instance THEN emits warning', () => {
-      jest.spyOn(process, 'emitWarning').mockImplementation();
-
+      const spy = vi.spyOn(process, 'emitWarning');
       // @ts-expect-error - this is a test
       const josh = new Josh({ name: 'name', middlewares: [new Map()] });
 
-      // eslint-disable-next-line @typescript-eslint/unbound-method
-      expect(process.emitWarning).toHaveBeenCalledWith(expect.stringContaining('The middleware must extend the exported "Middleware" class.'));
+      expect(spy).toHaveBeenCalledOnce();
     });
 
     test('GIVEN Josh w/ init error THEN throws error', async () => {
@@ -200,6 +199,8 @@ describe('Josh', () => {
 
     beforeAll(async () => {
       await josh.init();
+
+      console.error = () => undefined;
     });
 
     beforeEach(async () => {
@@ -452,7 +453,7 @@ describe('Josh', () => {
       });
 
       test('GIVEN josh w/o data THEN loops 0 times', async () => {
-        const mockCallback = jest.fn(() => true);
+        const mockCallback = vi.fn(() => true);
         const result = await josh.each(mockCallback);
 
         expect(result).toBeInstanceOf(Josh);
@@ -460,7 +461,7 @@ describe('Josh', () => {
       });
 
       test('GIVEN josh w/ data THEN loops x times THEN clears', async () => {
-        const mockCallback = jest.fn(() => true);
+        const mockCallback = vi.fn(() => true);
 
         await josh.set('key1', 'value1');
         await josh.set('key2', 'value2');
@@ -606,7 +607,7 @@ describe('Josh', () => {
         await expect(josh.every((value) => value === 'value')).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
-      describe(Payload.Type.Hook, () => {
+      describe(Payload.Type.Hook.toString(), () => {
         test('GIVEN josh w/o data THEN returns true', async () => {
           const result = await josh.every((value) => value === 'value');
 
@@ -648,7 +649,7 @@ describe('Josh', () => {
         });
       });
 
-      describe(Payload.Type.Value, () => {
+      describe(Payload.Type.Value.toString(), () => {
         test('GIVEN josh w/o data THEN returns true', async () => {
           const result = await josh.every('path', 'value');
 
@@ -698,7 +699,7 @@ describe('Josh', () => {
         await expect(josh.filter((value) => value === 'value')).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
-      describe(Payload.Type.Hook, () => {
+      describe(Payload.Type.Hook.toString(), () => {
         test('GIVEN josh w/o data THEN returns data w/o data from filter', async () => {
           const result = await josh.filter((value) => value === 'value');
 
@@ -726,7 +727,7 @@ describe('Josh', () => {
         });
       });
 
-      describe(Payload.Type.Value, () => {
+      describe(Payload.Type.Value.toString(), () => {
         test('GIVEN josh w/o data THEN returns data w/o data from filter', async () => {
           const result = await josh.filter('path', 'value');
 
@@ -762,7 +763,7 @@ describe('Josh', () => {
         await expect(josh.find((value) => value === 'value')).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
-      describe(Payload.Type.Hook, () => {
+      describe(Payload.Type.Hook.toString(), () => {
         test('GIVEN josh w/o data THEN returns data w/o data from find', async () => {
           const result = await josh.find((value) => value === 'value');
 
@@ -790,7 +791,7 @@ describe('Josh', () => {
         });
       });
 
-      describe(Payload.Type.Value, () => {
+      describe(Payload.Type.Value.toString(), () => {
         test('GIVEN josh w/o data THEN returns data w/o data from find', async () => {
           const result = await josh.find('path', 'value');
 
@@ -1051,7 +1052,7 @@ describe('Josh', () => {
         await expect(josh.map((value) => value)).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
-      describe(Payload.Type.Hook, () => {
+      describe(Payload.Type.Hook.toString(), () => {
         test('GIVEN josh w/o data THEN returns data w/o data', async () => {
           const mapped = await josh.map((value) => value);
 
@@ -1067,7 +1068,7 @@ describe('Josh', () => {
         });
       });
 
-      describe(Payload.Type.Path, () => {
+      describe(Payload.Type.Path.toString(), () => {
         test('GIVEN josh w/o data THEN returns data w/o data', async () => {
           const mapped = await josh.map([]);
 
@@ -1141,7 +1142,7 @@ describe('Josh', () => {
         await expect(josh.partition((value) => value === 'value')).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
-      describe(Payload.Type.Hook, () => {
+      describe(Payload.Type.Hook.toString(), () => {
         test('GIVEN josh w/o data THEN returns data w/o data', async () => {
           const parted = await josh.partition((value) => value === 'value');
 
@@ -1177,7 +1178,7 @@ describe('Josh', () => {
         });
       });
 
-      describe(Payload.Type.Value, () => {
+      describe(Payload.Type.Value.toString(), () => {
         test('GIVEN josh w/o data THEN returns data w/o data', async () => {
           const parted = await josh.partition([], 'value');
 
@@ -1375,7 +1376,7 @@ describe('Josh', () => {
         await expect(result).rejects.toBeInstanceOf(JoshError);
       });
 
-      describe(Payload.Type.Hook, () => {
+      describe(Payload.Type.Hook.toString(), () => {
         test('GIVEN josh w/ array at key THEN returns data AND removes value from array at key', async () => {
           await josh.set('key', ['value']);
 
@@ -1393,7 +1394,7 @@ describe('Josh', () => {
         });
       });
 
-      describe(Payload.Type.Value, () => {
+      describe(Payload.Type.Value.toString(), () => {
         test('GIVEN josh w/ array at key THEN returns data AND removes value from array at key', async () => {
           await josh.set('key', ['value']);
 
@@ -1550,7 +1551,7 @@ describe('Josh', () => {
         await expect(josh.some((value) => value === 'value')).rejects.toThrowError(josh['providerDataFailedError']);
       });
 
-      describe(Payload.Type.Hook, () => {
+      describe(Payload.Type.Hook.toString(), () => {
         test('GIVEN josh w/o data THEN returns false', async () => {
           const result = await josh.some((value) => value === 'value');
 
@@ -1578,7 +1579,7 @@ describe('Josh', () => {
         });
       });
 
-      describe(Payload.Type.Value, () => {
+      describe(Payload.Type.Value.toString(), () => {
         test('GIVEN josh w/o data THEN returns false', async () => {
           const result = await josh.some((value) => value === 'value');
 
