@@ -2,12 +2,17 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
+    deps: {
+      inline: true
+    },
     globals: true,
     coverage: {
-      reporter: ['text', 'lcov', 'clover']
+      enabled: true,
+      reporter: ['text', 'lcov', 'clover'],
+      exclude: ['**/node_modules/**', '**/dist/**', '**/tests/**']
     }
   },
   esbuild: {
-    target: 'es2022'
+    target: 'es2021'
   }
 });
