@@ -427,7 +427,7 @@ __metadata:
     "@joshdb/provider": 2.0.0-next.d32662f.0
     "@sapphire/eslint-config": ^4.3.8
     "@sapphire/ts-config": ^3.3.4
-    "@sapphire/utilities": ^3.9.3
+    "@sapphire/utilities": ^3.11.0
     "@types/node": ^17.0.23
     "@types/rimraf": ^3.0.2
     "@typescript-eslint/eslint-plugin": ^5.38.1
@@ -602,6 +602,13 @@ __metadata:
     tslib: ^2.3.1
     typescript: ^4.6.3
   checksum: c26dee331e17dd1762caa499ca6f1d1ee22fe781a5486575ead625c399678fbf3b33cf963a4f48aad04df5d515a4b3d2f80a03272d2413894d96f799d5f5ca87
+  languageName: node
+  linkType: hard
+
+"@sapphire/utilities@npm:^3.11.0":
+  version: 3.11.0
+  resolution: "@sapphire/utilities@npm:3.11.0"
+  checksum: 3c8521038b8879524e8114f39eefc8b3b06cf825995f709684238b5cb14bd7df06d232a26a88f79160df290a66f9aa3133f5ce4ff8e2398033db9f301ad31e0d
   languageName: node
   linkType: hard
 
