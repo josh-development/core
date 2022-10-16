@@ -453,7 +453,7 @@ __metadata:
     rollup-plugin-cleaner: ^1.0.0
     rollup-plugin-typescript2: ^0.34.1
     typedoc: ^0.23.15
-    typedoc-json-parser: ^5.2.0
+    typedoc-json-parser: ^6.0.0
     typescript: ^4.8.4
     vitest: ^0.24.0
   languageName: unknown
@@ -592,6 +592,13 @@ __metadata:
   dependencies:
     cross-fetch: ^3.1.5
   checksum: f8ab0baa59dfcb931729a46957073e4e26377b6b5e3bdbbed921ae793c0848a240545ed157efd5db13342d68eed84dc73c6fe83038a5e62af9daa3715326c4a9
+  languageName: node
+  linkType: hard
+
+"@sapphire/node-utilities@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@sapphire/node-utilities@npm:1.0.0"
+  checksum: 80b99bd4f0fdcbccc289d1fc165321b82d421896355259ec54b733a72cb3e50635c00f126a9e4d56a0247a54aa77a1a96e1d6e99c4c8815dc061e53a39e87c4e
   languageName: node
   linkType: hard
 
@@ -4978,11 +4985,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc-json-parser@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "typedoc-json-parser@npm:5.2.0"
+"typedoc-json-parser@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "typedoc-json-parser@npm:6.0.0"
   dependencies:
     "@favware/colorette-spinner": ^1.0.1
+    "@sapphire/node-utilities": ^1.0.0
     colorette: ^2.0.19
     commander: ^9.4.1
     js-yaml: ^4.1.0
@@ -4990,7 +4998,7 @@ __metadata:
     typedoc: ^0.23.15
   bin:
     typedoc-json-parser: ./dist/bin/index.js
-  checksum: 3ff37c891758b012a010c8d327477b7bfe8a821d255dbfa1025ba7a4722d8936b408c2d05025082d116ae2b42bd6aa0c58c1e97dad08e090b8e08ab282197efd
+  checksum: 495bba44d013059c860d7968e2eea17a4a411495d675607ed674bf3572d94e6c8f66e41f3b4a3f640555f4247bd9e63d71d86d99578023636e293303b2286819
   languageName: node
   linkType: hard
 
