@@ -9,7 +9,7 @@
 
 ## Contributing to the code
 
-**The issue tracker is only for issue reporting or proposals/suggestions. If you have a question, you can find us in our [Discord Server](https://discord.gg/N7ZKH3P)**.
+**The issue tracker is only for issue reporting or proposals/suggestions. If you have a question, you can find us in our [Discord Server](https://discord.evie.dev)**.
 
 To contribute to this repository, feel free to create a new fork of the repository and submit a pull request. We highly suggest [ESLint](https://eslint.org) to be installed in your text editor or IDE of your choice to ensure builds from GitHub Actions do not fail.
 

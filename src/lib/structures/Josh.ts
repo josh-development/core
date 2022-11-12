@@ -27,8 +27,9 @@ import { JoshError, JoshErrorOptions } from './JoshError';
  *
  * @example
  * ```javascript
+ * // Using the default map non-persistent provider
  * const josh = new Josh({
- *   name: 'name',
+ *   name: 'database',
  *   // More options...
  * });
  * ```
@@ -37,9 +38,16 @@ import { JoshError, JoshErrorOptions } from './JoshError';
  * ```javascript
  * // Using a provider.
  * const josh = new Josh({
- *   name: 'name',
+ *   name: 'database',
  *   provider: new Provider(),
  *   // More options...
+ * });
+ * ```
+ * @example
+ * ```typescript
+ * // TypeScript example
+ * const josh = new Josh<{ username: string }>({
+ *   name: 'database'
  * });
  * ```
  */
@@ -57,7 +65,7 @@ export class Josh<StoredValue = unknown> {
   public options: Josh.Options<StoredValue>;
 
   /**
-   * This Josh's middlewares.
+   * This Josh's middleware store.
    *
    * NOTE: Do not use this unless you know what your doing.
    * @since 2.0.0
@@ -87,13 +95,13 @@ export class Josh<StoredValue = unknown> {
 
     if (autoEnsure !== undefined) this.use(new AutoEnsureMiddleware<StoredValue>(autoEnsure));
     if (middlewares !== undefined && Array.isArray(middlewares)) {
-      for (const middleware of middlewares.filter((middleware) => {
+      const filteredMiddleware = middlewares.filter((middleware) => {
         if (!(middleware instanceof JoshMiddleware)) process.emitWarning(this.resolveIdentifier(Josh.Identifiers.InvalidMiddleware));
 
         return middleware instanceof JoshMiddleware;
-      })) {
-        this.use(middleware);
-      }
+      });
+
+      for (const middleware of filteredMiddleware) this.use(middleware);
     }
   }
 
@@ -109,6 +117,10 @@ export class Josh<StoredValue = unknown> {
    * @example
    * ```javascript
    * await josh.init();
+   * ```
+   * @example
+   * ```javascript
+   * josh.init().then(() => console.log('Initialized Josh!'));
    * ```
    */
   public async init(): Promise<this> {
@@ -136,7 +148,7 @@ export class Josh<StoredValue = unknown> {
   public use<P extends Payload>(options: Josh.UseMiddlewareOptions, hook: (payload: P) => Awaitable<P>): this;
 
   /**
-   * Adds a middleware by providing a Middleware instance.
+   * Adds a middleware by providing a JoshMiddleware instance.
    * @since 2.0.0
    * @param instance The middleware instance.
    * @returns The {@link Josh} instance.
@@ -234,9 +246,9 @@ export class Josh<StoredValue = unknown> {
   }
 
   /**
-   * Decrement an integer by `1`.
+   * Decrement a stored integer by `1`.
    * @since 2.0.0
-   * @param key The key to the integer for decrementing.
+   * @param key The key of the integer to decrement.
    * @param path The path to the integer for decrementing.
    * @returns The {@link Josh} instance.
    *
@@ -244,7 +256,7 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key', 1);
    *
-   * await josh.inc('key');
+   * await josh.dec('key');
    *
    * await josh.get('key'); // 0
    * ```
@@ -253,7 +265,7 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key', 1, 'path');
    *
-   * await josh.inc('key', 'path');
+   * await josh.dec('key', 'path');
    *
    * await josh.get('key', 'path'); // 0
    * ```
@@ -262,7 +274,7 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key', 1, 'path');
    *
-   * await josh.inc('key', ['path']);
+   * await josh.dec('key', ['path']);
    *
    * await josh.get('key', 'path'); // 0
    * ```
@@ -306,7 +318,7 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key', { path: 'value' });
    *
-   * await josh.delete('key'`, 'path');
+   * await josh.delete('key', 'path');
    *
    * await josh.get('key'); // {}
    * ```
@@ -341,8 +353,18 @@ export class Josh<StoredValue = unknown> {
 
   /**
    * Deletes many keys.
+   * @since 2.0.0
    * @param keys The keys to delete.
    * @returns The {@link Josh} instance.
+   *
+   * @example
+   * ```javascript
+   * await josh.set('key', 'value');
+   *
+   * await josh.deleteMany(['key']);
+   *
+   * await josh.get('key'); // null
+   * ```
    */
   public async deleteMany(keys: string[]): Promise<this> {
     let payload: Payloads.DeleteMany = { method: Method.DeleteMany, errors: [], trigger: Trigger.PreProvider, keys };
@@ -363,8 +385,16 @@ export class Josh<StoredValue = unknown> {
 
   /**
    * Loop over every key-value pair in this {@link Josh} and execute `hook` on it.
+   * @since 2.0.0
    * @param hook The hook function to execute with each key.
    * @returns The {@link Josh} instance.
+   *
+   * @example
+   * ```javascript
+   * await josh.set('key', 'value');
+   *
+   * await josh.each((value, key) => console.log(key + ' = ' + value)); // key = value
+   * ```
    */
   public async each(hook: Payload.Hook<StoredValue>): Promise<this> {
     let payload: Payloads.Each<StoredValue> = { method: Method.Each, errors: [], trigger: Trigger.PreProvider, hook };
@@ -388,7 +418,7 @@ export class Josh<StoredValue = unknown> {
    * @since 2.0.0
    * @param key The key to ensure.
    * @param defaultValue The default value to set if the key doesn't exist.
-   * @returns The value gotten from the key.
+   * @returns The value gotten from the key or the default value.
    *
    * @example
    * ```javascript
@@ -426,20 +456,13 @@ export class Josh<StoredValue = unknown> {
    * @since 2.0.0
    * @param returnBulkType The return bulk type. Defaults to {@link Bulk.Object}
    * @returns The bulk data.
-   *
+   
    * @example
    * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.entries(); // { key: 'value' }
    * await josh.entries(Bulk.OneDimensionalArray); // ['value']
-   * ```
-   *
-   * @example
-   * ```javascript
-   * await josh.set('key', { path: 'value' });
-   *
-   * await josh.entries(); // { key: { path: 'value' } }
    * await josh.entries(Bulk.TwoDimensionalArray); // [['key', { path: 'value' }]]
    * ```
    */
