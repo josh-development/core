@@ -6,19 +6,17 @@ import {
   JoshMiddleware,
   JoshMiddlewareStore,
   JoshProvider,
-  KeyPath,
   KeyPathJSON,
   MathOperator,
   Method,
   Path,
   Payload,
-  Payloads,
   resolveCommonIdentifier,
   Trigger
 } from '@joshdb/provider';
 import { Awaitable, isFunction, isPrimitive, NonNullObject, Primitive } from '@sapphire/utilities';
 import process from 'process';
-import { JoshError, JoshErrorOptions } from './JoshError';
+import { JoshError } from './JoshError';
 
 /**
  * The base class that makes Josh work.
@@ -168,10 +166,10 @@ export class Josh<StoredValue = unknown> {
       if (hook === undefined) throw this.error(Josh.Identifiers.UseMiddlewareHookNotFound);
 
       const { name, trigger, method } = optionsOrInstance;
-      const options: JoshMiddleware.Options = { name, conditions: { pre: [], post: [] } };
+      const options: JoshMiddleware.Options = { name, conditions: { [Trigger.PreProvider]: [], [Trigger.PostProvider]: [] } };
       const middleware = this.middlewares.get(options.name) ?? new JoshMiddleware<NonNullObject, StoredValue>({}, options);
 
-      if (trigger !== undefined && method !== undefined) options.conditions[trigger === Trigger.PreProvider ? 'pre' : 'post'].push(method);
+      if (trigger !== undefined && method !== undefined) options.conditions[Trigger.PreProvider].push(method);
 
       Object.defineProperty(middleware, method === undefined ? 'run' : method, { value: hook });
       this.middlewares.set(middleware.name, middleware);
@@ -193,7 +191,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async autoKey(): Promise<string> {
-    let payload: Payloads.AutoKey = { method: Method.AutoKey, errors: [], trigger: Trigger.PreProvider };
+    let payload: Payload.AutoKey = { method: Method.AutoKey, errors: [], trigger: Trigger.PreProvider };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.AutoKey)) payload = await middleware[Method.AutoKey](payload);
@@ -229,7 +227,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async clear(): Promise<this> {
-    let payload: Payloads.Clear = { method: Method.Clear, errors: [], trigger: Trigger.PreProvider };
+    let payload: Payload.Clear = { method: Method.Clear, errors: [], trigger: Trigger.PreProvider };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Clear)) payload = await middleware[Method.Clear](payload);
@@ -282,7 +280,7 @@ export class Josh<StoredValue = unknown> {
   public async dec(key: string, path: Path = []): Promise<this> {
     path = this.resolvePath(path);
 
-    let payload: Payloads.Dec = { method: Method.Dec, errors: [], trigger: Trigger.PreProvider, key, path };
+    let payload: Payload.Dec = { method: Method.Dec, errors: [], trigger: Trigger.PreProvider, key, path };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Dec)) payload = await middleware[Method.Dec](payload);
@@ -335,7 +333,7 @@ export class Josh<StoredValue = unknown> {
   public async delete(key: string, path: Path = []): Promise<this> {
     path = this.resolvePath(path);
 
-    let payload: Payloads.Delete = { method: Method.Delete, errors: [], trigger: Trigger.PreProvider, key, path };
+    let payload: Payload.Delete = { method: Method.Delete, errors: [], trigger: Trigger.PreProvider, key, path };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Delete)) payload = await middleware[Method.Delete](payload);
@@ -367,7 +365,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async deleteMany(keys: string[]): Promise<this> {
-    let payload: Payloads.DeleteMany = { method: Method.DeleteMany, errors: [], trigger: Trigger.PreProvider, keys };
+    let payload: Payload.DeleteMany = { method: Method.DeleteMany, errors: [], trigger: Trigger.PreProvider, keys };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.DeleteMany)) payload = await middleware[Method.DeleteMany](payload);
@@ -397,7 +395,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async each(hook: Payload.Hook<StoredValue>): Promise<this> {
-    let payload: Payloads.Each<StoredValue> = { method: Method.Each, errors: [], trigger: Trigger.PreProvider, hook };
+    let payload: Payload.Each<StoredValue> = { method: Method.Each, errors: [], trigger: Trigger.PreProvider, hook };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Each)) payload = await middleware[Method.Each](payload);
@@ -433,7 +431,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async ensure(key: string, defaultValue: StoredValue): Promise<StoredValue> {
-    let payload: Payloads.Ensure<StoredValue> = { method: Method.Ensure, errors: [], trigger: Trigger.PreProvider, key, defaultValue };
+    let payload: Payload.Ensure<StoredValue> = { method: Method.Ensure, errors: [], trigger: Trigger.PreProvider, key, defaultValue };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Ensure)) payload = await middleware[Method.Ensure](payload);
@@ -469,7 +467,7 @@ export class Josh<StoredValue = unknown> {
   public async entries<BulkType extends keyof ReturnBulk<StoredValue> = Bulk.Object>(
     returnBulkType?: BulkType
   ): Promise<ReturnBulk<StoredValue>[BulkType]> {
-    let payload: Payloads.Entries<StoredValue> = { method: Method.Entries, errors: [], trigger: Trigger.PreProvider };
+    let payload: Payload.Entries<StoredValue> = { method: Method.Entries, errors: [], trigger: Trigger.PreProvider };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Entries)) payload = await middleware[Method.Entries](payload);
@@ -554,17 +552,25 @@ export class Josh<StoredValue = unknown> {
       if (!isPrimitive(value)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
     }
 
-    let payload: Payloads.Every<StoredValue> = {
-      method: Method.Every,
-      errors: [],
-      trigger: Trigger.PreProvider,
-      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value
-    };
+    let payload: Payload.Every<StoredValue>;
 
-    if (isFunction(pathOrHook)) payload.hook = pathOrHook;
-    else {
-      payload.path = this.resolvePath(pathOrHook);
-      payload.value = value;
+    if (isFunction(pathOrHook)) {
+      payload = {
+        method: Method.Every,
+        errors: [],
+        trigger: Trigger.PreProvider,
+        type: Payload.Type.Hook,
+        hook: pathOrHook
+      };
+    } else {
+      payload = {
+        method: Method.Every,
+        errors: [],
+        trigger: Trigger.PreProvider,
+        type: Payload.Type.Value,
+        path: this.resolvePath(pathOrHook),
+        value
+      };
     }
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
@@ -609,7 +615,6 @@ export class Josh<StoredValue = unknown> {
    * Filter stored data using a hook function.
    * @since 2.0.0
    * @param hook The hook function to check equality.
-   * @param _value Unused.
    * @param returnBulkType The return bulk type. Defaults to {@link Bulk.Object}
    * @returns The bulk data.
    *
@@ -618,36 +623,43 @@ export class Josh<StoredValue = unknown> {
    * await josh.set('key', 'value');
    *
    * await josh.filter((value) => value === 'value'); // { key: { path: 'value' } }
-   * await josh.filter((value) => value === 'value', undefined, Bulk.TwoDimensionalArray); // [['key', 'value']]
+   * await josh.filter((value) => value === 'value', Bulk.TwoDimensionalArray); // [['key', 'value']]
    * ```
    */
   public async filter<BulkType extends keyof ReturnBulk<StoredValue>>(
     hook: Payload.Hook<StoredValue>,
-    _value?: undefined,
     returnBulkType?: BulkType
   ): Promise<ReturnBulk<StoredValue>[BulkType]>;
 
   public async filter<BulkType extends keyof ReturnBulk<StoredValue>>(
     pathOrHook: Path | Payload.Hook<StoredValue>,
-    value?: Primitive,
+    valueOrReturnBulkType?: Primitive | BulkType,
     returnBulkType?: BulkType
   ): Promise<ReturnBulk<StoredValue>[BulkType]> {
     if (!isFunction(pathOrHook)) {
-      if (value === undefined) throw this.error(CommonIdentifiers.MissingValue);
-      if (!isPrimitive(value)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      if (valueOrReturnBulkType === undefined) throw this.error(CommonIdentifiers.MissingValue);
+      if (!isPrimitive(valueOrReturnBulkType)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
     }
 
-    let payload: Payloads.Filter<StoredValue> = {
-      method: Method.Filter,
-      errors: [],
-      trigger: Trigger.PreProvider,
-      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value
-    };
+    let payload: Payload.Filter<StoredValue>;
 
-    if (isFunction(pathOrHook)) payload.hook = pathOrHook;
-    else {
-      payload.path = this.resolvePath(pathOrHook);
-      payload.value = value;
+    if (isFunction(pathOrHook)) {
+      payload = {
+        method: Method.Filter,
+        errors: [],
+        trigger: Trigger.PreProvider,
+        type: Payload.Type.Hook,
+        hook: pathOrHook
+      };
+    } else {
+      payload = {
+        method: Method.Filter,
+        errors: [],
+        trigger: Trigger.PreProvider,
+        type: Payload.Type.Value,
+        path: this.resolvePath(pathOrHook),
+        value: valueOrReturnBulkType
+      };
     }
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
@@ -662,7 +674,12 @@ export class Josh<StoredValue = unknown> {
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<Record<string, StoredValue>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
+    if (isPayloadWithData<Record<string, StoredValue>>(payload)) {
+      return this.convertBulkData(
+        payload.data,
+        isPrimitive(valueOrReturnBulkType) || typeof valueOrReturnBulkType === 'symbol' ? returnBulkType : valueOrReturnBulkType || returnBulkType
+      );
+    }
 
     throw this.providerDataFailedError;
   }
@@ -713,17 +730,25 @@ export class Josh<StoredValue = unknown> {
       if (!isPrimitive(value)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
     }
 
-    let payload: Payloads.Find<StoredValue> = {
-      method: Method.Find,
-      errors: [],
-      trigger: Trigger.PreProvider,
-      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value
-    };
+    let payload: Payload.Find<StoredValue>;
 
-    if (isFunction(pathOrHook)) payload.hook = pathOrHook;
-    else {
-      payload.path = this.resolvePath(pathOrHook);
-      payload.value = value;
+    if (isFunction(pathOrHook)) {
+      payload = {
+        method: Method.Find,
+        errors: [],
+        trigger: Trigger.PreProvider,
+        type: Payload.Type.Hook,
+        hook: pathOrHook
+      };
+    } else {
+      payload = {
+        method: Method.Find,
+        errors: [],
+        trigger: Trigger.PreProvider,
+        type: Payload.Type.Value,
+        path: this.resolvePath(pathOrHook),
+        value
+      };
     }
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
@@ -754,6 +779,7 @@ export class Josh<StoredValue = unknown> {
    * await josh.set('key', 'value');
    *
    * await josh.get('key'); // 'value'
+   * await josh.get('notfound'); // null
    * ```
    */
   public async get(key: string): Promise<StoredValue | null>;
@@ -788,7 +814,7 @@ export class Josh<StoredValue = unknown> {
   public async get<Value = StoredValue>(key: string, path: Path = []): Promise<Value | null> {
     path = this.resolvePath(path);
 
-    let payload: Payloads.Get<Value> = { method: Method.Get, errors: [], trigger: Trigger.PreProvider, key, path };
+    let payload: Payload.Get<Value> = { method: Method.Get, errors: [], trigger: Trigger.PreProvider, key, path };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Get)) payload = await middleware[Method.Get](payload);
@@ -824,7 +850,7 @@ export class Josh<StoredValue = unknown> {
     keys: string[],
     returnBulkType?: BulkType
   ): Promise<ReturnBulk<StoredValue | null>[BulkType]> {
-    let payload: Payloads.GetMany<StoredValue> = { method: Method.GetMany, errors: [], trigger: Trigger.PreProvider, keys };
+    let payload: Payload.GetMany<StoredValue> = { method: Method.GetMany, errors: [], trigger: Trigger.PreProvider, keys };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.GetMany)) payload = await middleware[Method.GetMany](payload);
@@ -873,7 +899,7 @@ export class Josh<StoredValue = unknown> {
   public async has(key: string, path: Path = []): Promise<boolean> {
     path = this.resolvePath(path);
 
-    let payload: Payloads.Has = { method: Method.Has, errors: [], trigger: Trigger.PreProvider, key, path };
+    let payload: Payload.Has = { method: Method.Has, errors: [], trigger: Trigger.PreProvider, key, path };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Has)) payload = await middleware[Method.Has](payload);
@@ -923,13 +949,13 @@ export class Josh<StoredValue = unknown> {
    *
    * await josh.inc('key', ['path']);
    *
-   * await josh.get('key', 'path); // 1
+   * await josh.get('key', 'path'); // 1
    * ```
    */
   public async inc(key: string, path: Path = []): Promise<this> {
     path = this.resolvePath(path);
 
-    let payload: Payloads.Inc = { method: Method.Inc, errors: [], trigger: Trigger.PreProvider, key, path };
+    let payload: Payload.Inc = { method: Method.Inc, errors: [], trigger: Trigger.PreProvider, key, path };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Inc)) payload = await middleware[Method.Inc](payload);
@@ -946,9 +972,9 @@ export class Josh<StoredValue = unknown> {
   }
 
   /**
-   * Returns all stored value keys.
+   * Returns all stored keys.
    * @since 2.0.0
-   * @returns The array of stored value keys.
+   * @returns The array of stored keys.
    *
    * @example
    * ```javascript
@@ -958,7 +984,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async keys(): Promise<string[]> {
-    let payload: Payloads.Keys = { method: Method.Keys, errors: [], trigger: Trigger.PreProvider };
+    let payload: Payload.Keys = { method: Method.Keys, errors: [], trigger: Trigger.PreProvider };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Keys)) payload = await middleware[Method.Keys](payload);
@@ -1003,17 +1029,34 @@ export class Josh<StoredValue = unknown> {
    *
    * await josh.map((value) => value.toUpperCase()); // ['VALUE']
    * ```
+   * @example
+   * ```typescript
+   * // TypeScript example
+   * await josh.set('key', { path: 'value' });
+   *
+   * await josh.map<string>((value) => value.path); // ['value']
+   * ```
    */
   public async map<Value = StoredValue>(pathOrHook: Path | Payload.Hook<StoredValue, Value>): Promise<Value[]> {
-    let payload: Payloads.Map<StoredValue, Value> = {
-      method: Method.Map,
-      errors: [],
-      trigger: Trigger.PreProvider,
-      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Path
-    };
+    let payload: Payload.Map<StoredValue, Value>;
 
-    if (isFunction(pathOrHook)) payload.hook = pathOrHook;
-    else payload.path = this.resolvePath(pathOrHook);
+    if (isFunction(pathOrHook)) {
+      payload = {
+        method: Method.Map,
+        errors: [],
+        trigger: Trigger.PreProvider,
+        type: Payload.Type.Hook,
+        hook: pathOrHook
+      };
+    } else {
+      payload = {
+        method: Method.Map,
+        errors: [],
+        trigger: Trigger.PreProvider,
+        type: Payload.Type.Path,
+        path: this.resolvePath(pathOrHook)
+      };
+    }
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Map)) payload = await middleware[Method.Map](payload);
@@ -1087,13 +1130,13 @@ export class Josh<StoredValue = unknown> {
    *
    * await josh.math('key' MathOperator.Division, 2);
    *
-   * await josh.get('key'); 1
+   * await josh.get('key'); // 1
    * ```
    */
   public async math(key: string, operator: MathOperator, operand: number, path: Path = []): Promise<this> {
     path = this.resolvePath(path);
 
-    let payload: Payloads.Math = { method: Method.Math, errors: [], trigger: Trigger.PreProvider, key, path, operator, operand };
+    let payload: Payload.Math = { method: Method.Math, errors: [], trigger: Trigger.PreProvider, key, path, operator, operand };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Math)) payload = await middleware[Method.Math](payload);
@@ -1127,7 +1170,6 @@ export class Josh<StoredValue = unknown> {
    */
   public async partition<BulkType extends keyof ReturnBulk<StoredValue>>(
     hook: Payload.Hook<StoredValue>,
-    _value?: undefined,
     returnBulkType?: BulkType
   ): Promise<[ReturnBulk<StoredValue>[BulkType], ReturnBulk<StoredValue>[BulkType]]>;
 
@@ -1155,25 +1197,33 @@ export class Josh<StoredValue = unknown> {
 
   public async partition<BulkType extends keyof ReturnBulk<StoredValue>>(
     pathOrHook: Path | Payload.Hook<StoredValue>,
-    value?: Primitive,
+    valueOrReturnBulkType?: Primitive | BulkType,
     returnBulkType?: BulkType
   ): Promise<[ReturnBulk<StoredValue>[BulkType], ReturnBulk<StoredValue>[BulkType]]> {
     if (!isFunction(pathOrHook)) {
-      if (value === undefined) throw this.error(CommonIdentifiers.MissingValue);
-      if (!isPrimitive(value)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      if (valueOrReturnBulkType === undefined) throw this.error(CommonIdentifiers.MissingValue);
+      if (!isPrimitive(valueOrReturnBulkType)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
     }
 
-    let payload: Payloads.Partition<StoredValue> = {
-      method: Method.Partition,
-      errors: [],
-      trigger: Trigger.PreProvider,
-      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value
-    };
+    let payload: Payload.Partition<StoredValue>;
 
-    if (isFunction(pathOrHook)) payload.hook = pathOrHook;
-    else {
-      payload.path = this.resolvePath(pathOrHook);
-      payload.value = value;
+    if (isFunction(pathOrHook)) {
+      payload = {
+        method: Method.Partition,
+        errors: [],
+        trigger: Trigger.PreProvider,
+        type: Payload.Type.Hook,
+        hook: pathOrHook
+      };
+    } else {
+      payload = {
+        method: Method.Partition,
+        errors: [],
+        trigger: Trigger.PreProvider,
+        type: Payload.Type.Value,
+        path: this.resolvePath(pathOrHook),
+        value: valueOrReturnBulkType
+      };
     }
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
@@ -1188,10 +1238,12 @@ export class Josh<StoredValue = unknown> {
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<Payloads.Partition.Data<StoredValue>>(payload)) {
+    if (isPayloadWithData<Payload.Partition.Data<StoredValue>>(payload)) {
       const { truthy, falsy } = payload.data;
+      const bulkType =
+        isPrimitive(valueOrReturnBulkType) || typeof valueOrReturnBulkType === 'symbol' ? returnBulkType : valueOrReturnBulkType || returnBulkType;
 
-      return [this.convertBulkData(truthy, returnBulkType), this.convertBulkData(falsy, returnBulkType)];
+      return [this.convertBulkData(truthy, bulkType), this.convertBulkData(falsy, bulkType)];
     }
 
     throw this.providerDataFailedError;
@@ -1218,16 +1270,16 @@ export class Josh<StoredValue = unknown> {
    * ```javascript
    * await josh.set('key', { path: [] });
    *
-   * await josh.push('key', 'value', 'path');
-   * await josh.push('key', 'value', ['path']);
+   * await josh.push('key', 'firstValue', 'path');
+   * await josh.push('key', 'secondValue', ['path']);
    *
-   * await josh.get('key', 'path'); // ['value']
+   * await josh.get('key', 'path'); // ['firstValue', 'secondValue']
    * ```
    */
   public async push<Value = StoredValue>(key: string, value: Value, path: Path = []): Promise<this> {
     path = this.resolvePath(path);
 
-    let payload: Payloads.Push<Value> = { method: Method.Push, errors: [], trigger: Trigger.PreProvider, key, path, value };
+    let payload: Payload.Push<Value> = { method: Method.Push, errors: [], trigger: Trigger.PreProvider, key, path, value };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Push)) payload = await middleware[Method.Push](payload);
@@ -1262,7 +1314,7 @@ export class Josh<StoredValue = unknown> {
    */
   public async random(options?: Josh.RandomOptions): Promise<StoredValue[] | null> {
     const { count = 1, duplicates = true } = options ?? {};
-    let payload: Payloads.Random<StoredValue> = { method: Method.Random, errors: [], trigger: Trigger.PreProvider, count, duplicates };
+    let payload: Payload.Random<StoredValue> = { method: Method.Random, errors: [], trigger: Trigger.PreProvider, count, duplicates };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Random)) payload = await middleware[Method.Random](payload);
@@ -1302,7 +1354,7 @@ export class Josh<StoredValue = unknown> {
    */
   public async randomKey(options?: Josh.RandomOptions): Promise<string[] | null> {
     const { count = 1, duplicates = true } = options ?? {};
-    let payload: Payloads.RandomKey = { method: Method.RandomKey, errors: [], trigger: Trigger.PreProvider, count, duplicates };
+    let payload: Payload.RandomKey = { method: Method.RandomKey, errors: [], trigger: Trigger.PreProvider, count, duplicates };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.RandomKey)) payload = await middleware[Method.RandomKey](payload);
@@ -1363,7 +1415,7 @@ export class Josh<StoredValue = unknown> {
       if (!isPrimitive(valueOrHook)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
     }
 
-    let payload: Payloads.Remove<Value> = {
+    let payload: Payload.Remove<Value> = {
       method: Method.Remove,
       errors: [],
       trigger: Trigger.PreProvider,
@@ -1411,7 +1463,7 @@ export class Josh<StoredValue = unknown> {
   public async set<Value = StoredValue>(key: string, value: Value, path: Path = []): Promise<this> {
     path = this.resolvePath(path);
 
-    let payload: Payloads.Set<Value> = { method: Method.Set, errors: [], trigger: Trigger.PreProvider, key, path, value };
+    let payload: Payload.Set<Value> = { method: Method.Set, errors: [], trigger: Trigger.PreProvider, key, path, value };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Set)) payload = await middleware[Method.Set](payload);
@@ -1428,7 +1480,7 @@ export class Josh<StoredValue = unknown> {
   }
 
   public async setMany(entries: [KeyPath, unknown][], overwrite = true): Promise<this> {
-    let payload: Payloads.SetMany = {
+    let payload: Payload.SetMany = {
       method: Method.SetMany,
       errors: [],
       trigger: Trigger.PreProvider,
@@ -1465,7 +1517,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async size(): Promise<number> {
-    let payload: Payloads.Size = { method: Method.Size, errors: [], trigger: Trigger.PreProvider };
+    let payload: Payload.Size = { method: Method.Size, errors: [], trigger: Trigger.PreProvider };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Size)) payload = await middleware[Method.Size](payload);
@@ -1529,7 +1581,7 @@ export class Josh<StoredValue = unknown> {
       if (!isPrimitive(value)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
     }
 
-    let payload: Payloads.Some<StoredValue> = {
+    let payload: Payload.Some<StoredValue> = {
       method: Method.Some,
       errors: [],
       trigger: Trigger.PreProvider,
@@ -1573,7 +1625,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async update<Value = StoredValue>(key: string, hook: Payload.Hook<StoredValue, Value>): Promise<this> {
-    let payload: Payloads.Update<StoredValue, Value> = { method: Method.Update, errors: [], trigger: Trigger.PreProvider, key, hook };
+    let payload: Payload.Update<StoredValue, Value> = { method: Method.Update, errors: [], trigger: Trigger.PreProvider, key, hook };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Update)) payload = await middleware[Method.Update](payload);
@@ -1603,7 +1655,7 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async values(): Promise<StoredValue[]> {
-    let payload: Payloads.Values<StoredValue> = { method: Method.Values, errors: [], trigger: Trigger.PreProvider };
+    let payload: Payload.Values<StoredValue> = { method: Method.Values, errors: [], trigger: Trigger.PreProvider };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Values)) payload = await middleware[Method.Values](payload);

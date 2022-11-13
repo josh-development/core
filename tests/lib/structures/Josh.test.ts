@@ -1,11 +1,22 @@
 import { AutoEnsureMiddleware } from '@joshdb/auto-ensure';
 import { MapProvider } from '@joshdb/map';
-import { ApplyMiddlewareOptions, CommonIdentifiers, JoshMiddleware, JoshProvider, MathOperator, Method, Payload, Trigger } from '@joshdb/provider';
+import {
+  ApplyMiddlewareOptions,
+  CommonIdentifiers,
+  JoshMiddleware,
+  JoshProvider,
+  MathOperator,
+  Method,
+  Payload,
+  Semver,
+  Trigger
+} from '@joshdb/provider';
 import type { NonNullObject } from '@sapphire/utilities';
 import { Bulk, Josh, JoshError } from '../../../src';
 
 @ApplyMiddlewareOptions({ name: 'test' })
 class TestMiddleware<StoredValue = unknown> extends JoshMiddleware<NonNullObject, StoredValue> {
+  public version: Semver = { major: 2, minor: 0, patch: 0 };
   public run<P extends Payload>(payload: P): P {
     if (payload.trigger === Trigger.PostProvider) {
       if (TestMiddleware.errorCount === 1) {
@@ -33,6 +44,10 @@ class TestMiddleware<StoredValue = unknown> extends JoshMiddleware<NonNullObject
     }
 
     return payload;
+  }
+
+  public fetchVersion() {
+    return this.version;
   }
 
   public static errorCount: 0 | 1 | 2 = 0;
@@ -152,8 +167,8 @@ describe('Josh', () => {
         josh.use({ name: 'test', trigger: Trigger.PreProvider, method: Method.Dec }, (payload) => payload);
 
         expect(josh.middlewares.size).toBe(1);
-        expect(josh.middlewares.get('test')?.conditions.pre).toEqual(['dec']);
-        expect(josh.middlewares.get('test')?.conditions.post).toEqual([]);
+        expect(josh.middlewares.get('test')?.conditions[Trigger.PreProvider]).toEqual(['dec']);
+        expect(josh.middlewares.get('test')?.conditions[Trigger.PostProvider]).toEqual([]);
       });
 
       test('GIVEN josh w/ hook middleware w/ trigger THEN add middleware', () => {
@@ -164,8 +179,8 @@ describe('Josh', () => {
         josh.use({ name: 'test', trigger: Trigger.PostProvider, method: Method.Dec }, (payload) => payload);
 
         expect(josh.middlewares.size).toBe(1);
-        expect(josh.middlewares.get('test')?.conditions.post).toEqual(['dec']);
-        expect(josh.middlewares.get('test')?.conditions.pre).toEqual([]);
+        expect(josh.middlewares.get('test')?.conditions[Trigger.PostProvider]).toEqual(['dec']);
+        expect(josh.middlewares.get('test')?.conditions[Trigger.PreProvider]).toEqual([]);
       });
 
       test('GIVEN josh w/ invalid hook middleware THEN add middleware', () => {

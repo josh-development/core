@@ -379,7 +379,7 @@ __metadata:
   version: 1.1.0-next.c7a06e3.0
   resolution: "@joshdb/auto-ensure@npm:1.1.0-next.c7a06e3.0"
   dependencies:
-    "@joshdb/provider": 2.0.0-next.d32662f.0
+    "@joshdb/provider": 2.0.0-next.10ed637.0
     "@sapphire/utilities": ^3.11.0
   checksum: 671acc8e405fbb7fdff8ec989e3d4fa22274d364541d436f8270d282c53e1475309e1b55086d5376593ace06824ef9b1d8441fc0dae19b1a7fbaaa11c44f55ce
   languageName: node
@@ -395,7 +395,7 @@ __metadata:
     "@favware/npm-deprecate": ^1.0.5
     "@favware/rollup-type-bundler": ^1.0.11
     "@joshdb/auto-ensure": 1.1.0-next.c7a06e3.0
-    "@joshdb/map": 1.1.0-next.192e90b.0
+    "@joshdb/map": 1.1.0-next.4a720e8.0
     "@joshdb/provider": 2.0.0-next.24b745c.0
     "@sapphire/eslint-config": ^4.3.8
     "@sapphire/ts-config": ^3.3.4
@@ -423,15 +423,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@joshdb/map@npm:1.1.0-next.192e90b.0":
-  version: 1.1.0-next.192e90b.0
-  resolution: "@joshdb/map@npm:1.1.0-next.192e90b.0"
+"@joshdb/map@npm:1.1.0-next.4a720e8.0":
+  version: 1.1.0-next.4a720e8.0
+  resolution: "@joshdb/map@npm:1.1.0-next.4a720e8.0"
   dependencies:
-    "@joshdb/provider": 2.0.0-next.f40a41e.0
+    "@joshdb/provider": 2.0.0-next.24b745c.0
     "@joshdb/serialize": 1.1.0-next.24b745c.0
     "@sapphire/utilities": ^3.11.0
     property-helpers: ^2.0.0
-  checksum: 424c36416c95b59998cbfaf1c21233329a2c4859f1d70b53d7e3531b0ea70efaa7c6bcfbb40a374183867f09c8f71e6be1b7f6f5f1bc5e5448da498d8e0016b3
+  checksum: 3811c3751c7a07d4cf2082f2f6d40a2c208b3e9af0c3f48bcdf5a601b823ef35833b65feab2a2889c1df0facb138bc116a152b76e33ecb27a2816b6104015de4
+  languageName: node
+  linkType: hard
+
+"@joshdb/provider@npm:2.0.0-next.10ed637.0":
+  version: 2.0.0-next.10ed637.0
+  resolution: "@joshdb/provider@npm:2.0.0-next.10ed637.0"
+  dependencies:
+    "@sapphire/utilities": ^3.11.0
+    reflect-metadata: ^0.1.13
+  checksum: 635399b024732da4b206e803daafa46e8d14ee5fff8f3f895ffd469d4af1aff0c6a17624ab51d973d9ab10eba4d34ca69273e4ce43822c8f266ea242f6fd6e50
   languageName: node
   linkType: hard
 
@@ -442,26 +452,6 @@ __metadata:
     "@sapphire/utilities": ^3.11.0
     reflect-metadata: ^0.1.13
   checksum: ccc33f7f4d0b4c42a67553198fb42ae48753fcf96b45cac4adadd0e0b0ac3471d0448c2c410733dd7684f51036e59263046e31b9f80c7f65d7fdc65cdc42f099
-  languageName: node
-  linkType: hard
-
-"@joshdb/provider@npm:2.0.0-next.d32662f.0":
-  version: 2.0.0-next.d32662f.0
-  resolution: "@joshdb/provider@npm:2.0.0-next.d32662f.0"
-  dependencies:
-    "@sapphire/utilities": ^3.9.3
-    reflect-metadata: ^0.1.13
-  checksum: 2e1b84266f8b50ae2ee68af14d91df6a427ae42ff8058671ec4e20e16040b5cae05369996d20a77e93b722dd2315c1743e0360e1896b6b76381e124b71699a38
-  languageName: node
-  linkType: hard
-
-"@joshdb/provider@npm:2.0.0-next.f40a41e.0":
-  version: 2.0.0-next.f40a41e.0
-  resolution: "@joshdb/provider@npm:2.0.0-next.f40a41e.0"
-  dependencies:
-    "@sapphire/utilities": ^3.11.0
-    reflect-metadata: ^0.1.13
-  checksum: 33297b6e89deb769f7f626f1427bbee3a71943595a6dcd07c8eaa49817b2fd271cb097a7f75dfbbe2f7fb0c36007de4a460fa73aedbdde69ceaafb480a1c6ae8
   languageName: node
   linkType: hard
 
@@ -1520,15 +1510,15 @@ __metadata:
   linkType: hard
 
 "cosmiconfig@npm:^7.0.0":
-  version: 7.0.1
-  resolution: "cosmiconfig@npm:7.0.1"
+  version: 7.1.0
+  resolution: "cosmiconfig@npm:7.1.0"
   dependencies:
     "@types/parse-json": ^4.0.0
     import-fresh: ^3.2.1
     parse-json: ^5.0.0
     path-type: ^4.0.0
     yaml: ^1.10.0
-  checksum: 4be63e7117955fd88333d7460e4c466a90f556df6ef34efd59034d2463484e339666c41f02b523d574a797ec61f4a91918c5b89a316db2ea2f834e0d2d09465b
+  checksum: c53bf7befc1591b2651a22414a5e786cd5f2eeaa87f3678a3d49d6069835a9d8d1aef223728e98aa8fec9a95bf831120d245096db12abe019fecb51f5696c96f
   languageName: node
   linkType: hard
 
