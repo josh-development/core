@@ -6,6 +6,7 @@ import {
   JoshMiddleware,
   JoshMiddlewareStore,
   JoshProvider,
+  KeyPath,
   KeyPathJSON,
   MathOperator,
   Method,
@@ -1415,17 +1416,29 @@ export class Josh<StoredValue = unknown> {
       if (!isPrimitive(valueOrHook)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
     }
 
-    let payload: Payload.Remove<Value> = {
-      method: Method.Remove,
-      errors: [],
-      trigger: Trigger.PreProvider,
-      type: isFunction(valueOrHook) ? Payload.Type.Hook : Payload.Type.Value,
-      key,
-      path
-    };
+    let payload: Payload.Remove<Value>;
 
-    if (isFunction(valueOrHook)) payload.hook = valueOrHook;
-    else payload.value = valueOrHook;
+    if (isFunction(valueOrHook)) {
+      payload = {
+        method: Method.Remove,
+        errors: [],
+        trigger: Trigger.PreProvider,
+        type: Payload.Type.Hook,
+        key,
+        path,
+        hook: valueOrHook
+      };
+    } else {
+      payload = {
+        method: Method.Remove,
+        errors: [],
+        trigger: Trigger.PreProvider,
+        type: Payload.Type.Value,
+        key,
+        path,
+        value: valueOrHook
+      };
+    }
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Remove)) payload = await middleware[Method.Remove](payload);
@@ -1446,7 +1459,6 @@ export class Josh<StoredValue = unknown> {
    * @since 2.0.0
    * @param key The key to set the value to.
    * @param value The value to set at the key and/or path.
-   * @returns The {@link Josh} instance.
    * @returns The {@link Josh} instance.
    *
    * @example
@@ -1479,6 +1491,25 @@ export class Josh<StoredValue = unknown> {
     return this;
   }
 
+  /**
+   * Sets multiple keys and/or paths to their respective values.
+   * @since 2.0.0
+   * @param entries The entries of key/path/value to set.
+   * @returns The {@link Josh} instance.
+   *
+   * @example
+   * ```javascript
+   * await josh.setMany([
+   *   ['key', 'value'],
+   * ]);
+   * await josh.setMany([
+   *   ['key', { path: 'value' }],
+   * ]);
+   * await josh.setMany([
+   *   [{ key: 'key', path: 'path' }, 'value'],
+   * ]);
+   * ```
+   */
   public async setMany(entries: [KeyPath, unknown][], overwrite = true): Promise<this> {
     let payload: Payload.SetMany = {
       method: Method.SetMany,
