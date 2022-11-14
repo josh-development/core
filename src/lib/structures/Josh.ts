@@ -17,7 +17,7 @@ import {
 } from '@joshdb/provider';
 import { Awaitable, isFunction, isPrimitive, NonNullObject, Primitive } from '@sapphire/utilities';
 import process from 'process';
-import { JoshError } from './JoshError';
+import { JoshError, JoshErrorOptions } from './JoshError';
 
 /**
  * The base class that makes Josh work.
@@ -125,9 +125,7 @@ export class Josh<StoredValue = unknown> {
   public async init(): Promise<this> {
     for (const middleware of this.middlewares.values()) await middleware.init(this.middlewares);
 
-    const context = await this.provider.init({ name: this.name });
-
-    if (context.error) throw context.error;
+    await this.provider.init({ name: this.name });
 
     return this;
   }
@@ -168,9 +166,10 @@ export class Josh<StoredValue = unknown> {
 
       const { name, trigger, method } = optionsOrInstance;
       const options: JoshMiddleware.Options = { name, conditions: { [Trigger.PreProvider]: [], [Trigger.PostProvider]: [] } };
+      // @ts-ignore Until provider updates
       const middleware = this.middlewares.get(options.name) ?? new JoshMiddleware<NonNullObject, StoredValue>({}, options);
 
-      if (trigger !== undefined && method !== undefined) options.conditions[Trigger.PreProvider].push(method);
+      if (trigger !== undefined && method !== undefined) options.conditions[trigger].push(method);
 
       Object.defineProperty(middleware, method === undefined ? 'run' : method, { value: hook });
       this.middlewares.set(middleware.name, middleware);
@@ -1495,6 +1494,7 @@ export class Josh<StoredValue = unknown> {
    * Sets multiple keys and/or paths to their respective values.
    * @since 2.0.0
    * @param entries The entries of key/path/value to set.
+   * @param overwrite Whether to overwrite existing values (default true).
    * @returns The {@link Josh} instance.
    *
    * @example
@@ -1605,24 +1605,32 @@ export class Josh<StoredValue = unknown> {
    * await josh.some('path', 'value'); // true
    * ```
    */
-  public async some(hook: Payload.Hook<StoredValue>): Promise<boolean>;
-  public async some(pathOrHook: Path | Payload.Hook<StoredValue>, value?: Primitive): Promise<boolean> {
+  public async some(hook: Payload.Hook<StoredValue, boolean>): Promise<boolean>;
+  public async some(pathOrHook: Path | Payload.Hook<StoredValue, boolean>, value?: Primitive): Promise<boolean> {
     if (!isFunction(pathOrHook)) {
       if (value === undefined) throw this.error(CommonIdentifiers.MissingValue);
       if (!isPrimitive(value)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
     }
 
-    let payload: Payload.Some<StoredValue> = {
-      method: Method.Some,
-      errors: [],
-      trigger: Trigger.PreProvider,
-      type: isFunction(pathOrHook) ? Payload.Type.Hook : Payload.Type.Value
-    };
+    let payload: Payload.Some<StoredValue>;
 
-    if (isFunction(pathOrHook)) payload.hook = pathOrHook;
-    else {
-      payload.path = this.resolvePath(pathOrHook);
-      payload.value = value;
+    if (isFunction(pathOrHook)) {
+      payload = {
+        method: Method.Some,
+        errors: [],
+        trigger: Trigger.PreProvider,
+        type: Payload.Type.Hook,
+        hook: pathOrHook
+      };
+    } else {
+      payload = {
+        method: Method.Some,
+        errors: [],
+        trigger: Trigger.PreProvider,
+        type: Payload.Type.Value,
+        path: this.resolvePath(pathOrHook),
+        value
+      };
     }
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
@@ -1644,6 +1652,7 @@ export class Josh<StoredValue = unknown> {
 
   /**
    * Update a stored value using a hook function.
+   * @since 2.0.0
    * @param key The key to the stored value for updating.
    * @param hook The hook to update the stored value.
    * @returns The updated value or null.
@@ -1705,6 +1714,20 @@ export class Josh<StoredValue = unknown> {
     throw this.providerDataFailedError;
   }
 
+  /**
+   * Import exported data to json
+   * @since 2.0.0
+   * @param options The options to import data.
+   * @returns The {@link Josh} instance.
+   *
+   * @example
+   * ```javascript
+   * const { readFileSync } = require('fs');
+   *
+   * const json = JSON.parse(readFileSync("./export.json"))
+   * await josh.import({ json });
+   * ```
+   */
   public async import(options: Josh.ImportOptions<StoredValue>): Promise<this> {
     let { json, overwrite, clear } = options;
 
@@ -1729,6 +1752,14 @@ export class Josh<StoredValue = unknown> {
    * Exports all data from the provider.
    * @since 2.0.0
    * @returns The exported data json object.
+   *
+   * @example
+   * ```javascript
+   * const { writeFileSync } = require('fs');
+   *
+   * const json = await josh.export();
+   * writeFileSync("./export.json", JSON.stringify(json));
+   * ```
    */
   public async export(): Promise<Josh.ExportJSON<StoredValue>> {
     return {

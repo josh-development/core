@@ -1,16 +1,5 @@
 import { AutoEnsureMiddleware } from '@joshdb/auto-ensure';
-import { MapProvider } from '@joshdb/map';
-import {
-  ApplyMiddlewareOptions,
-  CommonIdentifiers,
-  JoshMiddleware,
-  JoshProvider,
-  MathOperator,
-  Method,
-  Payload,
-  Semver,
-  Trigger
-} from '@joshdb/provider';
+import { ApplyMiddlewareOptions, CommonIdentifiers, JoshMiddleware, MathOperator, Method, Payload, Semver, Trigger } from '@joshdb/provider';
 import type { NonNullObject } from '@sapphire/utilities';
 import { Bulk, Josh, JoshError } from '../../../src';
 
@@ -119,20 +108,6 @@ describe('Josh', () => {
 
       expect(spy).toHaveBeenCalledOnce();
     });
-
-    test('GIVEN Josh w/ init error THEN throws error', async () => {
-      class TestProvider extends MapProvider {
-        public async init(context: JoshProvider.Context): Promise<JoshProvider.Context> {
-          context.error = this.error(CommonIdentifiers.MissingValue);
-
-          return Promise.resolve(context);
-        }
-      }
-
-      const josh = new Josh({ name: 'name', provider: new TestProvider() });
-
-      await expect(josh.init()).rejects.toThrowError(josh.provider['error'](CommonIdentifiers.MissingValue));
-    });
   });
 
   describe('middleware', () => {
@@ -142,7 +117,7 @@ describe('Josh', () => {
 
         expect(josh.middlewares.size).toBe(0);
 
-        josh.use(new AutoEnsureMiddleware({ defaultValue: { test: false } }) as unknown as JoshMiddleware<{ test: boolean }>);
+        josh.use(new AutoEnsureMiddleware({ defaultValue: { test: false } }) as unknown as JoshMiddleware<object, unknown>);
 
         expect(josh.middlewares.size).toBe(1);
       });
@@ -154,7 +129,7 @@ describe('Josh', () => {
 
         josh.use({ name: 'test' }, (payload) => payload);
 
-        expect(josh.middlewares.get('test')?.conditions).toEqual({ pre: [], post: [] });
+        expect(josh.middlewares.get('test')?.conditions).toEqual({ [Trigger.PreProvider]: [], [Trigger.PostProvider]: [] });
 
         expect(josh.middlewares.size).toBe(1);
       });
