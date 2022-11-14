@@ -123,9 +123,9 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async init(): Promise<this> {
-    for (const middleware of this.middlewares.values()) await middleware.init(this.middlewares);
-
     await this.provider.init({ name: this.name });
+
+    for (const middleware of this.middlewares.values()) await middleware.init(this.middlewares);
 
     return this;
   }
