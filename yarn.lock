@@ -375,13 +375,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/auto-ensure@npm:1.1.0-next.c7a06e3.0":
-  version: 1.1.0-next.c7a06e3.0
-  resolution: "@joshdb/auto-ensure@npm:1.1.0-next.c7a06e3.0"
+"@joshdb/auto-ensure@npm:1.1.0-next.aab9ec1.0":
+  version: 1.1.0-next.aab9ec1.0
+  resolution: "@joshdb/auto-ensure@npm:1.1.0-next.aab9ec1.0"
   dependencies:
     "@joshdb/provider": 2.0.0-next.24b745c.0
     "@sapphire/utilities": ^3.11.0
-  checksum: 671acc8e405fbb7fdff8ec989e3d4fa22274d364541d436f8270d282c53e1475309e1b55086d5376593ace06824ef9b1d8441fc0dae19b1a7fbaaa11c44f55ce
+  checksum: 913b7aa43e9e86dc643ce939ec3d821533eca60da7c9f2bfcd7d816b0b4350b301425030bbea9b9060dd094bacd866fcb2f00e763fb528048e1b55b11e18676b
   languageName: node
   linkType: hard
 
@@ -394,8 +394,8 @@ __metadata:
     "@favware/cliff-jumper": ^1.8.8
     "@favware/npm-deprecate": ^1.0.5
     "@favware/rollup-type-bundler": ^1.0.11
-    "@joshdb/auto-ensure": 1.1.0-next.c7a06e3.0
-    "@joshdb/map": 1.1.0-next.4a720e8.0
+    "@joshdb/auto-ensure": 1.1.0-next.aab9ec1.0
+    "@joshdb/map": 1.1.0-next.6712000.0
     "@joshdb/provider": 2.0.0-next.24b745c.0
     "@sapphire/eslint-config": ^4.3.8
     "@sapphire/ts-config": ^3.3.4
@@ -423,15 +423,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@joshdb/map@npm:1.1.0-next.4a720e8.0":
-  version: 1.1.0-next.4a720e8.0
-  resolution: "@joshdb/map@npm:1.1.0-next.4a720e8.0"
+"@joshdb/map@npm:1.1.0-next.6712000.0":
+  version: 1.1.0-next.6712000.0
+  resolution: "@joshdb/map@npm:1.1.0-next.6712000.0"
   dependencies:
     "@joshdb/provider": 2.0.0-next.24b745c.0
     "@joshdb/serialize": 1.1.0-next.24b745c.0
     "@sapphire/utilities": ^3.11.0
     property-helpers: ^2.0.0
-  checksum: 3811c3751c7a07d4cf2082f2f6d40a2c208b3e9af0c3f48bcdf5a601b823ef35833b65feab2a2889c1df0facb138bc116a152b76e33ecb27a2816b6104015de4
+  checksum: 0b8897e6b01b70895152399205c8d006ba7cb5485a8dd098c23e30960211ceb743278c9e7e1f6ab77f63b43f11d4e91dd4d03dc4904926a7e803ef85c9ea47cc
   languageName: node
   linkType: hard
 
