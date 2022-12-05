@@ -633,12 +633,12 @@ export class Josh<StoredValue = unknown> {
 
   public async filter<BulkType extends keyof ReturnBulk<StoredValue>>(
     pathOrHook: Path | Payload.Hook<StoredValue>,
-    valueOrReturnBulkType?: Primitive | BulkType,
+    value?: Primitive,
     returnBulkType?: BulkType
   ): Promise<ReturnBulk<StoredValue>[BulkType]> {
     if (!isFunction(pathOrHook)) {
-      if (valueOrReturnBulkType === undefined) throw this.error(CommonIdentifiers.MissingValue);
-      if (!isPrimitive(valueOrReturnBulkType)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      if (value === undefined) throw this.error(CommonIdentifiers.MissingValue);
+      if (!isPrimitive(value)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
     }
 
     let payload: Payload.Filter<StoredValue>;
@@ -658,7 +658,7 @@ export class Josh<StoredValue = unknown> {
         trigger: Trigger.PreProvider,
         type: Payload.Type.Value,
         path: this.resolvePath(pathOrHook),
-        value: valueOrReturnBulkType
+        value
       };
     }
 
@@ -674,12 +674,7 @@ export class Josh<StoredValue = unknown> {
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<Record<string, StoredValue>>(payload)) {
-      return this.convertBulkData(
-        payload.data,
-        isPrimitive(valueOrReturnBulkType) || typeof valueOrReturnBulkType === 'symbol' ? returnBulkType : valueOrReturnBulkType || returnBulkType
-      );
-    }
+    if (isPayloadWithData<Record<string, StoredValue>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
 
     throw this.providerDataFailedError;
   }
@@ -1197,12 +1192,12 @@ export class Josh<StoredValue = unknown> {
 
   public async partition<BulkType extends keyof ReturnBulk<StoredValue>>(
     pathOrHook: Path | Payload.Hook<StoredValue>,
-    valueOrReturnBulkType?: Primitive | BulkType,
+    value?: Primitive,
     returnBulkType?: BulkType
   ): Promise<[ReturnBulk<StoredValue>[BulkType], ReturnBulk<StoredValue>[BulkType]]> {
     if (!isFunction(pathOrHook)) {
-      if (valueOrReturnBulkType === undefined) throw this.error(CommonIdentifiers.MissingValue);
-      if (!isPrimitive(valueOrReturnBulkType)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      if (value === undefined) throw this.error(CommonIdentifiers.MissingValue);
+      if (!isPrimitive(value)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
     }
 
     let payload: Payload.Partition<StoredValue>;
@@ -1222,7 +1217,7 @@ export class Josh<StoredValue = unknown> {
         trigger: Trigger.PreProvider,
         type: Payload.Type.Value,
         path: this.resolvePath(pathOrHook),
-        value: valueOrReturnBulkType
+        value
       };
     }
 
@@ -1240,10 +1235,8 @@ export class Josh<StoredValue = unknown> {
 
     if (isPayloadWithData<Payload.Partition.Data<StoredValue>>(payload)) {
       const { truthy, falsy } = payload.data;
-      const bulkType =
-        isPrimitive(valueOrReturnBulkType) || typeof valueOrReturnBulkType === 'symbol' ? returnBulkType : valueOrReturnBulkType || returnBulkType;
 
-      return [this.convertBulkData(truthy, bulkType), this.convertBulkData(falsy, bulkType)];
+      return [this.convertBulkData(truthy, returnBulkType), this.convertBulkData(falsy, returnBulkType)];
     }
 
     throw this.providerDataFailedError;
