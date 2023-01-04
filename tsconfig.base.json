@@ -1,5 +1,5 @@
 {
-  "extends": "@sapphire/ts-config",
+  "extends": "@joshdb/ts-config",
   "compilerOptions": {
     "importHelpers": true,
     "noEmitHelpers": true,
