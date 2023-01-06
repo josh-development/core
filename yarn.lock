@@ -540,10 +540,10 @@ __metadata:
     "@favware/npm-deprecate": ^1.0.5
     "@favware/rollup-type-bundler": ^1.0.11
     "@joshdb/auto-ensure": 1.1.0-pr-125.c8affcc.0
-    "@joshdb/eslint-config": 1.1.0-next.7b50e88.0
+    "@joshdb/eslint-config": 1.1.0-next.89c3b7b.0
     "@joshdb/map": 1.1.0-next.debaead.0
     "@joshdb/provider": 2.0.0-next.7b50e88.0
-    "@joshdb/ts-config": ^1.1.0-next.7fbd1fd.0
+    "@joshdb/ts-config": 1.1.0-next.7fbd1fd.0
     "@sapphire/utilities": ^3.11.0
     "@types/node": ^18.11.9
     "@typescript-eslint/eslint-plugin": ^5.42.1
@@ -568,19 +568,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@joshdb/eslint-config@npm:1.1.0-next.7b50e88.0":
-  version: 1.1.0-next.7b50e88.0
-  resolution: "@joshdb/eslint-config@npm:1.1.0-next.7b50e88.0"
+"@joshdb/eslint-config@npm:1.1.0-next.89c3b7b.0":
+  version: 1.1.0-next.89c3b7b.0
+  resolution: "@joshdb/eslint-config@npm:1.1.0-next.89c3b7b.0"
   dependencies:
     "@sapphire/eslint-config": ^4.3.8
-    "@typescript-eslint/eslint-plugin": ^5.47.0
-    "@typescript-eslint/parser": ^5.47.0
-    eslint: ^8.30.0
+    "@typescript-eslint/eslint-plugin": ^5.47.1
+    "@typescript-eslint/parser": ^5.47.1
+    eslint: ^8.31.0
     eslint-config-prettier: ^8.5.0
     eslint-plugin-prettier: ^4.2.1
     prettier: ^2.8.1
     typescript: ^4.9.4
-  checksum: 34517fc0ac46d847785f367cdc3134af9bf0fc47c64ac24daaf8be07de8e763e8cb7accd30b3b464d3907585b03b620cfe511f3b55c57b17cd6f12be61f10b2e
+  checksum: 26589472310479e9ec0c0aff769ad59cff646c1b28ea406f5e8359821d86eac9e78fa3715917209b3255f89fcdf45c8e3f1d0fb12aca82fcf09cc5067ee6eda0
   languageName: node
   linkType: hard
 
@@ -613,12 +613,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/ts-config@npm:^1.1.0-next.7fbd1fd.0":
-  version: 1.1.0-pr-130.c8671cc.0
-  resolution: "@joshdb/ts-config@npm:1.1.0-pr-130.c8671cc.0"
+"@joshdb/ts-config@npm:1.1.0-next.7fbd1fd.0":
+  version: 1.1.0-next.7fbd1fd.0
+  resolution: "@joshdb/ts-config@npm:1.1.0-next.7fbd1fd.0"
   dependencies:
     "@sapphire/ts-config": ^3.3.4
-  checksum: cc0a9a86db7c18d0d161dddaca5cd281b66db7758d6b09310299e11ab45c001d95123276aed7e29f2c4426309d4d5616dae11bafdf1be815beb778f285f384e7
+  checksum: 844fdfef6157a56e2b500065b3795e37f5606a91182e52078e543820554fc55b4da22b724d4da6b7f83612d0bae25daa737fae7d59557ebabe88c14194ba1d23
   languageName: node
   linkType: hard
 
@@ -877,7 +877,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.33.1, @typescript-eslint/eslint-plugin@npm:^5.42.1, @typescript-eslint/eslint-plugin@npm:^5.47.0":
+"@typescript-eslint/eslint-plugin@npm:^5.33.1, @typescript-eslint/eslint-plugin@npm:^5.42.1, @typescript-eslint/eslint-plugin@npm:^5.47.1":
   version: 5.48.0
   resolution: "@typescript-eslint/eslint-plugin@npm:5.48.0"
   dependencies:
@@ -900,7 +900,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.33.1, @typescript-eslint/parser@npm:^5.42.1, @typescript-eslint/parser@npm:^5.47.0":
+"@typescript-eslint/parser@npm:^5.33.1, @typescript-eslint/parser@npm:^5.42.1, @typescript-eslint/parser@npm:^5.47.1":
   version: 5.48.0
   resolution: "@typescript-eslint/parser@npm:5.48.0"
   dependencies:
@@ -2055,7 +2055,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.22.0, eslint@npm:^8.30.0":
+"eslint@npm:^8.22.0, eslint@npm:^8.30.0, eslint@npm:^8.31.0":
   version: 8.31.0
   resolution: "eslint@npm:8.31.0"
   dependencies:
