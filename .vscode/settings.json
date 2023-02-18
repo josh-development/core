@@ -1,5 +1,7 @@
 {
-  "eslint.validate": ["typescript"],
+  "eslint.validate": [
+    "typescript"
+  ],
   "editor.tabSize": 2,
   "editor.useTabStops": false,
   "editor.insertSpaces": true,
@@ -10,5 +12,5 @@
     "source.organizeImports": true
   },
   "files.eol": "\n",
-  "typescript.tsdk": "node_modules\\typescript\\lib"
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
