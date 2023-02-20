@@ -7,87 +7,30 @@ on:
   pull_request:
 
 jobs:
-  linting:
-    name: Linting
+  ci:
+    name: Continuous Integration
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3
+      - name: Setup Node
+        uses: josh-development/.github/setup-node@main
       - name: Add ESLint Problem Matcher
         run: echo "::add-matcher::.github/problemMatchers/eslint.json"
-      - name: Use Node.js v16
-        uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3
-        with:
-          node-version: 16
-          cache: yarn
-          registry-url: https://registry.npmjs.org/
-      - name: Install Dependencies
-        run: yarn --immutable
       - name: Run ESLint
         run: yarn lint --fix=false
-
-  testing:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Project
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
-      - name: Use Node.js v16
-        uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3
-        with:
-          node-version: 16
-          cache: yarn
-          registry-url: https://registry.npmjs.org/
-      - name: Install Dependencies
-        run: yarn --immutable
-      - name: Run Tests
-        run: yarn test --coverage
-      - name: Store Code Coverage Report
-        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
-        with:
-          name: coverage
-          path: coverage/
-
-  building:
-    name: Compile Source Code
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Project
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
       - name: Add TypeScript Problem Matcher
         run: echo "::add-matcher::.github/problemMatchers/tsc.json"
-      - name: Use Node.js v16
-        uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3
-        with:
-          node-version: 16
-          cache: yarn
-          registry-url: https://registry.npmjs.org/
-      - name: Install Dependencies
-        if: ${{ !steps.cache-restore.outputs.cache-hit }}
-        run: yarn --immutable
-      - name: Build Code
+      - name: Compile Source Code
         run: yarn build
-
-  docs:
-    name: Generate Documentation
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Project
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
-      - name: Use Node.js v16
-        uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3
-        with:
-          node-version: 16
-          cache: yarn
-          registry-url: https://registry.npmjs.org/
-      - name: Install Dependencies
-        run: yarn --immutable
       - name: Generate Documentation
         run: yarn docs
+      - name: Run Tests
+        run: yarn test --coverage
 
   upload-coverage-report:
     name: Upload Code Coverage Report
-    needs: [testing]
+    needs: [ci]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
