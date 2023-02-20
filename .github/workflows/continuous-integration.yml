@@ -27,6 +27,11 @@ jobs:
         run: yarn docs
       - name: Run Tests
         run: yarn test --coverage
+      - name: Store Code Coverage Report
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3
+        with:
+          name: coverage
+          path: coverage/
 
   upload-coverage-report:
     name: Upload Code Coverage Report
