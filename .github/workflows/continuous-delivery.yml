@@ -30,8 +30,6 @@ jobs:
         run: echo "::add-matcher::.github/problemMatchers/tsc.json"
       - name: Setup Node
         uses: josh-development/.github/setup-node@main
-        with:
-          turbo: true
       - name: Bump Version & Publish
         run: |
           # Resolve the tag to be used. "next" for push events, "pr-{prNumber}" for dispatch events.
