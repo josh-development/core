@@ -28,14 +28,8 @@ jobs:
           ref: ${{ github.event.inputs.branch || 'main' }}
       - name: Add TypeScript Problem Matcher
         run: echo "::add-matcher::.github/problemMatchers/tsc.json"
-      - name: Use Node.js v16
-        uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3
-        with:
-          node-version: 16
-          cache: yarn
-          registry-url: https://registry.npmjs.org/
-      - name: Install Dependencies
-        run: yarn --immutable
+      - name: Setup Node
+        uses: josh-development/.github/setup-node@main
       - name: Bump Version & Publish
         run: |
           # Resolve the tag to be used. "next" for push events, "pr-{prNumber}" for dispatch events.
