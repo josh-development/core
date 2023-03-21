@@ -3,7 +3,9 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     deps: {
-      inline: true
+      inline:
+        // TODO: Replace with true once https://github.com/vitest-dev/vitest/issues/2806 is fixed.
+        [/^(?!.*vitest).*$/]
     },
     globals: true,
     coverage: {
