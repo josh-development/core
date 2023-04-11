@@ -597,7 +597,7 @@ __metadata:
     "@joshdb/map": 1.1.0-next.debaead.0
     "@joshdb/provider": 2.0.0-next.7b50e88.0
     "@joshdb/ts-config": 1.1.0-next.7fbd1fd.0
-    "@sapphire/utilities": ^3.11.0
+    "@sapphire/utilities": ^3.11.1
     "@types/node": ^18.15.11
     "@typescript-eslint/eslint-plugin": ^5.57.1
     "@typescript-eslint/parser": ^5.57.1
@@ -827,6 +827,13 @@ __metadata:
   version: 3.11.0
   resolution: "@sapphire/utilities@npm:3.11.0"
   checksum: 3c8521038b8879524e8114f39eefc8b3b06cf825995f709684238b5cb14bd7df06d232a26a88f79160df290a66f9aa3133f5ce4ff8e2398033db9f301ad31e0d
+  languageName: node
+  linkType: hard
+
+"@sapphire/utilities@npm:^3.11.1":
+  version: 3.11.1
+  resolution: "@sapphire/utilities@npm:3.11.1"
+  checksum: e70a7d1b8f0d5c810420a2113ed6f4f54956b3ede0afd7aab9f5cea32266ed0946f777838f73f3df8e75bc8d29026d287a5371f544ad28882acdcfd5eb092b69
   languageName: node
   linkType: hard
 
