@@ -52,6 +52,11 @@ import { JoshError, JoshErrorOptions } from './JoshError';
  */
 export class Josh<StoredValue = unknown> {
   /**
+   * The current version of {@link Josh}
+   * @since 2.0.0
+   */
+  public static version = '[VI]{version}[/VI]';
+  /**
    * This Josh's name. Used for middleware and/or provider information.
    * @since 2.0.0
    */
@@ -102,6 +107,21 @@ export class Josh<StoredValue = unknown> {
 
       for (const middleware of filteredMiddleware) this.use(middleware);
     }
+  }
+
+  /**
+   * A static method to create multiple instances of {@link Josh}.
+   * @since 2.0.0
+   * @param names The names to give each instance of {@link Josh}
+   * @param options The options to give all the instances.
+   * @returns The created instances.
+   */
+  public static multi<Instances extends Record<string, Josh> = Record<string, Josh>>(
+    names: string[],
+    options: Omit<Josh.Options, 'name'> = {}
+  ): Instances {
+    // @ts-expect-error 2345
+    return names.reduce<Instances>((instances, name) => ({ ...instances, [name]: new Josh({ ...options, name }) }), {});
   }
 
   private get providerDataFailedError(): JoshError {
@@ -1903,27 +1923,6 @@ export class Josh<StoredValue = unknown> {
    */
   private resolvePath(path: Path): string[] {
     return Array.isArray(path) ? path : path.replace(/\[/g, '.').replace(/\]/g, '').split('.').filter(Boolean);
-  }
-
-  /**
-   * The current version of {@link Josh}
-   * @since 2.0.0
-   */
-  public static version = '[VI]{version}[/VI]';
-
-  /**
-   * A static method to create multiple instances of {@link Josh}.
-   * @since 2.0.0
-   * @param names The names to give each instance of {@link Josh}
-   * @param options The options to give all the instances.
-   * @returns The created instances.
-   */
-  public static multi<Instances extends Record<string, Josh> = Record<string, Josh>>(
-    names: string[],
-    options: Omit<Josh.Options, 'name'> = {}
-  ): Instances {
-    // @ts-expect-error 2345
-    return names.reduce<Instances>((instances, name) => ({ ...instances, [name]: new Josh({ ...options, name }) }), {});
   }
 }
 

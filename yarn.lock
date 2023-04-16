@@ -576,7 +576,7 @@ __metadata:
     "@favware/npm-deprecate": ^1.0.7
     "@favware/rollup-type-bundler": ^1.0.11
     "@joshdb/auto-ensure": 1.1.0-pr-125.c8affcc.0
-    "@joshdb/eslint-config": ^1.1.0-next.7fbd1fd.0
+    "@joshdb/eslint-config": ^1.1.0-next.4038c07.0
     "@joshdb/map": 1.1.0-next.debaead.0
     "@joshdb/provider": 2.0.0-next.7b50e88.0
     "@joshdb/ts-config": ^1.1.0-next.7fbd1fd.0
@@ -604,7 +604,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@joshdb/eslint-config@npm:^1.1.0-next.7fbd1fd.0":
+"@joshdb/eslint-config@npm:^1.1.0-next.4038c07.0":
   version: 1.1.0-pr-148.dc48f31.0
   resolution: "@joshdb/eslint-config@npm:1.1.0-pr-148.dc48f31.0"
   dependencies:
