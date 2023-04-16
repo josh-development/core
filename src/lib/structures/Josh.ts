@@ -1,23 +1,21 @@
 import { AutoEnsureMiddleware } from '@joshdb/auto-ensure';
 import { MapProvider } from '@joshdb/map';
+import type { KeyPath, KeyPathJSON, MathOperator, Path } from '@joshdb/provider';
 import {
   CommonIdentifiers,
-  isPayloadWithData,
   JoshMiddleware,
   JoshMiddlewareStore,
   JoshProvider,
-  KeyPath,
-  KeyPathJSON,
-  MathOperator,
   Method,
-  Path,
   Payload,
-  resolveCommonIdentifier,
-  Trigger
+  Trigger,
+  isPayloadWithData,
+  resolveCommonIdentifier
 } from '@joshdb/provider';
-import { Awaitable, isFunction, isPrimitive, NonNullObject, Primitive } from '@sapphire/utilities';
+import type { Awaitable, NonNullObject, Primitive } from '@sapphire/utilities';
+import { isFunction, isPrimitive } from '@sapphire/utilities';
 import process from 'process';
-import { JoshError, JoshErrorOptions } from './JoshError';
+import { JoshError, type JoshErrorOptions } from './JoshError';
 
 /**
  * The base class that makes Josh work.
