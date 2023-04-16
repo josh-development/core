@@ -40,17 +40,17 @@
     "@sapphire/utilities": "^3.11.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.5.1",
-    "@commitlint/config-conventional": "^17.4.4",
+    "@commitlint/cli": "^17.6.1",
+    "@commitlint/config-conventional": "^17.6.1",
     "@favware/cliff-jumper": "^2.0.0",
     "@favware/npm-deprecate": "^1.0.7",
     "@favware/rollup-type-bundler": "^1.0.11",
     "@joshdb/eslint-config": "1.1.0-next.89c3b7b.0",
     "@joshdb/ts-config": "1.1.0-next.7fbd1fd.0",
     "@types/node": "^18.15.11",
-    "@typescript-eslint/eslint-plugin": "^5.57.1",
-    "@typescript-eslint/parser": "^5.57.1",
-    "@vitest/coverage-c8": "^0.29.8",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
+    "@vitest/coverage-c8": "^0.30.1",
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
@@ -63,10 +63,10 @@
     "rollup": "^2.79.1",
     "rollup-plugin-cleaner": "^1.0.0",
     "rollup-plugin-typescript2": "^0.34.1",
-    "typedoc": "^0.24.1",
+    "typedoc": "^0.24.2",
     "typedoc-json-parser": "^7.2.0",
     "typescript": "^4.9.5",
-    "vitest": "0.29.8"
+    "vitest": "0.30.1"
   },
   "repository": {
     "type": "git",
