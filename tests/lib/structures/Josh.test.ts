@@ -1,5 +1,6 @@
 import { AutoEnsureMiddleware } from '@joshdb/auto-ensure';
-import { ApplyMiddlewareOptions, CommonIdentifiers, JoshMiddleware, MathOperator, Method, Payload, Semver, Trigger } from '@joshdb/provider';
+import type { Semver } from '@joshdb/provider';
+import { ApplyMiddlewareOptions, CommonIdentifiers, JoshMiddleware, MathOperator, Method, Payload, Trigger } from '@joshdb/provider';
 import type { NonNullObject } from '@sapphire/utilities';
 import { Bulk, Josh, JoshError } from '../../../src';
 
