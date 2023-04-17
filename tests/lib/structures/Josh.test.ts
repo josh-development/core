@@ -5,6 +5,10 @@ import { Bulk, Josh, JoshError } from '../../../src';
 
 @ApplyMiddlewareOptions({ name: 'test' })
 class TestMiddleware<StoredValue = unknown> extends JoshMiddleware<NonNullObject, StoredValue> {
+  public static errorCount: 0 | 1 | 2 = 0;
+
+  public static deleteData = false;
+
   public version: Semver = { major: 2, minor: 0, patch: 0 };
 
   public override run<P extends Payload>(payload: P): P {
@@ -39,10 +43,6 @@ class TestMiddleware<StoredValue = unknown> extends JoshMiddleware<NonNullObject
   public fetchVersion() {
     return this.version;
   }
-
-  public static errorCount: 0 | 1 | 2 = 0;
-
-  public static deleteData = false;
 }
 
 describe('Josh', () => {
