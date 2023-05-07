@@ -91,5 +91,5 @@
   "lint-staged": {
     "*.ts": "eslint --fix --ext ts"
   },
-  "packageManager": "yarn@3.5.0"
+  "packageManager": "yarn@3.5.1"
 }
