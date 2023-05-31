@@ -623,10 +623,10 @@ __metadata:
     "@favware/npm-deprecate": ^1.0.7
     "@favware/rollup-type-bundler": ^1.0.11
     "@joshdb/auto-ensure": 2.0.0-next.4c9b27e.0
-    "@joshdb/eslint-config": ^1.1.0-next.4038c07.0
+    "@joshdb/eslint-config": ^1.1.0-next.a699598.0
     "@joshdb/map": 2.0.0-next.782d01a.0
     "@joshdb/provider": 2.0.0-next.a699598.0
-    "@joshdb/ts-config": 1.1.0-next.f8641ff.0
+    "@joshdb/ts-config": 1.1.0-next.a699598.0
     "@sapphire/utilities": ^3.11.2
     "@types/node": ^18.16.16
     "@typescript-eslint/eslint-plugin": ^5.59.8
@@ -651,7 +651,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@joshdb/eslint-config@npm:^1.1.0-next.4038c07.0":
+"@joshdb/eslint-config@npm:^1.1.0-next.a699598.0":
   version: 1.1.0-pr-148.dc48f31.0
   resolution: "@joshdb/eslint-config@npm:1.1.0-pr-148.dc48f31.0"
   dependencies:
@@ -689,12 +689,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/ts-config@npm:1.1.0-next.f8641ff.0":
-  version: 1.1.0-next.f8641ff.0
-  resolution: "@joshdb/ts-config@npm:1.1.0-next.f8641ff.0"
+"@joshdb/ts-config@npm:1.1.0-next.a699598.0":
+  version: 1.1.0-next.a699598.0
+  resolution: "@joshdb/ts-config@npm:1.1.0-next.a699598.0"
   dependencies:
     "@sapphire/ts-config": ^4.0.0
-  checksum: 6d067e10fc7450c5da8d1eed561d79ed23ce03d90b3db782f57b585bf1cd4b43f0d14db3bde7b18929fd82e9810205341b4e7e3771078de2ee04a15eb6a6193e
+  checksum: 273112d20008fcff3eb4974cbafea4ca449e89a0835ea83686e5663287e57efd1cb929c9e66dd289939522a52bc600dd0197ce965b30c344ed4a0b6538e1a673
   languageName: node
   linkType: hard
 
