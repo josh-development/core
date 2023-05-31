@@ -604,13 +604,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/auto-ensure@npm:1.1.0-pr-125.c8affcc.0":
-  version: 1.1.0-pr-125.c8affcc.0
-  resolution: "@joshdb/auto-ensure@npm:1.1.0-pr-125.c8affcc.0"
+"@joshdb/auto-ensure@npm:2.0.0-next.4c9b27e.0":
+  version: 2.0.0-next.4c9b27e.0
+  resolution: "@joshdb/auto-ensure@npm:2.0.0-next.4c9b27e.0"
   dependencies:
-    "@joshdb/provider": 2.0.0-next.7b50e88.0
-    "@sapphire/utilities": ^3.11.0
-  checksum: b4a53143df8a558b0daaf515096a34e55882bdb1b50306064304b5084feb91f0643593a4214fee6078cbcdd4974f0a2dbc1878064fa07e9f066060e1f693438f
+    "@joshdb/provider": 2.0.0-next.a699598.0
+    "@sapphire/utilities": ^3.11.2
+  checksum: 056bc21eb3ac86d2f36ece2ba9621f72cafa2f345fa2c8c33e0aedcaafde60aa6df30a4867527f89b338dde18b6604f5e7135509b9e0d7545ba12509aadb6daa
   languageName: node
   linkType: hard
 
@@ -623,9 +623,9 @@ __metadata:
     "@favware/cliff-jumper": ^2.0.0
     "@favware/npm-deprecate": ^1.0.7
     "@favware/rollup-type-bundler": ^1.0.11
-    "@joshdb/auto-ensure": 1.1.0-pr-125.c8affcc.0
+    "@joshdb/auto-ensure": 2.0.0-next.4c9b27e.0
     "@joshdb/eslint-config": ^1.1.0-next.4038c07.0
-    "@joshdb/map": 1.1.0-next.debaead.0
+    "@joshdb/map": 2.0.0-next.782d01a.0
     "@joshdb/provider": 2.0.0-next.a699598.0
     "@joshdb/ts-config": 1.1.0-next.f8641ff.0
     "@sapphire/utilities": ^3.11.2
@@ -668,25 +668,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/map@npm:1.1.0-next.debaead.0":
-  version: 1.1.0-next.debaead.0
-  resolution: "@joshdb/map@npm:1.1.0-next.debaead.0"
+"@joshdb/map@npm:2.0.0-next.782d01a.0":
+  version: 2.0.0-next.782d01a.0
+  resolution: "@joshdb/map@npm:2.0.0-next.782d01a.0"
   dependencies:
-    "@joshdb/provider": 2.0.0-next.7b50e88.0
-    "@joshdb/serialize": 1.1.0-next.7b50e88.0
-    "@sapphire/utilities": ^3.11.0
+    "@joshdb/provider": 2.0.0-next.a699598.0
+    "@sapphire/utilities": ^3.11.2
+    better-serialize: ^1.0.0
     property-helpers: ^2.0.0
-  checksum: e62176a5b2ed1577c3884fca36dfa38bc9221d65f9c5e6df985411717b990782377fee35ca7e4c64d64a48a09c8f8244f85683d943fca58f6de12119df26cbdf
-  languageName: node
-  linkType: hard
-
-"@joshdb/provider@npm:2.0.0-next.7b50e88.0":
-  version: 2.0.0-next.7b50e88.0
-  resolution: "@joshdb/provider@npm:2.0.0-next.7b50e88.0"
-  dependencies:
-    "@sapphire/utilities": ^3.11.0
-    reflect-metadata: ^0.1.13
-  checksum: bb186c513749eb6a08630f3f8ff364cbcdc6d4871e8cadf14b0e488f391c3b5e983e7f8f28c4fae4281099a517338ed08308c894530830f77d0d826c82a7b3c0
+  checksum: 9ed8882fbb408d97df66a69e7a2654a25c35a94d3ae894558d5c777295587a1183497850693a25f2754cbf59f93703af42a51d028887ef2630d9fbe5b6814f3c
   languageName: node
   linkType: hard
 
@@ -697,13 +687,6 @@ __metadata:
     "@sapphire/utilities": ^3.11.2
     reflect-metadata: ^0.1.13
   checksum: 38585c16f83a7fe433102c0cbfcccfe1c5d42c8fbad2fd1d9d41d84ba08624637ef150a26cd434b4b5f6acaf710ee0c6418da7c4717f773f3a5dc5f3fb0f60c2
-  languageName: node
-  linkType: hard
-
-"@joshdb/serialize@npm:1.1.0-next.7b50e88.0":
-  version: 1.1.0-next.7b50e88.0
-  resolution: "@joshdb/serialize@npm:1.1.0-next.7b50e88.0"
-  checksum: a973da5b78c5a7e6e735c25279c49542afc376c8a3b978b21847a9590d4554c8adf67e94c5b2301293647ae965b9a5ea87b59c2ed222ee72a33767656b734749
   languageName: node
   linkType: hard
 
@@ -1593,6 +1576,13 @@ __metadata:
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
   checksum: 9706c088a283058a8a99e0bf91b0a2f75497f185980d9ffa8b304de1d9e58ebda7c72c07ebf01dadedaac5b2907b2c6f566f660d62bd336c3468e960403b9d65
+  languageName: node
+  linkType: hard
+
+"better-serialize@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "better-serialize@npm:1.0.0"
+  checksum: c7b0a1b8f06eb2c9b21788d12ada770bfa3b1a2e49c089e607cb7710676c52dc8ba8c79acbe064cb38ff12e5eff7a231decb570ddb38158abc850099c066a362
   languageName: node
   linkType: hard
 
