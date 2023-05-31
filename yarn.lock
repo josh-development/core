@@ -626,7 +626,7 @@ __metadata:
     "@joshdb/auto-ensure": 1.1.0-pr-125.c8affcc.0
     "@joshdb/eslint-config": ^1.1.0-next.4038c07.0
     "@joshdb/map": 1.1.0-next.debaead.0
-    "@joshdb/provider": 2.0.0-next.2502089.0
+    "@joshdb/provider": 2.0.0-next.e70575b.0
     "@joshdb/ts-config": 1.1.0-next.f8641ff.0
     "@sapphire/utilities": ^3.11.2
     "@types/node": ^18.16.13
@@ -680,16 +680,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/provider@npm:2.0.0-next.2502089.0":
-  version: 2.0.0-next.2502089.0
-  resolution: "@joshdb/provider@npm:2.0.0-next.2502089.0"
-  dependencies:
-    "@sapphire/utilities": ^3.11.2
-    reflect-metadata: ^0.1.13
-  checksum: f66f70e02c892e1f48564eeba4ff37f6a16ebadd97a09daccbb1d37875f0a7dafbc72472a54275dc2a78ab83d5c73070c5b3f3856e2fa97de75a0ebb8d6c353b
-  languageName: node
-  linkType: hard
-
 "@joshdb/provider@npm:2.0.0-next.7b50e88.0":
   version: 2.0.0-next.7b50e88.0
   resolution: "@joshdb/provider@npm:2.0.0-next.7b50e88.0"
@@ -697,6 +687,16 @@ __metadata:
     "@sapphire/utilities": ^3.11.0
     reflect-metadata: ^0.1.13
   checksum: bb186c513749eb6a08630f3f8ff364cbcdc6d4871e8cadf14b0e488f391c3b5e983e7f8f28c4fae4281099a517338ed08308c894530830f77d0d826c82a7b3c0
+  languageName: node
+  linkType: hard
+
+"@joshdb/provider@npm:2.0.0-next.e70575b.0":
+  version: 2.0.0-next.e70575b.0
+  resolution: "@joshdb/provider@npm:2.0.0-next.e70575b.0"
+  dependencies:
+    "@sapphire/utilities": ^3.11.2
+    reflect-metadata: ^0.1.13
+  checksum: 8414b8997bc7e1cc5ccc329433201ef034775ebcc346ca1f2b271cf93b26470b100b8b51a8646a730d74f3c83c4d0f294fb8fa76d1c020e02dc69283ce161b26
   languageName: node
   linkType: hard
 
