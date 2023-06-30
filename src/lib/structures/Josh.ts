@@ -1309,12 +1309,7 @@ export class Josh<StoredValue = unknown> {
   /**
    * Gets random value(s).
    * @param options The options for getting random values.
-   * @returns The random value(s) or null.
-   *
-   * @example
-   * ```javascript
-   * await josh.random(); // null
-   * ```
+   * @returns The random value(s).
    *
    * @example
    * ```javascript
@@ -1323,7 +1318,7 @@ export class Josh<StoredValue = unknown> {
    * await josh.random(); // ['value']
    * ```
    */
-  public async random(options?: Josh.RandomOptions): Promise<StoredValue[] | null> {
+  public async random(options?: Josh.RandomOptions): Promise<StoredValue[]> {
     const { count = 1, duplicates = true } = options ?? {};
     let payload: Payload.Random<StoredValue> = { method: Method.Random, errors: [], trigger: Trigger.PreProvider, count, duplicates };
 
@@ -1339,7 +1334,7 @@ export class Josh<StoredValue = unknown> {
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<StoredValue[]>(payload)) return payload.data.length ? payload.data : null;
+    if (isPayloadWithData<StoredValue[]>(payload)) return payload.data;
 
     throw this.providerDataFailedError;
   }
@@ -1353,17 +1348,12 @@ export class Josh<StoredValue = unknown> {
    *
    * @example
    * ```javascript
-   * await josh.randomKey(); // null
-   * ```
-   *
-   * @example
-   * ```javascript
    * await josh.set('key', 'value');
    *
    * await josh.randomKey(); // ['key']
    * ```
    */
-  public async randomKey(options?: Josh.RandomOptions): Promise<string[] | null> {
+  public async randomKey(options?: Josh.RandomOptions): Promise<string[]> {
     const { count = 1, duplicates = true } = options ?? {};
     let payload: Payload.RandomKey = { method: Method.RandomKey, errors: [], trigger: Trigger.PreProvider, count, duplicates };
 
@@ -1379,7 +1369,7 @@ export class Josh<StoredValue = unknown> {
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<string[]>(payload)) return payload.data.length ? payload.data : null;
+    if (isPayloadWithData<string[]>(payload)) return payload.data;
 
     throw this.providerDataFailedError;
   }
