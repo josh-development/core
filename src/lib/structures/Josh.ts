@@ -1082,9 +1082,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Map)) payload = await middleware[Method.Map](payload);
 
     if (payload.errors.length) {
-      const { behaviorOnPayloadError } = this.options;
+      const { behaviorOnPayloadError = Josh.ErrorBehavior.Throw } = this.options;
 
-      if (behaviorOnPayloadError !== undefined && behaviorOnPayloadError >= Josh.ErrorBehavior.Log) {
+      if (behaviorOnPayloadError >= Josh.ErrorBehavior.Log) {
         if (payload.errors.length === 1 && behaviorOnPayloadError === Josh.ErrorBehavior.Throw) throw payload.errors[0];
         else {
           for (const error of payload.errors) console.error(error);
@@ -1319,8 +1319,8 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async random(options?: Josh.RandomOptions): Promise<StoredValue[]> {
-    const { count = 1, duplicates = true } = options ?? {};
-    let payload: Payload.Random<StoredValue> = { method: Method.Random, errors: [], trigger: Trigger.PreProvider, count, duplicates };
+    const { count = 1, unique = false } = options ?? {};
+    let payload: Payload.Random<StoredValue> = { method: Method.Random, errors: [], trigger: Trigger.PreProvider, count, unique };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Random)) payload = await middleware[Method.Random](payload);
@@ -1342,9 +1342,8 @@ export class Josh<StoredValue = unknown> {
   /**
    * Get a random key.
    *
-   * NOTE: `options.duplicates` only makes checks on primitive value types.
    * @since 2.0.0
-   * @returns The random key or `null`.
+   * @returns The random key(s).
    *
    * @example
    * ```javascript
@@ -1354,8 +1353,8 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async randomKey(options?: Josh.RandomOptions): Promise<string[]> {
-    const { count = 1, duplicates = true } = options ?? {};
-    let payload: Payload.RandomKey = { method: Method.RandomKey, errors: [], trigger: Trigger.PreProvider, count, duplicates };
+    const { count = 1, unique = false } = options ?? {};
+    let payload: Payload.RandomKey = { method: Method.RandomKey, errors: [], trigger: Trigger.PreProvider, count, unique };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.RandomKey)) payload = await middleware[Method.RandomKey](payload);
@@ -2068,10 +2067,10 @@ export namespace Josh {
     count?: number;
 
     /**
-     * Whether to allow duplicates.
+     * Whether the values must be unique.
      * @since 2.0.0
      */
-    duplicates?: boolean;
+    unique?: boolean;
   }
 
   export enum ErrorBehavior {
