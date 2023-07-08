@@ -636,7 +636,7 @@ __metadata:
     "@joshdb/auto-ensure": 2.0.0-next.4c9b27e.0
     "@joshdb/eslint-config": ^1.1.0-next.a699598.0
     "@joshdb/map": 2.0.0-next.782d01a.0
-    "@joshdb/provider": 2.0.0-next.a699598.0
+    "@joshdb/provider": 2.0.0-next.1c9d8d9.0
     "@joshdb/ts-config": 1.1.0-next.a699598.0
     "@sapphire/utilities": ^3.12.0
     "@types/node": ^18.16.18
@@ -687,6 +687,16 @@ __metadata:
     better-serialize: ^1.0.0
     property-helpers: ^2.0.0
   checksum: 9ed8882fbb408d97df66a69e7a2654a25c35a94d3ae894558d5c777295587a1183497850693a25f2754cbf59f93703af42a51d028887ef2630d9fbe5b6814f3c
+  languageName: node
+  linkType: hard
+
+"@joshdb/provider@npm:2.0.0-next.1c9d8d9.0":
+  version: 2.0.0-next.1c9d8d9.0
+  resolution: "@joshdb/provider@npm:2.0.0-next.1c9d8d9.0"
+  dependencies:
+    "@sapphire/utilities": ^3.12.0
+    reflect-metadata: ^0.1.13
+  checksum: 122a365773c15dcb61c620e4f20099ca6753477cde5d88181f34d4a8ab4a487ab2edfa50cc58af38b04456e4b29319671eb60da1719893804ba4fa172c204e94
   languageName: node
   linkType: hard
 
