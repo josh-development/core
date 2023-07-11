@@ -1786,14 +1786,16 @@ export class Josh<StoredValue = unknown> {
    * @since 2.0.0
    * @private
    * @param data The data to convert.
-   * @param returnBulkType The return bulk type. Defaults to {@link Bulk.Object}
+   * @param returnBulkType The return bulk type. Defaults to {@link Josh.Options.defaultBulkType} or {@link Bulk.Object}
    * @returns The bulk data.
    */
   private convertBulkData<Value = StoredValue, K extends keyof ReturnBulk<Value> = Bulk.Object>(
     data: ReturnBulk<Value>[Bulk.Object],
     returnBulkType?: K
   ): ReturnBulk<Value>[K] {
-    switch (returnBulkType) {
+    const { defaultBulkType } = this.options;
+
+    switch (returnBulkType ?? defaultBulkType) {
       case Bulk.Object:
         return data;
 
@@ -1959,6 +1961,12 @@ export namespace Josh {
      * @since 2.0.0
      */
     behaviorOnPayloadError?: ErrorBehavior;
+
+    /**
+     * The default bulk type to return in bulk supported methods.
+     * @since 2.0.0
+     */
+    defaultBulkType?: Bulk;
   }
 
   /**
