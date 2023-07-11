@@ -1267,7 +1267,7 @@ describe('Josh', () => {
       test('GIVEN josh w/ data THEN returns data from random', async () => {
         await josh.set('key', 'value');
 
-        const random = await josh.random({ count: 1, duplicates: false });
+        const random = await josh.random({ count: 1, unique: true });
 
         expect(random).toEqual(['value']);
       });
@@ -1276,7 +1276,7 @@ describe('Josh', () => {
         await josh.set('key', 'value');
         await josh.set('key2', 'value');
 
-        const random = await josh.random({ count: 2, duplicates: false });
+        const random = await josh.random({ count: 2, unique: true });
 
         expect(random).toEqual(['value', 'value']);
       });
@@ -1285,7 +1285,7 @@ describe('Josh', () => {
         await josh.set('key', 'value');
         await josh.set('key2', 'value');
 
-        const random = await josh.random({ count: 2, duplicates: true });
+        const random = await josh.random({ count: 2, unique: false });
 
         expect(random).toEqual(['value', 'value']);
       });
@@ -1321,7 +1321,7 @@ describe('Josh', () => {
       test('GIVEN josh w/ data THEN returns data from random', async () => {
         await josh.set('key', 'value');
 
-        const random = await josh.randomKey({ count: 1, duplicates: false });
+        const random = await josh.randomKey({ count: 1, unique: true });
 
         expect(random).toEqual(['key']);
       });
@@ -1330,7 +1330,7 @@ describe('Josh', () => {
         await josh.set('key', 'value');
         await josh.set('key2', 'value');
 
-        const random = await josh.randomKey({ count: 2, duplicates: false });
+        const random = await josh.randomKey({ count: 2, unique: true });
 
         expect(random?.length).toEqual(2);
       });
@@ -1339,7 +1339,7 @@ describe('Josh', () => {
         await josh.set('key', 'value');
         await josh.set('key2', 'value');
 
-        const random = await josh.randomKey({ count: 2, duplicates: true });
+        const random = await josh.randomKey({ count: 2, unique: false });
 
         expect(random?.length).toEqual(2);
       });

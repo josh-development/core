@@ -1082,9 +1082,9 @@ export class Josh<StoredValue = unknown> {
     for (const middleware of this.middlewares.getPostMiddlewares(Method.Map)) payload = await middleware[Method.Map](payload);
 
     if (payload.errors.length) {
-      const { behaviorOnPayloadError } = this.options;
+      const { behaviorOnPayloadError = Josh.ErrorBehavior.Throw } = this.options;
 
-      if (behaviorOnPayloadError !== undefined && behaviorOnPayloadError >= Josh.ErrorBehavior.Log) {
+      if (behaviorOnPayloadError >= Josh.ErrorBehavior.Log) {
         if (payload.errors.length === 1 && behaviorOnPayloadError === Josh.ErrorBehavior.Throw) throw payload.errors[0];
         else {
           for (const error of payload.errors) console.error(error);
@@ -1309,12 +1309,7 @@ export class Josh<StoredValue = unknown> {
   /**
    * Gets random value(s).
    * @param options The options for getting random values.
-   * @returns The random value(s) or null.
-   *
-   * @example
-   * ```javascript
-   * await josh.random(); // null
-   * ```
+   * @returns The random value(s).
    *
    * @example
    * ```javascript
@@ -1323,9 +1318,9 @@ export class Josh<StoredValue = unknown> {
    * await josh.random(); // ['value']
    * ```
    */
-  public async random(options?: Josh.RandomOptions): Promise<StoredValue[] | null> {
-    const { count = 1, duplicates = true } = options ?? {};
-    let payload: Payload.Random<StoredValue> = { method: Method.Random, errors: [], trigger: Trigger.PreProvider, count, duplicates };
+  public async random(options?: Josh.RandomOptions): Promise<StoredValue[]> {
+    const { count = 1, unique = false } = options ?? {};
+    let payload: Payload.Random<StoredValue> = { method: Method.Random, errors: [], trigger: Trigger.PreProvider, count, unique };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.Random)) payload = await middleware[Method.Random](payload);
@@ -1339,7 +1334,7 @@ export class Josh<StoredValue = unknown> {
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<StoredValue[]>(payload)) return payload.data.length ? payload.data : null;
+    if (isPayloadWithData<StoredValue[]>(payload)) return payload.data;
 
     throw this.providerDataFailedError;
   }
@@ -1347,14 +1342,8 @@ export class Josh<StoredValue = unknown> {
   /**
    * Get a random key.
    *
-   * NOTE: `options.duplicates` only makes checks on primitive value types.
    * @since 2.0.0
-   * @returns The random key or `null`.
-   *
-   * @example
-   * ```javascript
-   * await josh.randomKey(); // null
-   * ```
+   * @returns The random key(s).
    *
    * @example
    * ```javascript
@@ -1363,9 +1352,9 @@ export class Josh<StoredValue = unknown> {
    * await josh.randomKey(); // ['key']
    * ```
    */
-  public async randomKey(options?: Josh.RandomOptions): Promise<string[] | null> {
-    const { count = 1, duplicates = true } = options ?? {};
-    let payload: Payload.RandomKey = { method: Method.RandomKey, errors: [], trigger: Trigger.PreProvider, count, duplicates };
+  public async randomKey(options?: Josh.RandomOptions): Promise<string[]> {
+    const { count = 1, unique = false } = options ?? {};
+    let payload: Payload.RandomKey = { method: Method.RandomKey, errors: [], trigger: Trigger.PreProvider, count, unique };
 
     for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
     for (const middleware of this.middlewares.getPreMiddlewares(Method.RandomKey)) payload = await middleware[Method.RandomKey](payload);
@@ -1379,7 +1368,7 @@ export class Josh<StoredValue = unknown> {
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<string[]>(payload)) return payload.data.length ? payload.data : null;
+    if (isPayloadWithData<string[]>(payload)) return payload.data;
 
     throw this.providerDataFailedError;
   }
@@ -2086,10 +2075,10 @@ export namespace Josh {
     count?: number;
 
     /**
-     * Whether to allow duplicates.
+     * Whether the values must be unique.
      * @since 2.0.0
      */
-    duplicates?: boolean;
+    unique?: boolean;
   }
 
   export enum ErrorBehavior {
