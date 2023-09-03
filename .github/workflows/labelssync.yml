@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Project
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
       - name: Run Label Sync
-        uses: crazy-max/ghaction-github-labeler@3de87da19416edc45c90cd89e7a4ea922a3aae5a # v4
+        uses: crazy-max/ghaction-github-labeler@f4f6b96e7e747b5416cd470f3cfecf26abaa811e # v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           yaml-file: .github/labels.yml
