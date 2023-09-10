@@ -9,9 +9,9 @@ body = """
   # [{{ version | trim_start_matches(pat="v") }}]\
 	{% if previous %}\
 		{% if previous.version %}\
-			(https://github.com/RealShadowNova/typedoc-json-parser/compare/{{ previous.version }}...{{ version }})\
+			(https://github.com/josh-development/core/compare/{{ previous.version }}...{{ version }})\
 		{% else %}\
-			(https://github.com/RealShadowNova/typedoc-json-parser/tree/{{ version }})\
+			(https://github.com/josh-development/core/tree/{{ version }})\
 		{% endif %}\
 	{% endif %} \
 	- ({{ timestamp | date(format="%Y-%m-%d") }})
@@ -24,7 +24,7 @@ body = """
 		- {% if commit.scope %}\
 			**{{commit.scope}}:** \
 		{% endif %}\
-			{{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/RealShadowNova/typedoc-json-parser/commit/{{ commit.id }}))\
+			{{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/josh-development/core/commit/{{ commit.id }}))\
 		{% if commit.breaking %}\
 			{% for breakingChange in commit.footers %}\
 				\n{% raw %}  {% endraw %}- 💥 **{{ breakingChange.token }}{{ breakingChange.separator }}** {{ breakingChange.value }}\
