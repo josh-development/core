@@ -64,7 +64,7 @@
     "rollup-plugin-cleaner": "^1.0.0",
     "rollup-plugin-typescript2": "^0.35.0",
     "typedoc": "^0.24.8",
-    "typedoc-json-parser": "^8.2.0",
+    "typedoc-json-parser": "^9.0.0",
     "typescript": "~5.0.4",
     "vitest": "0.32.2"
   },
