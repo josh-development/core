@@ -1,9 +1,3 @@
 {
-  "extends": "@joshdb/ts-config",
-  "compilerOptions": {
-    "importHelpers": true,
-    "noEmitHelpers": true,
-    "target": "ES2021",
-    "module": "ESNext"
-  }
+  "extends": ["@joshdb/ts-config", "@joshdb/ts-config/extra-strict", "@joshdb/ts-config/bundler", "@joshdb/ts-config/verbatim"]
 }
