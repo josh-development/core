@@ -50,11 +50,6 @@ import { JoshError, type JoshErrorOptions } from './JoshError';
  */
 export class Josh<StoredValue = unknown> {
   /**
-   * The current version of {@link Josh}
-   * @since 2.0.0
-   */
-  public static version = '[VI]{version}[/VI]';
-  /**
    * This Josh's name. Used for middleware and/or provider information.
    * @since 2.0.0
    */
@@ -86,40 +81,36 @@ export class Josh<StoredValue = unknown> {
 
     this.options = options;
 
-    if (!name) throw this.error(Josh.Identifiers.MissingName);
+    if (!name) {
+      throw this.error(Josh.Identifiers.MissingName);
+    }
 
     this.name = name;
     this.provider = provider ?? new MapProvider<StoredValue>();
 
-    if (!(this.provider instanceof JoshProvider)) process.emitWarning(this.resolveIdentifier(Josh.Identifiers.InvalidProvider));
+    if (!(this.provider instanceof JoshProvider)) {
+      process.emitWarning(this.resolveIdentifier(Josh.Identifiers.InvalidProvider));
+    }
 
     this.middlewares = new JoshMiddlewareStore<StoredValue>({ provider: this.provider });
 
-    if (autoEnsure !== undefined) this.use(new AutoEnsureMiddleware<StoredValue>(autoEnsure));
+    if (autoEnsure !== undefined) {
+      this.use(new AutoEnsureMiddleware<StoredValue>(autoEnsure));
+    }
+
     if (middlewares !== undefined && Array.isArray(middlewares)) {
       const filteredMiddleware = middlewares.filter((middleware) => {
-        if (!(middleware instanceof JoshMiddleware)) process.emitWarning(this.resolveIdentifier(Josh.Identifiers.InvalidMiddleware));
+        if (!(middleware instanceof JoshMiddleware)) {
+          process.emitWarning(this.resolveIdentifier(Josh.Identifiers.InvalidMiddleware));
+        }
 
         return middleware instanceof JoshMiddleware;
       });
 
-      for (const middleware of filteredMiddleware) this.use(middleware);
+      for (const middleware of filteredMiddleware) {
+        this.use(middleware);
+      }
     }
-  }
-
-  /**
-   * A static method to create multiple instances of {@link Josh}.
-   * @since 2.0.0
-   * @param names The names to give each instance of {@link Josh}
-   * @param options The options to give all the instances.
-   * @returns The created instances.
-   */
-  public static multi<Instances extends Record<string, Josh> = Record<string, Josh>>(
-    names: string[],
-    options: Omit<Josh.Options, 'name'> = {}
-  ): Instances {
-    // @ts-expect-error 2345
-    return names.reduce<Instances>((instances, name) => ({ ...instances, [name]: new Josh({ ...options, name }) }), {});
   }
 
   private get providerDataFailedError(): JoshError {
@@ -143,7 +134,9 @@ export class Josh<StoredValue = unknown> {
   public async init(): Promise<this> {
     await this.provider.init({ name: this.name });
 
-    for (const middleware of this.middlewares.values()) await middleware.init(this.middlewares);
+    for (const middleware of this.middlewares.values()) {
+      await middleware.init(this.middlewares);
+    }
 
     return this;
   }
@@ -178,16 +171,21 @@ export class Josh<StoredValue = unknown> {
     optionsOrInstance: Josh.UseMiddlewareOptions | JoshMiddleware<NonNullObject, StoredValue>,
     hook?: (payload: P) => Awaitable<P>
   ): this {
-    if (optionsOrInstance instanceof JoshMiddleware) this.middlewares.set(optionsOrInstance.name, optionsOrInstance);
-    else {
-      if (hook === undefined) throw this.error(Josh.Identifiers.UseMiddlewareHookNotFound);
+    if (optionsOrInstance instanceof JoshMiddleware) {
+      this.middlewares.set(optionsOrInstance.name, optionsOrInstance);
+    } else {
+      if (hook === undefined) {
+        throw this.error(Josh.Identifiers.UseMiddlewareHookNotFound);
+      }
 
       const { name, trigger, method } = optionsOrInstance;
       const options: JoshMiddleware.Options = { name, conditions: { [Trigger.PreProvider]: [], [Trigger.PostProvider]: [] } };
       // @ts-ignore Until provider updates
       const middleware = this.middlewares.get(options.name) ?? new JoshMiddleware<NonNullObject, StoredValue>({}, options);
 
-      if (trigger !== undefined && method !== undefined) options.conditions[trigger].push(method);
+      if (trigger !== undefined && method !== undefined) {
+        options.conditions[trigger].push(method);
+      }
 
       Object.defineProperty(middleware, method === undefined ? 'run' : method, { value: hook });
       this.middlewares.set(middleware.name, middleware);
@@ -211,19 +209,33 @@ export class Josh<StoredValue = unknown> {
   public async autoKey(): Promise<string> {
     let payload: Payload.AutoKey = { method: Method.AutoKey, errors: [], trigger: Trigger.PreProvider };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.AutoKey)) payload = await middleware[Method.AutoKey](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<string>(payload)) payload = await this.provider[Method.AutoKey](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.AutoKey)) {
+      payload = await middleware[Method.AutoKey](payload);
+    }
+
+    if (!isPayloadWithData<string>(payload)) {
+      payload = await this.provider[Method.AutoKey](payload);
+    }
 
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.AutoKey)) payload = await middleware[Method.AutoKey](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.AutoKey)) {
+      payload = await middleware[Method.AutoKey](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<string>(payload)) return payload.data;
+    if (isPayloadWithData<string>(payload)) {
+      return payload.data;
+    }
 
     throw this.providerDataFailedError;
   }
@@ -247,14 +259,24 @@ export class Josh<StoredValue = unknown> {
   public async clear(): Promise<this> {
     let payload: Payload.Clear = { method: Method.Clear, errors: [], trigger: Trigger.PreProvider };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Clear)) payload = await middleware[Method.Clear](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Clear)) {
+      payload = await middleware[Method.Clear](payload);
+    }
 
     payload = await this.provider[Method.Clear](payload);
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Clear)) payload = await middleware[Method.Clear](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Clear)) {
+      payload = await middleware[Method.Clear](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
@@ -300,14 +322,24 @@ export class Josh<StoredValue = unknown> {
 
     let payload: Payload.Dec = { method: Method.Dec, errors: [], trigger: Trigger.PreProvider, key, path };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Dec)) payload = await middleware[Method.Dec](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Dec)) {
+      payload = await middleware[Method.Dec](payload);
+    }
 
     payload = await this.provider[Method.Dec](payload);
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Dec)) payload = await middleware[Method.Dec](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Dec)) {
+      payload = await middleware[Method.Dec](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
@@ -353,14 +385,24 @@ export class Josh<StoredValue = unknown> {
 
     let payload: Payload.Delete = { method: Method.Delete, errors: [], trigger: Trigger.PreProvider, key, path };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Delete)) payload = await middleware[Method.Delete](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Delete)) {
+      payload = await middleware[Method.Delete](payload);
+    }
 
     payload = await this.provider[Method.Delete](payload);
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Delete)) payload = await middleware[Method.Delete](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Delete)) {
+      payload = await middleware[Method.Delete](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
@@ -385,14 +427,24 @@ export class Josh<StoredValue = unknown> {
   public async deleteMany(keys: string[]): Promise<this> {
     let payload: Payload.DeleteMany = { method: Method.DeleteMany, errors: [], trigger: Trigger.PreProvider, keys };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.DeleteMany)) payload = await middleware[Method.DeleteMany](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.DeleteMany)) {
+      payload = await middleware[Method.DeleteMany](payload);
+    }
 
     payload = await this.provider[Method.DeleteMany](payload);
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.DeleteMany)) payload = await middleware[Method.DeleteMany](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.DeleteMany)) {
+      payload = await middleware[Method.DeleteMany](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
@@ -415,14 +467,27 @@ export class Josh<StoredValue = unknown> {
   public async each(hook: Payload.Hook<StoredValue>): Promise<this> {
     let payload: Payload.Each<StoredValue> = { method: Method.Each, errors: [], trigger: Trigger.PreProvider, hook };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Each)) payload = await middleware[Method.Each](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!payload.metadata?.skipProvider) payload = await this.provider[Method.Each](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Each)) {
+      payload = await middleware[Method.Each](payload);
+    }
+
+    if (!payload.metadata?.skipProvider) {
+      payload = await this.provider[Method.Each](payload);
+    }
+
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Each)) payload = await middleware[Method.Each](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Each)) {
+      payload = await middleware[Method.Each](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
@@ -451,18 +516,33 @@ export class Josh<StoredValue = unknown> {
   public async ensure(key: string, defaultValue: StoredValue): Promise<StoredValue> {
     let payload: Payload.Ensure<StoredValue> = { method: Method.Ensure, errors: [], trigger: Trigger.PreProvider, key, defaultValue };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Ensure)) payload = await middleware[Method.Ensure](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<StoredValue>(payload)) payload = await this.provider[Method.Ensure](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Ensure)) {
+      payload = await middleware[Method.Ensure](payload);
+    }
+
+    if (!isPayloadWithData<StoredValue>(payload)) {
+      payload = await this.provider[Method.Ensure](payload);
+    }
+
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Ensure)) payload = await middleware[Method.Ensure](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Ensure)) {
+      payload = await middleware[Method.Ensure](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<StoredValue>(payload)) return payload.data;
+    if (isPayloadWithData<StoredValue>(payload)) {
+      return payload.data;
+    }
 
     throw this.providerDataFailedError;
   }
@@ -487,18 +567,33 @@ export class Josh<StoredValue = unknown> {
   ): Promise<ReturnBulk<StoredValue>[BulkType]> {
     let payload: Payload.Entries<StoredValue> = { method: Method.Entries, errors: [], trigger: Trigger.PreProvider };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Entries)) payload = await middleware[Method.Entries](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Entries](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Entries)) {
+      payload = await middleware[Method.Entries](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.Entries](payload);
+    }
+
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Entries)) payload = await middleware[Method.Entries](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Entries)) {
+      payload = await middleware[Method.Entries](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<Record<string, StoredValue>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
+    if (isPayloadWithData<Record<string, StoredValue>>(payload)) {
+      return this.convertBulkData(payload.data, returnBulkType);
+    }
 
     throw this.providerDataFailedError;
   }
@@ -566,8 +661,13 @@ export class Josh<StoredValue = unknown> {
   public async every(hook: Payload.Hook<StoredValue>): Promise<boolean>;
   public async every(pathOrHook: Path | Payload.Hook<StoredValue>, value?: Primitive): Promise<boolean> {
     if (!isFunction(pathOrHook)) {
-      if (value === undefined) throw this.error(CommonIdentifiers.MissingValue);
-      if (!isPrimitive(value)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      if (value === undefined) {
+        throw this.error(CommonIdentifiers.MissingValue);
+      }
+
+      if (!isPrimitive(value)) {
+        throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      }
     }
 
     let payload: Payload.Every<StoredValue>;
@@ -591,18 +691,33 @@ export class Josh<StoredValue = unknown> {
       };
     }
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Every)) payload = await middleware[Method.Every](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Every](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Every)) {
+      payload = await middleware[Method.Every](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.Every](payload);
+    }
+
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Every)) payload = await middleware[Method.Every](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Every)) {
+      payload = await middleware[Method.Every](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<boolean>(payload)) return payload.data;
+    if (isPayloadWithData<boolean>(payload)) {
+      return payload.data;
+    }
 
     throw this.providerDataFailedError;
   }
@@ -655,8 +770,13 @@ export class Josh<StoredValue = unknown> {
     returnBulkType?: BulkType
   ): Promise<ReturnBulk<StoredValue>[BulkType]> {
     if (!isFunction(pathOrHook)) {
-      if (value === undefined) throw this.error(CommonIdentifiers.MissingValue);
-      if (!isPrimitive(value)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      if (value === undefined) {
+        throw this.error(CommonIdentifiers.MissingValue);
+      }
+
+      if (!isPrimitive(value)) {
+        throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      }
     }
 
     let payload: Payload.Filter<StoredValue>;
@@ -680,19 +800,33 @@ export class Josh<StoredValue = unknown> {
       };
     }
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Filter)) payload = await middleware[Method.Filter](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Filter](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Filter)) {
+      payload = await middleware[Method.Filter](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.Filter](payload);
+    }
 
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Filter)) payload = await middleware[Method.Filter](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Filter)) {
+      payload = await middleware[Method.Filter](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<Record<string, StoredValue>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
+    if (isPayloadWithData<Record<string, StoredValue>>(payload)) {
+      return this.convertBulkData(payload.data, returnBulkType);
+    }
 
     throw this.providerDataFailedError;
   }
@@ -739,8 +873,13 @@ export class Josh<StoredValue = unknown> {
   public async find(hook: Payload.Hook<StoredValue>): Promise<[string, StoredValue] | [null, null]>;
   public async find(pathOrHook: Path | Payload.Hook<StoredValue>, value?: Primitive): Promise<[string, StoredValue] | [null, null]> {
     if (!isFunction(pathOrHook)) {
-      if (value === undefined) throw this.error(CommonIdentifiers.MissingValue);
-      if (!isPrimitive(value)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      if (value === undefined) {
+        throw this.error(CommonIdentifiers.MissingValue);
+      }
+
+      if (!isPrimitive(value)) {
+        throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      }
     }
 
     let payload: Payload.Find<StoredValue>;
@@ -764,19 +903,33 @@ export class Josh<StoredValue = unknown> {
       };
     }
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Find)) payload = await middleware[Method.Find](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Find](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Find)) {
+      payload = await middleware[Method.Find](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.Find](payload);
+    }
 
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Find)) payload = await middleware[Method.Find](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Find)) {
+      payload = await middleware[Method.Find](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<Record<string, StoredValue>>(payload)) return payload.data;
+    if (isPayloadWithData<Record<string, StoredValue>>(payload)) {
+      return payload.data;
+    }
 
     throw this.providerDataFailedError;
   }
@@ -829,15 +982,27 @@ export class Josh<StoredValue = unknown> {
 
     let payload: Payload.Get<Value> = { method: Method.Get, errors: [], trigger: Trigger.PreProvider, key, path };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Get)) payload = await middleware[Method.Get](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Get](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Get)) {
+      payload = await middleware[Method.Get](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.Get](payload);
+    }
 
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Get)) payload = await middleware[Method.Get](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Get)) {
+      payload = await middleware[Method.Get](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
@@ -865,19 +1030,33 @@ export class Josh<StoredValue = unknown> {
   ): Promise<ReturnBulk<StoredValue | null>[BulkType]> {
     let payload: Payload.GetMany<StoredValue> = { method: Method.GetMany, errors: [], trigger: Trigger.PreProvider, keys };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.GetMany)) payload = await middleware[Method.GetMany](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.GetMany](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.GetMany)) {
+      payload = await middleware[Method.GetMany](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.GetMany](payload);
+    }
 
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.GetMany)) payload = await middleware[Method.GetMany](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.GetMany)) {
+      payload = await middleware[Method.GetMany](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<Record<string, StoredValue | null>>(payload)) return this.convertBulkData(payload.data, returnBulkType);
+    if (isPayloadWithData<Record<string, StoredValue | null>>(payload)) {
+      return this.convertBulkData(payload.data, returnBulkType);
+    }
 
     throw this.providerDataFailedError;
   }
@@ -914,19 +1093,33 @@ export class Josh<StoredValue = unknown> {
 
     let payload: Payload.Has = { method: Method.Has, errors: [], trigger: Trigger.PreProvider, key, path };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Has)) payload = await middleware[Method.Has](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Has](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Has)) {
+      payload = await middleware[Method.Has](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.Has](payload);
+    }
 
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Has)) payload = await middleware[Method.Has](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Has)) {
+      payload = await middleware[Method.Has](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<boolean>(payload)) return payload.data;
+    if (isPayloadWithData<boolean>(payload)) {
+      return payload.data;
+    }
 
     throw this.providerDataFailedError;
   }
@@ -970,14 +1163,24 @@ export class Josh<StoredValue = unknown> {
 
     let payload: Payload.Inc = { method: Method.Inc, errors: [], trigger: Trigger.PreProvider, key, path };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Inc)) payload = await middleware[Method.Inc](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Inc)) {
+      payload = await middleware[Method.Inc](payload);
+    }
 
     payload = await this.provider[Method.Inc](payload);
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Inc)) payload = await middleware[Method.Inc](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Inc)) {
+      payload = await middleware[Method.Inc](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
@@ -999,19 +1202,33 @@ export class Josh<StoredValue = unknown> {
   public async keys(): Promise<string[]> {
     let payload: Payload.Keys = { method: Method.Keys, errors: [], trigger: Trigger.PreProvider };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Keys)) payload = await middleware[Method.Keys](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Keys](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Keys)) {
+      payload = await middleware[Method.Keys](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.Keys](payload);
+    }
 
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Keys)) payload = await middleware[Method.Keys](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Keys)) {
+      payload = await middleware[Method.Keys](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<string[]>(payload)) return payload.data;
+    if (isPayloadWithData<string[]>(payload)) {
+      return payload.data;
+    }
 
     throw this.providerDataFailedError;
   }
@@ -1071,23 +1288,38 @@ export class Josh<StoredValue = unknown> {
       };
     }
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Map)) payload = await middleware[Method.Map](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Map](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Map)) {
+      payload = await middleware[Method.Map](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.Map](payload);
+    }
 
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Map)) payload = await middleware[Method.Map](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Map)) {
+      payload = await middleware[Method.Map](payload);
+    }
 
     if (payload.errors.length) {
       const { behaviorOnPayloadError } = this.options;
 
       if (behaviorOnPayloadError !== undefined && behaviorOnPayloadError >= Josh.ErrorBehavior.Log) {
-        if (payload.errors.length === 1 && behaviorOnPayloadError === Josh.ErrorBehavior.Throw) throw payload.errors[0];
-        else {
-          for (const error of payload.errors) console.error(error);
+        if (payload.errors.length === 1 && behaviorOnPayloadError === Josh.ErrorBehavior.Throw) {
+          throw payload.errors[0];
+        } else {
+          for (const error of payload.errors) {
+            console.error(error);
+          }
 
           if (behaviorOnPayloadError === Josh.ErrorBehavior.Throw) {
             throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
@@ -1096,7 +1328,9 @@ export class Josh<StoredValue = unknown> {
       }
     }
 
-    if (isPayloadWithData<Value[]>(payload)) return payload.data;
+    if (isPayloadWithData<Value[]>(payload)) {
+      return payload.data;
+    }
 
     throw this.providerDataFailedError;
   }
@@ -1151,14 +1385,24 @@ export class Josh<StoredValue = unknown> {
 
     let payload: Payload.Math = { method: Method.Math, errors: [], trigger: Trigger.PreProvider, key, path, operator, operand };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Math)) payload = await middleware[Method.Math](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Math)) {
+      payload = await middleware[Method.Math](payload);
+    }
 
     payload = await this.provider[Method.Math](payload);
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Math)) payload = await middleware[Method.Math](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Math)) {
+      payload = await middleware[Method.Math](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
@@ -1214,8 +1458,13 @@ export class Josh<StoredValue = unknown> {
     returnBulkType?: BulkType
   ): Promise<[ReturnBulk<StoredValue>[BulkType], ReturnBulk<StoredValue>[BulkType]]> {
     if (!isFunction(pathOrHook)) {
-      if (value === undefined) throw this.error(CommonIdentifiers.MissingValue);
-      if (!isPrimitive(value)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      if (value === undefined) {
+        throw this.error(CommonIdentifiers.MissingValue);
+      }
+
+      if (!isPrimitive(value)) {
+        throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      }
     }
 
     let payload: Payload.Partition<StoredValue>;
@@ -1239,15 +1488,27 @@ export class Josh<StoredValue = unknown> {
       };
     }
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Partition)) payload = await middleware[Method.Partition](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Partition](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Partition)) {
+      payload = await middleware[Method.Partition](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.Partition](payload);
+    }
 
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Partition)) payload = await middleware[Method.Partition](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Partition)) {
+      payload = await middleware[Method.Partition](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
@@ -1292,14 +1553,24 @@ export class Josh<StoredValue = unknown> {
 
     let payload: Payload.Push<Value> = { method: Method.Push, errors: [], trigger: Trigger.PreProvider, key, path, value };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Push)) payload = await middleware[Method.Push](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Push)) {
+      payload = await middleware[Method.Push](payload);
+    }
 
     payload = await this.provider[Method.Push](payload);
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Push)) payload = await middleware[Method.Push](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Push)) {
+      payload = await middleware[Method.Push](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
@@ -1327,19 +1598,33 @@ export class Josh<StoredValue = unknown> {
     const { count = 1, duplicates = true } = options ?? {};
     let payload: Payload.Random<StoredValue> = { method: Method.Random, errors: [], trigger: Trigger.PreProvider, count, duplicates };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Random)) payload = await middleware[Method.Random](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Random](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Random)) {
+      payload = await middleware[Method.Random](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.Random](payload);
+    }
 
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Random)) payload = await middleware[Method.Random](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Random)) {
+      payload = await middleware[Method.Random](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<StoredValue[]>(payload)) return payload.data.length ? payload.data : null;
+    if (isPayloadWithData<StoredValue[]>(payload)) {
+      return payload.data.length ? payload.data : null;
+    }
 
     throw this.providerDataFailedError;
   }
@@ -1367,19 +1652,33 @@ export class Josh<StoredValue = unknown> {
     const { count = 1, duplicates = true } = options ?? {};
     let payload: Payload.RandomKey = { method: Method.RandomKey, errors: [], trigger: Trigger.PreProvider, count, duplicates };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.RandomKey)) payload = await middleware[Method.RandomKey](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.RandomKey](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.RandomKey)) {
+      payload = await middleware[Method.RandomKey](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.RandomKey](payload);
+    }
 
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.RandomKey)) payload = await middleware[Method.RandomKey](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.RandomKey)) {
+      payload = await middleware[Method.RandomKey](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<string[]>(payload)) return payload.data.length ? payload.data : null;
+    if (isPayloadWithData<string[]>(payload)) {
+      return payload.data.length ? payload.data : null;
+    }
 
     throw this.providerDataFailedError;
   }
@@ -1423,7 +1722,9 @@ export class Josh<StoredValue = unknown> {
     path = this.resolvePath(path);
 
     if (!isFunction(valueOrHook)) {
-      if (!isPrimitive(valueOrHook)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      if (!isPrimitive(valueOrHook)) {
+        throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      }
     }
 
     let payload: Payload.Remove<Value>;
@@ -1450,14 +1751,24 @@ export class Josh<StoredValue = unknown> {
       };
     }
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Remove)) payload = await middleware[Method.Remove](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Remove)) {
+      payload = await middleware[Method.Remove](payload);
+    }
 
     payload = await this.provider[Method.Remove](payload);
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Remove)) payload = await middleware[Method.Remove](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Remove)) {
+      payload = await middleware[Method.Remove](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
@@ -1487,14 +1798,24 @@ export class Josh<StoredValue = unknown> {
 
     let payload: Payload.Set<Value> = { method: Method.Set, errors: [], trigger: Trigger.PreProvider, key, path, value };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Set)) payload = await middleware[Method.Set](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Set)) {
+      payload = await middleware[Method.Set](payload);
+    }
 
     payload = await this.provider[Method.Set](payload);
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Set)) payload = await middleware[Method.Set](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Set)) {
+      payload = await middleware[Method.Set](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
@@ -1534,14 +1855,24 @@ export class Josh<StoredValue = unknown> {
       overwrite
     };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.SetMany)) payload = await middleware[Method.SetMany](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.SetMany)) {
+      payload = await middleware[Method.SetMany](payload);
+    }
 
     payload = await this.provider[Method.SetMany](payload);
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.SetMany)) payload = await middleware[Method.SetMany](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.SetMany)) {
+      payload = await middleware[Method.SetMany](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
@@ -1561,19 +1892,33 @@ export class Josh<StoredValue = unknown> {
   public async size(): Promise<number> {
     let payload: Payload.Size = { method: Method.Size, errors: [], trigger: Trigger.PreProvider };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Size)) payload = await middleware[Method.Size](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Size](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Size)) {
+      payload = await middleware[Method.Size](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.Size](payload);
+    }
 
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Size)) payload = await middleware[Method.Size](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Size)) {
+      payload = await middleware[Method.Size](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<number>(payload)) return payload.data;
+    if (isPayloadWithData<number>(payload)) {
+      return payload.data;
+    }
 
     throw this.providerDataFailedError;
   }
@@ -1619,8 +1964,13 @@ export class Josh<StoredValue = unknown> {
   public async some(hook: Payload.Hook<StoredValue, boolean>): Promise<boolean>;
   public async some(pathOrHook: Path | Payload.Hook<StoredValue, boolean>, value?: Primitive): Promise<boolean> {
     if (!isFunction(pathOrHook)) {
-      if (value === undefined) throw this.error(CommonIdentifiers.MissingValue);
-      if (!isPrimitive(value)) throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      if (value === undefined) {
+        throw this.error(CommonIdentifiers.MissingValue);
+      }
+
+      if (!isPrimitive(value)) {
+        throw this.error(CommonIdentifiers.InvalidValueType, { type: 'primitive' });
+      }
     }
 
     let payload: Payload.Some<StoredValue>;
@@ -1644,19 +1994,33 @@ export class Josh<StoredValue = unknown> {
       };
     }
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Some)) payload = await middleware[Method.Some](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Some](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Some)) {
+      payload = await middleware[Method.Some](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.Some](payload);
+    }
 
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Some)) payload = await middleware[Method.Some](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Some)) {
+      payload = await middleware[Method.Some](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<boolean>(payload)) return payload.data;
+    if (isPayloadWithData<boolean>(payload)) {
+      return payload.data;
+    }
 
     throw this.providerDataFailedError;
   }
@@ -1678,14 +2042,24 @@ export class Josh<StoredValue = unknown> {
   public async update<Value = StoredValue>(key: string, hook: Payload.Hook<StoredValue, Value>): Promise<this> {
     let payload: Payload.Update<StoredValue, Value> = { method: Method.Update, errors: [], trigger: Trigger.PreProvider, key, hook };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Update)) payload = await middleware[Method.Update](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Update)) {
+      payload = await middleware[Method.Update](payload);
+    }
 
     payload = await this.provider[Method.Update](payload);
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Update)) payload = await middleware[Method.Update](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Update)) {
+      payload = await middleware[Method.Update](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
@@ -1708,19 +2082,33 @@ export class Josh<StoredValue = unknown> {
   public async values(): Promise<StoredValue[]> {
     let payload: Payload.Values<StoredValue> = { method: Method.Values, errors: [], trigger: Trigger.PreProvider };
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPreMiddlewares(Method.Values)) payload = await middleware[Method.Values](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
 
-    if (!isPayloadWithData<boolean>(payload)) payload = await this.provider[Method.Values](payload);
+    for (const middleware of this.middlewares.getPreMiddlewares(Method.Values)) {
+      payload = await middleware[Method.Values](payload);
+    }
+
+    if (!isPayloadWithData<boolean>(payload)) {
+      payload = await this.provider[Method.Values](payload);
+    }
 
     payload.trigger = Trigger.PostProvider;
 
-    for (const middleware of Array.from(this.middlewares.values())) await middleware.run(payload);
-    for (const middleware of this.middlewares.getPostMiddlewares(Method.Values)) payload = await middleware[Method.Values](payload);
+    for (const middleware of Array.from(this.middlewares.values())) {
+      await middleware.run(payload);
+    }
+
+    for (const middleware of this.middlewares.getPostMiddlewares(Method.Values)) {
+      payload = await middleware[Method.Values](payload);
+    }
 
     this.runBehaviorOnPayloadError(payload);
 
-    if (isPayloadWithData<StoredValue[]>(payload)) return payload.data;
+    if (isPayloadWithData<StoredValue[]>(payload)) {
+      return payload.data;
+    }
 
     throw this.providerDataFailedError;
   }
@@ -1747,7 +2135,9 @@ export class Josh<StoredValue = unknown> {
       json = this.convertLegacyExportJSON(json);
     }
 
-    if (clear) await this.provider[Method.Clear]({ method: Method.Clear, errors: [] });
+    if (clear) {
+      await this.provider[Method.Clear]({ method: Method.Clear, errors: [] });
+    }
 
     await this.provider[Method.SetMany]({
       method: Method.SetMany,
@@ -1818,9 +2208,12 @@ export class Josh<StoredValue = unknown> {
       const { behaviorOnPayloadError } = this.options;
 
       if (behaviorOnPayloadError !== undefined && behaviorOnPayloadError >= Josh.ErrorBehavior.Log) {
-        if (payload.errors.length === 1 && behaviorOnPayloadError === Josh.ErrorBehavior.Throw) throw payload.errors[0];
-        else {
-          for (const error of payload.errors) console.error(error);
+        if (payload.errors.length === 1 && behaviorOnPayloadError === Josh.ErrorBehavior.Throw) {
+          throw payload.errors[0];
+        } else {
+          for (const error of payload.errors) {
+            console.error(error);
+          }
 
           if (behaviorOnPayloadError === Josh.ErrorBehavior.Throw) {
             throw this.error({ identifier: Josh.Identifiers.MultipleError, errors: payload.errors });
@@ -1838,8 +2231,13 @@ export class Josh<StoredValue = unknown> {
    * @returns The resolved error.
    */
   private error(options: string | JoshErrorOptions, metadata: Record<string, unknown> = {}): JoshError {
-    if (typeof options === 'string') return new JoshError({ identifier: options, errors: [], message: this.resolveIdentifier(options, metadata) });
-    if ('message' in options) return new JoshError(options);
+    if (typeof options === 'string') {
+      return new JoshError({ identifier: options, errors: [], message: this.resolveIdentifier(options, metadata) });
+    }
+
+    if ('message' in options) {
+      return new JoshError(options);
+    }
 
     return new JoshError({ ...options, message: this.resolveIdentifier(options.identifier, metadata) });
   }
@@ -1875,7 +2273,9 @@ export class Josh<StoredValue = unknown> {
   private resolveIdentifier(identifier: string, metadata: Record<string, unknown> = {}): string {
     const result = resolveCommonIdentifier(identifier, metadata);
 
-    if (result !== null) return result;
+    if (result !== null) {
+      return result;
+    }
 
     switch (identifier) {
       case Josh.Identifiers.InvalidMiddleware:
@@ -1909,7 +2309,9 @@ export class Josh<StoredValue = unknown> {
    * @returns The resolved key and path.
    */
   private resolveKeyPath(keyPath: KeyPath): [string, string[]] {
-    if (typeof keyPath === 'object') return [keyPath.key, this.resolvePath(keyPath.path ?? [])];
+    if (typeof keyPath === 'object') {
+      return [keyPath.key, this.resolvePath(keyPath.path ?? [])];
+    }
 
     const [key, ...path] = keyPath.split('.');
 
@@ -1923,6 +2325,27 @@ export class Josh<StoredValue = unknown> {
    */
   private resolvePath(path: Path): string[] {
     return Array.isArray(path) ? path : path.replace(/\[/g, '.').replace(/\]/g, '').split('.').filter(Boolean);
+  }
+
+  /**
+   * The current version of {@link Josh}
+   * @since 2.0.0
+   */
+  public static version = '[VI]{{inject}}[/VI]';
+
+  /**
+   * A static method to create multiple instances of {@link Josh}.
+   * @since 2.0.0
+   * @param names The names to give each instance of {@link Josh}
+   * @param options The options to give all the instances.
+   * @returns The created instances.
+   */
+  public static multi<Instances extends Record<string, Josh> = Record<string, Josh>>(
+    names: string[],
+    options: Omit<Josh.Options, 'name'> = {}
+  ): Instances {
+    // @ts-expect-error 2345
+    return names.reduce<Instances>((instances, name) => ({ ...instances, [name]: new Josh({ ...options, name }) }), {});
   }
 }
 
