@@ -47,7 +47,7 @@ jobs:
       - name: Checkout Project
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - name: Use Node.js v16
-        uses: actions/setup-node@8f152de45cc393bb48ce5d89d36b731f54556e65 # v4
+        uses: actions/setup-node@b39b52d1213e96004bfcb1c61a8a6fa8ab84f3e8 # v4
         with:
           node-version: 16
           cache: yarn
@@ -55,7 +55,7 @@ jobs:
       - name: Install Dependencies
         run: yarn --immutable
       - name: Download Documentation Artifacts
-        uses: actions/download-artifact@7a1cd3216ca9260cd8022db641d960b1db4d1be4 # v4
+        uses: actions/download-artifact@f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110 # v4
         with:
           name: docs
           path: docs
