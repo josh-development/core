@@ -782,7 +782,7 @@ __metadata:
     "@joshdb/prettier-config": 1.1.0-next.038104a.0
     "@joshdb/provider": 2.0.0-next.a699598.0
     "@joshdb/ts-config": 1.1.0-next.038104a.0
-    "@sapphire/utilities": ^3.15.1
+    "@sapphire/utilities": ^3.15.2
     "@types/node": ^20.10.6
     "@typescript-eslint/eslint-plugin": ^6.16.0
     "@typescript-eslint/parser": ^6.16.0
@@ -1117,10 +1117,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/utilities@npm:^3.15.1":
-  version: 3.15.1
-  resolution: "@sapphire/utilities@npm:3.15.1"
-  checksum: b537e068c6f5c8f7ff901c2908c30989849ce5193b36ea7d88eb851761e172757ec30614536820076ba2dc1ef27a19e276543c6f796c4fc330884b91899ccab6
+"@sapphire/utilities@npm:^3.15.2":
+  version: 3.15.2
+  resolution: "@sapphire/utilities@npm:3.15.2"
+  checksum: c0570d9b6a20fefbf096c4ec0572274cfd160903a00d08b553ac10c7bb0b291a1fbc0d8c27fe21e357870c5402d25728ec3c611869aac56d90f77e831637cfac
   languageName: node
   linkType: hard
 
