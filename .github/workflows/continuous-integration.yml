@@ -80,7 +80,7 @@ jobs:
       - name: Run tests
         run: yarn test --coverage
       - name: Store Code Coverage Report
-        uses: actions/upload-artifact@694cdabd8bdb0f10b2cea11669e1bf5453eed0a6 # v4
+        uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8 # v4
         with:
           name: coverage
           path: coverage/
@@ -100,7 +100,7 @@ jobs:
           name: coverage
           path: coverage/
       - name: Codecov Upload
-        uses: codecov/codecov-action@eaaf4bedf32dbdc6b720b63067d99c4d77d6047d # v3
+        uses: codecov/codecov-action@4fe8c5f003fae66aa5ebb77cfd3e7bfbbda0b6b0 # v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: coverage/
