@@ -90,5 +90,5 @@
     "*.ts": "eslint --fix --ext ts"
   },
   "prettier": "@joshdb/prettier-config",
-  "packageManager": "yarn@3.7.0"
+  "packageManager": "yarn@3.8.0"
 }
