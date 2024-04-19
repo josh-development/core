@@ -630,23 +630,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@favware/cliff-jumper@npm:^2.2.3":
-  version: 2.2.3
-  resolution: "@favware/cliff-jumper@npm:2.2.3"
+"@favware/cliff-jumper@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@favware/cliff-jumper@npm:3.0.2"
   dependencies:
-    "@sapphire/result": ^2.6.4
-    "@sapphire/utilities": 3.13.0
+    "@favware/colorette-spinner": ^1.0.1
+    "@sapphire/result": ^2.6.6
+    "@sapphire/utilities": 3.15.3
     colorette: ^2.0.20
-    commander: ^11.1.0
+    commander: ^12.0.0
     compare-func: ^2.0.0
     conventional-recommended-bump: ^9.0.0
-    git-cliff: ^1.4.0
+    execa: ^8.0.1
+    git-cliff: ^2.2.1
     js-yaml: ^4.1.0
-    semver: ^7.5.4
+    semver: ^7.6.0
   bin:
     cj: ./dist/cli.js
     cliff-jumper: ./dist/cli.js
-  checksum: 036e771325dd60f7ee4c5c9b65df71b9cdc0d3898450abd599a327b0c1f71fa171357a8605622177b7316d949a30a29f832dc787c15c56b37b36535481a70b63
+  checksum: 55fa9444ad5ad618b1aa02f29aae3d4eba5f26ad842b47338c8222da1e0a572d1af898ca8bfd549f843938b4d2850465707133d5d5e336b895e33a2cf99ac940
   languageName: node
   linkType: hard
 
@@ -767,7 +769,7 @@ __metadata:
   dependencies:
     "@commitlint/cli": ^19.2.2
     "@commitlint/config-conventional": ^19.2.2
-    "@favware/cliff-jumper": ^2.2.3
+    "@favware/cliff-jumper": ^3.0.2
     "@favware/npm-deprecate": ^1.0.7
     "@joshdb/auto-ensure": 2.0.0-next.4c9b27e.0
     "@joshdb/eslint-config": 1.1.0-next.038104a.0
@@ -1076,10 +1078,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/result@npm:^2.6.4":
-  version: 2.6.4
-  resolution: "@sapphire/result@npm:2.6.4"
-  checksum: 37d8af05544bf6fcb9b10cf4aa4d60ab0f0798c4e302f4e401f63b1347602b89b10cbbf6fe789681dc2060ad15c3093c96f86dfbee6ac463dba060cb731d7208
+"@sapphire/result@npm:^2.6.6":
+  version: 2.6.6
+  resolution: "@sapphire/result@npm:2.6.6"
+  checksum: e58aa40df942dac42320385745def7060edb95186d8e128a7d3b65aee23187771adbd7d05f447be11f1398cc52637f3ce2306491ec06b494b49f7570a59a94b3
   languageName: node
   linkType: hard
 
@@ -1093,17 +1095,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/utilities@npm:3.13.0, @sapphire/utilities@npm:^3.11.0, @sapphire/utilities@npm:^3.11.2":
-  version: 3.13.0
-  resolution: "@sapphire/utilities@npm:3.13.0"
-  checksum: c2f901c104459e01a24af71871294b700ff188925cf050558880486de6564792df2b7549796dd9fd6f309c12af7d4e2b2d2f4069ec9d4c27d9c3998eca3ac9a9
-  languageName: node
-  linkType: hard
-
-"@sapphire/utilities@npm:^3.15.3":
+"@sapphire/utilities@npm:3.15.3, @sapphire/utilities@npm:^3.15.3":
   version: 3.15.3
   resolution: "@sapphire/utilities@npm:3.15.3"
   checksum: 2868bfcf7bf4f829e0fe9cf0dcb7969c349a1823714a805736dbded38653ed5c6042cca1e68f20193094de29688f71a0451588dc081d26f9651368d23a62f705
+  languageName: node
+  linkType: hard
+
+"@sapphire/utilities@npm:^3.11.0, @sapphire/utilities@npm:^3.11.2":
+  version: 3.13.0
+  resolution: "@sapphire/utilities@npm:3.13.0"
+  checksum: c2f901c104459e01a24af71871294b700ff188925cf050558880486de6564792df2b7549796dd9fd6f309c12af7d4e2b2d2f4069ec9d4c27d9c3998eca3ac9a9
   languageName: node
   linkType: hard
 
@@ -2041,10 +2043,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^11.1.0":
-  version: 11.1.0
-  resolution: "commander@npm:11.1.0"
-  checksum: fd1a8557c6b5b622c89ecdfde703242ab7db3b628ea5d1755784c79b8e7cb0d74d65b4a262289b533359cd58e1bfc0bf50245dfbcd2954682a6f367c828b79ef
+"commander@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "commander@npm:12.0.0"
+  checksum: bce9e243dc008baba6b8d923f95b251ad115e6e7551a15838d7568abebcca0fc832da1800cf37caf37852f35ce4b7fb794ba7a4824b88c5adb1395f9268642df
   languageName: node
   linkType: hard
 
@@ -3043,58 +3045,59 @@ __metadata:
   languageName: node
   linkType: hard
 
-"git-cliff-darwin-arm64@npm:1.4.0":
-  version: 1.4.0
-  resolution: "git-cliff-darwin-arm64@npm:1.4.0"
+"git-cliff-darwin-arm64@npm:2.2.1":
+  version: 2.2.1
+  resolution: "git-cliff-darwin-arm64@npm:2.2.1"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"git-cliff-darwin-x64@npm:1.4.0":
-  version: 1.4.0
-  resolution: "git-cliff-darwin-x64@npm:1.4.0"
+"git-cliff-darwin-x64@npm:2.2.1":
+  version: 2.2.1
+  resolution: "git-cliff-darwin-x64@npm:2.2.1"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"git-cliff-linux-arm64@npm:1.4.0":
-  version: 1.4.0
-  resolution: "git-cliff-linux-arm64@npm:1.4.0"
+"git-cliff-linux-arm64@npm:2.2.1":
+  version: 2.2.1
+  resolution: "git-cliff-linux-arm64@npm:2.2.1"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"git-cliff-linux-x64@npm:1.4.0":
-  version: 1.4.0
-  resolution: "git-cliff-linux-x64@npm:1.4.0"
+"git-cliff-linux-x64@npm:2.2.1":
+  version: 2.2.1
+  resolution: "git-cliff-linux-x64@npm:2.2.1"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"git-cliff-windows-arm64@npm:1.4.0":
-  version: 1.4.0
-  resolution: "git-cliff-windows-arm64@npm:1.4.0"
+"git-cliff-windows-arm64@npm:2.2.1":
+  version: 2.2.1
+  resolution: "git-cliff-windows-arm64@npm:2.2.1"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"git-cliff-windows-x64@npm:1.4.0":
-  version: 1.4.0
-  resolution: "git-cliff-windows-x64@npm:1.4.0"
+"git-cliff-windows-x64@npm:2.2.1":
+  version: 2.2.1
+  resolution: "git-cliff-windows-x64@npm:2.2.1"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"git-cliff@npm:^1.4.0":
-  version: 1.4.0
-  resolution: "git-cliff@npm:1.4.0"
+"git-cliff@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "git-cliff@npm:2.2.1"
   dependencies:
-    git-cliff-darwin-arm64: 1.4.0
-    git-cliff-darwin-x64: 1.4.0
-    git-cliff-linux-arm64: 1.4.0
-    git-cliff-linux-x64: 1.4.0
-    git-cliff-windows-arm64: 1.4.0
-    git-cliff-windows-x64: 1.4.0
+    execa: ^8.0.1
+    git-cliff-darwin-arm64: 2.2.1
+    git-cliff-darwin-x64: 2.2.1
+    git-cliff-linux-arm64: 2.2.1
+    git-cliff-linux-x64: 2.2.1
+    git-cliff-windows-arm64: 2.2.1
+    git-cliff-windows-x64: 2.2.1
   dependenciesMeta:
     git-cliff-darwin-arm64:
       optional: true
@@ -3109,8 +3112,8 @@ __metadata:
     git-cliff-windows-x64:
       optional: true
   bin:
-    git-cliff: lib/index.js
-  checksum: 54d1666f73e3b91ddac539482c4052537314492f637d373209e250e60de55e6c4c22a3a432cce5ab8611e5731c2c3f9e3f9715ef6a7235dd9ded90069f47fed8
+    git-cliff: lib/cli/cli.js
+  checksum: ee18e17f38424fa5b992e59fbf4024ddf5e8f3213011ed3393b063b71a857b4a032ab36954f3e4f89c3e1035fdb4c6c1cc1bf33b77df06ce47aa3322c101ee1c
   languageName: node
   linkType: hard
 
