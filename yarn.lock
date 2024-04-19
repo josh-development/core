@@ -785,7 +785,7 @@ __metadata:
     "@favware/npm-deprecate": ^1.0.7
     "@joshdb/auto-ensure": 2.0.0-next.4c9b27e.0
     "@joshdb/eslint-config": 1.1.0-next.038104a.0
-    "@joshdb/map": 2.0.0-next.782d01a.0
+    "@joshdb/map": 2.0.0-next.de5b093.0
     "@joshdb/prettier-config": 1.1.0-next.038104a.0
     "@joshdb/provider": 2.0.0-next.a699598.0
     "@joshdb/ts-config": 1.1.0-next.038104a.0
@@ -827,15 +827,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/map@npm:2.0.0-next.782d01a.0":
-  version: 2.0.0-next.782d01a.0
-  resolution: "@joshdb/map@npm:2.0.0-next.782d01a.0"
+"@joshdb/map@npm:2.0.0-next.de5b093.0":
+  version: 2.0.0-next.de5b093.0
+  resolution: "@joshdb/map@npm:2.0.0-next.de5b093.0"
   dependencies:
     "@joshdb/provider": 2.0.0-next.a699598.0
-    "@sapphire/utilities": ^3.11.2
+    "@sapphire/utilities": ^3.13.0
     better-serialize: ^1.0.0
     property-helpers: ^2.0.0
-  checksum: 9ed8882fbb408d97df66a69e7a2654a25c35a94d3ae894558d5c777295587a1183497850693a25f2754cbf59f93703af42a51d028887ef2630d9fbe5b6814f3c
+  checksum: 63dbbf88ce0d64fe1d22580c2764a14339c993b07ac850bda602442f77dd3cee004f5a6d700f236f0a506b0a11b95d0e60b35217ed4a4bd3fd0ce8e1260c1c26
   languageName: node
   linkType: hard
 
@@ -1124,7 +1124,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sapphire/utilities@npm:^3.15.3":
+"@sapphire/utilities@npm:^3.13.0, @sapphire/utilities@npm:^3.15.3":
   version: 3.15.3
   resolution: "@sapphire/utilities@npm:3.15.3"
   checksum: 2868bfcf7bf4f829e0fe9cf0dcb7969c349a1823714a805736dbded38653ed5c6042cca1e68f20193094de29688f71a0451588dc081d26f9651368d23a62f705
