@@ -40,8 +40,8 @@
     "@sapphire/utilities": "^3.15.3"
   },
   "devDependencies": {
-    "@commitlint/cli": "^17.8.1",
-    "@commitlint/config-conventional": "^17.8.1",
+    "@commitlint/cli": "^19.2.2",
+    "@commitlint/config-conventional": "^19.2.2",
     "@favware/cliff-jumper": "^2.2.3",
     "@favware/npm-deprecate": "^1.0.7",
     "@joshdb/eslint-config": "1.1.0-next.038104a.0",
