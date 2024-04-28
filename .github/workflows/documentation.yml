@@ -19,13 +19,13 @@ jobs:
       SHA: ${{ steps.env.outputs.SHA }}
     steps:
       - name: Checkout Project
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
       - name: Setup Node
         uses: josh-development/.github/setup-node@main
       - name: Build Documentation
         run: yarn docs
       - name: Upload Documentation Artifacts
-        uses: actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba # v4
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4
         with:
           name: docs
           path: docs/api.json
@@ -45,7 +45,7 @@ jobs:
       SHA: ${{ needs.build.outputs.SHA }}
     steps:
       - name: Checkout Project
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
       - name: Use Node.js v16
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
@@ -55,12 +55,12 @@ jobs:
       - name: Install Dependencies
         run: yarn --immutable
       - name: Download Documentation Artifacts
-        uses: actions/download-artifact@8caf195ad4b1dee92908e23f56eeb0696f1dd42d # v4
+        uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4
         with:
           name: docs
           path: docs
       - name: Checkout Documentation Project
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4
         with:
           repository: 'josh-development/docs'
           token: ${{ secrets.ACCESS_TOKEN }}
