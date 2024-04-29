@@ -753,13 +753,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/auto-ensure@npm:2.0.0-next.4c9b27e.0":
-  version: 2.0.0-next.4c9b27e.0
-  resolution: "@joshdb/auto-ensure@npm:2.0.0-next.4c9b27e.0"
+"@joshdb/auto-ensure@npm:2.0.0-next.b39a38a.0":
+  version: 2.0.0-next.b39a38a.0
+  resolution: "@joshdb/auto-ensure@npm:2.0.0-next.b39a38a.0"
   dependencies:
-    "@joshdb/provider": 2.0.0-next.a699598.0
-    "@sapphire/utilities": ^3.11.2
-  checksum: 056bc21eb3ac86d2f36ece2ba9621f72cafa2f345fa2c8c33e0aedcaafde60aa6df30a4867527f89b338dde18b6604f5e7135509b9e0d7545ba12509aadb6daa
+    "@joshdb/provider": 2.0.0-next.c7aa6bf.0
+    "@sapphire/utilities": ^3.15.3
+  checksum: 11d4751797e90a35bb6b086b1f66673b5e722222e6f298e7a4e04eff990f1f055a50d4b02a067009797c36b520c3405ddda882b9c520fad75be9f2d65c1d9ade
   languageName: node
   linkType: hard
 
@@ -771,11 +771,11 @@ __metadata:
     "@commitlint/config-conventional": ^19.2.2
     "@favware/cliff-jumper": ^3.0.2
     "@favware/npm-deprecate": ^1.0.7
-    "@joshdb/auto-ensure": 2.0.0-next.4c9b27e.0
+    "@joshdb/auto-ensure": 2.0.0-next.b39a38a.0
     "@joshdb/eslint-config": 1.1.0-next.038104a.0
     "@joshdb/map": 2.0.0-next.782d01a.0
     "@joshdb/prettier-config": 1.1.0-next.038104a.0
-    "@joshdb/provider": 2.0.0-next.a699598.0
+    "@joshdb/provider": 2.0.0-next.b88aca0.0
     "@joshdb/ts-config": 1.1.0-next.038104a.0
     "@sapphire/utilities": ^3.15.3
     "@types/node": ^20.10.6
@@ -843,6 +843,26 @@ __metadata:
     "@sapphire/utilities": ^3.11.2
     reflect-metadata: ^0.1.13
   checksum: 38585c16f83a7fe433102c0cbfcccfe1c5d42c8fbad2fd1d9d41d84ba08624637ef150a26cd434b4b5f6acaf710ee0c6418da7c4717f773f3a5dc5f3fb0f60c2
+  languageName: node
+  linkType: hard
+
+"@joshdb/provider@npm:2.0.0-next.b88aca0.0":
+  version: 2.0.0-next.b88aca0.0
+  resolution: "@joshdb/provider@npm:2.0.0-next.b88aca0.0"
+  dependencies:
+    "@sapphire/utilities": ^3.15.3
+    reflect-metadata: ^0.2.1
+  checksum: 72678191ec892f7e193c18edd1d6651e3a367eb011a30ac1d7f4d9a0e500babbfcb91e75acc1236a502dd27c7cbacd68466a9fd82a0303240538024fc123d393
+  languageName: node
+  linkType: hard
+
+"@joshdb/provider@npm:2.0.0-next.c7aa6bf.0":
+  version: 2.0.0-next.c7aa6bf.0
+  resolution: "@joshdb/provider@npm:2.0.0-next.c7aa6bf.0"
+  dependencies:
+    "@sapphire/utilities": ^3.15.3
+    reflect-metadata: ^0.2.1
+  checksum: ee656f60ea2e552f8b4288a7b690a17cb022159aafff6ad687c0c557153819acc90f75be99aa8e207fbc4e2c7b35e03e233fb65623af5bbd4eaba07b421698bd
   languageName: node
   linkType: hard
 
@@ -4763,6 +4783,13 @@ __metadata:
   version: 0.1.13
   resolution: "reflect-metadata@npm:0.1.13"
   checksum: 798d379a7b6f6455501145419505c97dd11cbc23857a386add2b9ef15963ccf15a48d9d15507afe01d4cd74116df8a213247200bac00320bd7c11ddeaa5e8fb4
+  languageName: node
+  linkType: hard
+
+"reflect-metadata@npm:^0.2.1":
+  version: 0.2.2
+  resolution: "reflect-metadata@npm:0.2.2"
+  checksum: a66c7b583e4efdd8f3c3124fbff33da2d0c86d8280617516308b32b2159af7a3698c961db3246387f56f6316b1d33a608f39bb2b49d813316dfc58f6d3bf3210
   languageName: node
   linkType: hard
 
