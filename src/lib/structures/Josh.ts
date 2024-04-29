@@ -1418,14 +1418,15 @@ export class Josh<StoredValue = unknown> {
    *
    * @example
    * ```javascript
-   * await josh.set('key', true);
-   * await josh.set('key2', false);
+   * await josh.set('key', undefined, true);
+   * await josh.set('key2', undefined, false);
    *
    * await josh.partition((value) => value); // [{ key: true }, { key2: false }]
    * ```
    */
   public async partition<BulkType extends keyof ReturnBulk<StoredValue>>(
     hook: Payload.Hook<StoredValue>,
+    _value: null,
     returnBulkType?: BulkType
   ): Promise<[ReturnBulk<StoredValue>[BulkType], ReturnBulk<StoredValue>[BulkType]]>;
 
@@ -1442,7 +1443,7 @@ export class Josh<StoredValue = unknown> {
    * await josh.set('key', { path: true });
    * await josh.set('key2', { path: false });
    *
-   * await josh.partition('path'); // [{ key: true }, { key2: false }]
+   * await josh.partition('path', true); // [{ key: true }, { key2: false }]
    * ```
    */
   public async partition<BulkType extends keyof ReturnBulk<StoredValue>>(
