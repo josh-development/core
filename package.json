@@ -29,7 +29,7 @@
     "bump": "cliff-jumper",
     "check-update": "cliff-jumper --dry-run",
     "update": "yarn upgrade-interactive",
-    "postinstall": "husky install",
+    "postinstall": "husky",
     "prepack": "yarn build && pinst --disable",
     "postpack": "pinst --enable"
   },
