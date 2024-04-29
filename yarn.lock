@@ -790,7 +790,7 @@ __metadata:
     pinst: "npm:^3.0.0"
     prettier: "npm:^3.2.5"
     rimraf: "npm:^5.0.5"
-    tsup: "npm:^7.3.0"
+    tsup: "npm:^8.0.2"
     typedoc: "npm:^0.25.13"
     typedoc-json-parser: "npm:^10.0.0"
     typescript: "npm:^5.4.5"
@@ -5458,9 +5458,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tsup@npm:^7.3.0":
-  version: 7.3.0
-  resolution: "tsup@npm:7.3.0"
+"tsup@npm:^8.0.2":
+  version: 8.0.2
+  resolution: "tsup@npm:8.0.2"
   dependencies:
     bundle-require: "npm:^4.0.0"
     cac: "npm:^6.7.12"
@@ -5477,10 +5477,13 @@ __metadata:
     sucrase: "npm:^3.20.3"
     tree-kill: "npm:^1.2.2"
   peerDependencies:
+    "@microsoft/api-extractor": ^7.36.0
     "@swc/core": ^1
     postcss: ^8.4.12
     typescript: ">=4.5.0"
   peerDependenciesMeta:
+    "@microsoft/api-extractor":
+      optional: true
     "@swc/core":
       optional: true
     postcss:
@@ -5490,7 +5493,7 @@ __metadata:
   bin:
     tsup: dist/cli-default.js
     tsup-node: dist/cli-node.js
-  checksum: 10/1051bd0d993d058ea7977a3217b4fe68c8fd6cc9e8e900307dd9ab30553749c7a813016ff1dbc854992d08893ede563d04499b2ca9c01af40c0298ef0554cd9f
+  checksum: 10/dd8c375181a748cdeb86aa3d779d6d755596881f47fe38b7c4b810ff1ef6424d485b23065fda0f6e32d9988bae19cd64e49f6e2f11295d5184485ab7528a37d1
   languageName: node
   linkType: hard
 
