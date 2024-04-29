@@ -14,7 +14,6 @@ import {
 } from '@joshdb/provider';
 import type { Awaitable, NonNullObject, Primitive } from '@sapphire/utilities';
 import { isFunction, isPrimitive } from '@sapphire/utilities';
-import process from 'process';
 import { JoshError, type JoshErrorOptions } from './JoshError';
 
 /**
@@ -1595,8 +1594,8 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async random(options?: Josh.RandomOptions): Promise<StoredValue[] | null> {
-    const { count = 1, duplicates = true } = options ?? {};
-    let payload: Payload.Random<StoredValue> = { method: Method.Random, errors: [], trigger: Trigger.PreProvider, count, duplicates };
+    const { count = 1, unique = false } = options ?? {};
+    let payload: Payload.Random<StoredValue> = { method: Method.Random, errors: [], trigger: Trigger.PreProvider, count, unique };
 
     for (const middleware of Array.from(this.middlewares.values())) {
       await middleware.run(payload);
@@ -1649,8 +1648,8 @@ export class Josh<StoredValue = unknown> {
    * ```
    */
   public async randomKey(options?: Josh.RandomOptions): Promise<string[] | null> {
-    const { count = 1, duplicates = true } = options ?? {};
-    let payload: Payload.RandomKey = { method: Method.RandomKey, errors: [], trigger: Trigger.PreProvider, count, duplicates };
+    const { count = 1, unique = false } = options ?? {};
+    let payload: Payload.RandomKey = { method: Method.RandomKey, errors: [], trigger: Trigger.PreProvider, count, unique };
 
     for (const middleware of Array.from(this.middlewares.values())) {
       await middleware.run(payload);
@@ -2509,10 +2508,10 @@ export namespace Josh {
     count?: number;
 
     /**
-     * Whether to allow duplicates.
+     * Whether the values should be unique.
      * @since 2.0.0
      */
-    duplicates?: boolean;
+    unique?: boolean;
   }
 
   export enum ErrorBehavior {
