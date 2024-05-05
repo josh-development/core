@@ -34,8 +34,8 @@
     "postpack": "pinst --enable"
   },
   "dependencies": {
-    "@joshdb/auto-ensure": "2.0.0-next.7b68fa9.0",
-    "@joshdb/map": "2.0.0-next.00a4b62.0",
+    "@joshdb/auto-ensure": "2.0.0-next.80798ea.0",
+    "@joshdb/map": "2.0.0-next.8c168f5.0",
     "@joshdb/provider": "2.0.0-next.b88aca0.0",
     "@sapphire/utilities": "^3.15.3"
   },
