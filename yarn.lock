@@ -752,13 +752,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/auto-ensure@npm:2.0.0-next.80798ea.0":
-  version: 2.0.0-next.80798ea.0
-  resolution: "@joshdb/auto-ensure@npm:2.0.0-next.80798ea.0"
+"@joshdb/auto-ensure@npm:2.0.0-next.8e89ee5.0":
+  version: 2.0.0-next.8e89ee5.0
+  resolution: "@joshdb/auto-ensure@npm:2.0.0-next.8e89ee5.0"
   dependencies:
     "@joshdb/provider": "npm:2.0.0-next.b88aca0.0"
     "@sapphire/utilities": "npm:^3.15.3"
-  checksum: 10/fca609b174abce6e7149195a4ca3387e8cf96764b270a8b546f73d438592b8e868b57d4f39b1e0a1a2e7991225ae943c5495e137084f6e651158be5c59deabe9
+  checksum: 10/b4006d58a59dc947cba564d3ee78f7d50caf9c9e45233732964dc3bf3e7efc7feda943e440faef6be1e9196edde73cb2478a8ed683c43cd448c6c7362604e8eb
   languageName: node
   linkType: hard
 
@@ -770,9 +770,9 @@ __metadata:
     "@commitlint/config-conventional": "npm:^19.2.2"
     "@favware/cliff-jumper": "npm:^3.0.3"
     "@favware/npm-deprecate": "npm:^1.0.7"
-    "@joshdb/auto-ensure": "npm:2.0.0-next.80798ea.0"
+    "@joshdb/auto-ensure": "npm:2.0.0-next.8e89ee5.0"
     "@joshdb/eslint-config": "npm:2.0.0-next.b88aca0.0"
-    "@joshdb/map": "npm:2.0.0-next.8c168f5.0"
+    "@joshdb/map": "npm:2.0.0-next.8faef6f.0"
     "@joshdb/prettier-config": "npm:2.0.0-next.b88aca0.0"
     "@joshdb/provider": "npm:2.0.0-next.b88aca0.0"
     "@joshdb/ts-config": "npm:2.0.0-next.b88aca0.0"
@@ -814,15 +814,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/map@npm:2.0.0-next.8c168f5.0":
-  version: 2.0.0-next.8c168f5.0
-  resolution: "@joshdb/map@npm:2.0.0-next.8c168f5.0"
+"@joshdb/map@npm:2.0.0-next.8faef6f.0":
+  version: 2.0.0-next.8faef6f.0
+  resolution: "@joshdb/map@npm:2.0.0-next.8faef6f.0"
   dependencies:
     "@joshdb/provider": "npm:2.0.0-next.b88aca0.0"
     "@sapphire/utilities": "npm:^3.15.3"
     better-serialize: "npm:^2.0.0"
     property-helpers: "npm:^2.0.0"
-  checksum: 10/99cd313e9d5c230ed3542a90471855c20da3995e6235bb308dfafc61efdb9806010219d9bf73f7509c88103dd73a43778bc786af7c8341d67c7632338fd19b61
+  checksum: 10/ccf95183e38e1e953136e9c561318ba180cc9306d65f3c2c4a06a04b8480ff3790ed596a9af8274755725ddf56532437a1133ce4695a45fcde9adaa3792fd217
   languageName: node
   linkType: hard
 
