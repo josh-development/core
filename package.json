@@ -37,7 +37,7 @@
     "@joshdb/auto-ensure": "2.0.0-next.e20aea6.0",
     "@joshdb/map": "2.0.0-next.8faef6f.0",
     "@joshdb/provider": "2.0.0-next.b88aca0.0",
-    "@sapphire/utilities": "^3.15.3"
+    "@sapphire/utilities": "^3.16.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
