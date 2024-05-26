@@ -752,13 +752,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/auto-ensure@npm:2.0.0-next.8e89ee5.0":
-  version: 2.0.0-next.8e89ee5.0
-  resolution: "@joshdb/auto-ensure@npm:2.0.0-next.8e89ee5.0"
+"@joshdb/auto-ensure@npm:2.0.0-next.dabc934.0":
+  version: 2.0.0-next.dabc934.0
+  resolution: "@joshdb/auto-ensure@npm:2.0.0-next.dabc934.0"
   dependencies:
     "@joshdb/provider": "npm:2.0.0-next.b88aca0.0"
     "@sapphire/utilities": "npm:^3.15.3"
-  checksum: 10/b4006d58a59dc947cba564d3ee78f7d50caf9c9e45233732964dc3bf3e7efc7feda943e440faef6be1e9196edde73cb2478a8ed683c43cd448c6c7362604e8eb
+  checksum: 10/f1bf25901633f3f9a4ee32a2cd220cbf7ec4a6a2e322e506b7184070b36fa76da2cfb118ec2255a408ae7e7a4bedf16a90103a621b53c1d182ba45bbef615617
   languageName: node
   linkType: hard
 
@@ -770,7 +770,7 @@ __metadata:
     "@commitlint/config-conventional": "npm:^19.2.2"
     "@favware/cliff-jumper": "npm:^3.0.3"
     "@favware/npm-deprecate": "npm:^1.0.7"
-    "@joshdb/auto-ensure": "npm:2.0.0-next.8e89ee5.0"
+    "@joshdb/auto-ensure": "npm:2.0.0-next.dabc934.0"
     "@joshdb/eslint-config": "npm:2.0.0-next.b88aca0.0"
     "@joshdb/map": "npm:2.0.0-next.8faef6f.0"
     "@joshdb/prettier-config": "npm:2.0.0-next.b88aca0.0"
