@@ -42,7 +42,7 @@
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
-    "@favware/cliff-jumper": "^3.0.3",
+    "@favware/cliff-jumper": "^4.0.3",
     "@favware/npm-deprecate": "^1.0.7",
     "@joshdb/eslint-config": "2.0.0-next.b88aca0.0",
     "@joshdb/prettier-config": "2.0.0-next.b88aca0.0",
