@@ -791,7 +791,7 @@ __metadata:
     "@joshdb/provider": "npm:2.0.0-next.b88aca0.0"
     "@joshdb/ts-config": "npm:2.0.0-next.b88aca0.0"
     "@sapphire/utilities": "npm:^3.17.0"
-    "@types/node": "npm:^20.16.0"
+    "@types/node": "npm:^20.16.1"
     "@typescript-eslint/eslint-plugin": "npm:^7.18.0"
     "@typescript-eslint/parser": "npm:^7.18.0"
     "@vitest/coverage-v8": "npm:^1.6.0"
@@ -799,13 +799,13 @@ __metadata:
     eslint: "npm:^8.57.0"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-plugin-prettier: "npm:^5.2.1"
-    husky: "npm:^9.1.4"
+    husky: "npm:^9.1.5"
     lint-staged: "npm:^15.2.9"
     pinst: "npm:^3.0.0"
     prettier: "npm:^3.3.3"
     rimraf: "npm:^5.0.10"
     tsup: "npm:^8.2.4"
-    typedoc: "npm:^0.26.5"
+    typedoc: "npm:^0.26.6"
     typedoc-json-parser: "npm:^10.1.5"
     typescript: "npm:^5.5.4"
     vitest: "npm:1.6.0"
@@ -1344,12 +1344,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.16.0":
-  version: 20.16.0
-  resolution: "@types/node@npm:20.16.0"
+"@types/node@npm:^20.16.1":
+  version: 20.16.1
+  resolution: "@types/node@npm:20.16.1"
   dependencies:
     undici-types: "npm:~6.19.2"
-  checksum: 10/ad6d50982d1ced0f29ed1fc01b6ed24b03dac15f11f0ff0806af0c74d658be95ea4faef9b1b05c04e7d112c562126449326f44f9819875a6e45036b929a1bc94
+  checksum: 10/9bae1dffd2094694147a91ebec51dc89a60a607d16d47a0d770320f1a75d3ba58663708fd93c37954a63acb701a4e0fd64245139c57ae810d3ad524e75481d4e
   languageName: node
   linkType: hard
 
@@ -3554,12 +3554,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"husky@npm:^9.1.4":
-  version: 9.1.4
-  resolution: "husky@npm:9.1.4"
+"husky@npm:^9.1.5":
+  version: 9.1.5
+  resolution: "husky@npm:9.1.5"
   bin:
     husky: bin.js
-  checksum: 10/c43aa7cbf98246d4f347bc3da807049555b5003af7c6e1658c5cea44a9743b4d0683c72973a4fe02a4ccceb81031a664ecaa7a1a86efe4d37a80a0af17c988ea
+  checksum: 10/21a3036dd03141c41347693bde301c62502b4e3bffb87310e7e42b3011c2e55691af2e4a9a5f39bd94e6b1d69e3cfc26ec636d8e164e19737b26f11c556caf10
   languageName: node
   linkType: hard
 
@@ -5981,9 +5981,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc@npm:^0.26.5":
-  version: 0.26.5
-  resolution: "typedoc@npm:0.26.5"
+"typedoc@npm:^0.26.6":
+  version: 0.26.6
+  resolution: "typedoc@npm:0.26.6"
   dependencies:
     lunr: "npm:^2.3.9"
     markdown-it: "npm:^14.1.0"
@@ -5994,7 +5994,7 @@ __metadata:
     typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x || 5.1.x || 5.2.x || 5.3.x || 5.4.x || 5.5.x
   bin:
     typedoc: bin/typedoc
-  checksum: 10/9965479c87d8cb97742ae2622e3c6640e1204bca4b5652c66b82e0f768184443a2b800eae1090c92130ef321e29afc948510d4d65a4a2073c4fd6101d737ba0d
+  checksum: 10/ae8dc99d2d1e45350d8117238e44a288a1b1272c499e14285f0778855139876325ff8f46ef8a9efac33356dee1853e467d4018edacad1e77cb2065294b9ab120
   languageName: node
   linkType: hard
 
