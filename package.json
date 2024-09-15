@@ -40,8 +40,8 @@
     "@sapphire/utilities": "^3.17.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.4.1",
-    "@commitlint/config-conventional": "^19.4.1",
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
     "@favware/cliff-jumper": "^3.0.3",
     "@favware/npm-deprecate": "^1.0.7",
     "@joshdb/eslint-config": "2.0.0-next.b88aca0.0",
@@ -55,15 +55,15 @@
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "husky": "^9.1.5",
+    "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
     "pinst": "^3.0.0",
     "prettier": "^3.3.3",
     "rimraf": "^5.0.10",
     "tsup": "^8.2.4",
-    "typedoc": "^0.26.6",
+    "typedoc": "^0.26.7",
     "typedoc-json-parser": "^10.1.5",
-    "typescript": "^5.5.4",
+    "typescript": "^5.6.2",
     "vitest": "1.6.0"
   },
   "repository": {
