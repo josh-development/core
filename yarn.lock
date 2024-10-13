@@ -783,13 +783,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@joshdb/auto-ensure@npm:2.0.0-next.e20aea6.0":
-  version: 2.0.0-next.e20aea6.0
-  resolution: "@joshdb/auto-ensure@npm:2.0.0-next.e20aea6.0"
+"@joshdb/auto-ensure@npm:2.0.0-next.e95c03e.0":
+  version: 2.0.0-next.e95c03e.0
+  resolution: "@joshdb/auto-ensure@npm:2.0.0-next.e95c03e.0"
   dependencies:
-    "@joshdb/provider": "npm:2.0.0-next.b88aca0.0"
-    "@sapphire/utilities": "npm:^3.16.2"
-  checksum: 10/ed6dd91b43e47a88517206dfa6f6402c404ef8008fe6909ce96f381df325d48f3546b97198c465d8bd12b33dd5ee962e86d85db825b9f7191512808b39e3d4ae
+    "@joshdb/provider": "npm:2.0.0-next.fb00a2d.0"
+    "@sapphire/utilities": "npm:^3.17.0"
+  checksum: 10/958fc5e86985a86b5d4473ca6777cc733828a220922b623b5eec97661c4bc5ca2e11d559ee05e2d25bc8e33fd30baa8e8ccb90d6dfb2a8cf4fc5ef5b3f3f96a9
   languageName: node
   linkType: hard
 
@@ -801,7 +801,7 @@ __metadata:
     "@commitlint/config-conventional": "npm:^19.5.0"
     "@favware/cliff-jumper": "npm:^3.0.3"
     "@favware/npm-deprecate": "npm:^1.0.7"
-    "@joshdb/auto-ensure": "npm:2.0.0-next.e20aea6.0"
+    "@joshdb/auto-ensure": "npm:2.0.0-next.e95c03e.0"
     "@joshdb/eslint-config": "npm:2.0.0-next.b88aca0.0"
     "@joshdb/map": "npm:2.0.0-next.d8f6dae.0"
     "@joshdb/prettier-config": "npm:2.0.0-next.b88aca0.0"
@@ -873,6 +873,16 @@ __metadata:
     "@sapphire/utilities": "npm:^3.15.3"
     reflect-metadata: "npm:^0.2.1"
   checksum: 10/a7f21e7f0871593ff639357363508db14ef5d83c93bdcee035ad77b6a928173619b585c738cb1c27c9c004bf416d874f4557c49fbeba9a688adf469f061b5d67
+  languageName: node
+  linkType: hard
+
+"@joshdb/provider@npm:2.0.0-next.fb00a2d.0":
+  version: 2.0.0-next.fb00a2d.0
+  resolution: "@joshdb/provider@npm:2.0.0-next.fb00a2d.0"
+  dependencies:
+    "@sapphire/utilities": "npm:^3.17.0"
+    reflect-metadata: "npm:^0.2.1"
+  checksum: 10/e39e413400d8cad26916e11d9f6d5fc3429a887560c497a477e6627ffae6eda0db8bab0cb97a93900acbfb77ea91ffbddf8222f97461864b02ad5681c5e7542e
   languageName: node
   linkType: hard
 
