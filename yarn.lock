@@ -808,7 +808,7 @@ __metadata:
     "@joshdb/provider": "npm:2.0.0-next.b88aca0.0"
     "@joshdb/ts-config": "npm:2.0.0-next.b88aca0.0"
     "@sapphire/utilities": "npm:^3.17.0"
-    "@types/node": "npm:^20.17.1"
+    "@types/node": "npm:^20.17.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.18.0"
     "@typescript-eslint/parser": "npm:^7.18.0"
     "@vitest/coverage-v8": "npm:^1.6.0"
@@ -822,8 +822,8 @@ __metadata:
     prettier: "npm:^3.3.3"
     rimraf: "npm:^5.0.10"
     tsup: "npm:^8.3.5"
-    typedoc: "npm:^0.26.10"
-    typedoc-json-parser: "npm:^10.1.6"
+    typedoc: "npm:^0.26.11"
+    typedoc-json-parser: "npm:^10.2.0"
     typescript: "npm:^5.6.3"
     vitest: "npm:1.6.0"
   languageName: unknown
@@ -1430,12 +1430,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.17.1":
-  version: 20.17.1
-  resolution: "@types/node@npm:20.17.1"
+"@types/node@npm:^20.17.5":
+  version: 20.17.5
+  resolution: "@types/node@npm:20.17.5"
   dependencies:
     undici-types: "npm:~6.19.2"
-  checksum: 10/d1f4cd7158df97167953031f7245af3203f52b5f4965c175253b96489c7c55e4c2d4c8a697bb34211bfb99b8824cfcf6287e16cabdac6184a99eedcb26fdd432
+  checksum: 10/2096b78696bab7d8e410609bbfdf0cad67dd02460bee98f457e0265c97e1587852ee0d17d806a9cfbff7b9183a3e9c2f95d6df0a18c56e708a36790d1d89084b
   languageName: node
   linkType: hard
 
@@ -6275,9 +6275,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typedoc-json-parser@npm:^10.1.6":
-  version: 10.1.6
-  resolution: "typedoc-json-parser@npm:10.1.6"
+"typedoc-json-parser@npm:^10.2.0":
+  version: 10.2.0
+  resolution: "typedoc-json-parser@npm:10.2.0"
   dependencies:
     "@favware/colorette-spinner": "npm:^1.0.1"
     "@sapphire/node-utilities": "npm:^1.0.2"
@@ -6289,13 +6289,13 @@ __metadata:
     typescript: "npm:^5.5.3"
   bin:
     typedoc-json-parser: ./dist/bin/index.js
-  checksum: 10/798aa9d3649a54b603e8fbc63a05e410fa6b23d9b9d0794ce56ba5ce5797becc515972e6229e6102e0d18b09dccc1b7ec9b15d8744d2543d955fe9e1a94105c0
+  checksum: 10/c1f8153fc35df469e2a68d6d9aaa6f82bb5637a09e3d581feed3a007acc841e633a7ea5ead64a62babfbc096eb26c4c5f3b75597d3f138ac9cefdfa8af0798aa
   languageName: node
   linkType: hard
 
-"typedoc@npm:^0.26.10":
-  version: 0.26.10
-  resolution: "typedoc@npm:0.26.10"
+"typedoc@npm:^0.26.11":
+  version: 0.26.11
+  resolution: "typedoc@npm:0.26.11"
   dependencies:
     lunr: "npm:^2.3.9"
     markdown-it: "npm:^14.1.0"
@@ -6306,7 +6306,7 @@ __metadata:
     typescript: 4.6.x || 4.7.x || 4.8.x || 4.9.x || 5.0.x || 5.1.x || 5.2.x || 5.3.x || 5.4.x || 5.5.x || 5.6.x
   bin:
     typedoc: bin/typedoc
-  checksum: 10/22db2da44fe06274b0b6620570802baf6cefca931fca8eadbdb3ca51b1fca7c5561d0689ae73c6763cfc7aa554079a26f200b436a4d5848a7bf3ceb2aa205340
+  checksum: 10/969833b6ffaf1afc96ade3e2b6e594d2f072cc6e92bbc02e40f73c26e16eae8df01b63ccc4a445e2ef9ea2d3c7901ec7c8af476af526225a4b02ed014cdf88b7
   languageName: node
   linkType: hard
 
