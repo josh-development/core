@@ -58,10 +58,10 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.2.10",
     "pinst": "^3.0.0",
-    "prettier": "^3.4.1",
+    "prettier": "^3.4.2",
     "rimraf": "^5.0.10",
     "tsup": "^8.3.5",
-    "typedoc": "^0.27.2",
+    "typedoc": "^0.27.3",
     "typedoc-json-parser": "^10.2.0",
     "typescript": "^5.7.2",
     "vitest": "1.6.0"
