@@ -40,17 +40,17 @@
     "@sapphire/utilities": "^3.18.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.6.1",
-    "@commitlint/config-conventional": "^19.6.0",
+    "@commitlint/cli": "^19.7.1",
+    "@commitlint/config-conventional": "^19.7.1",
     "@favware/cliff-jumper": "^3.0.3",
     "@favware/npm-deprecate": "^1.0.7",
     "@joshdb/eslint-config": "2.0.0-next.b88aca0.0",
     "@joshdb/prettier-config": "2.0.0-next.b88aca0.0",
     "@joshdb/ts-config": "2.0.0-next.b88aca0.0",
-    "@types/node": "^20.17.16",
+    "@types/node": "^20.17.17",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
-    "@vitest/coverage-v8": "^1.6.0",
+    "@vitest/coverage-v8": "^1.6.1",
     "esbuild-plugin-polyfill-node": "^0.3.0",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
@@ -64,7 +64,7 @@
     "typedoc": "^0.27.6",
     "typedoc-json-parser": "^10.2.0",
     "typescript": "^5.7.3",
-    "vitest": "1.6.0"
+    "vitest": "1.6.1"
   },
   "repository": {
     "type": "git",
