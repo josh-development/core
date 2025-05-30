@@ -828,7 +828,7 @@ __metadata:
     "@joshdb/provider": "npm:2.0.0-next.b88aca0.0"
     "@joshdb/ts-config": "npm:2.0.0-next.b88aca0.0"
     "@sapphire/utilities": "npm:^3.18.2"
-    "@types/node": "npm:^20.17.50"
+    "@types/node": "npm:^22.15.29"
     "@typescript-eslint/eslint-plugin": "npm:^7.18.0"
     "@typescript-eslint/parser": "npm:^7.18.0"
     "@vitest/coverage-v8": "npm:^1.6.1"
@@ -1523,12 +1523,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.17.50":
-  version: 20.17.50
-  resolution: "@types/node@npm:20.17.50"
+"@types/node@npm:^22.15.29":
+  version: 22.15.29
+  resolution: "@types/node@npm:22.15.29"
   dependencies:
-    undici-types: "npm:~6.19.2"
-  checksum: 10/098210d43cfc0d770aae95c247a115a8be0daa3fb71bf4e5541fe98494c86ae21842d595a8d11962e1c0d5c70a7f744b0146086ca427b8cebd6602e0d4afb728
+    undici-types: "npm:~6.21.0"
+  checksum: 10/3426790c5aa22df445213d7f37e57ea261cf3013030fe9b3025d87c302097799a9db3b848e2a9bdb07cab8ec6c7e9947ac770cf11e12e420148296b63d63e7db
   languageName: node
   linkType: hard
 
@@ -6603,10 +6603,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~6.19.2":
-  version: 6.19.6
-  resolution: "undici-types@npm:6.19.6"
-  checksum: 10/0ea9bc25762a86597d095b3772f6cec0bcabb796c339f7dfa2bd601c745a480289eb2939848dc285a56d4f94f50c475868160d8d6d3f54e823f1faf7ea9e9468
+"undici-types@npm:~6.21.0":
+  version: 6.21.0
+  resolution: "undici-types@npm:6.21.0"
+  checksum: 10/ec8f41aa4359d50f9b59fa61fe3efce3477cc681908c8f84354d8567bb3701fafdddf36ef6bff307024d3feb42c837cf6f670314ba37fc8145e219560e473d14
   languageName: node
   linkType: hard
 
