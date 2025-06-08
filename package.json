@@ -36,7 +36,7 @@
   "dependencies": {
     "@joshdb/auto-ensure": "2.0.0-next.e20aea6.0",
     "@joshdb/map": "2.0.0-next.d8f6dae.0",
-    "@joshdb/provider": "2.0.0-next.b88aca0.0",
+    "@joshdb/provider": "2.0.0-next.d6dabc6.0",
     "@sapphire/utilities": "^3.18.2"
   },
   "devDependencies": {
@@ -44,9 +44,9 @@
     "@commitlint/config-conventional": "^19.8.1",
     "@favware/cliff-jumper": "^3.0.3",
     "@favware/npm-deprecate": "^1.0.7",
-    "@joshdb/eslint-config": "2.0.0-next.b88aca0.0",
-    "@joshdb/prettier-config": "2.0.0-next.b88aca0.0",
-    "@joshdb/ts-config": "2.0.0-next.b88aca0.0",
+    "@joshdb/eslint-config": "2.0.0-next.d6dabc6.0",
+    "@joshdb/prettier-config": "2.0.0-next.d6dabc6.0",
+    "@joshdb/ts-config": "2.0.0-next.d6dabc6.0",
     "@types/node": "^20.17.57",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
