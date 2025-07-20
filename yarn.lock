@@ -828,7 +828,7 @@ __metadata:
     "@joshdb/provider": "npm:2.0.0-next.b88aca0.0"
     "@joshdb/ts-config": "npm:2.0.0-next.b88aca0.0"
     "@sapphire/utilities": "npm:^3.18.2"
-    "@types/node": "npm:^20.19.9"
+    "@types/node": "npm:^22.16.5"
     "@typescript-eslint/eslint-plugin": "npm:^7.18.0"
     "@typescript-eslint/parser": "npm:^7.18.0"
     "@vitest/coverage-v8": "npm:^1.6.1"
@@ -1523,12 +1523,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^20.19.9":
-  version: 20.19.9
-  resolution: "@types/node@npm:20.19.9"
+"@types/node@npm:^22.16.5":
+  version: 22.16.5
+  resolution: "@types/node@npm:22.16.5"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10/7631e541fb3cdef57d73b626cbcf4365ae5979345ee920429f0de0acceff69dbf843d4815404b58eb3957bace3f825d0ea38889051d2d218301c5dc48ada6cff
+  checksum: 10/ba45b5c9113cbc5edb12960fcfe7e80db2c998af5c1931264240695b27d756570d92462150b95781bd67a03aa82111cc970ab0f4504eb99213edff8bf425354e
   languageName: node
   linkType: hard
 
