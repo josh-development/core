@@ -61,7 +61,7 @@
     "prettier": "^3.6.2",
     "rimraf": "^5.0.10",
     "tsup": "^8.5.0",
-    "typedoc": "^0.28.10",
+    "typedoc": "^0.28.11",
     "typedoc-json-parser": "^10.2.0",
     "typescript": "^5.9.2",
     "vitest": "1.6.1"
