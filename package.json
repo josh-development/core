@@ -59,7 +59,7 @@
     "lint-staged": "^15.5.2",
     "pinst": "^3.0.0",
     "prettier": "^3.6.2",
-    "rimraf": "^5.0.10",
+    "rimraf": "^6.0.1",
     "tsup": "^8.5.0",
     "typedoc": "^0.28.13",
     "typedoc-json-parser": "^10.2.0",
