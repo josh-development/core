@@ -56,7 +56,7 @@
     "eslint-config-prettier": "^9.1.2",
     "eslint-plugin-prettier": "^5.5.4",
     "husky": "^9.1.7",
-    "lint-staged": "^15.5.2",
+    "lint-staged": "^16.2.4",
     "pinst": "^3.0.0",
     "prettier": "^3.6.2",
     "rimraf": "^5.0.10",
