@@ -52,7 +52,7 @@
     "@typescript-eslint/parser": "^7.18.0",
     "@vitest/coverage-v8": "^1.6.1",
     "esbuild-plugin-polyfill-node": "^0.3.0",
-    "eslint": "^8.57.1",
+    "eslint": "^10.10.0",
     "eslint-config-prettier": "^9.1.2",
     "eslint-plugin-prettier": "^5.5.5",
     "husky": "^9.1.7",
