@@ -43,7 +43,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@favware/cliff-jumper": "^3.0.3",
-    "@favware/npm-deprecate": "^1.0.7",
+    "@favware/npm-deprecate": "^2.0.0",
     "@joshdb/eslint-config": "2.0.0-next.b88aca0.0",
     "@joshdb/prettier-config": "2.0.0-next.b88aca0.0",
     "@joshdb/ts-config": "2.0.0-next.b88aca0.0",
