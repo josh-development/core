@@ -58,7 +58,7 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
     "pinst": "^3.0.0",
-    "prettier": "^3.9.6",
+    "prettier": "^3.9.8",
     "rimraf": "^5.0.10",
     "tsup": "^8.5.1",
     "typedoc": "^0.28.20",
