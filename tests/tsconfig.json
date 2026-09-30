@@ -4,9 +4,7 @@
     "rootDir": "./",
     "outDir": "./build",
     "tsBuildInfoFile": "./build/.tsbuildinfo",
-    "types": ["vitest/globals"],
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "types": ["vitest/globals"]
   },
   "include": ["./"],
   "references": [{ "path": "../src" }]
